@@ -1,0 +1,639 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 27</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-ini { border-left-color: #1e90ff; } /* Инициатор */
+        .role-nopn { border-left-color: #8a2be2; } /* Начальник отдела продуктового направления */
+        .role-pm { border-left-color: #4682b4; } /* Сегмент-маркетинг-менеджер / ПМ */
+        .role-dir { border-left-color: #2e8b57; } /* Директор по маркетингу */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 27: Обработка идеи по вводу нового продукта и модернизации-кастомизации уже имеющегося</h1>
+    <div class="subhead">Владелец: Дирекция маркетинга</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-2</div>
+                <div class="step-header-cell">3-5</div>
+                <div class="step-header-cell">6-10</div>
+                <div class="step-header-cell">11-15</div>
+            </div>
+
+            <!-- Дорожка 1: Инициатор -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Инициатор</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-ini" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Заполнение анкеты</div>
+                            <div class="step-preview">Заполняет анкету в разделе «Подать идею о продукте» в Битрикс24 или на сайте...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-ini" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Карточка в архиве</div>
+                            <div class="step-preview">Карточка закрыта и перенесена в архив...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-ini" onclick="showDetail(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Карточка в ИП</div>
+                            <div class="step-preview">Карточка конвертирована в карточку исследовательского проекта...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Начальник отдела продуктового направления -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник отдела<br>продуктового направления</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-nopn" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Постановка задачи</div>
+                            <div class="step-preview">Ставит задачу по проведению обработки идеи...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-nopn" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Согласование</div>
+                            <div class="step-preview">Принимает решение о согласовании...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Сегмент-маркетинг-менеджер / ПМ -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Сегмент-маркетинг-менеджер<br>Старший ПМ / ПМ</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Проверка анкеты</div>
+                            <div class="step-preview">Проверяет правильность заполнения анкеты...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Письмо-отказ</div>
+                            <div class="step-preview">Формирует и направляет инициатору письмо-отказ...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Уточнение информации</div>
+                            <div class="step-preview">Связывается с инициатором для уточнения информации...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Прием в работу</div>
+                            <div class="step-preview">Принимает заявку в работу...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Смена лидера</div>
+                            <div class="step-preview">В Битрикс24 меняет лидера проекта...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Оценка бизнес-потенциала</div>
+                            <div class="step-preview">Проводит оценку бизнес-потенциала идеи...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Формирование описания</div>
+                            <div class="step-preview">Формирует описание по результатам обработки идеи...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Отправка на согласование</div>
+                            <div class="step-preview">Отправляет идею на согласование в Битрикс24...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Получение комментариев</div>
+                            <div class="step-preview">Получает вопросы, комментарии по идее...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Директор по маркетингу -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Директор по маркетингу</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-dir" onclick="showDetail(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Решение о согласовании</div>
+                            <div class="step-preview">Принимает решение о согласовании...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Инициатор",
+            text: "Заполняет и отправляет анкету в Битрикс24 / на сайте. Идеей могут выступать конкретные продукты, решения с их применением, системы на основе решений и сервис по сопровождению продукта, решения или системы.\n\nИнициатор заполняет Анкету в разделе «Подать идею о продукте» в Битрикс24 и на сайте в разделе «Обратная связь», в которой заполняет следующие поля:\n- Продуктовое направление\n- Наименование продукта\n- Что за вопрос (Новый продукт, Новое решение, Новая система, Кастомизация существующего продукта, Кастомизация существующего решения, Кастомизация существующей системы, Сервис для продукта, Сервис для решения, Сервис для системы, прочее)\n- Описание запроса\n- Вложение (фото, ТТ, ТЗ, страница из каталога и т.д.)\n- ФИО, Телефон, E-mail\n\nПосле заполнения и нажатия кнопки «Отправить», анкета конвертируется в карточку идеи в Битрикс24, раздел «Идеи».\n\nИнициаторы идеи подразделяются на внешних (конечные пользователи, партнеры) и внутренних (сотрудники КЭАЗ).",
+            inputs: ["⬅️ Идея от внешнего или внутреннего инициатора"],
+            outputs: ["🔀 Если бизнес-направление «Прочее» → Шаг 3", "🔀 Если конкретное бизнес-направление → Шаг 2"]
+        },
+        2: {
+            number: "2",
+            role: "Начальник отдела продуктового направления",
+            text: "Ставит задачу по проведению обработки идеи ответственному сотруднику (Сегмент-маркетинг-менеджеру, Старшему ПМ или ПМ).",
+            inputs: ["⬅️ От инициатора (шаг 1, конкретное направление)"],
+            outputs: ["→ Шаг 3"]
+        },
+        3: {
+            number: "3",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "Проверяет правильность заполнения анкеты. Проверка предложенной идеи включает в себя обязательное выполнение следующих задач:\n- проверка наличия в существующем портфеле продуктов;\n- проверка наличия в реестре продуктовых инвестиционных проектов;\n- проверка наличия в реестре исследовательских проектов;\n- проверка в реестре открытых идей;\n- проверка наличия в архиве закрытых идей.\n\nПРИМЕЧАНИЕ: если в анкете указано бизнес-направление «Прочее», то ответственным назначается Сегмент-маркетинг-менеджер. Если в анкете указано конкретное бизнес-направление, то она направляется Начальнику отдела продуктового направления, который делегирует анкету на ответственного ПМ/СПМ.",
+            inputs: ["⬅️ От инициатора (шаг 1, прочее), от НОПН (шаг 2)"],
+            outputs: ["🔀 Если анкета дублируется → Шаг 4", "🔀 Если не дублируется, но нужна доп. информация → Шаг 6", "🔀 Если не дублируется, информация полная, и не нужна смена лидера → Шаг 7", "🔀 Если нужна смена лидера → Шаг 8"]
+        },
+        4: {
+            number: "4",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "Формирует и направляет инициатору письмо-отказ (дубликат / нецелесообразно).",
+            inputs: ["⬅️ От ПМ (шаг 3, дубликат)"],
+            outputs: ["→ Шаг 5"]
+        },
+        5: {
+            number: "5",
+            role: "Инициатор",
+            text: "Карточка закрыта и перенесена в архив. Архив располагается в Битрикс24 (Битрикс24/Задачи и проекты/Продуктовые проекты/Архив). Выход.",
+            inputs: ["⬅️ От ПМ (шаг 4)"],
+            outputs: ["📤 ВЫХОД: Идея отклонена"]
+        },
+        6: {
+            number: "6",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "Связывается с инициатором для уточнения информации. В случае, если анкета заполнена некорректно или информация, по существу, не содержится, запрашивает дополнительную информацию у Инициатора:\n- какой аналог конкурентов нужно заменить;\n- широта исполнений - линейка;\n- в каком решении будет использоваться продукт;\n- иные специфические требования инициатора запроса;\n- понять клиентов и сегменты, где применяется/планируется применяться данный продукт;\n- определить примерный объём потенциального рынка (рекомендуемо, но не является блокирующим для одобрения идеи).",
+            inputs: ["⬅️ От ПМ (шаг 3, нужна информация)"],
+            outputs: ["🔀 Если не нужна смена лидера → Шаг 7", "🔀 Если нужна смена лидера → Шаг 8"]
+        },
+        7: {
+            number: "7",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "Принимает заявку в работу.",
+            inputs: ["⬅️ От ПМ (шаг 3, полная информация), от ПМ (шаг 6, не нужна смена)"],
+            outputs: ["→ Шаг 9"]
+        },
+        8: {
+            number: "8",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "В Битрикс24 меняет лидера проекта. ПРИМЕЧАНИЕ: в случае, если в анкете было указано бизнес-направление «Прочее», но в ходе работы с анкетой было установлено, что продукт есть в системе или относится к существующему продуктовому направлению, то Сегмент-маркетинг-менеджер делегирует анкету Начальнику отдела продуктового направления (путем «Сменить лидера проекта» в Б24), который в свою очередь делегирует анкету Старшему продакт-менеджеру/Продакт-менеджеру.",
+            inputs: ["⬅️ От ПМ (шаг 3, нужна смена), от ПМ (шаг 6, нужна смена)"],
+            outputs: ["→ Шаг 2"]
+        },
+        9: {
+            number: "9",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "Проводит оценку бизнес-потенциала идеи.",
+            inputs: ["⬅️ От ПМ (шаг 7)"],
+            outputs: ["✅ Если уровень удовлетворительный → Шаг 10", "❌ Если неудовлетворительный → Шаг 4"]
+        },
+        10: {
+            number: "10",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "Формирует описание по результатам обработки идеи. Описание проводится либо в поле задания согласования идеи, либо прикладывается к заданию документ свободной формы (word, excel, powerpoint), где описан потенциальный объём рынка (клиенты, сегменты, конкуренты).",
+            inputs: ["⬅️ От ПМ (шаг 9, ДА)"],
+            outputs: ["→ Шаг 11"]
+        },
+        11: {
+            number: "11",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "Отправляет идею на согласование в Битрикс24.",
+            inputs: ["⬅️ От ПМ (шаг 10)"],
+            outputs: ["🔀 Если инициатор идеи Старший ПМ/ПМ → Шаг 12", "🔀 Если инициатор идеи Сегмент-маркетинг-менеджер → Шаг 14"]
+        },
+        12: {
+            number: "12",
+            role: "Начальник отдела продуктового направления",
+            text: "Принимает решение о согласовании.",
+            inputs: ["⬅️ От ПМ (шаг 11, инициатор ПМ)"],
+            outputs: ["✅ Если согласовано → Шаг 14", "❌ Если не согласовано → Шаг 13"]
+        },
+        13: {
+            number: "13",
+            role: "Сегмент-маркетинг-менеджер / Старший ПМ / ПМ",
+            text: "Получает вопросы, комментарии по идее.",
+            inputs: ["⬅️ От НОПН (шаг 12, НЕТ)"],
+            outputs: ["🔀 Если внесение корректировок целесообразно → Шаг 10", "🔀 Если нет → Шаг 4"]
+        },
+        14: {
+            number: "14",
+            role: "Директор по маркетингу",
+            text: "Принимает решение о согласовании. Директор по маркетингу может делегировать согласование на ответственного Руководителя продуктового направления.",
+            inputs: ["⬅️ От ПМ (шаг 11, инициатор сегмент), от НОПН (шаг 12, ДА)"],
+            outputs: ["✅ Если согласовано → Шаг 15", "❌ Если не согласовано → Шаг 13"]
+        },
+        15: {
+            number: "15",
+            role: "Инициатор",
+            text: "Карточка конвертирована в карточку исследовательского проекта (ИП). Выход в процедуру 17.",
+            inputs: ["⬅️ От директора по маркетингу (шаг 14, ДА)"],
+            outputs: ["📤 ВЫХОД: Переход к процедуре 17"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>
+```

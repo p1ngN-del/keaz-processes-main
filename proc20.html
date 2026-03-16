@@ -1,0 +1,648 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 20</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        .role-pm { border-left-color: #1e90ff; }
+        .role-mp { border-left-color: #8a2be2; }
+        .role-ursd { border-left-color: #2e8b57; }
+        .role-roznica { border-left-color: #ff8c00; }
+        .role-sapr { border-left-color: #4682b4; }
+        .role-divizion { border-left-color: #ba55d3; }
+        .role-urpr { border-left-color: #daa520; }
+        .role-kam { border-left-color: #dc143c; }
+
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 20: Подготовка к старту продаж (pre-sale)</h1>
+    <div class="subhead">Владелец: Продукт-менеджер</div>
+
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <div class="step-header">
+                <div class="step-header-cell">1-4</div>
+                <div class="step-header-cell">5-7</div>
+                <div class="step-header-cell">9-11</div>
+                <div class="step-header-cell">12-17</div>
+                <div class="step-header-cell">18-19</div>
+            </div>
+
+            <!-- Продукт-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(1)">
+                            <span class="step-num">1-4</span>
+                            <div class="step-title">Базовые задачи, перенос, обучение, предложение</div>
+                            <div class="step-preview">Выполняет базовые задачи, инициирует перенос номенклатуры, проводит обучение, направляет предложение по складообразованию...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(6)">
+                            <span class="step-num">6-7</span>
+                            <div class="step-title">Анализ мотивации и итоговое предложение</div>
+                            <div class="step-preview">Анализирует мотивационные программы, готовит итоговое предложение по складообразованию...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(9)">
+                            <span class="step-num">9-10</span>
+                            <div class="step-title">Подготовка данных для прескрипции и САПР</div>
+                            <div class="step-preview">Готовит данные для прескрипции, направляет информацию в САПР...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(17)">
+                            <span class="step-num">17</span>
+                            <div class="step-title">Формирование заказа</div>
+                            <div class="step-preview">Формирует заказ в структуре и объеме...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Менеджер проекта -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Менеджер проекта</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-mp" onclick="showDetail(18)">
+                            <span class="step-num">18-19</span>
+                            <div class="step-title">Заказы на производство и поставщику</div>
+                            <div class="step-preview">Формирует заказ на производство, направляет заявку поставщику...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Руководитель УРСД / УРП / канала -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Рук. УРСД / УРП / канала</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-ursd" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Список партнеров</div>
+                            <div class="step-preview">Предоставляет список партнеров...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-ursd" onclick="showDetail(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Переговоры</div>
+                            <div class="step-preview">Проводит совместные переговоры с партнерами...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Руководитель канала "Розница" -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Рук. канала "Розница"</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-roznica" onclick="showDetail(16)">
+                            <span class="step-num">16</span>
+                            <div class="step-title">Анализ розничных точек</div>
+                            <div class="step-preview">Проводит анализ розничных точек...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Старший специалист по САПР -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Ст. специалист САПР</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-sapr" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Подготовительные мероприятия</div>
+                            <div class="step-preview">Проводит подготовительные мероприятия...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Руководитель дивизиона -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ba55d3;">Рук. дивизиона</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-divizion" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Список заказчиков и ПИ</div>
+                            <div class="step-preview">Готовит список конечных заказчиков и проектных институтов...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Руководитель УРПР -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #daa520;">Рук. УРПР</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-urpr" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Работа с проектными институтами</div>
+                            <div class="step-preview">Инициирует работу с проектными институтами...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Руководитель дивизиона / КАМ -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #dc143c;">Рук. дивизиона / КАМ</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-kam" onclick="showDetail(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Работа с заказчиком</div>
+                            <div class="step-preview">Проводит мероприятия с заказчиком...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1-4",
+            role: "Продукт-менеджер",
+            text: "1. Выполняет базовые задачи по подготовке к старту продаж. Полный перечень задач представлен в Приложении А.\n\n2. Подается заявка на перенос номенклатуры из папки 'Опытные образцы' в папку 'Вводимая номенклатура', согласно регламенту ПРОЦЕДУРЫ 'Ввод номенклатуры в 1С:УПП в папку ГП'.\n\n3. Проводит предварительное, базовое обучение сотрудников внутренних служб КЭАЗ на этапе pre-sale. Организатором и ведущим является ПМ. Материалами для обучения является презентация, содержание которой представлено в Приложении Б.\n\n4. Направляет предложение по складообразованию руководителям управлений и каналов продаж Дирекции по продажам для получения обратной связи о возможности заведения продукта в товарные матрицы партнеров, а также для получения списка этих партнеров.",
+            inputs: ["⬅️ Вход в процедуру"],
+            outputs: ["→ Шаг 5"]
+        },
+        5: {
+            number: "5",
+            role: "Руководитель УРСД / УРП / канала продаж",
+            text: "Предоставляет список партнеров. Готовит файл на основании списка предложений и целевой аудитории. Файл формируется в свободной форме.",
+            inputs: ["⬅️ От ПМ (шаг 4)"],
+            outputs: ["→ Шаг 6"]
+        },
+        6: {
+            number: "6-7",
+            role: "Продукт-менеджер",
+            text: "6. Анализирует текущие мотивационные программы. Мотивационные акции и реестр действующих акций размещены на диске группы «Коммерческий блок». После анализа перечня действующих мотивационных программ ПМ проводит обсуждение возможности включения ассортимента в программы совместно с Менеджером по трейд-маркетингу Управления партнерского маркетинга. По итогам принятия решения о включении продукта в акцию/программу, при необходимости, ПМ обновляет маркетинговый бюджет на продвижение.\n\n7. Готовит итоговое предложение по складообразованию для партнера. Действие выполняется в рамках подготовки к переговорам с Партнерами по складообразованию. Перед проведением переговоров, ПМ должен подготовить/обновить базовый перечень информации, согласно чек-листу (Приложение 3), на основании которого будут сформированы/дополнены складская матрица, баттл-карта, предложения по акциям.",
+            inputs: ["⬅️ От ПМ (шаг 5)"],
+            outputs: ["✅ Если ассортимент розничный → Шаг 15, Шаг 16", "❌ Если не розничный → Шаг 15"]
+        },
+        9: {
+            number: "9-10",
+            role: "Продукт-менеджер",
+            text: "9. Подготавливает данные для проведения прескрипции, согласно перечня необходимых разделов данных о продукте. Перечень представлен в Приложении В.\n\n10. Направляет базовый пакет данных по продукту для САПР, включающий презентацию, изображение, 2D чертежи, 3D модель.",
+            inputs: ["⬅️ От ПМ"],
+            outputs: ["→ Шаг 11, Шаг 12"]
+        },
+        11: {
+            number: "11",
+            role: "Старший специалист по САПР",
+            text: "Проводит подготовительные мероприятия:\n1. Анализ информации о продукте.\n2. Запрос на предоставление дополнительной информации по продукту (при необходимости).\n3. Формирование баз оборудования и BIM-моделей для САПР.",
+            inputs: ["⬅️ От ПМ (шаг 10)"],
+            outputs: ["📤 ВЫХОД: Мероприятия выполнены"]
+        },
+        12: {
+            number: "12",
+            role: "Руководитель дивизиона",
+            text: "Готовит список конечных заказчиков и проектных институтов. Результатом является подготовленный список, который содержит код карточки контрагента из 1С:CRM конечных заказчиков, проектных институтов. Список предоставляется продукт-менеджеру.",
+            inputs: ["⬅️ От ПМ (шаг 9)"],
+            outputs: ["→ Шаг 13, Шаг 14"]
+        },
+        13: {
+            number: "13",
+            role: "Руководитель УРПР",
+            text: "Инициирует работу с проектными институтами. Инициирование работ и мероприятий с проектными организациями проводится на основании подготовленных и предоставленных продукт-менеджером данных о продукте (Приложение В).",
+            inputs: ["⬅️ От ПМ (шаг 9), от дивизиона (шаг 12)"],
+            outputs: ["📤 ВЫХОД: Работа с проектными институтами инициирована"]
+        },
+        14: {
+            number: "14",
+            role: "Руководитель дивизиона / КАМ",
+            text: "Проводит мероприятия с заказчиком / клиентом. Проводит мероприятия по занесению КЭАЗ в техническую политику Клиента/занесение в вендер-лист. По итогу, формируется/обновляется паспорт конечного заказчика.",
+            inputs: ["⬅️ От дивизиона (шаг 12)"],
+            outputs: ["📤 ВЫХОД: Мероприятия с заказчиком проведены"]
+        },
+        15: {
+            number: "15",
+            role: "Руководитель УРСД / УРП / канала продаж",
+            text: "Проводит совместные переговоры с партнерами. Переговоры проводятся совместно с ПМ. Как итог, должен быть получен ПРОТОКОЛ переговоров с партнерами (Приложение Е). Если предметом переговоров является складообразование розничного ассортимента, то на встрече с партнерами должен быть обсужден 2й уровень розницы, а именно, широта и глубина ассортимента для 2го уровня розницы.",
+            inputs: ["⬅️ От ПМ (шаг 7)"],
+            outputs: ["→ Шаг 17"]
+        },
+        16: {
+            number: "16",
+            role: "Руководитель канала «Розница»",
+            text: "Проводит анализ розничных точек (для складского розничного ассортимента).",
+            inputs: ["⬅️ От ПМ (шаг 7) - если ассортимент розничный"],
+            outputs: ["→ Шаг 17"]
+        },
+        17: {
+            number: "17",
+            role: "Продукт-менеджер",
+            text: "Формирует заказ в структуре и объеме. Для оформления первого боевого заказа и заказа образцов для прохождения сертификации/демонстрации/опытно-промышленной эксплуатации/фотографирования/обновления стендов/МВК ПМ заполняет форму для заказа (Приложение Г). При создании документа учитываются данные, полученные от партнеров (шаг 15) и, в случае складского розничного ассортимента, данные по розничным точкам (шаг 16), а также данные, полученные в ходе обсуждения и принятия решений по обновлению демостендов, шоурумов, учебных классов, МВК.",
+            inputs: ["⬅️ От переговоров (шаг 15), от розницы (шаг 16)"],
+            outputs: ["→ Шаг 18, Шаг 19"]
+        },
+        18: {
+            number: "18-19",
+            role: "Менеджер проекта",
+            text: "18. Формирует заказ на производство для выпуска первой промышленной партии. Для формирования заказа необходимо в 1С:ДО запустить СЗ на согласование, с вложенной формой для заказа (Приложение Г) и указанной желаемой датой выпуска. Согласующие лица: Начальник УПП, Начальник СБЦ или участка ОЕМ, Технолог, Руководитель направления/Начальник отдела продуктового маркетинга.\n\n19. Направляет заявку для заказа поставщику (OEM). Заполненная форма (Приложение Г) отправляется на исполнение Начальнику отдела по работе с ОЕМ поставщиками в Битрикс24, согласно КРП Инвестиционной стадии продуктового проекта.",
+            inputs: ["⬅️ От ПМ (шаг 17)"],
+            outputs: ["📤 ВЫХОД: Заказы сформированы"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>
+```

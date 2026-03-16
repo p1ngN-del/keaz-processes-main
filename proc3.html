@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
+        .role-uop { border-left-color: #8a2be2; } /* Менеджер УОП */
+        .role-inz { border-left-color: #4682b4; } /* Инженер */
+        .role-plan { border-left-color: #2e8b57; } /* Планирование */
+        .role-reklama { border-left-color: #ff8c00; } /* Реклама */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 3: Вывод номенклатуры из папки «Готовая продукция»</h1>
+    <div class="subhead">Владелец: Продукт-менеджер</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с диапазонами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-4</div>
+                <div class="step-header-cell">5-9</div>
+                <div class="step-header-cell">10-15</div>
+                <div class="step-header-cell">16-20</div>
+            </div>
+
+            <!-- Дорожка 1: Продукт-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Согласование вывода</div>
+                            <div class="step-preview">Отправляет на согласование служебную записку о выводе номенклатуры...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Информирование служб</div>
+                            <div class="step-preview">Информирует внутренние службы о решении по выводимым артикулам...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Проверка наличия</div>
+                            <div class="step-preview">Проверяет наличие на складе ГП и артикулы в пути...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Проверка заказов</div>
+                            <div class="step-preview">Выгружает отчет по резервированию, проверяет наличие в заказах...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Перемещение в распродажу</div>
+                            <div class="step-preview">Оформляет задачу на перемещение в папку распродажи остатков...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Формирование списка заказов</div>
+                            <div class="step-preview">Формирует excel-файл с артикулами и номерами заказов...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">ТЗ на новость</div>
+                            <div class="step-preview">Отправляет на согласование ТЗ на подготовку новости...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Информирование рекламы</div>
+                            <div class="step-preview">Информирует управление рекламы о необходимости внесения изменений в РИМ...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(16)">
+                            <span class="step-num">16</span>
+                            <div class="step-title">Мероприятия по распродаже</div>
+                            <div class="step-preview">Разрабатывает и реализовывает мероприятия по распродаже...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(17)">
+                            <span class="step-num">17</span>
+                            <div class="step-title">Перевод в ГП Старая</div>
+                            <div class="step-preview">Направляет СЗ на перевод номенклатуры в папку ГП Старая...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(20)">
+                            <span class="step-num">20</span>
+                            <div class="step-title">Выход</div>
+                            <div class="step-preview">Номенклатура выведена из ассортимента...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Менеджер УОП -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Менеджер УОП</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-uop" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Информирование клиентов</div>
+                            <div class="step-preview">Информирует клиентов о выводе продукции из ассортимента...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-uop" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Отмена/замена заказов</div>
+                            <div class="step-preview">Информирует покупателей об отмене заказа или замене на аналоги...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Инженер по автоматизированной обработке -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Инженер по АОД</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-inz" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Перемещение в распродажу</div>
+                            <div class="step-preview">Перемещает номенклатуру в папку распродажи остатков...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-inz" onclick="showDetail(18)">
+                            <span class="step-num">18</span>
+                            <div class="step-title">Перемещение в ГП Старая</div>
+                            <div class="step-preview">Перемещает номенклатуру в папку ГП Старая...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Управление рекламы -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Управление рекламы</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-reklama" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Подготовка контента</div>
+                            <div class="step-preview">Готовит контент для публикации согласно ТЗ...</div>
+                        </div>
+                        <div class="step-card role-reklama" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Размещение новости</div>
+                            <div class="step-preview">Размещает новость, делает рассылку...</div>
+                        </div>
+                        <div class="step-card role-reklama" onclick="showDetail(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Изменения в каталог</div>
+                            <div class="step-preview">Вносит изменения в каталог...</div>
+                        </div>
+                        <div class="step-card role-reklama" onclick="showDetail(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Обновление каталога</div>
+                            <div class="step-preview">Обновляет версию каталога на сайте...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 5: Главный специалист по планированию -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Главный специалист<br>по планированию</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-plan" onclick="showDetail(19)">
+                            <span class="step-num">19</span>
+                            <div class="step-title">Удаление из регистра</div>
+                            <div class="step-preview">Удаляет номенклатуру из регистра базовых информационных сроков...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Продукт-менеджер",
+            text: "Условием запуска процедуры является выполнение процедуры «Инициация и согласование вывода номенклатуры», в рамках которой проводится экспресс-анализ необходимости решения о выводе.\n\nДля начала вывода артикулов готовой продукции из справочника готовой продукции КЭАЗ требуется Продукт-менеджер (ПМ) согласует в 1С:ДО служебную записку о выводе номенклатуры из ассортимента. В СЗ приводится текстовое обоснование необходимости вывода номенклатуры из ассортимента.\n\nУчастниками согласования являются: Директор по продуктовому маркетингу, Директор по продажам РФ, Директор по зарубежным продажам, Управляющий АО «УК «КЭАЗ». Тип согласования — смешанный, Управляющий АО УК «КЭАЗ» согласует после согласования всеми остальными участниками.",
+            inputs: ["⬅️ Инициация и согласование вывода номенклатуры"],
+            outputs: ["→ Шаг 2"]
+        },
+        2: {
+            number: "2",
+            role: "Продукт-менеджер",
+            text: "На основе согласованного решения о выводе артикулов готовой продукции из справочника готовой продукции КЭАЗ ПМ через 1С:ДО информирует внутренние службы КЭАЗ о решении по данным артикулам. Участники ознакомления могут в комментариях указать, какие необходимо предпринять действия, помимо стандартных действий в соответствии с данной процедурой, и кого необходимо ознакомить с данным решением. Срок на ознакомление – 3 рабочих дня.\n\nСписок для ознакомления: Заместитель технического директора, Директор по производству, Директор по закупкам, Начальник Управления обслуживания покупателя, Директор по экономике, Руководитель службы качества, Директор по продуктовому маркетингу, Директор по продажам РФ, Директор по зарубежным продажам, Директор по рекламе, РД/РМП/ТКИ, Главный специалист по планированию УПЗП.",
+            inputs: ["⬅️ От ПМ (шаг 1)"],
+            outputs: ["→ Шаг 3,4,19"]
+        },
+        3: {
+            number: "3",
+            role: "Продукт-менеджер",
+            text: "Проверяет наличие на складе ГП и проверяет артикулы в пути 1С:УПП Отчеты/запасы/Анализ доступности товаров на складах.",
+            inputs: ["⬅️ От ПМ (шаг 2)"],
+            outputs: ["✅ Если есть в наличии → Шаг 5", "❌ Если нет в наличии → Шаг 17"]
+        },
+        4: {
+            number: "4",
+            role: "Менеджер УОП",
+            text: "Информирует клиентов о выводе продукции из ассортимента. Информирование осуществляется путем почтовой рассылки типового письма, в котором обязательно указываются аналоги выводимого из ассортимента артикула.",
+            inputs: ["⬅️ От ПМ (шаг 2)"],
+            outputs: ["→ Шаг 20"]
+        },
+        5: {
+            number: "5",
+            role: "Продукт-менеджер",
+            text: "Выгружает отчет «Готовность ЗП, зарезервированных к отгрузке», 1С:УПП сервис/дополнительные внешние отчеты и обработки/отчеты/резервирование. Проверяет наличие выводимых артикулов в заказах покупателей.",
+            inputs: ["⬅️ От ПМ (шаг 3, ДА)"],
+            outputs: ["✅ Если есть в заказах → Шаг 8", "❌ Если нет в заказах → Шаг 6"]
+        },
+        6: {
+            number: "6",
+            role: "Продукт-менеджер",
+            text: "При наличии свободного остатка ГП по выводимым артикулам ПМ оформляет задачу на исполнение в 1С: ДО на перемещение артикулов в папку ГП распродажа остатков на основе СЗ с согласованным решением о выводе артикулов из справочника ГП. При перемещении артикулов в данную папку назначается цена распродажи остатков равная стандартной базовой цене за минусом максимальной скидки по продукции.",
+            inputs: ["⬅️ От ПМ (шаг 5, НЕТ)"],
+            outputs: ["→ Шаг 7,10"]
+        },
+        7: {
+            number: "7",
+            role: "Инженер по автоматизированной обработке документов",
+            text: "Перемещает номенклатуру в папку «Распродажа остатков» в 1С:УПП.",
+            inputs: ["⬅️ От ПМ (шаг 6)"],
+            outputs: ["→ Шаг 16"]
+        },
+        8: {
+            number: "8",
+            role: "Продукт-менеджер",
+            text: "Формирует excel-файл, в котором указывает артикулы и наименования выводимой продукции, артикулы и наименования аналогов выводимой продукции, номера заказов покупателей, в которых есть выводимая продукция.",
+            inputs: ["⬅️ От ПМ (шаг 5, ДА)"],
+            outputs: ["→ Шаг 9,6"]
+        },
+        9: {
+            number: "9",
+            role: "Менеджер УОП",
+            text: "Информирует покупателей об отмене заказа либо замене на аналоги.",
+            inputs: ["⬅️ От ПМ (шаг 8)"],
+            outputs: ["→ Шаг 20"]
+        },
+        10: {
+            number: "10",
+            role: "Продукт-менеджер",
+            text: "В 1С:ДО отправляет на согласование ТЗ на подготовку новости для сайта и соцсетей. Техническое задание заполняется согласно утвержденного шаблона. Если ТЗ не согласовано, продукт-менеджер дорабатывает его с учетом замечаний согласующего.",
+            inputs: ["⬅️ От ПМ (шаг 6)"],
+            outputs: ["→ Шаг 11,12,13,14,15"]
+        },
+        11: {
+            number: "11",
+            role: "Ведущий менеджер управления рекламы",
+            text: "Готовит контент для публикации согласно ТЗ.",
+            inputs: ["⬅️ От ПМ (шаг 10)"],
+            outputs: ["→ Шаг 12"]
+        },
+        12: {
+            number: "12",
+            role: "Руководитель интернет проектов",
+            text: "Размещает новость, делает рассылку.",
+            inputs: ["⬅️ От рекламы (шаг 11)"],
+            outputs: ["→ Шаг 16"]
+        },
+        13: {
+            number: "13",
+            role: "Продукт-менеджер",
+            text: "Информирует управление рекламы о необходимости внесения изменений в РИМ.",
+            inputs: ["⬅️ От ПМ (шаг 10)"],
+            outputs: ["→ Шаг 14"]
+        },
+        14: {
+            number: "14",
+            role: "Дизайнер управления рекламы",
+            text: "Вносит изменения в каталог.",
+            inputs: ["⬅️ От ПМ (шаг 13)"],
+            outputs: ["→ Шаг 15"]
+        },
+        15: {
+            number: "15",
+            role: "Руководитель интернет проектов",
+            text: "Обновляет версию каталога на сайте.",
+            inputs: ["⬅️ От дизайнера (шаг 14)"],
+            outputs: ["→ Шаг 16"]
+        },
+        16: {
+            number: "16",
+            role: "Продукт-менеджер",
+            text: "Разрабатывает и реализовывает мероприятия по распродаже выводимой номенклатуры. Устанавливается базовая цена по формуле: БЦ новая = БЦ старая - %. % - величина стандартной скидки на данный вид продукции. В качестве специальных мероприятий по распродаже могут быть: акция «Лучшая цена», почтовая рассылка предложений целевым клиентам.",
+            inputs: ["⬅️ От инженера (шаг 7), от рекламы (шаг 12,15)"],
+            outputs: ["→ Шаг 17"]
+        },
+        17: {
+            number: "17",
+            role: "Продукт-менеджер",
+            text: "В 1С:ДО направляет СЗ на перевод номенклатуры в папку «ГП Старая» в 1С:УПП. ПМ контролирует свободный остаток по выведенным артикулам в папке «ГП распродажа остатков» и при обнулении остатков ГП организовывает перевод данных артикулов в папку «ГП (Старая)».",
+            inputs: ["⬅️ От ПМ (шаг 3, НЕТ), от ПМ (шаг 16)"],
+            outputs: ["→ Шаг 18,19"]
+        },
+        18: {
+            number: "18",
+            role: "Инженер по автоматизированной обработке документов",
+            text: "Перемещает номенклатуру в папку «ГП Старая» в 1С:УПП.",
+            inputs: ["⬅️ От ПМ (шаг 17)"],
+            outputs: ["→ Шаг 20"]
+        },
+        19: {
+            number: "19",
+            role: "Главный специалист по планированию УПЗП",
+            text: "При поступлении служебной записки о выводе номенклатуры Главный специалист по планированию УПЗП проверяет наличие выводимой номенклатуры в регистре БАЗОВЫХ ИНФОРМАЦИОННЫХ сроков в 1С:УПП и в случае её нахождения удаляет данные строки. Путь к регистру: Операции / Регистр сведений / Информационные сроки.",
+            inputs: ["⬅️ От ПМ (шаг 2,17)"],
+            outputs: ["→ Шаг 20"]
+        },
+        20: {
+            number: "20",
+            role: "Продукт-менеджер",
+            text: "Номенклатура выведена из ассортимента. Артикулы перемещены в архив / в папку «ГП Старая» / реализованы через распродажу.",
+            inputs: ["⬅️ От УОП (шаг 4,9), от инженера (шаг 18), от планирования (шаг 19)"],
+            outputs: ["📤 ВЫХОД: Номенклатура выведена из ассортимента"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>

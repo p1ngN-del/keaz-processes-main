@@ -1,0 +1,597 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 26</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-pm { border-left-color: #1e90ff; } /* Старший ПМ / ПМ */
+        .role-utk { border-left-color: #8a2be2; } /* Начальник УТК */
+        .role-nva { border-left-color: #4682b4; } /* Начальник управления разработки НВА */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 26: Поиск OEM-ODM поставщика</h1>
+    <div class="subhead">Владелец: Старший продукт-менеджер / Продукт-менеджер</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-3</div>
+                <div class="step-header-cell">4-6</div>
+                <div class="step-header-cell">7-9</div>
+                <div class="step-header-cell">10-13</div>
+            </div>
+
+            <!-- Дорожка 1: Старший ПМ / Продукт-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Старший ПМ / Продукт-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Первичный поиск</div>
+                            <div class="step-preview">Проводит первичный поиск поставщика...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Заморозка проекта</div>
+                            <div class="step-preview">Инициирует "Заморозку" проекта в Битрикс24...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Первичный отбор</div>
+                            <div class="step-preview">Проводит первичный отбор поставщиков...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Согласование даты аудита</div>
+                            <div class="step-preview">Согласовывает дату проведения аудита поставщиков...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Заявка на закупку образцов</div>
+                            <div class="step-preview">Готовит заявку в Битрикс24 на закупку/получение образцов...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Запрос на программу испытаний</div>
+                            <div class="step-preview">Направляет запрос на подготовку программы испытаний в 1С:ДО...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Получение заключения</div>
+                            <div class="step-preview">Получает заключение по результатам испытаний образцов...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Переговоры с поставщиком</div>
+                            <div class="step-preview">Проводит переговоры с поставщиком о возможности доработки...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Получение доработанного образца</div>
+                            <div class="step-preview">Получает доработанный образец продукта...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Подготовка документов</div>
+                            <div class="step-preview">Подготавливает документы по итогам выбора поставщика...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Начальник УТК -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник УТК</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-utk" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Проведение аудита</div>
+                            <div class="step-preview">Проводит аудит поставщика...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Начальник управления разработки НВА -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Начальник управления разработки НВА</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-nva" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Разработка программы испытаний</div>
+                            <div class="step-preview">Разрабатывает и согласовывает программу испытаний...</div>
+                        </div>
+                        <div class="step-card role-nva" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Заявка на проведение испытаний</div>
+                            <div class="step-preview">Делает заявку на проведение испытаний образцов...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Проводит первичный поиск поставщика. Задача по поиску OEM/ODM поставщика находится в зоне ответственности СПМ/ПМ, который отвечает за продукт. В случае возникновения объективных и обоснованных трудностей с поиском поставщика (пример: отсутствие доступа к иностранным ресурсам, ввиду необходимости проработки узкоспециализированной ниши поставщиков/производителей), то сотрудник продуктового маркетинга может подключить для совместной проработки и анализа рынка поставщиков специалиста Отдела по работе с OEM поставщиками. Для этого необходимо подать заявку в Битрикс24, согласно ПРОЦЕДУРЕ «Закупка образцов для целей проектов» (см. требование к действию 3 'Процесс «Мониторинг (без закупки)'').",
+            inputs: ["⬅️ Из процедуры 17 (Исследовательский проект)"],
+            outputs: ["❌ Если поставщик не найден → Шаг 2", "✅ Если поставщик найден → Шаг 3"]
+        },
+        2: {
+            number: "2",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Инициирует «Заморозку» проекта в Битрикс24. Выход.",
+            inputs: ["⬅️ От ПМ (шаг 1, НЕТ)"],
+            outputs: ["📤 ВЫХОД: Проект приостановлен"]
+        },
+        3: {
+            number: "3",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Проводит первичный отбор поставщиков. Для содействия, в рамках первичного отбора поставщика и проведения переговоров, СПМ/ПМ может обратиться в Дирекцию по закупкам в тех случаях, если необходимо:\n- организация и координация дистанционных встреч, физическое посещения поставщика, в том числе с целью развернутого аудита на территории КНР;\n- консультация по законодательству страны-производителя (через офис Китай);\n- получение дополнительной/малодоступной информации.\nДля этого необходимо воспользоваться подзадачей из карточки проекта на этапе поиска поставщика. Подзадачу направлять на Начальника отдела ОЕМ, который закрепит за данным проектом ответственного проектного менеджера по закупкам в КНР.\n\nВАЖНО! Обязательным условием для СПМ/ПМ при проведении переговоров с поставщиками является выяснение возможности (готовности) поставщика произведения маркировки 'Честный знак' (QR-кодирование), согласно МЕТОДИКЕ поиска и выбора поставщиков. Требования к маркировке представлены в СТАНДАРТЕ Шаблон технических требований на ПРОДУКТ.",
+            inputs: ["⬅️ От ПМ (шаг 1, ДА)"],
+            outputs: ["🔀 Если поставщик новый → Шаг 4", "🔀 Если поставщик не новый → Шаг 6"]
+        },
+        4: {
+            number: "4",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Согласовывает дату проведения аудита поставщика. В согласовании указывается необходимая СПМ/ПМ дата проведения аудита и следующая информация о поставщиках:\n- Наименование завода-изготовителя;\n- Адрес;\n- Контактное лицо;\n- Телефон;\n- Перечень продукции завода;\n- Технические требования продукта;\n- Комментарии (дополнительная информация при наличии таковой).\nСогласование проводится с Начальником УТК. В случае, если указанная дата не согласована, Начальник УТК указывает даты, в которую возможно проведение аудита поставщика.\n\nВАЖНО! Проведение аудитов поставщиков допустимо ТОЛЬКО специалистом УТК.",
+            inputs: ["⬅️ От ПМ (шаг 3, новый поставщик)"],
+            outputs: ["→ Шаг 5"]
+        },
+        5: {
+            number: "5",
+            role: "Начальник УТК",
+            text: "Проводит аудит поставщика. В согласовании указывается необходимая СПМ/ПМ дата проведения аудита. В случае, если указанная дата не согласована, Начальник УТК указывает даты, в которую возможно проведение аудита поставщика.",
+            inputs: ["⬅️ От ПМ (шаг 4)"],
+            outputs: ["❌ Если поставщик категории 'D' → Шаг 3", "✅ Если категория A, B, C → Шаг 6"]
+        },
+        6: {
+            number: "6",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Готовит заявку в Битрикс24 на закупку / получение образцов. Если закупка осуществляется у иностранного контрагента к задаче обязательно нужно приложить ссылку на согласованную в 1С:ДО задачу на присвоение УТЛ номенклатурам кодов ТН ВЭД в соответствии с ПРОЦЕДУРОЙ 'Осуществление закупки ТМЦ у иностранных поставщиков'.",
+            inputs: ["⬅️ От ПМ (шаг 3, не новый), от УТК (шаг 5, ДА)"],
+            outputs: ["→ Шаг 7"]
+        },
+        7: {
+            number: "7",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Направляет запрос на подготовку программы испытаний в 1С:ДО. Каждый образец продукта должен быть изучен и/или подвергнут испытаниям. Для этого, в 1С:ДО формируется СЗ с запросом на подготовку программы испытаний. В СЗ прикладывается техническая документация на продукт. Запрос направляется Начальнику управления разработки НВА.\n\nВ случае, если испытания продукта не требуются, то ответственный СПМ/ПМ, в свободной форме пишет документ-обоснование с описанием причин, по которым данный продукт испытывать не требуется. Документ прикладывается в проект.",
+            inputs: ["⬅️ От ПМ (шаг 6)"],
+            outputs: ["→ Шаг 8"]
+        },
+        8: {
+            number: "8",
+            role: "Начальник управления разработки НВА",
+            text: "Разрабатывает и согласовывает программу испытаний.",
+            inputs: ["⬅️ От ПМ (шаг 7)"],
+            outputs: ["→ Шаг 9"]
+        },
+        9: {
+            number: "9",
+            role: "Начальник управления разработки НВА",
+            text: "Делает заявку на проведение испытаний образцов.",
+            inputs: ["⬅️ От НВА (шаг 8)"],
+            outputs: ["→ Шаг 10"]
+        },
+        10: {
+            number: "10",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Получает заключение по результатам испытаний образцов. Матрица принятия решения по дальнейшему сотрудничеству с поставщиком носит рекомендательный характер для принятия итогового решения по поставщикам.",
+            inputs: ["⬅️ От НВА (шаг 9)"],
+            outputs: ["✅ Если соответствует требованиям → Шаг 13", "❌ Если не соответствует → Шаг 11"]
+        },
+        11: {
+            number: "11",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Проводит переговоры с поставщиком о возможности доработки.",
+            inputs: ["⬅️ От ПМ (шаг 10, НЕТ)"],
+            outputs: ["✅ Если доработка согласована → Шаг 12", "❌ Если не согласована → Шаг 3"]
+        },
+        12: {
+            number: "12",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Получает доработанный образец продукта.",
+            inputs: ["⬅️ От ПМ (шаг 11, ДА)"],
+            outputs: ["→ Шаг 7 (повторные испытания)"]
+        },
+        13: {
+            number: "13",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Подготавливает документы по итогам выбора поставщика. Выход в процедуру 31 (Закупка образцов для целей проектов).",
+            inputs: ["⬅️ От ПМ (шаг 10, ДА)"],
+            outputs: ["📤 ВЫХОД: Переход к процедуре 31"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>
+```

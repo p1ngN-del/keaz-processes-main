@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 22</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-mark { border-left-color: #1e90ff; } /* Маркетолог-аналитик */
+        .role-nopn { border-left-color: #8a2be2; } /* Начальник отдела продуктового направления */
+        .role-analitik { border-left-color: #4682b4; } /* Начальник аналитики */
+        .role-spm { border-left-color: #ff8c00; } /* Старший ПМ */
+        .role-uop { border-left-color: #2e8b57; } /* Начальник УОП */
+        .role-rip { border-left-color: #ba55d3; } /* Руководитель интернет проектов */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 22: Ценообразование продукта</h1>
+    <div class="subhead">Владелец: Директор по маркетингу</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-3</div>
+                <div class="step-header-cell">4-6</div>
+                <div class="step-header-cell">7-9</div>
+                <div class="step-header-cell">10-18</div>
+            </div>
+
+            <!-- Дорожка 1: Маркетолог-аналитик -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Маркетолог-аналитик</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-mark" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Анализ данных</div>
+                            <div class="step-preview">Проводит анализ данных (динамика цен конкурентов, рентабельность)...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                        <div class="step-card role-mark" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Создание СЗ</div>
+                            <div class="step-preview">В 1С:ДО создает СЗ о необходимости изменения цен...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-mark" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Заполнение аналитической формы</div>
+                            <div class="step-preview">Заполняет аналитическую форму...</div>
+                        </div>
+                        <div class="step-card role-mark" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Задача на заполнение формы</div>
+                            <div class="step-preview">Ставит задачу в 1С:ДО по заполнению аналитической формы...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-mark" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Проведение документов</div>
+                            <div class="step-preview">Проводит документы по ценам в 1С:УПП...</div>
+                        </div>
+                        <div class="step-card role-mark" onclick="showDetail(16)">
+                            <span class="step-num">16</span>
+                            <div class="step-title">Новые цены в учетной системе</div>
+                            <div class="step-preview">Новые цены в учетной системе...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                        <div class="step-card role-mark" onclick="showDetail(17)">
+                            <span class="step-num">17</span>
+                            <div class="step-title">Изменение цен не происходит</div>
+                            <div class="step-preview">Изменение цен не происходит...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Начальник отдела продуктового направления -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник отдела<br>продуктового направления</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-nopn" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Уведомление о необходимости</div>
+                            <div class="step-preview">Уведомляет маркетолога-аналитика о необходимости изменения цен...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-nopn" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Заполнение аналитической формы</div>
+                            <div class="step-preview">Заполняет аналитическую форму (рыночное позиционирование)...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Начальник аналитики цен и данных -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Начальник аналитики<br>цен и данных</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-analitik" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Проведение совещания</div>
+                            <div class="step-preview">Проводит совещание по предлагаемым изменениям цен...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-analitik" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Согласование параметров</div>
+                            <div class="step-preview">Согласовывает параметры изменения цен в 1С:ДО...</div>
+                        </div>
+                        <div class="step-card role-analitik" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Задача на информирование</div>
+                            <div class="step-preview">Ставит задачу по информированию контрагентов об изменении цен...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Старший продукт-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Старший продукт-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-spm" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Создание документа в УПП</div>
+                            <div class="step-preview">Создает в 1С:УПП документ с новыми ценами...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 5: Начальник УОП -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник УОП</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-uop" onclick="showDetail(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Отправка НФ ЭТМ и Русскому Свету</div>
+                            <div class="step-preview">Отправляет НФ ЭТМ и Русскому Свету...</div>
+                        </div>
+                        <div class="step-card role-uop" onclick="showDetail(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Уведомление контрагентов</div>
+                            <div class="step-preview">Уведомляет контрагента об изменениях цен...</div>
+                        </div>
+                        <div class="step-card role-uop" onclick="showDetail(18)">
+                            <span class="step-num">18</span>
+                            <div class="step-title">Контрагенты проинформированы</div>
+                            <div class="step-preview">Контрагенты проинформированы об изменениях цен...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 6: Руководитель интернет проектов -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ba55d3;">Руководитель интернет проектов</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rip" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Выгрузка номенклатурных файлов</div>
+                            <div class="step-preview">Выгружает номенклатурные файлы по запросу...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Маркетолог-аналитик",
+            text: "Проводит анализ данных. Индикатором проведения очередной (раз в квартал) или внеочередной сессии по изменению цен является информация на основе регулярного анализа:\n– динамики цен конкурентов;\n– рентабельности, рост себестоимости более чем на 3%.",
+            inputs: ["⬅️ Регулярный анализ / изменения рыночной ситуации"],
+            outputs: ["→ Шаг 3"]
+        },
+        2: {
+            number: "2",
+            role: "Начальник отдела продуктового направления",
+            text: "Уведомляет маркетолога-аналитика о необходимости изменения цен. Индикатором проведения внеочередной сессии по изменению цен являются изменения:\n– каскада ценообразования для партнеров (перевод проектных позиций в дистрибьюторскую матрицу или наоборот, активация новых каналов продаж);\n– трендов продаж (рост или спад продаж);\n– перепозиционирования продукта – перевод НГ из одного ценового сегмента в другой;\n– цен поставщиков.",
+            inputs: ["⬅️ Изменения рыночной ситуации"],
+            outputs: ["→ Шаг 4"]
+        },
+        3: {
+            number: "3",
+            role: "Маркетолог-аналитик",
+            text: "В 1С:ДО создает СЗ о необходимости изменения цен и отправляет на согласование.",
+            inputs: ["⬅️ От маркетолога (шаг 1), от НОПН (шаг 2)"],
+            outputs: ["✅ Если необходимо → Шаг 4", "❌ Если нет необходимости → Шаг 17"]
+        },
+        4: {
+            number: "4",
+            role: "Маркетолог-аналитик",
+            text: "Заполняет аналитическую форму. Аналитическая форма представляет из себя excel-таблицу с указанием ключевых факторов, влияющих на принятие решения о ценообразовании:\n– анализ план-факт;\n– динамика продаж г/г накопительным итогом;\n– размер товарного запаса на собственном складе.\nОтдельная вкладка в форме – сравнение цен с конкурентами по топ-позициям основных номенклатурных групп.\nЗаполнение формы является обязательным в случае пересмотра цен по всей номенклатуре. В остальных случаях необходимость заполнения определяется индивидуально.\nМаркетолог-аналитик вносит внутреннюю информацию.",
+            inputs: ["⬅️ От маркетолога (шаг 3, ДА)"],
+            outputs: ["→ Шаг 5"]
+        },
+        5: {
+            number: "5",
+            role: "Маркетолог-аналитик",
+            text: "Ставит задачу в 1С:ДО по заполнению аналитической формы (для НОПН). При постановке задачи Маркетолог-аналитик ставит контролером Начальника отдела аналитики цен и данных.",
+            inputs: ["⬅️ От маркетолога (шаг 4)"],
+            outputs: ["→ Шаг 6"]
+        },
+        6: {
+            number: "6",
+            role: "Начальник отдела продуктового направления",
+            text: "Заполняет аналитическую форму (информация по рыночному позиционированию и предлагаемым изменениям цен с обоснованием таких изменений).",
+            inputs: ["⬅️ От маркетолога (шаг 5)"],
+            outputs: ["→ Шаг 7"]
+        },
+        7: {
+            number: "7",
+            role: "Начальник аналитики цен и данных",
+            text: "Проводит совещание по предлагаемым изменениям цен. Участники совещания:\n– Начальник отдела аналитики данных и цен;\n– Начальники отделов продуктовых направлений (НОПН);\n– Директор по маркетингу;\n– Директор по продажам;\n– Управляющий коммерческим блоком.",
+            inputs: ["⬅️ От НОПН (шаг 6)"],
+            outputs: ["✅ Если согласовано → Шаг 8", "❌ Если не согласовано → повторять шаг 7"]
+        },
+        8: {
+            number: "8",
+            role: "Начальник аналитики цен и данных",
+            text: "Согласовывает параметры изменения цен в 1С:ДО с участниками совещания.",
+            inputs: ["⬅️ От начальника аналитики (шаг 7, ДА)"],
+            outputs: ["→ Шаг 9, Шаг 10"]
+        },
+        9: {
+            number: "9",
+            role: "Начальник аналитики цен и данных",
+            text: "Ставит задачу в 1С:ДО по информированию контрагентов об изменении цен.",
+            inputs: ["⬅️ От начальника аналитики (шаг 8)"],
+            outputs: ["→ Шаг 13, Шаг 14, Шаг 15"]
+        },
+        10: {
+            number: "10",
+            role: "Старший продукт-менеджер",
+            text: "Создает в 1С:УПП документ с новыми ценами. Путь заведения документа в 1С:УПП: Документы/Ценообразование/Установка цен номенклатуры. Дата документа = дата изменения цен.",
+            inputs: ["⬅️ От начальника аналитики (шаг 8)"],
+            outputs: ["→ Шаг 12"]
+        },
+        11: {
+            number: "11",
+            role: "Маркетолог-аналитик",
+            text: "(В требованиях) Приложение к письму, в котором указывается средний % изменения цен по номенклатурным группам, подготавливает Маркетолог-аналитик.",
+            inputs: [],
+            outputs: ["→ Шаг 13"]
+        },
+        12: {
+            number: "12",
+            role: "Маркетолог-аналитик",
+            text: "Проводит документы по ценам в 1С:УПП.",
+            inputs: ["⬅️ От старшего ПМ (шаг 10)"],
+            outputs: ["→ Шаг 16"]
+        },
+        13: {
+            number: "13",
+            role: "Руководитель интернет проектов",
+            text: "Выгружает номенклатурные файлы по запросу.",
+            inputs: ["⬅️ От начальника аналитики (шаг 9)"],
+            outputs: ["→ Шаг 14"]
+        },
+        14: {
+            number: "14",
+            role: "Начальник УОП",
+            text: "Отправляет НФ ЭТМ и Русскому Свету.",
+            inputs: ["⬅️ От начальника аналитики (шаг 9), от РИП (шаг 13)"],
+            outputs: ["→ Шаг 18"]
+        },
+        15: {
+            number: "15",
+            role: "Начальник УОП",
+            text: "Уведомляет контрагента об изменениях цен. Цель информирования заключается в передаче данных заинтересованным службам о средней величине изменения цен номенклатуры и о дате, с которой эта цена начнет действовать.",
+            inputs: ["⬅️ От начальника аналитики (шаг 9)"],
+            outputs: ["→ Шаг 18"]
+        },
+        16: {
+            number: "16",
+            role: "Маркетолог-аналитик",
+            text: "Новые цены в учетной системе. Выход.",
+            inputs: ["⬅️ От маркетолога (шаг 12)"],
+            outputs: ["📤 ВЫХОД: Цены обновлены в 1С:УПП"]
+        },
+        17: {
+            number: "17",
+            role: "Маркетолог-аналитик",
+            text: "Изменение цен не происходит. Выход.",
+            inputs: ["⬅️ От маркетолога (шаг 3, НЕТ)"],
+            outputs: ["📤 ВЫХОД: Цены не меняются"]
+        },
+        18: {
+            number: "18",
+            role: "Начальник УОП",
+            text: "Контрагенты проинформированы об изменениях цен. Выход.",
+            inputs: ["⬅️ От УОП (шаг 14,15)"],
+            outputs: ["📤 ВЫХОД: Информирование завершено"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>

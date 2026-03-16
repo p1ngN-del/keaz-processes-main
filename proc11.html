@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 11</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
+        .role-rukovod { border-left-color: #8a2be2; } /* Начальник отдела */
+        .role-analitik { border-left-color: #4682b4; } /* Ведущий специалист аналитики */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 11: ИНСТРУКЦИЯ проведения ценообразования нового продукта</h1>
+    <div class="subhead">Владелец: Продукт-менеджер</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов (две фазы) -->
+            <div class="step-header">
+                <div class="step-header-cell">Исследовательская фаза<br>1-4</div>
+                <div class="step-header-cell">Пилотные продажи<br>1-3</div>
+                <div class="step-header-cell">Пилотные продажи<br>4-6</div>
+            </div>
+
+            <!-- Дорожка 1: Продукт-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(1)">
+                            <span class="step-num">Исслед.1</span>
+                            <div class="step-title">Получение задачи</div>
+                            <div class="step-preview">Получает в 1С:ДО задачу на исполнение от проект-менеджера на подготовку ценового позиционирования...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(2)">
+                            <span class="step-num">Исслед.2</span>
+                            <div class="step-title">Подготовка файла Рентабельность</div>
+                            <div class="step-preview">Готовит/актуализирует файл «Рентабельность» с расчетной (целевой) себестоимостью...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(3)">
+                            <span class="step-num">Исслед.3</span>
+                            <div class="step-title">Создание СЗ</div>
+                            <div class="step-preview">Создает служебную записку с файлом «Рентабельность» и отправляет на согласование...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(4)">
+                            <span class="step-num">Исслед.4</span>
+                            <div class="step-title">Завершение задачи</div>
+                            <div class="step-preview">Завершает задачу, размещает файл в 1С:ДО/Файлы/Информация для продаж...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(5)">
+                            <span class="step-num">Пилот.1</span>
+                            <div class="step-title">Получение задачи на актуализацию</div>
+                            <div class="step-preview">Получает задачу на актуализацию файла «Рентабельность» и подготовку файла «НиЦ»...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(6)">
+                            <span class="step-num">Пилот.2</span>
+                            <div class="step-title">Актуализация файла</div>
+                            <div class="step-preview">Актуализирует информацию в файле «Рентабельность» с учетом изменений рыночной среды...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(7)">
+                            <span class="step-num">Пилот.3</span>
+                            <div class="step-title">Создание СЗ на согласование</div>
+                            <div class="step-preview">Создает служебную записку с актуальным файлом и отправляет на согласование...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(8)">
+                            <span class="step-num">Пилот.4</span>
+                            <div class="step-title">Внесение цены в 1С:УПП</div>
+                            <div class="step-preview">Вносит цену на новую номенклатуру в 1С:УПП согласно инструкции...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(9)">
+                            <span class="step-num">Пилот.5</span>
+                            <div class="step-title">Подготовка файла НиЦ</div>
+                            <div class="step-preview">Готовит файл «НиЦ» на основании согласованного файла «Рентабельность»...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(10)">
+                            <span class="step-num">Пилот.6</span>
+                            <div class="step-title">Размещение и ознакомление</div>
+                            <div class="step-preview">Размещает файлы в 1С:ДО и отправляет на ознакомление ведущему специалисту...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Начальник отдела управления продуктового маркетинга -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник отдела<br>управления продуктового маркетинга</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(11)">
+                            <span class="step-num">Исслед.3</span>
+                            <div class="step-title">Согласование СЗ</div>
+                            <div class="step-preview">Согласует служебную записку с файлом «Рентабельность» (исследовательская фаза)...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(12)">
+                            <span class="step-num">Пилот.3</span>
+                            <div class="step-title">Согласование (1 итерация)</div>
+                            <div class="step-preview">Согласует служебную записку (1-ая итерация)...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Начальник управления продуктового маркетинга -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник управления<br>продуктового маркетинга</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(13)">
+                            <span class="step-num">Пилот.3</span>
+                            <div class="step-title">Согласование (2 итерация)</div>
+                            <div class="step-preview">Согласует служебную записку (2-ая итерация)...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Директор по маркетингу -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Директор по маркетингу</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(14)">
+                            <span class="step-num">Пилот.3</span>
+                            <div class="step-title">Согласование (3 итерация)</div>
+                            <div class="step-preview">Согласует служебную записку (3-ая итерация)...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 5: Директора по продажам -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Директор по продажам РФ<br>Директор по зарубежным продажам</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(15)">
+                            <span class="step-num">Пилот.3</span>
+                            <div class="step-title">Согласование (4 итерация)</div>
+                            <div class="step-preview">Согласуют служебную записку (4-ая итерация)...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 6: Ведущий специалист управления аналитики -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Ведущий специалист<br>управления аналитики</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-analitik" onclick="showDetail(16)">
+                            <span class="step-num">Пилот.6</span>
+                            <div class="step-title">Ознакомление</div>
+                            <div class="step-preview">Получает файлы на ознакомление в 1С:ДО...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        // Исследовательская фаза
+        1: {
+            number: "Исслед.1",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер получает в 1С:ДО задачу на исполнение от проект-менеджера на подготовку ценового позиционирования.",
+            inputs: ["⬅️ Задача от проект-менеджера"],
+            outputs: ["→ Шаг 2 (Исслед.2)"]
+        },
+        2: {
+            number: "Исслед.2",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер в 1С:ДО готовит/актуализирует файл «Рентабельность» в соответствии с инструкцией, ссылка на инструкцию в 1С:ДО: e1cib/data/Справочник.ВнутренниеДокументы?ref=9a84549f350a96c411ec927780d3d704. В части себестоимости указывается расчетная (целевая) себестоимость, полученная на базе подготовленного спецификатора на продукт.",
+            inputs: ["⬅️ От ПМ (шаг 1)"],
+            outputs: ["→ Шаг 3 (Исслед.3)"]
+        },
+        3: {
+            number: "Исслед.3",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер в 1С:ДО создает служебную записку с приложенными готовым/обновленным файлом «Рентабельность» с обоснованием предложенного ценового позиционирования и отправляет на согласование Начальнику отдела управления продуктового маркетинга, отвечающего за направление, в которое добавляется новый продукт.\n\nПримечание: если Начальник отдела не согласовал служебную записку, продукт-менеджер вносит корректировки, учитывая полученные замечания и повторно запускает процесс согласования в 1С:ДО.",
+            inputs: ["⬅️ От ПМ (шаг 2)"],
+            outputs: ["→ Начальнику отдела (согласование)"]
+        },
+        4: {
+            number: "Исслед.4",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер завершает задачу по подготовке ценового позиционирования в 1С:ДО и прикладывает, согласованный Начальником отдела, файл «Рентабельность». Также, размещает данный файл в 1С:ДО/Файлы/Информация для продаж в соответствующую папку с названием нового продукта.",
+            inputs: ["⬅️ После согласования начальником отдела"],
+            outputs: ["→ Ожидание этапа пилотных продаж"]
+        },
+
+        // Пилотные продажи
+        5: {
+            number: "Пилот.1",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер получает в 1С:ДО задачу на исполнение от проект-менеджера на актуализацию файла «Рентабельность» и подготовку файла «НиЦ».",
+            inputs: ["⬅️ Задача от проект-менеджера (этап пилотных продаж)"],
+            outputs: ["→ Шаг 6 (Пилот.2)"]
+        },
+        6: {
+            number: "Пилот.2",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер актуализирует информацию в ранее подготовленном файле «Рентабельность». При необходимости добавляет дополнительную информацию в связи с изменением рыночной среды, в том числе:\n• изменение ценового позиционирования конкурентов\n• появление новых линеек аналогичных продуктов конкурентов\n• изменение ценовой и коммерческой политики компании\n• прочие факторы",
+            inputs: ["⬅️ От ПМ (шаг 5)"],
+            outputs: ["→ Шаг 7 (Пилот.3)"]
+        },
+        7: {
+            number: "Пилот.3",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер в 1С:ДО создает служебную записку с приложенным актуальным файлом «Рентабельность» и отправляет на согласование.\n\nСогласующие лица:\n• Начальник отдела управления продуктового маркетинга (1-ая итерация)\n• Начальник управления продуктового маркетинга (2-ая итерация)\n• Директор по маркетингу (3-ая итерация)\n• Директор по продажам РФ и Директор по зарубежным продажам (4-ая итерация)\n\nПримечание: если на каком-либо из этапов согласования файл был не согласован, продукт-менеджер вносит корректировки, учитывая полученные замечания и повторно запускает процесс согласования в 1С:ДО.",
+            inputs: ["⬅️ От ПМ (шаг 6)"],
+            outputs: ["→ На согласование"]
+        },
+        8: {
+            number: "Пилот.4",
+            role: "Продукт-менеджер",
+            text: "После согласования файла рентабельность Продукт-менеджер вносит цену на новую номенклатуру в 1С:УПП, согласно действующей инструкции.\n\nСсылка на инструкцию: e1cib/data/РегистрСведений.ДанныеВнутреннихДокументов?ДатаСортировки=20220810085417&ПометкаУдаления=0&Документ=9c45549f350a96c411ed17ed9f696da4",
+            inputs: ["⬅️ После согласования"],
+            outputs: ["→ Шаг 9 (Пилот.5)"]
+        },
+        9: {
+            number: "Пилот.5",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер готовит, на основании согласованного файла «Рентабельность», файл «НиЦ», в соответствии с инструкцией, ссылка на инструкцию в 1С:ДО: e1cib/data/Справочник.ВнутренниеДокументы?ref=9a84549f350a96c411ec927780d3d704",
+            inputs: ["⬅️ От ПМ (шаг 8)"],
+            outputs: ["→ Шаг 10 (Пилот.6)"]
+        },
+        10: {
+            number: "Пилот.6",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер размещает обновленные файлы «Рентабельность» и «НиЦ» в 1С:ДО, путь: 1С:ДО/Документы внутренние/Файлы/Информация для продаж/ и отправляет их на ознакомление Ведущему специалисту управления аналитики в 1С:ДО.",
+            inputs: ["⬅️ От ПМ (шаг 9)"],
+            outputs: ["📤 ВЫХОД: Файлы переданы для использования в продажах"]
+        },
+
+        // Согласующие
+        11: {
+            number: "Исслед.3",
+            role: "Начальник отдела управления продуктового маркетинга",
+            text: "Согласует служебную записку с файлом «Рентабельность» в исследовательской фазе. При несоответствиях возвращает на доработку.",
+            inputs: ["⬅️ От ПМ"],
+            outputs: ["→ Обратно ПМ (при доработке) или далее"]
+        },
+        12: {
+            number: "Пилот.3",
+            role: "Начальник отдела управления продуктового маркетинга",
+            text: "Согласует служебную записку (1-ая итерация) на этапе пилотных продаж.",
+            inputs: ["⬅️ От ПМ"],
+            outputs: ["→ Начальнику управления"]
+        },
+        13: {
+            number: "Пилот.3",
+            role: "Начальник управления продуктового маркетинга",
+            text: "Согласует служебную записку (2-ая итерация) на этапе пилотных продаж.",
+            inputs: ["⬅️ От начальника отдела"],
+            outputs: ["→ Директору по маркетингу"]
+        },
+        14: {
+            number: "Пилот.3",
+            role: "Директор по маркетингу",
+            text: "Согласует служебную записку (3-ая итерация) на этапе пилотных продаж.",
+            inputs: ["⬅️ От начальника управления"],
+            outputs: ["→ Директорам по продажам"]
+        },
+        15: {
+            number: "Пилот.3",
+            role: "Директор по продажам РФ, Директор по зарубежным продажам",
+            text: "Согласуют служебную записку (4-ая итерация) на этапе пилотных продаж.",
+            inputs: ["⬅️ От директора по маркетингу"],
+            outputs: ["→ Обратно ПМ (завершение согласования)"]
+        },
+        16: {
+            number: "Пилот.6",
+            role: "Ведущий специалист управления аналитики",
+            text: "Получает на ознакомление файлы «Рентабельность» и «НиЦ» в 1С:ДО.",
+            inputs: ["⬅️ От ПМ"],
+            outputs: ["→ Ознакомлен"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 18</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-rukovod { border-left-color: #8a2be2; } /* Руководитель управления стратегического маркетинга */
+        .role-segment { border-left-color: #1e90ff; } /* Сегмент маркетинг-менеджер */
+        .role-dir { border-left-color: #2e8b57; } /* Директор по маркетингу */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 18: Разработка стратегии развития сегментов</h1>
+    <div class="subhead">Владелец: Руководитель управления стратегического маркетинга</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-3</div>
+                <div class="step-header-cell">4-6</div>
+                <div class="step-header-cell">7-9</div>
+                <div class="step-header-cell">10-13</div>
+            </div>
+
+            <!-- Дорожка 1: Руководитель управления стратегического маркетинга -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель управления<br>стратегического маркетинга</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Получение задачи</div>
+                            <div class="step-preview">В Битрикс24 получает задачу на обновление стратегий развития сегментного маркетинга...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                        <div class="step-card role-rukovod" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Составление план-графика</div>
+                            <div class="step-preview">Составляет план-график обновления стратегий сегментного маркетинга...</div>
+                        </div>
+                        <div class="step-card role-rukovod" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Назначение ответственных</div>
+                            <div class="step-preview">В Битрикс24 назначает ответственных исполнителей...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Решение о согласовании</div>
+                            <div class="step-preview">Принимает решение о согласовании презентации...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-rukovod" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Совещание для утверждения</div>
+                            <div class="step-preview">Инициирует проведение совещания для утверждения стратегии...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Доработка стратегии</div>
+                            <div class="step-preview">Проводит доработку стратегии развития сегментного маркетинга...</div>
+                        </div>
+                        <div class="step-card role-rukovod" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Размещение в 1С:ДО</div>
+                            <div class="step-preview">Размещает обновленный файл стратегии в 1С:ДО...</div>
+                        </div>
+                        <div class="step-card role-rukovod" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Стратегия утверждена</div>
+                            <div class="step-preview">Обновленная стратегия по сегментам утверждена...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Сегмент маркетинг-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Сегмент маркетинг-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-segment" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Совещание по рынку</div>
+                            <div class="step-preview">Инициирует проведение совещания для получения информации о рынке...</div>
+                        </div>
+                        <div class="step-card role-segment" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Подготовка презентации</div>
+                            <div class="step-preview">На основании полученных данных готовит презентацию по развитию сегментов...</div>
+                        </div>
+                        <div class="step-card role-segment" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Совещание по согласованию</div>
+                            <div class="step-preview">Инициирует проведение совещания для обсуждения и согласования презентации...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-segment" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Внесение корректировок</div>
+                            <div class="step-preview">Вносит корректировки в презентацию...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Директор по маркетингу -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Директор по маркетингу</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-dir" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Утверждение стратегии</div>
+                            <div class="step-preview">Принимает решение об утверждении стратегии развития сегментного маркетинга...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Руководитель управления стратегического маркетинга",
+            text: "В Битрикс24 получает задачу на обновление стратегий развития сегментного маркетинга. На основании сформированных стратегических целей развития компании Руководитель управления стратегического маркетинга получает задачу от Директора по маркетингу по разработке/обновлению стратегии развития сегментов маркетинга.",
+            inputs: ["⬅️ Задача от Директора по маркетингу (на основе проц.21)"],
+            outputs: ["→ Шаг 2"]
+        },
+        2: {
+            number: "2",
+            role: "Руководитель управления стратегического маркетинга",
+            text: "Составляет план-график обновления стратегий сегментного маркетинга. План-график разработки/обновления стратегий развития сегментов составляется в свободной форме. На основании этого графика ставятся задачи ответственным исполнителям по разработке/обновлению стратегий развития сегментов маркетинга и определяются сроки их выполнения.\n\nОбщий срок выполнения задачи по разработке/обновлению стратегий развития сегментов маркетинга – 2 недели.",
+            inputs: ["⬅️ От руководителя (шаг 1)"],
+            outputs: ["→ Шаг 3"]
+        },
+        3: {
+            number: "3",
+            role: "Руководитель управления стратегического маркетинга",
+            text: "В Битрикс24 назначает ответственных исполнителей и ставит задачу по обновлению/созданию стратегии сегментного маркетинга.",
+            inputs: ["⬅️ От руководителя (шаг 2)"],
+            outputs: ["→ Шаг 4"]
+        },
+        4: {
+            number: "4",
+            role: "Сегмент маркетинг-менеджер",
+            text: "Инициирует проведение совещания для получения информации о рынке. Совещание может проходить как в формате очной встречи, так и в формате on-line (видеоконференция). На него приглашаются руководители следующих отделов/управлений:\n– Управление развития продаж в сегментах;\n– Управление проектных продаж;\n– Управление по работе с ключевыми клиентами;\n– Управление по разработке решений для сегментов;\n– Управление продуктового маркетинга;\n– Дирекция стратегических коммуникаций.",
+            inputs: ["⬅️ От руководителя (шаг 3)"],
+            outputs: ["→ Шаг 5"]
+        },
+        5: {
+            number: "5",
+            role: "Сегмент маркетинг-менеджер",
+            text: "На основании полученных данных о рынке готовит презентацию по развитию сегментов маркетинга.",
+            inputs: ["⬅️ От сегмент-менеджера (шаг 4)"],
+            outputs: ["→ Шаг 6"]
+        },
+        6: {
+            number: "6",
+            role: "Сегмент маркетинг-менеджер",
+            text: "Инициирует проведение совещания для обсуждения и согласования подготовленной презентации. Инициируется совещание с Руководителем стратегического маркетинга для обсуждения и согласования подготовленной презентации по стратегии развития сегментов маркетинга. Формат проведения – очная встреча или видеоконференция.",
+            inputs: ["⬅️ От сегмент-менеджера (шаг 5)"],
+            outputs: ["→ Шаг 7"]
+        },
+        7: {
+            number: "7",
+            role: "Руководитель управления стратегического маркетинга",
+            text: "Принимает решение о согласовании презентации.",
+            inputs: ["⬅️ От сегмент-менеджера (шаг 6)"],
+            outputs: ["❌ Если не согласована → Шаг 8", "✅ Если согласована → Шаг 9"]
+        },
+        8: {
+            number: "8",
+            role: "Сегмент маркетинг-менеджер",
+            text: "Вносит корректировки в презентацию и возвращается к шагу 6.",
+            inputs: ["⬅️ От руководителя (шаг 7, НЕТ)"],
+            outputs: ["→ Шаг 6"]
+        },
+        9: {
+            number: "9",
+            role: "Руководитель управления стратегического маркетинга",
+            text: "Инициирует проведение совещания для утверждения стратегии развития сегментов маркетинга. Инициируется совещание с Директором по маркетингу для обсуждения и утверждения подготовленной презентации по стратегии развития сегментов маркетинга. Формат проведения – очная встреча или видеоконференция.",
+            inputs: ["⬅️ От руководителя (шаг 7, ДА)"],
+            outputs: ["→ Шаг 10"]
+        },
+        10: {
+            number: "10",
+            role: "Директор по маркетингу",
+            text: "Принимает решение об утверждении стратегии развития сегментного маркетинга.",
+            inputs: ["⬅️ От руководителя (шаг 9)"],
+            outputs: ["✅ Если утверждает → Шаг 12", "❌ Если не утверждает → Шаг 11"]
+        },
+        11: {
+            number: "11",
+            role: "Руководитель управления стратегического маркетинга",
+            text: "Проводит доработку стратегии развития сегментного маркетинга и возвращается к шагу 9.",
+            inputs: ["⬅️ От директора (шаг 10, НЕТ)"],
+            outputs: ["→ Шаг 9"]
+        },
+        12: {
+            number: "12",
+            role: "Руководитель управления стратегического маркетинга",
+            text: "Размещает обновленный файл стратегии развития сегментов в 1С:ДО. Путь: 1С:ДО/Документы и файлы/Документы внутренние/Стратегические документы/Дирекция маркетинга/Стратегический маркетинг.",
+            inputs: ["⬅️ От руководителя (шаг 10, ДА)"],
+            outputs: ["→ Шаг 13"]
+        },
+        13: {
+            number: "13",
+            role: "Руководитель управления стратегического маркетинга",
+            text: "Обновленная стратегия по сегментам утверждена.\n\n➡️ Выход в Процедуру 17 (Проведение исследовательского проекта) и Процедуру 19 (Разработка технического решения).",
+            inputs: ["⬅️ От руководителя (шаг 12)"],
+            outputs: ["📤 ВЫХОД: Процедуры 17 и 19"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>

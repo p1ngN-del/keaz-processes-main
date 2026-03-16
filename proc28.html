@@ -1,0 +1,764 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 28</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-ini { border-left-color: #1e90ff; } /* Инициатор (ПМ / Менеджер по закупкам) */
+        .role-inj { border-left-color: #4682b4; } /* Инженер по метрологическому обеспечению */
+        .role-spec { border-left-color: #8a2be2; } /* Ведущий специалист по сертификации */
+        .role-constructor { border-left-color: #ff8c00; } /* Конструктор */
+        .role-utp { border-left-color: #2e8b57; } /* Начальник УТП */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 28: Согласование макета сертификата / Получение разрешительных документов</h1>
+    <div class="subhead">Владелец: Дирекция качества</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-4</div>
+                <div class="step-header-cell">5-8</div>
+                <div class="step-header-cell">9-14</div>
+                <div class="step-header-cell">15-25</div>
+            </div>
+
+            <!-- Дорожка 1: Инициатор (ПМ / Менеджер по закупкам) -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Инициатор<br>(ПМ / Менеджер по закупкам)</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-ini" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Создание заявки</div>
+                            <div class="step-preview">Создает заявку на сертификацию/декларирование в 1С:ДО...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                        <div class="step-card role-ini" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Устранение замечаний</div>
+                            <div class="step-preview">Устраняет замечания (если были) и повторно направляет документы...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-ini" onclick="showDetail(16)">
+                            <span class="step-num">16</span>
+                            <div class="step-title">Согласование макета</div>
+                            <div class="step-preview">Согласовывает макет СС/ДС (в рамках шага 13)...</div>
+                        </div>
+                        <div class="step-card role-ini" onclick="showDetail(22)">
+                            <span class="step-num">22</span>
+                            <div class="step-title">Получение уведомления</div>
+                            <div class="step-preview">Получает уведомление о готовности документа...</div>
+                        </div>
+                        <div class="step-card role-ini" onclick="showDetail(25)">
+                            <span class="step-num">25</span>
+                            <div class="step-title">Подтверждение получения</div>
+                            <div class="step-preview">Подтверждает получение документа...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Инженер по метрологическому обеспечению -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Инженер по метрологическому обеспечению</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-inj" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Проверка комплектности</div>
+                            <div class="step-preview">Получает задачу, проверяет полноту документов, соответствие маркировки...</div>
+                        </div>
+                        <div class="step-card role-inj" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Выписка образцов</div>
+                            <div class="step-preview">Выписывает образцы согласно процедуре «Организация испытаний»...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-inj" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Подготовка типовой заявки</div>
+                            <div class="step-preview">Готовит типовую заявку в ОС на основе документов...</div>
+                        </div>
+                        <div class="step-card role-inj" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Отправка в ОС</div>
+                            <div class="step-preview">Отправляет типовую заявку в ОС, получает договор/счет...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-inj" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Согласование договора</div>
+                            <div class="step-preview">Согласовывает договор со службами (по процедуре «Договорная работа»)...</div>
+                        </div>
+                        <div class="step-card role-inj" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Контроль оплаты</div>
+                            <div class="step-preview">Контролирует оплату (по процедуре «Осуществление платежей»)...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Ведущий специалист по сертификации -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Ведущий специалист по сертификации</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-spec" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Прием заявки</div>
+                            <div class="step-preview">Принимает заявку, проверяет комплектность, регистрирует...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-spec" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Получение макета СС</div>
+                            <div class="step-preview">Получает макет СС от ОС, проверяет соответствие заявке...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Направление на согласование</div>
+                            <div class="step-preview">Направляет макет СС на согласование: ПМ, Конструктору, Менеджеру по закупкам...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-spec" onclick="showDetail(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Переговоры с ОС</div>
+                            <div class="step-preview">Ведет переговоры с ОС до полного согласования макета...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Оформление макета ДС</div>
+                            <div class="step-preview">При декларировании — самостоятельно оформляет макет ДС...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(17)">
+                            <span class="step-num">17</span>
+                            <div class="step-title">Участие в АСП</div>
+                            <div class="step-preview">Участвует в анализе состояния производства (АСП) совместно с ОС...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-spec" onclick="showDetail(18)">
+                            <span class="step-num">18</span>
+                            <div class="step-title">Организация испытаний</div>
+                            <div class="step-preview">Организует испытания (по процедуре «Организация испытаний»)...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(19)">
+                            <span class="step-num">19</span>
+                            <div class="step-title">Анализ протоколов</div>
+                            <div class="step-preview">Анализирует протоколы испытаний...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(20)">
+                            <span class="step-num">20</span>
+                            <div class="step-title">Получение документа</div>
+                            <div class="step-preview">Получает готовый разрешительный документ...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(21)">
+                            <span class="step-num">21</span>
+                            <div class="step-title">Проверка документа</div>
+                            <div class="step-preview">Проверяет соответствие данных в документе...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(23)">
+                            <span class="step-num">23</span>
+                            <div class="step-title">Внесение в 1С:ДО</div>
+                            <div class="step-preview">Вносит разрешительный документ в 1С:ДО...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(24)">
+                            <span class="step-num">24</span>
+                            <div class="step-title">Направление информации</div>
+                            <div class="step-preview">Направляет информацию о готовности документа Инициатору...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Конструктор, ответственный за изделие -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Конструктор</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-constructor" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Указание стандартов</div>
+                            <div class="step-preview">Указывает стандарты, в результате применения которых обеспечивается соблюдение требований ТР ТС...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 5: Начальник УТП -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник УТП</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-utp" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Указание кодов ТН ВЭД</div>
+                            <div class="step-preview">Указывает коды ТН ВЭД при исполнении задачи в 1С:ДО...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Инициатор (ПМ / Менеджер по закупкам)",
+            text: "Создает «Заявку на проведение работ по подтверждению соответствия продукции» в 1С:ДО. Заполняет все основные реквизиты Заявки в ДО, вносит необходимую информацию (заполняет все подпункты кроме 5 и 6) в файл «Заявка на проведение работ по подтверждение соответствия продукции».\n\nК Заявке в 1С:ДО Инициатор прикрепляет:\n– договор/контракт поставки (в случае, если продукция является OEM);\n– договор уполномоченного лица (в случае, если продукция является OEM);\n– фото и/или чертежи изделий;\n- руководство по эксплуатации и/или паспорт изделия с оформленными титульными листами;\n- технические условия с оформленными титульными листами (в случае, если продукция собственного производства);\n– инструкции по монтажу (при их наличии);\n- добавляет ссылку на служебную записку или карточку служебной записки с проработкой согласно СТАНДАРТУ «Предоставление информации к запросу на подбор кодов ТНВЭД»;\n- фото маркировки на изделии и упаковочном ярлыке (если продукция является OEM – ОБЯЗАТЕЛЬНО!).\n\nРЭ/ТУ/ПС должны быть размещены в АППИУСе в состоянии «в архиве».",
+            inputs: ["⬅️ Необходимость сертификации (из процедур 4, 26)"],
+            outputs: ["→ Шаг 2"]
+        },
+        2: {
+            number: "2",
+            role: "Инженер по метрологическому обеспечению",
+            text: "Получает задачу. Проверяет полноту полученного комплекта документов, соответствие маркировки на изделии и упаковочном ярлыке требованиям ТР ТС. В случае выявления несоответствий — возвращает инициатору на доработку.",
+            inputs: ["⬅️ От инициатора (шаг 1)"],
+            outputs: ["✅ Если соответствует → Шаг 3", "❌ Если не соответствует → Шаг 4"]
+        },
+        3: {
+            number: "3",
+            role: "Ведущий специалист по сертификации",
+            text: "Принимает заявку, проверяет комплектность, регистрирует.",
+            inputs: ["⬅️ От инженера (шаг 2, ДА)"],
+            outputs: ["→ Шаг 5,6,7"]
+        },
+        4: {
+            number: "4",
+            role: "Инициатор",
+            text: "Устраняет замечания (если были) и повторно направляет документы.",
+            inputs: ["⬅️ От инженера (шаг 2, НЕТ)"],
+            outputs: ["→ Шаг 2"]
+        },
+        5: {
+            number: "5",
+            role: "Конструктор, ответственный за изделие",
+            text: "В пункте №6 файла «Заявка на проведение работ по подтверждению соответствия продукции» указывает стандарты, в результате применения которых на добровольной основе, обеспечивается соблюдение требований технического (-их) регламента (-ов) Таможенного союза, заявленному (-ым) в пункте №1 файла «Заявка на проведение работ по подтверждению соответствия продукции». Перечень стандартов указан в соответствующем Приложении к требуемому ТР ТС.",
+            inputs: ["⬅️ От специалиста (шаг 3)"],
+            outputs: ["→ Далее"]
+        },
+        6: {
+            number: "6",
+            role: "Начальник УТП",
+            text: "Указывает коды ТН ВЭД (пункт №5 файла «Заявка на проведение работ по подтверждению соответствия продукции») при исполнении задачи в 1С:ДО.",
+            inputs: ["⬅️ От специалиста (шаг 3)"],
+            outputs: ["→ Далее"]
+        },
+        7: {
+            number: "7",
+            role: "Инженер по метрологическому обеспечению",
+            text: "Выписывает образцы согласно ПРОЦЕДУРЕ «Организация испытаний для целей сертификации/декларирования».",
+            inputs: ["⬅️ От специалиста (шаг 3)"],
+            outputs: ["→ Шаг 8"]
+        },
+        8: {
+            number: "8",
+            role: "Инженер по метрологическому обеспечению",
+            text: "Для формирования типовой заявки на сертификацию/декларирование (для предоставления в орган по сертификации) использует информацию из файла «Заявка на проведение работ по подтверждению соответствия продукции» и эксплуатационные документы. Согласовывает с Инициатором.",
+            inputs: ["⬅️ От инженера (шаг 7)"],
+            outputs: ["→ Шаг 9"]
+        },
+        9: {
+            number: "9",
+            role: "Инженер по метрологическому обеспечению",
+            text: "Типовая заявка на сертификацию, согласованная с Инициатором, отправляется ведущим специалистом (специалистом) по сертификации (по электронной почте) в ОС совместно с комплектом документов, приложенных к Заявке в 1С:ДО. ОС выбираются из числа надежных. Получает от ОС договор или дополнительное соглашение/Приложение к договору на выполнение работ и/или счет.",
+            inputs: ["⬅️ От инженера (шаг 8)"],
+            outputs: ["→ Шаг 10"]
+        },
+        10: {
+            number: "10",
+            role: "Инженер по метрологическому обеспечению",
+            text: "Договор (дополнительное соглашение/ Приложение к договору) согласовывается со службами в соответствии с ПРОЦЕДУРОЙ «Договорная работа» (процедура 30).",
+            inputs: ["⬅️ От инженера (шаг 9)"],
+            outputs: ["→ Шаг 11"]
+        },
+        11: {
+            number: "11",
+            role: "Инженер по метрологическому обеспечению",
+            text: "Оплата услуг по сертификации/декларированию продукции осуществляется в соответствии с ПРОЦЕДУРОЙ «Осуществление платежей в ГК КЭАЗ». Контролирует оплату.",
+            inputs: ["⬅️ От инженера (шаг 10)"],
+            outputs: ["→ Шаг 12"]
+        },
+        12: {
+            number: "12",
+            role: "Ведущий специалист по сертификации",
+            text: "После проведения оплаты, получает по электронной почте от ОС макет СС в формате Word и проверяет его соответствие данным, указанным в типовой Заявке, отправленной в ОС (в случае возникновения замечаний сообщает о них в ОС и контролирует их устранение).",
+            inputs: ["⬅️ От инженера (шаг 11)"],
+            outputs: ["→ Шаг 13"]
+        },
+        13: {
+            number: "13",
+            role: "Ведущий специалист по сертификации",
+            text: "Макет СС направляется на согласование:\n1. Продукт-менеджер ответственный за продукт;\n2. Конструктор, ответственный за продукт;\n3. Менеджер по закупкам (только для ОЕМ-продукции).",
+            inputs: ["⬅️ От специалиста (шаг 12)"],
+            outputs: ["→ Шаг 14, Шаг 16"]
+        },
+        14: {
+            number: "14",
+            role: "Ведущий специалист по сертификации",
+            text: "Переговоры с ОС по корректировке макета длятся до тех пор, пока не будет достигнут компромисс и согласован макет СС.",
+            inputs: ["⬅️ От специалиста (шаг 13)"],
+            outputs: ["→ Шаг 17"]
+        },
+        15: {
+            number: "15",
+            role: "Ведущий специалист по сертификации",
+            text: "Самостоятельно оформляет макет ДС в формате Word в соответствии с данными, указанными в типовой Заявке и направляет его на согласование с Инициатором (в случае возникновения замечаний устраняет их, либо контролирует устранение), при этом макет в ОС не направляется. В случае, если продукция является OEM, макет ДС также согласовывается с ответственным за продукцию Продукт-менеджером.",
+            inputs: ["⬅️ От специалиста"],
+            outputs: ["→ Шаг 17"]
+        },
+        16: {
+            number: "16",
+            role: "Инициатор",
+            text: "Согласовывает макет СС/ДС (в рамках шага 13).",
+            inputs: ["⬅️ От специалиста (шаг 13)"],
+            outputs: ["→ Шаг 17"]
+        },
+        17: {
+            number: "17",
+            role: "Ведущий специалист по сертификации",
+            text: "Совместно с ОС (очно/дистанционно) проводит анализ состояния производства в соответствии с требованиями ГОСТ Р 54293 «Анализ состояния производства при подтверждении соответствия» и осуществляет отбор образцов для испытаний. Подготовку проведения АСП изготовителя за пределами РФ осуществляет совместно с менеджером по закупкам и/или ответственным продукт-менеджером. Полученные в ходе АСП замечания направляет инициатору для их устранения.",
+            inputs: ["⬅️ От специалиста (шаг 14,15,16)"],
+            outputs: ["→ Шаг 18"]
+        },
+        18: {
+            number: "18",
+            role: "Ведущий специалист по сертификации",
+            text: "Организует испытания. При декларировании действие включает в себя подготовку образцов (изготовление, закупку или получение со склада готовой продукции), заключение договора с испытательной лабораторией и оплату услуг, отправку и проведение испытаний в испытательной лаборатории, получение протокола испытаний, возврат образцов. В соответствии с ПРОЦЕДУРОЙ № УК//05-37 «Организация испытаний для целей сертификации/декларирования».",
+            inputs: ["⬅️ От специалиста (шаг 17)"],
+            outputs: ["→ Шаг 19"]
+        },
+        19: {
+            number: "19",
+            role: "Ведущий специалист по сертификации",
+            text: "Анализирует протоколы испытаний. Анализ включает в себя проверку данных о Заявителе, Изготовителе, наименовании/маркировке образцов, статуса технической документации (ГОСТов), на соответствие которым проводились испытания.",
+            inputs: ["⬅️ От специалиста (шаг 18)"],
+            outputs: ["→ Шаг 20"]
+        },
+        20: {
+            number: "20",
+            role: "Ведущий специалист по сертификации",
+            text: "Получает готовый разрешительный документ.",
+            inputs: ["⬅️ От специалиста (шаг 19)"],
+            outputs: ["→ Шаг 21"]
+        },
+        21: {
+            number: "21",
+            role: "Ведущий специалист по сертификации",
+            text: "Проверяет соответствие данных в документе.",
+            inputs: ["⬅️ От специалиста (шаг 20)"],
+            outputs: ["→ Шаг 22,23"]
+        },
+        22: {
+            number: "22",
+            role: "Инициатор",
+            text: "Получает уведомление о готовности документа.",
+            inputs: ["⬅️ От специалиста (шаг 21)"],
+            outputs: ["→ Шаг 25"]
+        },
+        23: {
+            number: "23",
+            role: "Ведущий специалист по сертификации",
+            text: "После получения разрешительного документа, вносит его в 1С:ДО в разделе «Сертификаты». Заполняет все вкладки, прикрепляет скан разрешительного документа, устанавливает связи с заявкой, договорами, служебной запиской.",
+            inputs: ["⬅️ От специалиста (шаг 21)"],
+            outputs: ["→ Шаг 24"]
+        },
+        24: {
+            number: "24",
+            role: "Ведущий специалист по сертификации",
+            text: "Направляет информацию о готовности документа Инициатору.",
+            inputs: ["⬅️ От специалиста (шаг 23)"],
+            outputs: ["→ Шаг 25"]
+        },
+        25: {
+            number: "25",
+            role: "Инициатор",
+            text: "Подтверждает получение. Процесс завершен.",
+            inputs: ["⬅️ От инициатора (шаг 22), от специалиста (шаг 24)"],
+            outputs: ["📤 ВЫХОД: Сертификат получен и внесен в систему"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>
+```

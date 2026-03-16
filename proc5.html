@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 5</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-pm { border-left-color: #1e90ff; } /* Проект-менеджер */
+        .role-rpo { border-left-color: #8a2be2; } /* Рук. проектного офиса */
+        .role-komitet { border-left-color: #ff8c00; } /* Проектный комитет */
+        .role-ukiot { border-left-color: #2e8b57; } /* Начальник УКиОТ */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 5: Завершение продуктового проекта</h1>
+    <div class="subhead">Владелец: Проект-менеджер</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с диапазонами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-3</div>
+                <div class="step-header-cell">4-6</div>
+                <div class="step-header-cell">7-9</div>
+                <div class="step-header-cell">10-14</div>
+            </div>
+
+            <!-- Дорожка 1: Проект-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Проект-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Организация окупаемости</div>
+                            <div class="step-preview">Организовывает и проводит комплекс мер по достижению окупаемости...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Мониторинг окупаемости</div>
+                            <div class="step-preview">Проводит мониторинг окупаемости, заполняет отчет по затратам проекта...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Инициирование изменений</div>
+                            <div class="step-preview">При недостижении ключевых показателей инициирует изменение проекта...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Подготовка Акта</div>
+                            <div class="step-preview">При достижении окупаемости подготавливает Акт о завершении проекта...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Исключение из реестра</div>
+                            <div class="step-preview">Исключает проект из реестра проектов...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Проект исключен</div>
+                            <div class="step-preview">Проект исключен из реестра проектов...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Руководитель проектного офиса -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель проектного офиса</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rpo" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Согласование Акта</div>
+                            <div class="step-preview">Согласовывает акт о завершении продуктового проекта...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-rpo" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Задача на ознакомление</div>
+                            <div class="step-preview">Ставит задачу на ознакомление о согласовании проекта...</div>
+                        </div>
+                        <div class="step-card role-rpo" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Задача на снятие с учета</div>
+                            <div class="step-preview">Ставит задачу на снятие проекта с управленческого учета...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-rpo" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Акт согласован</div>
+                            <div class="step-preview">Акт на завершение продуктового проекта согласован...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Проектный комитет -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Проектный комитет</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-komitet" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Согласование Акта</div>
+                            <div class="step-preview">Согласовывает акт о завершении продуктового проекта...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Начальник УКиОТ -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник УКиОТ</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-ukiot" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Снятие с учета</div>
+                            <div class="step-preview">Снимает проект с управленческого учета...</div>
+                        </div>
+                        <div class="step-card role-ukiot" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Проект снят с учета</div>
+                            <div class="step-preview">Проект снят с управленческого учета...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Проект-менеджер",
+            text: "Организовывает и проводит комплекс мер по достижению окупаемости проекта.",
+            inputs: ["⬅️ Вход: Проект в стадии реализации"],
+            outputs: ["→ Шаг 2"]
+        },
+        2: {
+            number: "2",
+            role: "Проект-менеджер",
+            text: "Проводит мониторинг окупаемости. В конце каждого месяца заполняет в 1С:ДО отчет по затратам проекта согласно утверждённой формы Приложение К АО КЭАЗ//32-9 «СТАНДАРТА по управлению проектами». Данный отчет отображает графики, показывающие информацию о покрытии валовой прибылью всех произведённых инвестиций. На основании полученных данных анализирует статус по окупаемости проекта.",
+            inputs: ["⬅️ От ПМ (шаг 1)"],
+            outputs: ["✅ Если окупаемость достигнута → Шаг 4", "❌ Если окупаемость не достигнута → Шаг 3"]
+        },
+        3: {
+            number: "3",
+            role: "Проект-менеджер",
+            text: "При недостижении ключевых показателей инициирует изменение продуктового проекта. Изменения проводятся в следующих случаях (при выходе за параметры «проектного треугольника» раздела «Критерии успеха Проекта» Паспорта проекта):\n– отклонения по времени более чем на 10% от срока;\n– отклонения по содержанию проекта (обновление ТТ, ТЗ, КД);\n– превышения резерва бюджета проекта (если резерв составляет 0, то любое превышение бюджета);\n– по аргументированному требованию Спонсора;\n– при наступлении риска остановки или замораживания проекта.\n\nДля принятия решения об изменении готовится форма Приложение Ж «Изменение Паспорта продуктового проекта».",
+            inputs: ["⬅️ От ПМ (шаг 2, НЕТ)"],
+            outputs: ["📤 ВЫХОД: Процедура «Изменение продуктового проекта» (шаг 14)"]
+        },
+        4: {
+            number: "4",
+            role: "Проект-менеджер",
+            text: "При достижении окупаемости подготавливает Акт о завершении проекта. На основании полученной информации об окупаемости проекта создаёт в 1С:ДО внутренний документ «Акт на завершение проекта развития», заполняет приложенный файл «Акт на завершение проекта развития» и отправляет на согласование Руководителю проектного офиса.",
+            inputs: ["⬅️ От ПМ (шаг 2, ДА)"],
+            outputs: ["→ Шаг 5"]
+        },
+        5: {
+            number: "5",
+            role: "Руководитель проектного офиса",
+            text: "Согласовывает акт о завершении продуктового проекта в 1С:ДО и отправляет на согласование в Проектный комитет.",
+            inputs: ["⬅️ От ПМ (шаг 4)"],
+            outputs: ["→ Шаг 6"]
+        },
+        6: {
+            number: "6",
+            role: "Проектный комитет",
+            text: "В 1С:ДО согласовывает акт о завершении продуктового проекта. Список лиц, входящих в проектный комитет, указан в АО КЭАЗ//32-9 «СТАНДАРТ управления продуктовыми проектами».",
+            inputs: ["⬅️ От РПО (шаг 5)"],
+            outputs: ["→ Шаг 7"]
+        },
+        7: {
+            number: "7",
+            role: "Руководитель проектного офиса",
+            text: "В 1С:ДО ставит задачу на ознакомление о согласовании проекта и его исключении из реестра.",
+            inputs: ["⬅️ От проектного комитета (шаг 6)"],
+            outputs: ["→ Шаг 8,9"]
+        },
+        8: {
+            number: "8",
+            role: "Проект-менеджер",
+            text: "Исключает проект из реестра проектов. В 1С:ДО исключает проект из реестра проектов (Раздел «Проекты» 1С.ДО: Папки – «01 Продуктовые проекты КЭАЗ\01 Текущие инвестиционные продуктовые проекты (капитализируемые)» и перемещает в папку «01 Продуктовые проекты КЭАЗ\03 Замороженные продуктовые проекты» или «01 Продуктовые проекты КЭАЗ\Остановленные продуктовые проекты» в зависимости от причины завершения.",
+            inputs: ["⬅️ От РПО (шаг 7)"],
+            outputs: ["→ Шаг 13"]
+        },
+        9: {
+            number: "9",
+            role: "Руководитель проектного офиса",
+            text: "Ставит задачу в ДО на снятие проекта с управленческого учета.",
+            inputs: ["⬅️ От РПО (шаг 7)"],
+            outputs: ["→ Шаг 10"]
+        },
+        10: {
+            number: "10",
+            role: "Начальник УКиОТ",
+            text: "Снимает проект с управленческого учета. Организует снятие с управленческого учета завершенного проекта.",
+            inputs: ["⬅️ От РПО (шаг 9)"],
+            outputs: ["→ Шаг 11"]
+        },
+        11: {
+            number: "11",
+            role: "Начальник УКиОТ",
+            text: "Проект снят с управленческого учета. Выход.",
+            inputs: ["⬅️ От УКиОТ (шаг 10)"],
+            outputs: ["📤 ВЫХОД: Проект снят с управленческого учета"]
+        },
+        12: {
+            number: "12",
+            role: "Руководитель проектного офиса",
+            text: "Акт на завершение продуктового проекта согласован. Выход.",
+            inputs: ["⬅️ От РПО (шаг 7)"],
+            outputs: ["📤 ВЫХОД: Акт на завершение согласован"]
+        },
+        13: {
+            number: "13",
+            role: "Проект-менеджер",
+            text: "Проект исключен из реестра проектов. Выход.",
+            inputs: ["⬅️ От ПМ (шаг 8)"],
+            outputs: ["📤 ВЫХОД: Проект исключен из реестра"]
+        },
+        14: {
+            number: "14",
+            role: "Проект-менеджер",
+            text: "Осуществление действия согласно процедуре «Изменение продуктового проекта» (УК/11.0/05-22).",
+            inputs: ["⬅️ От ПМ (шаг 3)"],
+            outputs: ["📤 ВЫХОД: Переход к процедуре 6"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 13</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-client { border-left-color: #4682b4; } /* Клиент */
+        .role-director { border-left-color: #8a2be2; } /* Директора */
+        .role-manager { border-left-color: #1e90ff; } /* Контент-менеджер */
+        .role-pm { border-left-color: #ff8c00; } /* Продукт-менеджер */
+        .role-owner { border-left-color: #2e8b57; } /* Владелец контента */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 13: Наполнение и обновление Контентом раздела каталог на сайте</h1>
+    <div class="subhead">Владелец: Продукт-менеджер</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-3</div>
+                <div class="step-header-cell">4-6</div>
+                <div class="step-header-cell">7-9</div>
+                <div class="step-header-cell">10-11</div>
+            </div>
+
+            <!-- Дорожка 1: Клиент -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Клиент</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-client" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Отправка запроса</div>
+                            <div class="step-preview">Формирует и направляет запрос на недостающий, неверный или неактуальный контент...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-client" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Получение уведомления</div>
+                            <div class="step-preview">Получает уведомление о размещении контента...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Директор по стратегическим коммуникациям -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Директор по стратегическим коммуникациям</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-director" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Формирование требований</div>
+                            <div class="step-preview">Формирует и контролирует общие требования к контенту на сайте...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Контент-менеджер сайта -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Контент-менеджер сайта</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-manager" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Формирование отчета</div>
+                            <div class="step-preview">Регулярно (не реже 1 раза в месяц) формирует отчет по наличию и актуальности контента...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-manager" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Размещение контента</div>
+                            <div class="step-preview">Размещает необходимый контент на сайте и информирует ПМ...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-manager" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Контент размещен</div>
+                            <div class="step-preview">Контент размещен на сайте...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Продукт-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Продукт-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Формирование контента по новинкам</div>
+                            <div class="step-preview">При выводе новинок формирует полный набор контента для каталога...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Проверка наличия и актуальности</div>
+                            <div class="step-preview">Рассматривает запросы, проверяет наличие, актуальность и качество контента...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Отправка контента</div>
+                            <div class="step-preview">Отправляет контент для размещения на сайте...</div>
+                        </div>
+                        <div class="step-card role-pm" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Информирование клиента</div>
+                            <div class="step-preview">Информирует клиента о размещении запрошенного контента...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Разработка ТЗ</div>
+                            <div class="step-preview">Разрабатывает ТЗ на разработку/актуализацию контента, ставит задачу владельцу...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 5: Владелец / разработчик контента -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Владелец/разработчик контента</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-owner" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Разработка/актуализация контента</div>
+                            <div class="step-preview">Разрабатывает или актуализирует контент по задаче от ПМ...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Клиент",
+            text: "Клиент формирует и направляет запрос на недостающий, неверный или неактуальный КОНТЕНТ в произвольной форме, любым доступным каналом коммуникации напрямую или через Внутренних клиентов (основными точками коммуникации с Клиентами являются – менеджеры Службы продаж, Менеджеры УОП, ОПРЕШ, Технические консультанты, обратная связь от Клиентов с сайта).\n\nЗапрос на КОНТЕНТ незамедлительно переправляется ответственному за данную номенклатуру Продукт-менеджеру.",
+            inputs: ["⬅️ Потребность в контенте"],
+            outputs: ["→ Шаг 5 (ПМ)"]
+        },
+        2: {
+            number: "2",
+            role: "Директор по стратегическим коммуникациям",
+            text: "Директор по рекламе формирует и контролирует общие требования к КОНТЕНТУ на сайте (в т.ч. к КОНТЕНТУ в разделе «Каталог»).",
+            inputs: ["⬅️ Необходимость определения требований"],
+            outputs: ["→ Шаг 5 (ПМ)"]
+        },
+        3: {
+            number: "3",
+            role: "Контент-менеджер сайта",
+            text: "Контент-менеджер сайта КЭАЗ регулярно (не реже 1 раза в месяц) формирует отчет (Приложение 1) по наличию и актуальности КОНТЕНТА на сайте компании в разрезе:\n– номенклатуры ГП (строки – в соответствии с Иерархией ГП – как на сайте);\n– наличия Контента (столбцы – Перечень Контента – см. таблицу 1);\n– актуальности (дата размещения контента на сайте);\n– незаполненные ячейки;\n– дата размещения контента (старше года выделяется цветом) – индикатор возможной неактуальности.\n\nДалее в 1С:ДО ставит задачу на Директора по продуктовому маркетингу, в которую прикрепляет данный отчет. В свою очередь, Директор по продуктовому маркетингу делегирует задачу на Руководителя направления и далее на Продукт-менеджера.",
+            inputs: ["⬅️ Регулярный мониторинг"],
+            outputs: ["→ Шаг 5 (ПМ)"]
+        },
+        4: {
+            number: "4",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер при выводе в ассортимент Новинок (как Номенклатурной группы, так и отдельных артикулов) в обязательном порядке формирует полный набор КОНТЕНТА для раздела «Каталог» сайта компании.\n\nПеред размещение новости о новинках продукции на сайте компании обязательно должен быть размещен полный набор КОНТЕНТА по данному виду продукта.",
+            inputs: ["⬅️ Процедура 4 (Ввод номенклатуры)"],
+            outputs: ["→ Шаг 5 (ПМ)"]
+        },
+        5: {
+            number: "5",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер рассматривает запросы на размещение и/или обновление КОНТЕНТА и проверяет наличие, актуальность и качество имеющегося как на сайте компании, так и в местах хранения, в первую очередь исходя из позиции КЛИЕНТООРИЕНТИРОВАННОСТИ. Актуальность размещения КОНТЕНТА и необходимость его обновления Продукт-менеджер определяет по формальным признакам.\n\nПРИМЕЧАНИЕ: если инициатором выступает Клиент, то необходимо уточнить контакты и связаться с Клиентом напрямую, чтобы уточнить вопросы по разработке и/или актуализации КОНТЕНТА.",
+            inputs: ["⬅️ От клиента (шаг 1), от директора (шаг 2), от контент-менеджера (шаг 3), от ПМ (шаг 4)"],
+            outputs: ["✅ Если контент есть и актуален → Шаг 6", "❌ Если контента нет или неактуален → Шаг 10"]
+        },
+        6: {
+            number: "6",
+            role: "Продукт-менеджер",
+            text: "По эл. почте отправляет контент для размещения на сайте.",
+            inputs: ["⬅️ От ПМ (шаг 5, ДА)"],
+            outputs: ["→ Шаг 7"]
+        },
+        7: {
+            number: "7",
+            role: "Контент-менеджер сайта",
+            text: "Контент-менеджер незамедлительно размещает необходимый КОНТЕНТ на сайте и информирует по электронной почте Продукт-менеджера об этом.",
+            inputs: ["⬅️ От ПМ (шаг 6)"],
+            outputs: ["🔀 Если инициатор клиент → Шаг 9", "🔀 Если инициатор не клиент → Шаг 8"]
+        },
+        8: {
+            number: "8",
+            role: "Контент-менеджер сайта",
+            text: "Контент размещен на сайте. Выход.",
+            inputs: ["⬅️ От контент-менеджера (шаг 7)"],
+            outputs: ["📤 ВЫХОД: Контент размещен"]
+        },
+        9: {
+            number: "9",
+            role: "Продукт-менеджер",
+            text: "Продукт-менеджер по электронной почте информирует Клиента о размещении запрошенного КОНТЕНТА на сайте компании с указанием места размещения в виде ссылки.",
+            inputs: ["⬅️ От ПМ (шаг 7)"],
+            outputs: ["→ Шаг 8, Шаг 12"]
+        },
+        10: {
+            number: "10",
+            role: "Продукт-менеджер",
+            text: "В случае отсутствия и/или неактуальности Контента Продукт-менеджер разрабатывает ТЗ на разработку/актуализацию необходимого КОНТЕНТА, далее в 1С:ДО ставит задачу на Руководителя подразделения ВЛАДЕЛЕЦ/РАЗРАБОЧТИК. Контролирует выполнение этой задачи и принимает ее результат – актуальный и правильный Контент.\n\nКОНТЕНТ-документы «Описание», «Презентации», «Референции» Продукт-менеджер разрабатывает собственными силами с привлечение необходимых специалистов компании.",
+            inputs: ["⬅️ От ПМ (шаг 5, НЕТ)"],
+            outputs: ["→ Шаг 11"]
+        },
+        11: {
+            number: "11",
+            role: "Владелец/разработчик контента",
+            text: "Руководитель подразделения ВЛАДЕЛЕЦ/РАЗРАБОТЧИК принимает к исполнению задачу на разработку/актуализацию Контента от Продукт-менеджера, делегирует ее исполнение специалисту(ам) своего подразделения и контролирует ее выполнение.\n\nРезультат по разработке/актуализации КОНЕТНТА («Описание», «Презентации», «Референции») у Продукт-менеджера принимает его Руководитель направления (как ВЛАДЕЛЕЦ/РАЗРАБОТЧИК).\n\nПо факту выполнения задачи Руководитель подразделения ВЛАДЕЛЬЦА/РАЗРАБОТЧИКА организует размещение/сохранение Актуального Контента в указанном Месте Хранения (см. таблицу 1).",
+            inputs: ["⬅️ От ПМ (шаг 10)"],
+            outputs: ["→ Шаг 5"]
+        },
+        12: {
+            number: "12",
+            role: "Клиент",
+            text: "Получает уведомление о размещении контента. Выход.",
+            inputs: ["⬅️ От ПМ (шаг 9)"],
+            outputs: ["📤 ВЫХОД: Клиент уведомлен"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>

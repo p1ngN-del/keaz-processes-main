@@ -1,0 +1,607 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 31</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-ini { border-left-color: #1e90ff; } /* Инициатор */
+        .role-sogl { border-left-color: #8a2be2; } /* Участники согласования */
+        .role-mened { border-left-color: #4682b4; } /* Менеджер по проектным закупкам */
+        .role-klad { border-left-color: #2e8b57; } /* Кладовщик */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 31: Закупка образцов для целей проектов</h1>
+    <div class="subhead">Владелец: Инициатор (СПМ/ПМ, конструктор и др.)</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-3</div>
+                <div class="step-header-cell">4-5</div>
+                <div class="step-header-cell">6-8</div>
+                <div class="step-header-cell">9-13</div>
+            </div>
+
+            <!-- Дорожка 1: Инициатор -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Инициатор</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-ini" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Определение потребности</div>
+                            <div class="step-preview">Определяет потребность в образцах для целей проекта...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                        <div class="step-card role-ini" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Проверка наличия</div>
+                            <div class="step-preview">Проверяет наличие номенклатуры в 1С:УПП и на складах...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-ini" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Запуск процесса закупки</div>
+                            <div class="step-preview">Запускает бизнес-процесс на закупку образцов...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-ini" onclick="showDetail(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Получение уведомления</div>
+                            <div class="step-preview">Получает уведомление о поступлении образцов...</div>
+                        </div>
+                        <div class="step-card role-ini" onclick="showDetail(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Оформление требования-накладной</div>
+                            <div class="step-preview">В 1С:УПП оформляет «Требование-накладную»...</div>
+                        </div>
+                        <div class="step-card role-ini" onclick="showDetail(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Создание поступления</div>
+                            <div class="step-preview">При необходимости создает документ «Поступление товаров и услуг»...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Участники согласования -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Участники согласования</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-sogl" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Согласование заявки</div>
+                            <div class="step-preview">Согласуют заявку согласно списку в зависимости от суммы и типа закупки...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Менеджер по проектным закупкам -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Менеджер по проектным закупкам</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-mened" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Проверка доступности</div>
+                            <div class="step-preview">Проверяет доступность ТМЦ на складах...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-mened" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Осуществление закупки</div>
+                            <div class="step-preview">Проводит мониторинг, оформляет заказ, организует оплату...</div>
+                        </div>
+                        <div class="step-card role-mened" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Постановка подзадачи</div>
+                            <div class="step-preview">При поступлении ставит подзадачу инициатору на выписку...</div>
+                        </div>
+                        <div class="step-card role-mened" onclick="showDetail(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Закрытие задачи</div>
+                            <div class="step-preview">Закрывает задачу на закупку образцов...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Кладовщик -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Кладовщик</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-klad" onclick="showDetail(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Приемка образцов</div>
+                            <div class="step-preview">Принимает образцы на склад, оприходует...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-klad" onclick="showDetail(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Отгрузка образцов</div>
+                            <div class="step-preview">Отгружает образцы инициатору по требованию-накладной...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Инициатор",
+            text: "Определяет потребность в образцах для целей проекта (НИР, ОКР, испытания, анализ). Образцы ТМЦ - это материалы, изделия или компоненты, используемые в процессе НИР и ОКР. Они служат для тестирования, анализа, разработки новых продуктов или технологий, а также для проверки соответствия требованиям стандартов и технических условий. Количество образцов для испытаний, методы отбора проб и периодичность проверок, устанавливаются соответствующими стандартами и техническими условиями. ТМЦ, закупаемые в качестве образцов, не подлежат использованию в серийном производстве и реализации сторонним КА.",
+            inputs: ["⬅️ Из процедуры 26 (Поиск OEM/ODM поставщика)"],
+            outputs: ["→ Шаг 2"]
+        },
+        2: {
+            number: "2",
+            role: "Инициатор",
+            text: "Проверяет наличие необходимой номенклатуры в справочнике 1С:УПП и в свободном остатке на складах ГК. Если номенклатура отсутствует в Справочнике, Инициатор отправляет заявку на заведение номенклатур в КИС согласно ПРОЦЕДУРЕ «Ввод номенклатуры в 1С:УПП».",
+            inputs: ["⬅️ От инициатора (шаг 1)"],
+            outputs: ["✅ Если номенклатура есть → Шаг 3", "❌ Если номенклатуры нет → запуск процедуры 4 (Ввод номенклатуры)"]
+        },
+        3: {
+            number: "3",
+            role: "Инициатор",
+            text: "Запускает бизнес-процесс на закупку образцов согласно «Инструкции по созданию заявок на закупку образцов» в Битрикс24.\n\nЕсли поставщик для закупки определен, в задаче обязательно указать наименование и контактные данные КА, приложить:\n- заполненный файл с перечнем кодов, наименований и количества номенклатур по форме Приложения 1;\n- счет или инвойс в редактированном и подписанном виде;\n- в описании задачи обязательно необходимо указать подробное обоснование выбора конкретного поставщика, если ТМЦ изготавливается по КД, ТД, ТТ Заказчика закупки по форме Приложения 2.\n\nЕсли закупка осуществляется у иностранного контрагента, к задаче обязательно нужно приложить ссылку на согласованную в 1С:ДО задачу на присвоение УТЛ номенклатурам кодов ТН ВЭД.\n\nЕсли поставщик для закупки не определен, к Заявке обязательно нужно приложить файл с перечнем номенклатур и КД, ТД, ТТ.\n\nЕсли закупаемые образцы не будут импортироваться в Россию, необходимо сделать отметку о необходимости импорта в Заявке.",
+            inputs: ["⬅️ От инициатора (шаг 2)"],
+            outputs: ["→ Шаг 4"]
+        },
+        4: {
+            number: "4",
+            role: "Участники согласования",
+            text: "Согласуют заявку согласно списку в зависимости от суммы и типа закупки.\n\n1) Закупка ТМЦ в целях проектов (КД, ТД, ТТ), если поставщик определён, сумма < 1 млн руб.:\n- Непосредственный руководитель;\n- Начальник Отдела по работе с ОЕМ поставщиками;\n- Руководитель 2 уровня (Технический директор или Директор по маркетингу).\n\n2) Закупка ТМЦ в целях проектов, если поставщик определён, сумма > 1 млн руб.:\n- Непосредственный руководитель;\n- Руководитель 2 уровня;\n- Директор по безопасности.\n\n3) Закупка доступных в рынке ТМЦ (без доработок):\n- Непосредственный руководитель;\n- Начальник Отдела по работе с ОЕМ поставщиками;\n- если приоритет «Сроки» — Руководитель 2 уровня.\n\n4) Мониторинг (без закупки):\n- Непосредственный руководитель;\n- Начальник Отдела по работе с ОЕМ поставщиками.",
+            inputs: ["⬅️ От инициатора (шаг 3)"],
+            outputs: ["→ Шаг 5"]
+        },
+        5: {
+            number: "5",
+            role: "Менеджер по проектным закупкам",
+            text: "Проверяет доступность ТМЦ на складах через отчет в 1С:УПП: интерфейс «Полный»/ Отчеты/ Запасы/ Анализ доступности товаров на складах.\n\nПри наличии ТМЦ на складах запрашивает согласование резерва у Начальника подразделения. Если резерв согласован, ставит подзадачу инициатору на формирование требования-накладной.\n\nЕсли ТМЦ нет в наличии или резерв невозможен, начинает мониторинг/закупку.",
+            inputs: ["⬅️ От инициатора (шаг 3)"],
+            outputs: ["✅ Если есть в наличии и резерв согласован → Шаг 11", "❌ Если нет или резерв невозможен → Шаг 6"]
+        },
+        6: {
+            number: "6",
+            role: "Менеджер по проектным закупкам",
+            text: "Осуществляет закупку:\n- проводит мониторинг (если требуется);\n- оформляет заказ поставщику;\n- организует оплату;\n- контролирует поступление.\n\nЕсли закупка образцов будет осуществляться в целях проектов без отражения в КИС, Проектный менеджер по закупкам оформляет заказ поставщику и организовывает оплату услуг согласованному Заказчиком КА.",
+            inputs: ["⬅️ От менеджера (шаг 5, НЕТ)"],
+            outputs: ["→ Шаг 7"]
+        },
+        7: {
+            number: "7",
+            role: "Менеджер по проектным закупкам",
+            text: "При поступлении ТМЦ на склад ставит подзадачу инициатору на выписку и получение образцов с указанием склада и контактного лица.",
+            inputs: ["⬅️ От менеджера (шаг 6)"],
+            outputs: ["→ Шаг 8, Шаг 10"]
+        },
+        8: {
+            number: "8",
+            role: "Менеджер по проектным закупкам",
+            text: "Закрывает задачу на закупку образцов.",
+            inputs: ["⬅️ От менеджера (шаг 7)"],
+            outputs: ["→ Процесс завершен"]
+        },
+        9: {
+            number: "9",
+            role: "Кладовщик",
+            text: "Принимает образцы на склад согласно инструкциям по приёмке ТМЦ от поставщиков РФ / иностранных. Оприходует на соответствующий проектный склад:\n1) в г. Курске - на 00384 Склад образцов по проектным задачам;\n2) в г. Курске образцы электронных компонентов - 00397;\n3) в г. Москва - на 00366 Склад ОЕМ Балашиха;\n4) в г. Курск образцы пресс-материалов – на 00389.\n\nСклад поступления определяет Инициатор Заявки.",
+            inputs: ["⬅️ От поставщика"],
+            outputs: ["→ Шаг 10"]
+        },
+        10: {
+            number: "10",
+            role: "Инициатор",
+            text: "Получает уведомление о поступлении образцов.",
+            inputs: ["⬅️ От менеджера (шаг 7), от кладовщика (шаг 9)"],
+            outputs: ["→ Шаг 11"]
+        },
+        11: {
+            number: "11",
+            role: "Инициатор",
+            text: "В 1С:УПП оформляет «Требование-накладную»:\n1) В 1С: УПП выбрать интерфейс «Полный»/ Документы/ Управление запасами/ Требование накладная:\n- нажать «Создать»;\n- Выбрать склад, Подразделение;\n- Выбрать номенклатуру, указать кол-во;\n- Статья затрат;\n- нажать «Записать».",
+            inputs: ["⬅️ От менеджера (шаг 5, ДА), от инициатора (шаг 10)"],
+            outputs: ["→ Шаг 12, Шаг 13"]
+        },
+        12: {
+            number: "12",
+            role: "Инициатор",
+            text: "При необходимости создает на основании требования-накладной документ «Поступление товаров и услуг» (для списания на проект):\nВ 1С:УПП выбрать интерфейс «Полный»/ Документы/ Управление закупками/Поступление товаров и услуг: - нажать «Вести на основании»; - «Требование накладная»; - Выбрать склад, Подразделение; - Проверить номенклатуру, кол-во; - Статья затрат; - нажать «Записать».",
+            inputs: ["⬅️ От инициатора (шаг 11)"],
+            outputs: ["→ Далее"]
+        },
+        13: {
+            number: "13",
+            role: "Кладовщик",
+            text: "Отгружает образцы инициатору по требованию-накладной. Процесс завершен.",
+            inputs: ["⬅️ От инициатора (шаг 11)"],
+            outputs: ["📤 ВЫХОД: Образцы получены"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>
+```

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 8</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Swimlane-таблица */
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        /* Шапка с номерами шагов */
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Дорожка */
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        /* Название дорожки */
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        /* Ячейки с шагами */
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        /* Карточка шага */
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        /* Цвета ролей */
+        .role-spec { border-left-color: #4682b4; } /* Специалист по планированию */
+        .role-rukovod { border-left-color: #1e90ff; } /* Руководители направлений */
+        .role-director { border-left-color: #8a2be2; } /* Директора */
+        .role-usp { border-left-color: #2e8b57; } /* Главный специалист УПСП */
+
+        /* Детальная панель */
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-arrow {
+            font-size: 1.2rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 8: ИНСТРУКЦИЯ Корректирование и согласование плана продаж складского и проектного ассортимента по позициям ОЕМ и собственного производства</h1>
+    <div class="subhead">Владелец: Директор по маркетингу</div>
+
+    <!-- SWIMLANE -->
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <!-- Шапка с номерами шагов -->
+            <div class="step-header">
+                <div class="step-header-cell">1-2</div>
+                <div class="step-header-cell">3-4</div>
+                <div class="step-header-cell">5-6</div>
+                <div class="step-header-cell">7</div>
+            </div>
+
+            <!-- Дорожка 1: Специалист по планированию -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Специалист по планированию<br>отдела аналитики</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-spec" onclick="showDetail(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Формирование файла</div>
+                            <div class="step-preview">Формирует файл каждый 2-ой рабочий день месяца с данными по планам, факту, заявкам...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-spec" onclick="showDetail(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Постановка задачи</div>
+                            <div class="step-preview">Ставит задачу Руководителям направлений на корректировку расчетного плана...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Инициирование совещания</div>
+                            <div class="step-preview">Инициирует проведение совещания по согласованию скорректированного плана...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-spec" onclick="showDetail(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Формирование аналитической записки</div>
+                            <div class="step-preview">Формирует итоговую аналитическую записку и отправляет на согласование...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Внесение корректировок</div>
+                            <div class="step-preview">Вносит корректировки по результатам согласования в файл "Модель скользящего прогноза"...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-spec" onclick="showDetail(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Информирование</div>
+                            <div class="step-preview">Проводит информирование Главного специалиста УПСП...</div>
+                        </div>
+                        <div class="step-card role-spec" onclick="showDetail(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Инициирование процесса</div>
+                            <div class="step-preview">Инициирует процесс классификации ОЕМ номенклатуры...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Руководители направлений -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Руководители направлений</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rukovod" onclick="showDetail(8)">
+                            <span class="step-num">2.1</span>
+                            <div class="step-title">Корректировка плана</div>
+                            <div class="step-preview">Проводят корректировку расчетного плана в приложенном файле...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Директора и Управляющий -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Директор по маркетингу<br>Директор по продажам РФ<br>Директор по зарубежным продажам<br>Управляющий коммерческим блоком</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-director" onclick="showDetail(9)">
+                            <span class="step-num">3.1</span>
+                            <div class="step-title">Участие в совещании</div>
+                            <div class="step-preview">Участвуют в совещании по согласованию скорректированного плана (6-й рабочий день месяца)...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-director" onclick="showDetail(10)">
+                            <span class="step-num">4.1</span>
+                            <div class="step-title">Согласование записки</div>
+                            <div class="step-preview">Согласуют аналитическую записку (2-я и 3-я итерации)...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Начальник отдела аналитики -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник отдела аналитики<br>цен и данных</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-usp" onclick="showDetail(11)">
+                            <span class="step-num">4.1</span>
+                            <div class="step-title">Согласование записки</div>
+                            <div class="step-preview">Согласует аналитическую записку (1-я итерация)...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 5: Главный специалист УПСП -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Главный специалист УПСП</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-usp" onclick="showDetail(12)">
+                            <span class="step-num">6.1</span>
+                            <div class="step-title">Ознакомление</div>
+                            <div class="step-preview">Получает итоговый файл "Модель скользящего прогноза" на ознакомление...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Специалист по планированию отдела аналитики цен и данных",
+            text: "Специалист по планированию отдела аналитики цен и данных формирует файл каждый 2-ой рабочий день месяца.\n\nФайл включает в себя следующую информацию:\n• базовый годовой помесячный план\n• фактические продажи и подтвержденные заявки от покупателей помесячно и накопленным итогом\n• расчетный на основании статистики план на следующие 5 месяцев\n• величину свободных остатков по НГ\n• прогноз продаж по проектным спецификациям\n• динамику sell-in\n• динамику sell-out\n\nФайл расположен по ссылке: https://bi.keaz.ru/bitrix/tools/disk/focus.php?folderId=217821&action=openFolderList&ncc=1",
+            inputs: ["⬅️ Наступление 2-го рабочего дня месяца"],
+            outputs: ["→ Шаг 2"]
+        },
+        2: {
+            number: "2",
+            role: "Специалист по планированию отдела аналитики цен и данных",
+            text: "Специалист по планированию ставит задачу Руководителям направлений на исполнение в 1С:ДО по корректировке расчетного плана и назначает Начальника отдела аналитики цен и данных контролирующим лицом.\n\nКорректировка происходит в приложенном файле в соответствующей строчке. Обоснованием корректировки могут быть:\n• знания о предполагаемых отгрузках выше среднестатистических значений\n• оценка общего тренда (рост, падение)\n• устранение дефицитов на складе\n• оценка перспектив проектных продаж\n• предполагаемое изменение цен\n• планируемые мероприятия по стимулированию продаж",
+            inputs: ["⬅️ От специалиста (шаг 1)"],
+            outputs: ["→ Шаг 2.1 (Руководителям направлений)"]
+        },
+        3: {
+            number: "3",
+            role: "Специалист по планированию отдела аналитики цен и данных",
+            text: "Специалист по планированию инициирует проведение совещания по согласованию скорректированного плана и прикладывает файл к событию о проведении совещания для предварительного ознакомления участников.\n\nСовещание проводится каждый 6-ой рабочий день месяца.\n\nУчастники совещания:\n• Специалист по планированию отдела аналитики цен и данных\n• Начальник отдела аналитики цен и данных\n• Руководители направлений\n• Директор по маркетингу\n• Директор по продажам РФ\n• Директор по зарубежным продажам",
+            inputs: ["⬅️ От руководителей направлений (шаг 2.1)"],
+            outputs: ["→ Шаг 4"]
+        },
+        4: {
+            number: "4",
+            role: "Специалист по планированию отдела аналитики цен и данных",
+            text: "Специалист по планированию формирует итоговую аналитическую записку и отправляет ее на согласование в 1С:ДО. В аналитической записке акцентирует внимание на существенных корректировках плана от текущих статистических значений с обоснованием этих корректировок.\n\nСогласующие лица:\n• Начальник отдела аналитики цен и данных (1-ая итерация)\n• Директор по маркетингу, Директор по продажам РФ и Директор зарубежных продаж (2-ая итерация)\n• Управляющий коммерческим блоком (3-ая итерация)",
+            inputs: ["⬅️ От специалиста (шаг 3)"],
+            outputs: ["→ Шаг 4.1 (согласование)", "→ Шаг 5"]
+        },
+        5: {
+            number: "5",
+            role: "Специалист по планированию отдела аналитики цен и данных",
+            text: "Специалист по планированию вносит корректировки по результатам согласования в файл 'Модель скользящего прогноза'.",
+            inputs: ["⬅️ После согласования (шаг 4.1)"],
+            outputs: ["→ Шаг 6"]
+        },
+        6: {
+            number: "6",
+            role: "Специалист по планированию отдела аналитики цен и данных",
+            text: "Специалист по планированию проводит обязательное информирование Главного специалиста УПСП и отправляет итоговый файл «Модель скользящего прогноза» на ознакомление в 1С:ДО.",
+            inputs: ["⬅️ От специалиста (шаг 5)"],
+            outputs: ["→ Шаг 6.1 (ознакомление УПСП)", "→ Шаг 7"]
+        },
+        7: {
+            number: "7",
+            role: "Специалист по планированию отдела аналитики цен и данных",
+            text: "На основании итогового файла «Модель скользящего прогноза» Специалист по планированию инициирует процесс «Классификация ОЕМ номенклатуры с установкой параметров складских запасов», регламентированный процедурой «Классификация ОЕМ номенклатуры с установкой параметров складских запасов», ссылка на документ: e1c://server/smile/docob#e1cib/data/РегистрСведений.ДанныеВнутреннихДокументов?ДатаСортировки=20200709151706&ПометкаУдаления=0&Документ=4490549f350a96c411eab1f5be176446",
+            inputs: ["⬅️ От специалиста (шаг 6)"],
+            outputs: ["📤 ВЫХОД: Переход к процедуре 12 (Классификация ОЕМ номенклатуры)"]
+        },
+        8: {
+            number: "2.1",
+            role: "Руководители направлений",
+            text: "Проводят корректировку расчетного плана в приложенном файле в соответствующей строчке на основании:\n• знаний о предполагаемых отгрузках выше среднестатистических значений\n• оценки общего тренда (рост, падение)\n• устранения дефицитов на складе\n• оценки перспектив проектных продаж\n• предполагаемого изменения цен\n• планируемых мероприятий по стимулированию продаж",
+            inputs: ["⬅️ От специалиста (шаг 2)"],
+            outputs: ["→ Шаг 3"]
+        },
+        9: {
+            number: "3.1",
+            role: "Директор по маркетингу, Директор по продажам РФ, Директор по зарубежным продажам",
+            text: "Участвуют в совещании по согласованию скорректированного плана, которое проводится каждый 6-ой рабочий день месяца.",
+            inputs: ["⬅️ От специалиста (шаг 3)"],
+            outputs: ["→ Шаг 4"]
+        },
+        10: {
+            number: "4.1",
+            role: "Директор по маркетингу, Директор по продажам РФ, Директор по зарубежным продажам, Управляющий коммерческим блоком",
+            text: "Согласуют аналитическую записку в 1С:ДО:\n• Директор по маркетингу, Директор по продажам РФ и Директор зарубежных продаж (2-ая итерация)\n• Управляющий коммерческим блоком (3-ая итерация)",
+            inputs: ["⬅️ От специалиста (шаг 4)"],
+            outputs: ["→ Шаг 5"]
+        },
+        11: {
+            number: "4.1",
+            role: "Начальник отдела аналитики цен и данных",
+            text: "Согласует аналитическую записку в 1С:ДО (1-ая итерация).",
+            inputs: ["⬅️ От специалиста (шаг 4)"],
+            outputs: ["→ Шаг 5"]
+        },
+        12: {
+            number: "6.1",
+            role: "Главный специалист УПСП",
+            text: "Получает итоговый файл «Модель скользящего прогноза» на ознакомление в 1С:ДО.",
+            inputs: ["⬅️ От специалиста (шаг 6)"],
+            outputs: ["→ Ознакомлен"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerText = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+    }
+</script>
+</body>
+</html>
