@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 20</title>
+    <title>КЭАЗ · Процедура 20 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -148,11 +147,22 @@
             transition: 0.2s;
             width: 100%;
             text-align: left;
+            scroll-margin-top: 20px;
         }
         .step-card:hover {
             transform: translateY(-2px);
             border-color: #f6b83e;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+        .step-card.highlighted-output {
+            border: 3px solid #2e8b57;
+            background: #e6f3e6;
+            box-shadow: 0 0 0 3px rgba(46,139,86,0.2);
         }
 
         .step-num {
@@ -206,15 +216,6 @@
             color: #f6b83e;
         }
 
-        .role-pm { border-left-color: #1e90ff; }
-        .role-mp { border-left-color: #8a2be2; }
-        .role-ursd { border-left-color: #2e8b57; }
-        .role-roznica { border-left-color: #ff8c00; }
-        .role-sapr { border-left-color: #4682b4; }
-        .role-divizion { border-left-color: #ba55d3; }
-        .role-urpr { border-left-color: #daa520; }
-        .role-kam { border-left-color: #dc143c; }
-
         .detail-panel {
             display: none;
             background: white;
@@ -223,6 +224,7 @@
             margin-top: 30px;
             border: 2px solid #e0e7f5;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
         }
         .detail-panel.show {
             display: block;
@@ -286,8 +288,18 @@
             gap: 8px;
             font-size: 0.9rem;
         }
-        .io-arrow {
-            font-size: 1.2rem;
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
         }
 
         .back-to-top {
@@ -307,6 +319,15 @@
             border: none;
             z-index: 1000;
         }
+
+        .role-pm { border-left-color: #1e90ff; }
+        .role-mp { border-left-color: #8a2be2; }
+        .role-ursd { border-left-color: #2e8b57; }
+        .role-roznica { border-left-color: #ff8c00; }
+        .role-sapr { border-left-color: #4682b4; }
+        .role-divizion { border-left-color: #ba55d3; }
+        .role-urpr { border-left-color: #daa520; }
+        .role-kam { border-left-color: #dc143c; }
     </style>
 </head>
 <body>
@@ -314,7 +335,7 @@
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
     <h1>Процедура 20: Подготовка к старту продаж (pre-sale)</h1>
-    <div class="subhead">Владелец: Продукт-менеджер</div>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
     <div class="swimlane">
         <div class="swimlane-table">
@@ -331,7 +352,7 @@
                 <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail(1)">
+                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1-4</span>
                             <div class="step-title">Базовые задачи, перенос, обучение, предложение</div>
                             <div class="step-preview">Выполняет базовые задачи, инициирует перенос номенклатуры, проводит обучение, направляет предложение по складообразованию...</div>
@@ -339,7 +360,7 @@
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail(6)">
+                        <div class="step-card role-pm" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6-7</span>
                             <div class="step-title">Анализ мотивации и итоговое предложение</div>
                             <div class="step-preview">Анализирует мотивационные программы, готовит итоговое предложение по складообразованию...</div>
@@ -347,14 +368,14 @@
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail(9)">
+                        <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">9-10</span>
                             <div class="step-title">Подготовка данных для прескрипции и САПР</div>
                             <div class="step-preview">Готовит данные для прескрипции, направляет информацию в САПР...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail(17)">
+                        <div class="step-card role-pm" data-step="17" onclick="goToStep(17)">
                             <span class="step-num">17</span>
                             <div class="step-title">Формирование заказа</div>
                             <div class="step-preview">Формирует заказ в структуре и объеме...</div>
@@ -373,7 +394,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-mp" onclick="showDetail(18)">
+                        <div class="step-card role-mp" data-step="18" onclick="goToStep(18)">
                             <span class="step-num">18-19</span>
                             <div class="step-title">Заказы на производство и поставщику</div>
                             <div class="step-preview">Формирует заказ на производство, направляет заявку поставщику...</div>
@@ -389,7 +410,7 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-ursd" onclick="showDetail(5)">
+                        <div class="step-card role-ursd" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
                             <div class="step-title">Список партнеров</div>
                             <div class="step-preview">Предоставляет список партнеров...</div>
@@ -397,7 +418,7 @@
                     </div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-ursd" onclick="showDetail(15)">
+                        <div class="step-card role-ursd" data-step="15" onclick="goToStep(15)">
                             <span class="step-num">15</span>
                             <div class="step-title">Переговоры</div>
                             <div class="step-preview">Проводит совместные переговоры с партнерами...</div>
@@ -415,7 +436,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-roznica" onclick="showDetail(16)">
+                        <div class="step-card role-roznica" data-step="16" onclick="goToStep(16)">
                             <span class="step-num">16</span>
                             <div class="step-title">Анализ розничных точек</div>
                             <div class="step-preview">Проводит анализ розничных точек...</div>
@@ -432,7 +453,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-sapr" onclick="showDetail(11)">
+                        <div class="step-card role-sapr" data-step="11" onclick="goToStep(11)">
                             <span class="step-num">11</span>
                             <div class="step-title">Подготовительные мероприятия</div>
                             <div class="step-preview">Проводит подготовительные мероприятия...</div>
@@ -452,7 +473,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-divizion" onclick="showDetail(12)">
+                        <div class="step-card role-divizion" data-step="12" onclick="goToStep(12)">
                             <span class="step-num">12</span>
                             <div class="step-title">Список заказчиков и ПИ</div>
                             <div class="step-preview">Готовит список конечных заказчиков и проектных институтов...</div>
@@ -470,7 +491,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-urpr" onclick="showDetail(13)">
+                        <div class="step-card role-urpr" data-step="13" onclick="goToStep(13)">
                             <span class="step-num">13</span>
                             <div class="step-title">Работа с проектными институтами</div>
                             <div class="step-preview">Инициирует работу с проектными институтами...</div>
@@ -489,7 +510,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-kam" onclick="showDetail(14)">
+                        <div class="step-card role-kam" data-step="14" onclick="goToStep(14)">
                             <span class="step-num">14</span>
                             <div class="step-title">Работа с заказчиком</div>
                             <div class="step-preview">Проводит мероприятия с заказчиком...</div>
@@ -599,6 +620,8 @@
         }
     };
 
+    let currentStep = null;
+
     function showDetail(stepId) {
         const panel = document.getElementById('detailPanel');
         const header = document.getElementById('detailHeader');
@@ -623,7 +646,13 @@
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                const stepMatch = inp.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -631,7 +660,13 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -641,8 +676,57 @@
         io.innerHTML = ioHtml;
         
         panel.classList.add('show');
+        
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
     }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step', 'highlighted-output');
+        });
+        
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+        
+        const data = stepData[stepId];
+        if (data && data.outputs) {
+            data.outputs.forEach(out => {
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const outputStep = stepMatch[1];
+                    const outputCard = document.querySelector(`.step-card[data-step="${outputStep}"], .step-card[data-step^="${outputStep}-"]`);
+                    if (outputCard) {
+                        outputCard.classList.add('highlighted-output');
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                const numericStep = stepId.split('-')[0];
+                goToStep(numericStep);
+            }
+        });
+    });
 </script>
 </body>
 </html>
-```
