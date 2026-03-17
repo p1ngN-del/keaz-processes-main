@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>КЭАЗ · Бизнес-процессы Дирекции маркетинга</title>
     <style>
-        /* Стили остаются без изменений */
         * {
             margin: 0;
             padding: 0;
@@ -373,8 +372,250 @@
         </div>
     </div>
 
-    <!-- Здесь идет твоя карта процессов (без изменений) -->
-    <!-- ... остальная часть файла ... -->
+    <!-- Карта процессов -->
+    <div class="phases-container">
+        <div class="phases-grid">
+            
+            <!-- Фаза 1 · Стратегия -->
+            <div class="phase-column phase1">
+                <div class="phase-header">Фаза 1 · Стратегия</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Стратегический маркетинг</div>
+                        <a href="proc21.html" class="proc-card phase1-color" data-roles="marketing_director" data-start-for='marketing_director'>
+                            <div class="proc-num">21</div>
+                            <div class="proc-name">Формирование среднесрочной стратегии развития ГК КЭАЗ</div>
+                            <div class="proc-io"><span class="io-in">⬅️ План-график</span><span class="io-out">➡️ 18</span></div>
+                        </a>
+                        <a href="proc7.html" class="proc-card phase1-color" data-roles="marketing_analyst" data-start-for='marketing_analyst'>
+                            <div class="proc-num">7</div>
+                            <div class="proc-name">Анализ цепочки поставок (каналов распределения)</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Ежегодно</span><span class="io-out">➡️ 21</span></div>
+                        </a>
+                        <a href="proc18.html" class="proc-card phase1-color" data-roles="marketing_director">
+                            <div class="proc-num">18</div>
+                            <div class="proc-name">Разработка стратегии развития сегментов</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 21</span><span class="io-out">➡️ 17,19</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 2 · Инициация -->
+            <div class="phase-column phase2">
+                <div class="phase-header">Фаза 2 · Инициация</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc27.html" class="proc-card phase2-color" data-roles="product_manager,initiator" data-start-for='product_manager,initiator'>
+                            <div class="proc-num">27</div>
+                            <div class="proc-name">Обработка идеи по вводу нового продукта и модернизации</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Запрос</span><span class="io-out">➡️ 17</span></div>
+                        </a>
+                        <a href="proc17.html" class="proc-card phase2-color" data-roles="product_manager,ukiot,financial_director" data-start-for='project_manager'>
+                            <div class="proc-num">17</div>
+                            <div class="proc-name">Проведение исследовательского проекта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 18,27</span><span class="io-out">➡️ 23,24,26</span></div>
+                        </a>
+                        <a href="proc19.html" class="proc-card phase2-color" data-roles="product_manager,designer,urr_head" data-start-for='designer,urr_head'>
+                            <div class="proc-num">19</div>
+                            <div class="proc-name">Разработка технического решения</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 18</span><span class="io-out">➡️ 23,24</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Создание базы / закупки</div>
+                        <a href="proc16.html" class="proc-card phase2-color" data-roles="product_manager,marketing_director,financial_director" data-start-for='financial_director'>
+                            <div class="proc-num">16</div>
+                            <div class="proc-name">Поиск и получение мер государственной поддержки</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Исследование</span><span class="io-out">➡️ Соглашение</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 3 · Создание базы -->
+            <div class="phase-column phase3">
+                <div class="phase-header">Фаза 3 · Создание базы</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc24.html" class="proc-card phase3-color" data-roles="product_manager,project_manager" data-start-for='project_office_head,project_committee'>
+                            <div class="proc-num">24</div>
+                            <div class="proc-name">Инициация продуктового проекта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17,19</span><span class="io-out">➡️ 4</span></div>
+                        </a>
+                        <a href="proc23.html" class="proc-card phase3-color" data-roles="product_manager,designer,ukiot,gp_planning_specialist,diu_planning_specialist,aod_specialist" data-start-for='ukiot,gp_planning_specialist,diu_planning_specialist,aod_specialist'>
+                            <div class="proc-num">23</div>
+                            <div class="proc-name">Создание номенклатурных групп</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17,19</span><span class="io-out">➡️ 4</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Создание базы / закупки</div>
+                        <a href="proc4.html" class="proc-card phase3-color" data-roles="product_manager,uop,technical_consultant,designer,technologist,aod_specialist,marketing_analyst,pricing_analyst,plm_administrator,declaration_specialist,honest_sign_manager,ekonomist,ukiot,internet_projects_head" data-start-for='uop,technical_consultant,technologist,pricing_analyst,plm_administrator,declaration_specialist,honest_sign_manager,ekonomist'>
+                            <div class="proc-num">4</div>
+                            <div class="proc-name">Ввод номенклатуры в 1С:УПП</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 23,24</span><span class="io-out">➡️ 11,13,15</span></div>
+                        </a>
+                        <a href="proc26.html" class="proc-card phase3-color" data-roles="product_manager,utk_head,nva_head" data-start-for='utk_head,nva_head'>
+                            <div class="proc-num">26</div>
+                            <div class="proc-name">Поиск OEM-ODM поставщика</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17</span><span class="io-out">➡️ 31</span></div>
+                        </a>
+                        <a href="proc31.html" class="proc-card phase3-color" data-roles="product_manager,storekeeper,procurement_manager" data-start-for='storekeeper,procurement_manager'>
+                            <div class="proc-num">31</div>
+                            <div class="proc-name">Закупка образцов для целей проектов</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 26</span><span class="io-out">➡️ Испытания</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 4 · Подготовка к продажам -->
+            <div class="phase-column phase4">
+                <div class="phase-header">Фаза 4 · Подготовка к продажам</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc11.html" class="proc-card phase4-color" data-roles="product_manager,financial_director">
+                            <div class="proc-num">11</div>
+                            <div class="proc-name">Ценообразование нового продукта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4</span><span class="io-out">➡️ 14</span></div>
+                        </a>
+                        <a href="proc15.html" class="proc-card phase4-color" data-roles="product_manager,designer,advertising_head,internet_projects_head,ovk_head" data-start-for='advertising_head,internet_projects_head,ovk_head'>
+                            <div class="proc-num">15</div>
+                            <div class="proc-name">Обработка ТЗ на дизайнерскую ЭД</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4</span><span class="io-out">➡️ 13</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Подготовка к продажам</div>
+                        <a href="proc13.html" class="proc-card phase4-color" data-roles="product_manager,marketing_analyst,marketing_director,internet_projects_head,advertising_head">
+                            <div class="proc-num">13</div>
+                            <div class="proc-name">Наполнение контентом раздела каталог на сайте</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4,15</span><span class="io-out">➡️ 20</span></div>
+                        </a>
+                        <a href="proc14.html" class="proc-card phase4-color" data-roles="product_manager,analytics_head" data-start-for='analytics_head'>
+                            <div class="proc-num">14</div>
+                            <div class="proc-name">Обновление файлов НиЦ и презентаций в Битрикс24</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 11</span><span class="io-out">➡️ 20</span></div>
+                        </a>
+                        <a href="proc28.html" class="proc-card phase4-color" data-roles="product_manager,designer,utp_head,metrologist,certification_specialist,initiator" data-start-for='certification_specialist,metrologist,utp_head'>
+                            <div class="proc-num">28</div>
+                            <div class="proc-name">Согласование макета сертификата / Получение разрешительных документов</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4,26</span><span class="io-out">➡️ 30</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Поддерживающие процессы</div>
+                        <a href="proc30.html" class="proc-card phase4-color" data-roles="product_manager,lawyer" data-start-for='lawyer'>
+                            <div class="proc-num">30</div>
+                            <div class="proc-name">Договорная работа</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 28,31</span><span class="io-out">➡️ Договор</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 5 · Запуск продаж -->
+            <div class="phase-column phase5">
+                <div class="phase-header">Фаза 5 · Запуск продаж</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc20.html" class="proc-card phase5-color" data-roles="product_manager,project_manager,ursd_head,roznica_head,sapr_specialist,division_head,urpr_head,kam,uoitp_head,advertising_head,upp_head">
+                            <div class="proc-num">20</div>
+                            <div class="proc-name">Подготовка к старту продаж (pre-sale)</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4,13,14,15</span><span class="io-out">➡️ 25</span></div>
+                        </a>
+                        <a href="proc25.html" class="proc-card phase5-color" data-roles="product_manager,project_manager,ursd_head,marketing_analyst,uoitp_head,advertising_head,upp_head,uop_head">
+                            <div class="proc-num">25</div>
+                            <div class="proc-name">Объявление старта продаж нового продукта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 20</span><span class="io-out">➡️ Акт</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 6 · Управление -->
+            <div class="phase-column phase6">
+                <div class="phase-header">Фаза 6 · Управление</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc8.html" class="proc-card phase6-color" data-roles="product_manager,planning_specialist,marketing_analyst,marketing_director,analytics_head" data-start-for='planning_specialist'>
+                            <div class="proc-num">8</div>
+                            <div class="proc-name">Корректировка и согласование плана продаж</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 20,25</span><span class="io-out">➡️ 12</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Управление и аналитика</div>
+                        <a href="proc12.html" class="proc-card phase6-color" data-roles="product_manager,planning_specialist,analytics_head">
+                            <div class="proc-num">12</div>
+                            <div class="proc-name">Классификация ОЕМ номенклатуры с установкой параметров складских запасов</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 8</span><span class="io-out">➡️ 22</span></div>
+                        </a>
+                        <a href="proc22.html" class="proc-card phase6-color" data-roles="product_manager,marketing_analyst,product_department_head,analytics_head,uop,internet_projects_head" data-start-for='product_department_head'>
+                            <div class="proc-num">22</div>
+                            <div class="proc-name">Ценообразование продукта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 12,10</span><span class="io-out">➡️ 8,3</span></div>
+                        </a>
+                        <a href="proc4n.html" class="proc-card phase6-color" data-roles="product_manager,planning_specialist,marketing_analyst">
+                            <div class="proc-num">4н</div>
+                            <div class="proc-name">Выявление неликвидной и слабооборачиваемой продукции</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Ежемесячно</span><span class="io-out">➡️ 3,29</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Поддерживающие процессы</div>
+                        <a href="proc10.html" class="proc-card phase6-color" data-roles="product_manager,marketing_analyst,analytics_head,marketing_director">
+                            <div class="proc-num">10</div>
+                            <div class="proc-name">Сбор и анализ данных о конкурентах</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Регулярно</span><span class="io-out">➡️ 11,22</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 7 · Вывод и утилизация -->
+            <div class="phase-column phase7">
+                <div class="phase-header">Фаза 7 · Вывод и утилизация</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc3.html" class="proc-card phase7-color" data-roles="product_manager,uop,aod_specialist,gp_planning_specialist,advertising_head,internet_projects_head">
+                            <div class="proc-num">3</div>
+                            <div class="proc-name">Вывод номенклатуры из папки «Готовая продукция»</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 22,4н</span><span class="io-out">➡️ Архив</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Проектный офис</div>
+                        <a href="proc5.html" class="proc-card phase7-color" data-roles="product_manager,project_office_head,project_committee,ukiot">
+                            <div class="proc-num">5</div>
+                            <div class="proc-name">Завершение продуктового проекта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17,19,24</span><span class="io-out">➡️ 6</span></div>
+                        </a>
+                        <a href="proc6.html" class="proc-card phase7-color" data-roles="product_manager,project_office_head,project_committee">
+                            <div class="proc-num">6</div>
+                            <div class="proc-name">Изменение продуктового проекта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 5</span><span class="io-out">➡️ Корректировка</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Поддерживающие процессы</div>
+                        <a href="proc29.html" class="proc-card phase7-color" data-roles="product_manager,ukiot,commission_member,security_director" data-start-for='commission_member,security_director'>
+                            <div class="proc-num">29</div>
+                            <div class="proc-name">Списание ТМЦ по УУ</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4н и др.</span><span class="io-out">➡️ Списание</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 </div>
