@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 8 (Интерактив)</title>
+    <title>КЭАЗ · Процедура 8</title>
     <style>
         * {
             margin: 0;
@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -61,7 +77,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -217,7 +232,6 @@
             color: #f6b83e;
         }
 
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -322,10 +336,10 @@
             z-index: 1000;
         }
 
-        .role-spec { border-left-color: #4682b4; } /* Специалист по планированию */
-        .role-rukovod { border-left-color: #1e90ff; } /* Руководители направлений */
-        .role-director { border-left-color: #8a2be2; } /* Директора */
-        .role-usp { border-left-color: #2e8b57; } /* Главный специалист УПСП */
+        .role-spec { border-left-color: #4682b4; }
+        .role-rukovod { border-left-color: #1e90ff; }
+        .role-director { border-left-color: #8a2be2; }
+        .role-usp { border-left-color: #2e8b57; }
     </style>
 </head>
 <body>
@@ -422,14 +436,14 @@
                         <div class="step-card role-director" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">3.1</span>
                             <div class="step-title">Участие в совещании</div>
-                            <div class="step-preview">Участвуют в совещании по согласованию скорректированного плана (6-й рабочий день месяца)...</div>
+                            <div class="step-preview">Участвуют в совещании по согласованию скорректированного плана...</div>
                         </div>
                     </div>
                     <div class="cell">
                         <div class="step-card role-director" data-step="10" onclick="goToStep(10)">
                             <span class="step-num">4.1</span>
                             <div class="step-title">Согласование записки</div>
-                            <div class="step-preview">Согласуют аналитическую записку (2-я и 3-я итерации)...</div>
+                            <div class="step-preview">Согласуют аналитическую записку...</div>
                         </div>
                     </div>
                     <div class="cell"></div>
@@ -446,7 +460,7 @@
                         <div class="step-card role-usp" data-step="11" onclick="goToStep(11)">
                             <span class="step-num">4.1</span>
                             <div class="step-title">Согласование записки</div>
-                            <div class="step-preview">Согласует аналитическую записку (1-я итерация)...</div>
+                            <div class="step-preview">Согласует аналитическую записку...</div>
                         </div>
                     </div>
                     <div class="cell"></div>
@@ -487,85 +501,85 @@
         1: {
             number: "1",
             role: "Специалист по планированию отдела аналитики цен и данных",
-            text: "Специалист по планированию отдела аналитики цен и данных формирует файл каждый 2-ой рабочий день месяца.\n\nФайл включает в себя следующую информацию:\n• базовый годовой помесячный план\n• фактические продажи и подтвержденные заявки от покупателей помесячно и накопленным итогом\n• расчетный на основании статистики план на следующие 5 месяцев\n• величину свободных остатков по НГ\n• прогноз продаж по проектным спецификациям\n• динамику sell-in\n• динамику sell-out\n\nФайл расположен по ссылке: https://bi.keaz.ru/bitrix/tools/disk/focus.php?folderId=217821&action=openFolderList&ncc=1",
+            text: "Специалист по планированию отдела аналитики цен и данных формирует файл каждый 2-ой рабочий день месяца.\n\nФайл включает в себя следующую информацию:\n• базовый годовой помесячный план\n• фактические продажи и подтвержденные заявки от покупателей помесячно и накопленным итогом\n• расчетный на основании статистики план на следующие 5 месяцев\n• величину свободных остатков по НГ\n• прогноз продаж по проектным спецификациям\n• динамику sell-in\n• динамику sell-out\n\nВход в процедуру — наступление 2-го рабочего дня месяца.",
             inputs: ["⬅️ Наступление 2-го рабочего дня месяца"],
-            outputs: ["→ Шаг 2"]
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
             role: "Специалист по планированию отдела аналитики цен и данных",
             text: "Специалист по планированию ставит задачу Руководителям направлений на исполнение в 1С:ДО по корректировке расчетного плана и назначает Начальника отдела аналитики цен и данных контролирующим лицом.\n\nКорректировка происходит в приложенном файле в соответствующей строчке. Обоснованием корректировки могут быть:\n• знания о предполагаемых отгрузках выше среднестатистических значений\n• оценка общего тренда (рост, падение)\n• устранение дефицитов на складе\n• оценка перспектив проектных продаж\n• предполагаемое изменение цен\n• планируемые мероприятия по стимулированию продаж",
-            inputs: ["⬅️ От специалиста (шаг 1)"],
-            outputs: ["→ Шаг 2.1 (Руководителям направлений)"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От специалиста (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 2.1 (Руководителям направлений)</a>"]
         },
         3: {
             number: "3",
             role: "Специалист по планированию отдела аналитики цен и данных",
             text: "Специалист по планированию инициирует проведение совещания по согласованию скорректированного плана и прикладывает файл к событию о проведении совещания для предварительного ознакомления участников.\n\nСовещание проводится каждый 6-ой рабочий день месяца.\n\nУчастники совещания:\n• Специалист по планированию отдела аналитики цен и данных\n• Начальник отдела аналитики цен и данных\n• Руководители направлений\n• Директор по маркетингу\n• Директор по продажам РФ\n• Директор по зарубежным продажам",
-            inputs: ["⬅️ От руководителей направлений (шаг 2.1)"],
-            outputs: ["→ Шаг 4"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От руководителей направлений (шаг 2.1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>", "→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 3.1 (участие директоров)</a>"]
         },
         4: {
             number: "4",
             role: "Специалист по планированию отдела аналитики цен и данных",
             text: "Специалист по планированию формирует итоговую аналитическую записку и отправляет ее на согласование в 1С:ДО. В аналитической записке акцентирует внимание на существенных корректировках плана от текущих статистических значений с обоснованием этих корректировок.\n\nСогласующие лица:\n• Начальник отдела аналитики цен и данных (1-ая итерация)\n• Директор по маркетингу, Директор по продажам РФ и Директор зарубежных продаж (2-ая итерация)\n• Управляющий коммерческим блоком (3-ая итерация)",
-            inputs: ["⬅️ От специалиста (шаг 3)"],
-            outputs: ["→ Шаг 4.1 (согласование)", "→ Шаг 5"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От специалиста (шаг 3)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 4.1 (согласование аналитики)</a>", "→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 4.1 (согласование директоров)</a>", "→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
             role: "Специалист по планированию отдела аналитики цен и данных",
             text: "Специалист по планированию вносит корректировки по результатам согласования в файл 'Модель скользящего прогноза'.",
             inputs: ["⬅️ После согласования (шаг 4.1)"],
-            outputs: ["→ Шаг 6"]
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
             role: "Специалист по планированию отдела аналитики цен и данных",
             text: "Специалист по планированию проводит обязательное информирование Главного специалиста УПСП и отправляет итоговый файл «Модель скользящего прогноза» на ознакомление в 1С:ДО.",
-            inputs: ["⬅️ От специалиста (шаг 5)"],
-            outputs: ["→ Шаг 6.1 (ознакомление УПСП)", "→ Шаг 7"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От специалиста (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 6.1 (ознакомление УПСП)</a>", "→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
         },
         7: {
             number: "7",
             role: "Специалист по планированию отдела аналитики цен и данных",
-            text: "На основании итогового файла «Модель скользящего прогноза» Специалист по планированию инициирует процесс «Классификация ОЕМ номенклатуры с установкой параметров складских запасов», регламентированный процедурой «Классификация ОЕМ номенклатуры с установкой параметров складских запасов», ссылка на документ: e1c://server/smile/docob#e1cib/data/РегистрСведений.ДанныеВнутреннихДокументов?ДатаСортировки=20200709151706&ПометкаУдаления=0&Документ=4490549f350a96c411eab1f5be176446",
-            inputs: ["⬅️ От специалиста (шаг 6)"],
-            outputs: ["📤 ВЫХОД: Переход к процедуре 12 (Классификация ОЕМ номенклатуры)"]
+            text: "На основании итогового файла «Модель скользящего прогноза» Специалист по планированию инициирует процесс <a href='proc12.html' class='proc-link'>«Классификация ОЕМ номенклатуры с установкой параметров складских запасов»</a>, регламентированный процедурой 12.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От специалиста (шаг 6)</a>"],
+            outputs: ["📤 ВЫХОД: Переход к <a href='proc12.html' class='proc-link'>процедуре 12</a>"]
         },
         8: {
             number: "2.1",
             role: "Руководители направлений",
             text: "Проводят корректировку расчетного плана в приложенном файле в соответствующей строчке на основании:\n• знаний о предполагаемых отгрузках выше среднестатистических значений\n• оценки общего тренда (рост, падение)\n• устранения дефицитов на складе\n• оценки перспектив проектных продаж\n• предполагаемого изменения цен\n• планируемых мероприятий по стимулированию продаж",
-            inputs: ["⬅️ От специалиста (шаг 2)"],
-            outputs: ["→ Шаг 3"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От специалиста (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         9: {
             number: "3.1",
             role: "Директор по маркетингу, Директор по продажам РФ, Директор по зарубежным продажам",
             text: "Участвуют в совещании по согласованию скорректированного плана, которое проводится каждый 6-ой рабочий день месяца.",
-            inputs: ["⬅️ От специалиста (шаг 3)"],
-            outputs: ["→ Шаг 4"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От специалиста (шаг 3)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         10: {
             number: "4.1",
             role: "Директор по маркетингу, Директор по продажам РФ, Директор по зарубежным продажам, Управляющий коммерческим блоком",
             text: "Согласуют аналитическую записку в 1С:ДО:\n• Директор по маркетингу, Директор по продажам РФ и Директор зарубежных продаж (2-ая итерация)\n• Управляющий коммерческим блоком (3-ая итерация)",
-            inputs: ["⬅️ От специалиста (шаг 4)"],
-            outputs: ["→ Шаг 5"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От специалиста (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         11: {
             number: "4.1",
             role: "Начальник отдела аналитики цен и данных",
             text: "Согласует аналитическую записку в 1С:ДО (1-ая итерация).",
-            inputs: ["⬅️ От специалиста (шаг 4)"],
-            outputs: ["→ Шаг 5"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От специалиста (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         12: {
             number: "6.1",
             role: "Главный специалист УПСП",
             text: "Получает итоговый файл «Модель скользящего прогноза» на ознакомление в 1С:ДО.",
-            inputs: ["⬅️ От специалиста (шаг 6)"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От специалиста (шаг 6)</a>"],
             outputs: ["→ Ознакомлен"]
         }
     };
@@ -591,18 +605,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -610,13 +618,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
