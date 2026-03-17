@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 11 (Интерактив)</title>
+    <title>КЭАЗ · Процедура 11</title>
     <style>
         * {
             margin: 0;
@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -61,7 +77,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -217,7 +232,6 @@
             color: #f6b83e;
         }
 
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -322,9 +336,9 @@
             z-index: 1000;
         }
 
-        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
-        .role-rukovod { border-left-color: #8a2be2; } /* Начальник отдела */
-        .role-analitik { border-left-color: #4682b4; } /* Ведущий специалист аналитики */
+        .role-pm { border-left-color: #1e90ff; }
+        .role-rukovod { border-left-color: #8a2be2; }
+        .role-analitik { border-left-color: #4682b4; }
     </style>
 </head>
 <body>
@@ -507,27 +521,26 @@
 
 <script>
     const stepData = {
-        // Исследовательская фаза
         1: {
             number: "Исслед.1",
             role: "Продукт-менеджер",
-            text: "Продукт-менеджер получает в 1С:ДО задачу на исполнение от проект-менеджера на подготовку ценового позиционирования.",
+            text: "Продукт-менеджер получает в 1С:ДО задачу на исполнение от проект-менеджера на подготовку ценового позиционирования.\n\nВход в процедуру — получение задачи от проект-менеджера.",
             inputs: ["⬅️ Задача от проект-менеджера"],
-            outputs: ["→ Шаг 2 (Исслед.2)"]
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2 (Исслед.2)</a>"]
         },
         2: {
             number: "Исслед.2",
             role: "Продукт-менеджер",
             text: "Продукт-менеджер в 1С:ДО готовит/актуализирует файл «Рентабельность» в соответствии с инструкцией, ссылка на инструкцию в 1С:ДО: e1cib/data/Справочник.ВнутренниеДокументы?ref=9a84549f350a96c411ec927780d3d704. В части себестоимости указывается расчетная (целевая) себестоимость, полученная на базе подготовленного спецификатора на продукт.",
-            inputs: ["⬅️ От ПМ (шаг 1)"],
-            outputs: ["→ Шаг 3 (Исслед.3)"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3 (Исслед.3)</a>"]
         },
         3: {
             number: "Исслед.3",
             role: "Продукт-менеджер",
             text: "Продукт-менеджер в 1С:ДО создает служебную записку с приложенными готовым/обновленным файлом «Рентабельность» с обоснованием предложенного ценового позиционирования и отправляет на согласование Начальнику отдела управления продуктового маркетинга, отвечающего за направление, в которое добавляется новый продукт.\n\nПримечание: если Начальник отдела не согласовал служебную записку, продукт-менеджер вносит корректировки, учитывая полученные замечания и повторно запускает процесс согласования в 1С:ДО.",
-            inputs: ["⬅️ От ПМ (шаг 2)"],
-            outputs: ["→ Начальнику отдела (согласование)"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Начальнику отдела (согласование)</a>"]
         },
         4: {
             number: "Исслед.4",
@@ -536,92 +549,88 @@
             inputs: ["⬅️ После согласования начальником отдела"],
             outputs: ["→ Ожидание этапа пилотных продаж"]
         },
-
-        // Пилотные продажи
         5: {
             number: "Пилот.1",
             role: "Продукт-менеджер",
             text: "Продукт-менеджер получает в 1С:ДО задачу на исполнение от проект-менеджера на актуализацию файла «Рентабельность» и подготовку файла «НиЦ».",
             inputs: ["⬅️ Задача от проект-менеджера (этап пилотных продаж)"],
-            outputs: ["→ Шаг 6 (Пилот.2)"]
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6 (Пилот.2)</a>"]
         },
         6: {
             number: "Пилот.2",
             role: "Продукт-менеджер",
             text: "Продукт-менеджер актуализирует информацию в ранее подготовленном файле «Рентабельность». При необходимости добавляет дополнительную информацию в связи с изменением рыночной среды, в том числе:\n• изменение ценового позиционирования конкурентов\n• появление новых линеек аналогичных продуктов конкурентов\n• изменение ценовой и коммерческой политики компании\n• прочие факторы",
-            inputs: ["⬅️ От ПМ (шаг 5)"],
-            outputs: ["→ Шаг 7 (Пилот.3)"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От ПМ (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7 (Пилот.3)</a>"]
         },
         7: {
             number: "Пилот.3",
             role: "Продукт-менеджер",
             text: "Продукт-менеджер в 1С:ДО создает служебную записку с приложенным актуальным файлом «Рентабельность» и отправляет на согласование.\n\nСогласующие лица:\n• Начальник отдела управления продуктового маркетинга (1-ая итерация)\n• Начальник управления продуктового маркетинга (2-ая итерация)\n• Директор по маркетингу (3-ая итерация)\n• Директор по продажам РФ и Директор по зарубежным продажам (4-ая итерация)\n\nПримечание: если на каком-либо из этапов согласования файл был не согласован, продукт-менеджер вносит корректировки, учитывая полученные замечания и повторно запускает процесс согласования в 1С:ДО.",
-            inputs: ["⬅️ От ПМ (шаг 6)"],
-            outputs: ["→ На согласование"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От ПМ (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>На согласование (1 итерация)</a>"]
         },
         8: {
             number: "Пилот.4",
             role: "Продукт-менеджер",
             text: "После согласования файла рентабельность Продукт-менеджер вносит цену на новую номенклатуру в 1С:УПП, согласно действующей инструкции.\n\nСсылка на инструкцию: e1cib/data/РегистрСведений.ДанныеВнутреннихДокументов?ДатаСортировки=20220810085417&ПометкаУдаления=0&Документ=9c45549f350a96c411ed17ed9f696da4",
             inputs: ["⬅️ После согласования"],
-            outputs: ["→ Шаг 9 (Пилот.5)"]
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9 (Пилот.5)</a>"]
         },
         9: {
             number: "Пилот.5",
             role: "Продукт-менеджер",
             text: "Продукт-менеджер готовит, на основании согласованного файла «Рентабельность», файл «НиЦ», в соответствии с инструкцией, ссылка на инструкцию в 1С:ДО: e1cib/data/Справочник.ВнутренниеДокументы?ref=9a84549f350a96c411ec927780d3d704",
-            inputs: ["⬅️ От ПМ (шаг 8)"],
-            outputs: ["→ Шаг 10 (Пилот.6)"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От ПМ (шаг 8)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10 (Пилот.6)</a>"]
         },
         10: {
             number: "Пилот.6",
             role: "Продукт-менеджер",
             text: "Продукт-менеджер размещает обновленные файлы «Рентабельность» и «НиЦ» в 1С:ДО, путь: 1С:ДО/Документы внутренние/Файлы/Информация для продаж/ и отправляет их на ознакомление Ведущему специалисту управления аналитики в 1С:ДО.",
-            inputs: ["⬅️ От ПМ (шаг 9)"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От ПМ (шаг 9)</a>"],
             outputs: ["📤 ВЫХОД: Файлы переданы для использования в продажах"]
         },
-
-        // Согласующие
         11: {
             number: "Исслед.3",
             role: "Начальник отдела управления продуктового маркетинга",
             text: "Согласует служебную записку с файлом «Рентабельность» в исследовательской фазе. При несоответствиях возвращает на доработку.",
-            inputs: ["⬅️ От ПМ"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ</a>"],
             outputs: ["→ Обратно ПМ (при доработке) или далее"]
         },
         12: {
             number: "Пилот.3",
             role: "Начальник отдела управления продуктового маркетинга",
             text: "Согласует служебную записку (1-ая итерация) на этапе пилотных продаж.",
-            inputs: ["⬅️ От ПМ"],
-            outputs: ["→ Начальнику управления"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От ПМ</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Начальнику управления</a>"]
         },
         13: {
             number: "Пилот.3",
             role: "Начальник управления продуктового маркетинга",
             text: "Согласует служебную записку (2-ая итерация) на этапе пилотных продаж.",
-            inputs: ["⬅️ От начальника отдела"],
-            outputs: ["→ Директору по маркетингу"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От начальника отдела</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Директору по маркетингу</a>"]
         },
         14: {
             number: "Пилот.3",
             role: "Директор по маркетингу",
             text: "Согласует служебную записку (3-ая итерация) на этапе пилотных продаж.",
-            inputs: ["⬅️ От начальника управления"],
-            outputs: ["→ Директорам по продажам"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От начальника управления</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Директорам по продажам</a>"]
         },
         15: {
             number: "Пилот.3",
             role: "Директор по продажам РФ, Директор по зарубежным продажам",
             text: "Согласуют служебную записку (4-ая итерация) на этапе пилотных продаж.",
-            inputs: ["⬅️ От директора по маркетингу"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От директора по маркетингу</a>"],
             outputs: ["→ Обратно ПМ (завершение согласования)"]
         },
         16: {
             number: "Пилот.6",
             role: "Ведущий специалист управления аналитики",
             text: "Получает на ознакомление файлы «Рентабельность» и «НиЦ» в 1С:ДО.",
-            inputs: ["⬅️ От ПМ"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От ПМ</a>"],
             outputs: ["→ Ознакомлен"]
         }
     };
@@ -647,18 +656,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -666,13 +669,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
