@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 7</title>
+    <title>КЭАЗ · Процедура 7 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -77,7 +77,6 @@
             min-width: 1400px;
         }
 
-        /* Шапка с номерами шагов */
         .step-header {
             display: flex;
             margin-left: 220px;
@@ -95,7 +94,6 @@
             font-size: 0.85rem;
         }
 
-        /* Дорожка */
         .lane {
             display: flex;
             min-height: 120px;
@@ -105,7 +103,6 @@
             border-bottom: none;
         }
 
-        /* Название дорожки */
         .lane-label {
             width: 220px;
             font-weight: 700;
@@ -121,7 +118,6 @@
             font-size: 0.9rem;
         }
 
-        /* Ячейки с шагами */
         .lane-cells {
             display: flex;
             flex: 1;
@@ -140,7 +136,6 @@
             padding: 5px;
         }
 
-        /* Карточка шага */
         .step-card {
             background: white;
             border-radius: 16px;
@@ -153,11 +148,22 @@
             transition: 0.2s;
             width: 100%;
             text-align: left;
+            scroll-margin-top: 20px;
         }
         .step-card:hover {
             transform: translateY(-2px);
             border-color: #f6b83e;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+        .step-card.highlighted-output {
+            border: 3px solid #2e8b57;
+            background: #e6f3e6;
+            box-shadow: 0 0 0 3px rgba(46,139,86,0.2);
         }
 
         .step-num {
@@ -211,9 +217,6 @@
             color: #f6b83e;
         }
 
-        /* Цвета ролей */
-        .role-marketing { border-left-color: #4682b4; } /* Маркетолог */
-
         /* Детальная панель */
         .detail-panel {
             display: none;
@@ -223,6 +226,7 @@
             margin-top: 30px;
             border: 2px solid #e0e7f5;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
         }
         .detail-panel.show {
             display: block;
@@ -286,8 +290,18 @@
             gap: 8px;
             font-size: 0.9rem;
         }
-        .io-arrow {
-            font-size: 1.2rem;
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
         }
 
         .back-to-top {
@@ -307,6 +321,8 @@
             border: none;
             z-index: 1000;
         }
+
+        .role-marketing { border-left-color: #4682b4; } /* Маркетолог */
     </style>
 </head>
 <body>
@@ -314,12 +330,10 @@
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
     <h1>Процедура 7: ИНСТРУКЦИЯ Анализ цепочки поставок (каналов распределения)</h1>
-    <div class="subhead">Владелец: Дирекция по маркетингу · Исполнитель: Маркетолог</div>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
-    <!-- SWIMLANE -->
     <div class="swimlane">
         <div class="swimlane-table">
-            <!-- Шапка с номерами шагов -->
             <div class="step-header">
                 <div class="step-header-cell">1-2</div>
                 <div class="step-header-cell">3-4</div>
@@ -331,32 +345,32 @@
                 <div class="lane-label" style="border-left-color: #4682b4;">Маркетолог</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-marketing" onclick="showDetail(1)">
+                        <div class="step-card role-marketing" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
                             <div class="step-title">Обновление каналов</div>
                             <div class="step-preview">Обновляет, анализирует и выявляет новые каналы распределения...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
-                        <div class="step-card role-marketing" onclick="showDetail(2)">
+                        <div class="step-card role-marketing" data-step="2" onclick="goToStep(2)">
                             <span class="step-num">2</span>
                             <div class="step-title">Разделение каналов</div>
                             <div class="step-preview">Разделяет каналы на первичные и вторичные...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-marketing" onclick="showDetail(3)">
+                        <div class="step-card role-marketing" data-step="3" onclick="goToStep(3)">
                             <span class="step-num">3</span>
                             <div class="step-title">Сбор данных по первичным каналам</div>
                             <div class="step-preview">Проводит сбор данных по первичным каналам распределения...</div>
                         </div>
-                        <div class="step-card role-marketing" onclick="showDetail(4)">
+                        <div class="step-card role-marketing" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
                             <div class="step-title">Сбор данных по вторичным каналам</div>
                             <div class="step-preview">Проводит сбор данных по вторичным каналам распределения...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-marketing" onclick="showDetail(5)">
+                        <div class="step-card role-marketing" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
                             <div class="step-title">Формирование результатов</div>
                             <div class="step-preview">Формирует карты каналов распределения, объёмы, продуктовые приоритеты...</div>
@@ -417,6 +431,8 @@
         }
     };
 
+    let currentStep = null;
+
     function showDetail(stepId) {
         const panel = document.getElementById('detailPanel');
         const header = document.getElementById('detailHeader');
@@ -441,7 +457,13 @@
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                const stepMatch = inp.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -449,7 +471,13 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -459,7 +487,57 @@
         io.innerHTML = ioHtml;
         
         panel.classList.add('show');
+        
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
     }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step', 'highlighted-output');
+        });
+        
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+        
+        const data = stepData[stepId];
+        if (data && data.outputs) {
+            data.outputs.forEach(out => {
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const outputStep = stepMatch[1];
+                    const outputCard = document.querySelector(`.step-card[data-step="${outputStep}"], .step-card[data-step^="${outputStep}-"]`);
+                    if (outputCard) {
+                        outputCard.classList.add('highlighted-output');
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                const numericStep = stepId.split('-')[0];
+                goToStep(numericStep);
+            }
+        });
+    });
 </script>
 </body>
 </html>
