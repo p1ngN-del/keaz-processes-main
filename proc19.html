@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -61,7 +77,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -217,7 +232,6 @@
             color: #f6b83e;
         }
 
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -538,135 +552,135 @@
         1: {
             number: "1",
             role: "Инициатор",
-            text: "В 1С:ДО формирует заявку на разработку технического решения. Инициатором может выступать сотрудник Технической дирекции, Дирекции по продажам, Дирекции маркетинга, Дирекции зарубежных продаж, Дирекции стратегических коммуникаций. В 1С:ДО создает Служебную записку, в которой указывает описание предлагаемого решения, включая данные, достаточные для его осуществления, а также ожидаемый технический и экономический эффект, и отправляет на исполнение Начальнику управления по разработке решений для сегментов.",
-            inputs: ["⬅️ Инициатива от подразделения"],
-            outputs: ["→ Шаг 2"]
+            text: 'В 1С:ДО формирует заявку на разработку технического решения. Инициатором может выступать сотрудник Технической дирекции, Дирекции по продажам, Дирекции маркетинга, Дирекции зарубежных продаж, Дирекции стратегических коммуникаций. В 1С:ДО создает Служебную записку, в которой указывает описание предлагаемого решения, включая данные, достаточные для его осуществления, а также ожидаемый технический и экономический эффект, и отправляет на исполнение Начальнику управления по разработке решений для сегментов.\n\nВходом в процедуру является выход из <a href="proc18.html" class="proc-link">процедуры 18 (Разработка стратегии развития сегментов)</a>.',
+            inputs: ['⬅️ <a href="proc18.html" class="proc-link">Процедура 18 (Стратегия развития сегментов)</a>'],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
             role: "Руководитель управления по разработке решений для сегментов",
             text: "Рассматривает заявку, собирает первичную информацию, принимает решение о принятии заявки в работу. Проводится анализ возможности дальнейшей реализации технического решения, с учетом производственных мощностей, программного, аппаратного обеспечения, технических требований по решению и требований к продуктам в составе решения.",
-            inputs: ["⬅️ От инициатора (шаг 1)"],
-            outputs: ["❌ Если заявка не принята → Шаг 3", "✅ Если принята → Шаг 4"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От инициатора (шаг 1)</a>"],
+            outputs: ["❌ Если заявка не принята → <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>", "✅ Если принята → <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         3: {
             number: "3",
             role: "Инициатор",
             text: "Редактирует заявку и возвращается к шагу 2.",
-            inputs: ["⬅️ От руководителя (шаг 2, НЕТ)"],
-            outputs: ["→ Шаг 2"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От руководителя (шаг 2, НЕТ)</a>"],
+            outputs: ["↩️ Возврат к <a href='#' onclick='goToStep(2); return false;' class='io-link'>шагу 2</a>"]
         },
         4: {
             number: "4",
             role: "Руководитель управления по разработке решений для сегментов",
             text: "Назначает ответственного владельца данного паспорта технического решения.",
-            inputs: ["⬅️ От руководителя (шаг 2, ДА)"],
-            outputs: ["→ Шаг 5"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От руководителя (шаг 2, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
             role: "Руководитель управления по разработке решений для сегментов",
             text: "В 1С:ДО ставит задачу на разработку паспорта технического решения. В 1С:ДО ставит подзадачу из ранее полученной заявки на разработку паспорта технического решения на ответственного исполнителя.",
-            inputs: ["⬅️ От руководителя (шаг 4)"],
-            outputs: ["→ Шаг 6"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От руководителя (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
             role: "Старший специалист управления по разработке решений для сегментов",
             text: "Разрабатывает паспорт технического решения, презентацию технического решения.",
-            inputs: ["⬅️ От руководителя (шаг 5)"],
-            outputs: ["→ Шаг 7"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От руководителя (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
         },
         7: {
             number: "7",
             role: "Старший специалист управления по разработке решений для сегментов",
             text: "В 1С:ДО отправляет разработанный паспорт и презентацию технического решения на согласование. В 1С:ДО отправляет на последовательное согласование разработанные паспорт и презентацию на Инициатора и Директора по маркетингу.",
-            inputs: ["⬅️ От специалиста (шаг 6)"],
-            outputs: ["→ Шаг 8"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От специалиста (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
         },
         8: {
             number: "8",
             role: "Инициатор",
             text: "Согласовывает разработанный паспорт и презентацию технического решения.",
-            inputs: ["⬅️ От специалиста (шаг 7)"],
-            outputs: ["❌ Если не согласовано → Шаг 9", "✅ Если согласовано → Шаг 10"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От специалиста (шаг 7)</a>"],
+            outputs: ["❌ Если не согласовано → <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>", "✅ Если согласовано → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
         },
         9: {
             number: "9",
             role: "Старший специалист управления по разработке решений для сегментов",
             text: "Редактирует документы и возвращается к шагу 7.",
-            inputs: ["⬅️ От инициатора (шаг 8, НЕТ)"],
-            outputs: ["→ Шаг 7"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От инициатора (шаг 8, НЕТ)</a>"],
+            outputs: ["↩️ Возврат к <a href='#' onclick='goToStep(7); return false;' class='io-link'>шагу 7</a>"]
         },
         10: {
             number: "10",
             role: "Директор по маркетингу",
             text: "Согласовывает разработанные паспорт и презентацию технического решения.",
-            inputs: ["⬅️ От инициатора (шаг 8, ДА)"],
-            outputs: ["❌ Если не согласовано → Шаг 9", "✅ Если согласовано → Шаг 11"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От инициатора (шаг 8, ДА)</a>"],
+            outputs: ["❌ Если не согласовано → <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>", "✅ Если согласовано → <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
         },
         11: {
             number: "11",
             role: "Старший специалист управления по разработке решений для сегментов",
             text: "Разрабатывает чертежи, пояснительные записки, техническую документацию.",
-            inputs: ["⬅️ От директора по маркетингу (шаг 10, ДА)"],
-            outputs: ["→ Шаг 12"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От директора по маркетингу (шаг 10, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>"]
         },
         12: {
             number: "12",
             role: "Старший специалист управления по разработке решений для сегментов",
             text: "Отправляет на согласование разработанные чертежи, пояснительные записки, техническую документацию. В 1С:ДО отправляет на последовательное согласование разработанные чертежи, пояснительную записку и техническую документацию.",
-            inputs: ["⬅️ От специалиста (шаг 11)"],
-            outputs: ["→ Шаг 13"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От специалиста (шаг 11)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>"]
         },
         13: {
             number: "13",
             role: "Инициатор",
             text: "Принимает решение о согласовании.",
-            inputs: ["⬅️ От специалиста (шаг 12)"],
-            outputs: ["❌ Если не согласовано → Шаг 14", "✅ Если согласовано → Шаг 15"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От специалиста (шаг 12)</a>"],
+            outputs: ["❌ Если не согласовано → <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>", "✅ Если согласовано → <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
         },
         14: {
             number: "14",
             role: "Старший специалист управления по разработке решений для сегментов",
             text: "Редактирует документы и возвращается к шагу 12.",
-            inputs: ["⬅️ От инициатора (шаг 13, НЕТ)"],
-            outputs: ["→ Шаг 12"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От инициатора (шаг 13, НЕТ)</a>"],
+            outputs: ["↩️ Возврат к <a href='#' onclick='goToStep(12); return false;' class='io-link'>шагу 12</a>"]
         },
         15: {
             number: "15",
             role: "Директор по маркетингу",
             text: "Принимает решение о согласовании.",
-            inputs: ["⬅️ От инициатора (шаг 13, ДА)"],
-            outputs: ["❌ Если не согласовано → Шаг 14", "✅ Если согласовано → Шаг 16"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От инициатора (шаг 13, ДА)</a>"],
+            outputs: ["❌ Если не согласовано → <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>", "✅ Если согласовано → <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
         },
         16: {
             number: "16",
             role: "Старший специалист управления по разработке решений для сегментов",
-            text: "Добавляет разработанное техническое решение в каталог технических решений. В 1С:ДО формирует служебную записку с приложенными документами разработанного ТР, устанавливает связь в 1С:ДО с ранее сформированной СЗ на разработку ТР и отправляет на ознакомление Директору по продажам РФ. Ссылка на Каталог в Битрикс: https://bi.keaz.ru/bitrix/tools/disk/focus.php?folderId=295764&action=openFolderList&ncc=1",
-            inputs: ["⬅️ От директора по маркетингу (шаг 15, ДА)"],
-            outputs: ["✅ Если нет необходимости в продуктовом проекте → Шаг 17", "✅ Если есть необходимость → Шаг 19"]
+            text: 'Добавляет разработанное техническое решение в каталог технических решений. В 1С:ДО формирует служебную записку с приложенными документами разработанного ТР, устанавливает связь в 1С:ДО с ранее сформированной СЗ на разработку ТР и отправляет на ознакомление Директору по продажам РФ. Ссылка на Каталог в Битрикс: https://bi.keaz.ru/bitrix/tools/disk/focus.php?folderId=295764&action=openFolderList&ncc=1',
+            inputs: ["⬅️ <a href='#' onclick='goToStep(15); return false;' class='io-link'>От директора по маркетингу (шаг 15, ДА)</a>"],
+            outputs: ["✅ Если нет необходимости в продуктовом проекте → <a href='#' onclick='goToStep(17); return false;' class='io-link'>Шаг 17</a>", "✅ Если есть необходимость → <a href='#' onclick='goToStep(19); return false;' class='io-link'>Шаг 19</a>"]
         },
         17: {
             number: "17",
             role: "Инициатор",
             text: "Уведомляет по почте о готовности технического решения. Выход.",
-            inputs: ["⬅️ От специалиста (шаг 16, нет проекта)"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От специалиста (шаг 16, нет проекта)</a>"],
             outputs: ["📤 ВЫХОД: Техническое решение готово"]
         },
         18: {
             number: "18",
-            role: "Директор по продажам РФ",
+            role: "Директор по продажам РФ / Инициатор",
             text: "Получает уведомление о разработанном техническом решении для ознакомления. Выход.",
-            inputs: ["⬅️ От специалиста (шаг 16)"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От специалиста (шаг 16)</a>", "⬅️ <a href='#' onclick='goToStep(17); return false;' class='io-link'>От инициатора (шаг 17)</a>"],
             outputs: ["📤 ВЫХОД: Ознакомление"]
         },
         19: {
             number: "19",
             role: "Старший специалист управления по разработке решений для сегментов",
-            text: "Информирует проект-менеджера о необходимости разработки паспорта продуктового проекта. Далее, выполняются действия, согласно ПРОЦЕДУРЕ «Инициация продуктового проекта» (процедура 24).\n\n➡️ Выход в Процедуру 24.",
-            inputs: ["⬅️ От специалиста (шаг 16, нужен проект)"],
-            outputs: ["📤 ВЫХОД: Процедура 24"]
+            text: 'Информирует проект-менеджера о необходимости разработки паспорта продуктового проекта. Далее, выполняются действия, согласно ПРОЦЕДУРЕ «Инициация продуктового проекта» (<a href="proc24.html" class="proc-link">процедура 24</a>).\n\n➡️ Выход в <a href="proc24.html" class="proc-link">Процедуру 24</a>.',
+            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От специалиста (шаг 16, нужен проект)</a>"],
+            outputs: ['📤 ВЫХОД: <a href="proc24.html" class="proc-link">Процедура 24</a>']
         }
     };
 
@@ -691,18 +705,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -710,13 +718,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
