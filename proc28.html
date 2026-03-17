@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 28</title>
+    <title>КЭАЗ · Процедура 28 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -62,7 +61,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -78,7 +76,6 @@
             min-width: 1400px;
         }
 
-        /* Шапка с номерами шагов */
         .step-header {
             display: flex;
             margin-left: 220px;
@@ -96,7 +93,6 @@
             font-size: 0.85rem;
         }
 
-        /* Дорожка */
         .lane {
             display: flex;
             min-height: 120px;
@@ -106,7 +102,6 @@
             border-bottom: none;
         }
 
-        /* Название дорожки */
         .lane-label {
             width: 220px;
             font-weight: 700;
@@ -122,7 +117,6 @@
             font-size: 0.9rem;
         }
 
-        /* Ячейки с шагами */
         .lane-cells {
             display: flex;
             flex: 1;
@@ -141,7 +135,6 @@
             padding: 5px;
         }
 
-        /* Карточка шага */
         .step-card {
             background: white;
             border-radius: 16px;
@@ -154,11 +147,22 @@
             transition: 0.2s;
             width: 100%;
             text-align: left;
+            scroll-margin-top: 20px;
         }
         .step-card:hover {
             transform: translateY(-2px);
             border-color: #f6b83e;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+        .step-card.highlighted-output {
+            border: 3px solid #2e8b57;
+            background: #e6f3e6;
+            box-shadow: 0 0 0 3px rgba(46,139,86,0.2);
         }
 
         .step-num {
@@ -212,14 +216,6 @@
             color: #f6b83e;
         }
 
-        /* Цвета ролей */
-        .role-ini { border-left-color: #1e90ff; } /* Инициатор (ПМ / Менеджер по закупкам) */
-        .role-inj { border-left-color: #4682b4; } /* Инженер по метрологическому обеспечению */
-        .role-spec { border-left-color: #8a2be2; } /* Ведущий специалист по сертификации */
-        .role-constructor { border-left-color: #ff8c00; } /* Конструктор */
-        .role-utp { border-left-color: #2e8b57; } /* Начальник УТП */
-
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -228,6 +224,7 @@
             margin-top: 30px;
             border: 2px solid #e0e7f5;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
         }
         .detail-panel.show {
             display: block;
@@ -291,8 +288,18 @@
             gap: 8px;
             font-size: 0.9rem;
         }
-        .io-arrow {
-            font-size: 1.2rem;
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
         }
 
         .back-to-top {
@@ -312,6 +319,12 @@
             border: none;
             z-index: 1000;
         }
+
+        .role-ini { border-left-color: #1e90ff; } /* Инициатор (ПМ / Менеджер по закупкам) */
+        .role-inj { border-left-color: #4682b4; } /* Инженер по метрологическому обеспечению */
+        .role-spec { border-left-color: #8a2be2; } /* Ведущий специалист по сертификации */
+        .role-constructor { border-left-color: #ff8c00; } /* Конструктор */
+        .role-utp { border-left-color: #2e8b57; } /* Начальник УТП */
     </style>
 </head>
 <body>
@@ -319,12 +332,10 @@
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
     <h1>Процедура 28: Согласование макета сертификата / Получение разрешительных документов</h1>
-    <div class="subhead">Владелец: Дирекция качества</div>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
-    <!-- SWIMLANE -->
     <div class="swimlane">
         <div class="swimlane-table">
-            <!-- Шапка с номерами шагов -->
             <div class="step-header">
                 <div class="step-header-cell">1-4</div>
                 <div class="step-header-cell">5-8</div>
@@ -337,13 +348,13 @@
                 <div class="lane-label" style="border-left-color: #1e90ff;">Инициатор<br>(ПМ / Менеджер по закупкам)</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-ini" onclick="showDetail(1)">
+                        <div class="step-card role-ini" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
                             <div class="step-title">Создание заявки</div>
                             <div class="step-preview">Создает заявку на сертификацию/декларирование в 1С:ДО...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
-                        <div class="step-card role-ini" onclick="showDetail(4)">
+                        <div class="step-card role-ini" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
                             <div class="step-title">Устранение замечаний</div>
                             <div class="step-preview">Устраняет замечания (если были) и повторно направляет документы...</div>
@@ -352,17 +363,17 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-ini" onclick="showDetail(16)">
+                        <div class="step-card role-ini" data-step="16" onclick="goToStep(16)">
                             <span class="step-num">16</span>
                             <div class="step-title">Согласование макета</div>
                             <div class="step-preview">Согласовывает макет СС/ДС (в рамках шага 13)...</div>
                         </div>
-                        <div class="step-card role-ini" onclick="showDetail(22)">
+                        <div class="step-card role-ini" data-step="22" onclick="goToStep(22)">
                             <span class="step-num">22</span>
                             <div class="step-title">Получение уведомления</div>
                             <div class="step-preview">Получает уведомление о готовности документа...</div>
                         </div>
-                        <div class="step-card role-ini" onclick="showDetail(25)">
+                        <div class="step-card role-ini" data-step="25" onclick="goToStep(25)">
                             <span class="step-num">25</span>
                             <div class="step-title">Подтверждение получения</div>
                             <div class="step-preview">Подтверждает получение документа...</div>
@@ -376,36 +387,36 @@
                 <div class="lane-label" style="border-left-color: #4682b4;">Инженер по метрологическому обеспечению</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-inj" onclick="showDetail(2)">
+                        <div class="step-card role-inj" data-step="2" onclick="goToStep(2)">
                             <span class="step-num">2</span>
                             <div class="step-title">Проверка комплектности</div>
                             <div class="step-preview">Получает задачу, проверяет полноту документов, соответствие маркировки...</div>
                         </div>
-                        <div class="step-card role-inj" onclick="showDetail(7)">
+                        <div class="step-card role-inj" data-step="7" onclick="goToStep(7)">
                             <span class="step-num">7</span>
                             <div class="step-title">Выписка образцов</div>
                             <div class="step-preview">Выписывает образцы согласно процедуре «Организация испытаний»...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-inj" onclick="showDetail(8)">
+                        <div class="step-card role-inj" data-step="8" onclick="goToStep(8)">
                             <span class="step-num">8</span>
                             <div class="step-title">Подготовка типовой заявки</div>
                             <div class="step-preview">Готовит типовую заявку в ОС на основе документов...</div>
                         </div>
-                        <div class="step-card role-inj" onclick="showDetail(9)">
+                        <div class="step-card role-inj" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">9</span>
                             <div class="step-title">Отправка в ОС</div>
                             <div class="step-preview">Отправляет типовую заявку в ОС, получает договор/счет...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-inj" onclick="showDetail(10)">
+                        <div class="step-card role-inj" data-step="10" onclick="goToStep(10)">
                             <span class="step-num">10</span>
                             <div class="step-title">Согласование договора</div>
                             <div class="step-preview">Согласовывает договор со службами (по процедуре «Договорная работа»)...</div>
                         </div>
-                        <div class="step-card role-inj" onclick="showDetail(11)">
+                        <div class="step-card role-inj" data-step="11" onclick="goToStep(11)">
                             <span class="step-num">11</span>
                             <div class="step-title">Контроль оплаты</div>
                             <div class="step-preview">Контролирует оплату (по процедуре «Осуществление платежей»)...</div>
@@ -420,68 +431,68 @@
                 <div class="lane-label" style="border-left-color: #8a2be2;">Ведущий специалист по сертификации</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-spec" onclick="showDetail(3)">
+                        <div class="step-card role-spec" data-step="3" onclick="goToStep(3)">
                             <span class="step-num">3</span>
                             <div class="step-title">Прием заявки</div>
                             <div class="step-preview">Принимает заявку, проверяет комплектность, регистрирует...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-spec" onclick="showDetail(12)">
+                        <div class="step-card role-spec" data-step="12" onclick="goToStep(12)">
                             <span class="step-num">12</span>
                             <div class="step-title">Получение макета СС</div>
                             <div class="step-preview">Получает макет СС от ОС, проверяет соответствие заявке...</div>
                         </div>
-                        <div class="step-card role-spec" onclick="showDetail(13)">
+                        <div class="step-card role-spec" data-step="13" onclick="goToStep(13)">
                             <span class="step-num">13</span>
                             <div class="step-title">Направление на согласование</div>
                             <div class="step-preview">Направляет макет СС на согласование: ПМ, Конструктору, Менеджеру по закупкам...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-spec" onclick="showDetail(14)">
+                        <div class="step-card role-spec" data-step="14" onclick="goToStep(14)">
                             <span class="step-num">14</span>
                             <div class="step-title">Переговоры с ОС</div>
                             <div class="step-preview">Ведет переговоры с ОС до полного согласования макета...</div>
                         </div>
-                        <div class="step-card role-spec" onclick="showDetail(15)">
+                        <div class="step-card role-spec" data-step="15" onclick="goToStep(15)">
                             <span class="step-num">15</span>
                             <div class="step-title">Оформление макета ДС</div>
                             <div class="step-preview">При декларировании — самостоятельно оформляет макет ДС...</div>
                         </div>
-                        <div class="step-card role-spec" onclick="showDetail(17)">
+                        <div class="step-card role-spec" data-step="17" onclick="goToStep(17)">
                             <span class="step-num">17</span>
                             <div class="step-title">Участие в АСП</div>
                             <div class="step-preview">Участвует в анализе состояния производства (АСП) совместно с ОС...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-spec" onclick="showDetail(18)">
+                        <div class="step-card role-spec" data-step="18" onclick="goToStep(18)">
                             <span class="step-num">18</span>
                             <div class="step-title">Организация испытаний</div>
                             <div class="step-preview">Организует испытания (по процедуре «Организация испытаний»)...</div>
                         </div>
-                        <div class="step-card role-spec" onclick="showDetail(19)">
+                        <div class="step-card role-spec" data-step="19" onclick="goToStep(19)">
                             <span class="step-num">19</span>
                             <div class="step-title">Анализ протоколов</div>
                             <div class="step-preview">Анализирует протоколы испытаний...</div>
                         </div>
-                        <div class="step-card role-spec" onclick="showDetail(20)">
+                        <div class="step-card role-spec" data-step="20" onclick="goToStep(20)">
                             <span class="step-num">20</span>
                             <div class="step-title">Получение документа</div>
                             <div class="step-preview">Получает готовый разрешительный документ...</div>
                         </div>
-                        <div class="step-card role-spec" onclick="showDetail(21)">
+                        <div class="step-card role-spec" data-step="21" onclick="goToStep(21)">
                             <span class="step-num">21</span>
                             <div class="step-title">Проверка документа</div>
                             <div class="step-preview">Проверяет соответствие данных в документе...</div>
                         </div>
-                        <div class="step-card role-spec" onclick="showDetail(23)">
+                        <div class="step-card role-spec" data-step="23" onclick="goToStep(23)">
                             <span class="step-num">23</span>
                             <div class="step-title">Внесение в 1С:ДО</div>
                             <div class="step-preview">Вносит разрешительный документ в 1С:ДО...</div>
                         </div>
-                        <div class="step-card role-spec" onclick="showDetail(24)">
+                        <div class="step-card role-spec" data-step="24" onclick="goToStep(24)">
                             <span class="step-num">24</span>
                             <div class="step-title">Направление информации</div>
                             <div class="step-preview">Направляет информацию о готовности документа Инициатору...</div>
@@ -490,13 +501,13 @@
                 </div>
             </div>
 
-            <!-- Дорожка 4: Конструктор, ответственный за изделие -->
+            <!-- Дорожка 4: Конструктор -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ff8c00;">Конструктор</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-constructor" onclick="showDetail(5)">
+                        <div class="step-card role-constructor" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
                             <div class="step-title">Указание стандартов</div>
                             <div class="step-preview">Указывает стандарты, в результате применения которых обеспечивается соблюдение требований ТР ТС...</div>
@@ -513,7 +524,7 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-utp" onclick="showDetail(6)">
+                        <div class="step-card role-utp" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6</span>
                             <div class="step-title">Указание кодов ТН ВЭД</div>
                             <div class="step-preview">Указывает коды ТН ВЭД при исполнении задачи в 1С:ДО...</div>
@@ -715,6 +726,8 @@
         }
     };
 
+    let currentStep = null;
+
     function showDetail(stepId) {
         const panel = document.getElementById('detailPanel');
         const header = document.getElementById('detailHeader');
@@ -739,7 +752,13 @@
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                const stepMatch = inp.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -747,7 +766,13 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -757,8 +782,57 @@
         io.innerHTML = ioHtml;
         
         panel.classList.add('show');
+        
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
     }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step', 'highlighted-output');
+        });
+        
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+        
+        const data = stepData[stepId];
+        if (data && data.outputs) {
+            data.outputs.forEach(out => {
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const outputStep = stepMatch[1];
+                    const outputCard = document.querySelector(`.step-card[data-step="${outputStep}"], .step-card[data-step^="${outputStep}-"]`);
+                    if (outputCard) {
+                        outputCard.classList.add('highlighted-output');
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                const numericStep = stepId.split('-')[0];
+                goToStep(numericStep);
+            }
+        });
+    });
 </script>
 </body>
 </html>
-```
