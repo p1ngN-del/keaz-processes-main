@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 14 (Интерактив)</title>
+    <title>КЭАЗ · Процедура 14</title>
     <style>
         * {
             margin: 0;
@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -61,7 +77,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -217,7 +232,6 @@
             color: #f6b83e;
         }
 
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -322,8 +336,8 @@
             z-index: 1000;
         }
 
-        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
-        .role-analitik { border-left-color: #4682b4; } /* Специалист направления аналитики */
+        .role-pm { border-left-color: #1e90ff; }
+        .role-analitik { border-left-color: #4682b4; }
     </style>
 </head>
 <body>
@@ -409,36 +423,36 @@
         1: {
             number: "1",
             role: "Продукт-менеджер",
-            text: "Обновляет файл НиЦ/ продуктовую презентацию в 1С:ДО и отправляет на ознакомление. Путь в 1С:ДО: Документы и файлы/Файлы/Информация для продаж.",
-            inputs: ["⬅️ Инициация процесса (например, из процедуры 11 или 10)"],
-            outputs: ["→ Шаг 2 (специалисту аналитики)"]
+            text: "Обновляет файл НиЦ/ продуктовую презентацию в 1С:ДО и отправляет на ознакомление. Путь в 1С:ДО: Документы и файлы/Файлы/Информация для продаж.\n\nВход в процедуру — инициация процесса (например, из процедуры <a href='proc11.html' class='proc-link'>11 (Ценообразование нового продукта)</a> или <a href='proc10.html' class='proc-link'>10 (Сбор и анализ данных о конкурентах)</a>).",
+            inputs: ["⬅️ Инициация процесса (например, из <a href='proc11.html' class='proc-link'>проц.11</a> или <a href='proc10.html' class='proc-link'>проц.10</a>)"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2 (специалисту аналитики)</a>"]
         },
         2: {
             number: "2",
             role: "Специалист направления аналитики",
             text: "Получает файл в 1С:ДО.",
-            inputs: ["⬅️ От ПМ (шаг 1)"],
-            outputs: ["→ Шаг 3"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         3: {
             number: "3",
             role: "Специалист направления аналитики",
-            text: "Актуализирует файл в Битрикс24.",
-            inputs: ["⬅️ От специалиста (шаг 2)"],
-            outputs: ["→ Шаг 4"]
+            text: "Актуализирует файл в Битрикс24. Размещает обновленную версию в соответствующем разделе, обеспечивая доступ для всех заинтересованных сотрудников коммерческого блока.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От специалиста (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         4: {
             number: "4",
             role: "Специалист направления аналитики",
-            text: "Информирует продукт-менеджера о результате по принятым в компании каналам коммуникации.",
-            inputs: ["⬅️ От специалиста (шаг 3)"],
-            outputs: ["→ Шаг 5"]
+            text: "Информирует продукт-менеджера о результате по принятым в компании каналам коммуникации (электронная почта, уведомление в 1С:ДО и т.д.).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От специалиста (шаг 3)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
             role: "Продукт-менеджер",
-            text: "Файлы НиЦ и презентации по продукту обновлены в Битрикс24. Выход.",
-            inputs: ["⬅️ От специалиста (шаг 4)"],
+            text: "Файлы НиЦ и презентации по продукту обновлены в Битрикс24. Информация актуальна и доступна для отдела продаж и других подразделений. Выход из процедуры.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От специалиста (шаг 4)</a>"],
             outputs: ["📤 ВЫХОД: Файлы актуальны для отдела продаж"]
         }
     };
@@ -464,18 +478,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -483,13 +491,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
