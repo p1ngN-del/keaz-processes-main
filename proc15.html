@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 15</title>
+    <title>КЭАЗ · Процедура 15 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -77,7 +77,6 @@
             min-width: 1400px;
         }
 
-        /* Шапка с номерами шагов */
         .step-header {
             display: flex;
             margin-left: 220px;
@@ -95,7 +94,6 @@
             font-size: 0.85rem;
         }
 
-        /* Дорожка */
         .lane {
             display: flex;
             min-height: 120px;
@@ -105,7 +103,6 @@
             border-bottom: none;
         }
 
-        /* Название дорожки */
         .lane-label {
             width: 220px;
             font-weight: 700;
@@ -121,7 +118,6 @@
             font-size: 0.9rem;
         }
 
-        /* Ячейки с шагами */
         .lane-cells {
             display: flex;
             flex: 1;
@@ -140,7 +136,6 @@
             padding: 5px;
         }
 
-        /* Карточка шага */
         .step-card {
             background: white;
             border-radius: 16px;
@@ -153,11 +148,22 @@
             transition: 0.2s;
             width: 100%;
             text-align: left;
+            scroll-margin-top: 20px;
         }
         .step-card:hover {
             transform: translateY(-2px);
             border-color: #f6b83e;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+        .step-card.highlighted-output {
+            border: 3px solid #2e8b57;
+            background: #e6f3e6;
+            box-shadow: 0 0 0 3px rgba(46,139,86,0.2);
         }
 
         .step-num {
@@ -211,14 +217,6 @@
             color: #f6b83e;
         }
 
-        /* Цвета ролей */
-        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
-        .role-designer { border-left-color: #ff8c00; } /* Дизайнер */
-        .role-constructor { border-left-color: #4682b4; } /* Конструктор */
-        .role-manager { border-left-color: #8a2be2; } /* Начальник управления рекламы */
-        .role-ovk { border-left-color: #2e8b57; } /* Начальник ОВК */
-        .role-rip { border-left-color: #ba55d3; } /* Руководитель интернет проектов */
-
         /* Детальная панель */
         .detail-panel {
             display: none;
@@ -228,6 +226,7 @@
             margin-top: 30px;
             border: 2px solid #e0e7f5;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
         }
         .detail-panel.show {
             display: block;
@@ -291,8 +290,18 @@
             gap: 8px;
             font-size: 0.9rem;
         }
-        .io-arrow {
-            font-size: 1.2rem;
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
         }
 
         .back-to-top {
@@ -312,6 +321,13 @@
             border: none;
             z-index: 1000;
         }
+
+        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
+        .role-designer { border-left-color: #ff8c00; } /* Дизайнер */
+        .role-constructor { border-left-color: #4682b4; } /* Конструктор */
+        .role-manager { border-left-color: #8a2be2; } /* Начальник управления рекламы */
+        .role-ovk { border-left-color: #2e8b57; } /* Начальник ОВК */
+        .role-rip { border-left-color: #ba55d3; } /* Руководитель интернет проектов */
     </style>
 </head>
 <body>
@@ -319,12 +335,10 @@
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
     <h1>Процедура 15: Обработка ТЗ на размещение, корректировку дизайнерской ЭД</h1>
-    <div class="subhead">Владелец: Продукт-менеджер</div>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
-    <!-- SWIMLANE -->
     <div class="swimlane">
         <div class="swimlane-table">
-            <!-- Шапка с номерами шагов -->
             <div class="step-header">
                 <div class="step-header-cell">1-3</div>
                 <div class="step-header-cell">4-6</div>
@@ -337,7 +351,7 @@
                 <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail(1)">
+                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
                             <div class="step-title">Создание ТЗ</div>
                             <div class="step-preview">В 1С:ДО создает внутренний документ «ТЗ на разработку эксплуатационной документации»...</div>
@@ -345,26 +359,26 @@
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail(3)">
+                        <div class="step-card role-pm" data-step="3" onclick="goToStep(3)">
                             <span class="step-num">3</span>
                             <div class="step-title">Создание документа/ревизии в Appius</div>
                             <div class="step-preview">Создает в 1С:Appius новый документ или ревизию для дизайнерской ЭД...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail(9)">
+                        <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">9</span>
                             <div class="step-title">Проверка ЭД</div>
                             <div class="step-preview">Подписывает дизайнерскую ЭД в 1С:Appius...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail(10)">
+                        <div class="step-card role-pm" data-step="10" onclick="goToStep(10)">
                             <span class="step-num">10</span>
                             <div class="step-title">Перевод в архив</div>
                             <div class="step-preview">Переводит дизайнерскую ЭД в состояние архива в 1С:Appius...</div>
                         </div>
-                        <div class="step-card role-pm" onclick="showDetail(11)">
+                        <div class="step-card role-pm" data-step="11" onclick="goToStep(11)">
                             <span class="step-num">11</span>
                             <div class="step-title">ЭД размещена</div>
                             <div class="step-preview">Размещена дизайнерская ЭД в Appius...</div>
@@ -380,7 +394,7 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-constructor" onclick="showDetail(2)">
+                        <div class="step-card role-constructor" data-step="2" onclick="goToStep(2)">
                             <span class="step-num">2</span>
                             <div class="step-title">Разработка описания</div>
                             <div class="step-preview">Прикрепляет файл ЭД в формате docx, выделяет цветом изменения...</div>
@@ -397,7 +411,7 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-manager" onclick="showDetail(4)">
+                        <div class="step-card role-manager" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
                             <div class="step-title">Получение задачи</div>
                             <div class="step-preview">В 1С:ДО получает задачу и нажимает «Ознакомился»...</div>
@@ -414,36 +428,36 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-designer" onclick="showDetail(5)">
+                        <div class="step-card role-designer" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
                             <div class="step-title">Разработка дизайнерской ЭД</div>
                             <div class="step-preview">Разрабатывает дизайнерскую ЭД на основании ТЗ...</div>
                         </div>
-                        <div class="step-card role-designer" onclick="showDetail(6)">
+                        <div class="step-card role-designer" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6</span>
                             <div class="step-title">Размещение в ревизии</div>
                             <div class="step-preview">Загружает дизайнерские файлы в 1С:Appius...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-designer" onclick="showDetail(7)">
+                        <div class="step-card role-designer" data-step="7" onclick="goToStep(7)">
                             <span class="step-num">7</span>
                             <div class="step-title">Создание извещения</div>
                             <div class="step-preview">Сохраняет ревизию в извещении об изменении...</div>
                         </div>
-                        <div class="step-card role-designer" onclick="showDetail(8)">
+                        <div class="step-card role-designer" data-step="8" onclick="goToStep(8)">
                             <span class="step-num">8</span>
                             <div class="step-title">Отправка на согласование</div>
                             <div class="step-preview">Отправляет на согласование дизайнерскую ЭД в 1С:Appius...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-designer" onclick="showDetail(12)">
+                        <div class="step-card role-designer" data-step="12" onclick="goToStep(12)">
                             <span class="step-num">12</span>
                             <div class="step-title">Проведение извещения</div>
                             <div class="step-preview">Проводит извещение, перемещает ЭД в состояние архива...</div>
                         </div>
-                        <div class="step-card role-designer" onclick="showDetail(15)">
+                        <div class="step-card role-designer" data-step="15" onclick="goToStep(15)">
                             <span class="step-num">15</span>
                             <div class="step-title">ЭД утверждена</div>
                             <div class="step-preview">Дизайнерская ЭД утверждена в Appius...</div>
@@ -461,7 +475,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-ovk" onclick="showDetail(13)">
+                        <div class="step-card role-ovk" data-step="13" onclick="goToStep(13)">
                             <span class="step-num">13</span>
                             <div class="step-title">Ознакомление с ЭД</div>
                             <div class="step-preview">Получает на ознакомление дизайнерскую ЭД в 1С:Appius...</div>
@@ -478,7 +492,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-rip" onclick="showDetail(14)">
+                        <div class="step-card role-rip" data-step="14" onclick="goToStep(14)">
                             <span class="step-num">14</span>
                             <div class="step-title">Ознакомление с ЭД</div>
                             <div class="step-preview">Получает на ознакомление дизайнерскую ЭД в 1С:Appius...</div>
@@ -608,6 +622,8 @@
         }
     };
 
+    let currentStep = null;
+
     function showDetail(stepId) {
         const panel = document.getElementById('detailPanel');
         const header = document.getElementById('detailHeader');
@@ -632,7 +648,13 @@
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                const stepMatch = inp.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -640,7 +662,13 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -650,7 +678,57 @@
         io.innerHTML = ioHtml;
         
         panel.classList.add('show');
+        
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
     }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step', 'highlighted-output');
+        });
+        
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+        
+        const data = stepData[stepId];
+        if (data && data.outputs) {
+            data.outputs.forEach(out => {
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const outputStep = stepMatch[1];
+                    const outputCard = document.querySelector(`.step-card[data-step="${outputStep}"], .step-card[data-step^="${outputStep}-"]`);
+                    if (outputCard) {
+                        outputCard.classList.add('highlighted-output');
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                const numericStep = stepId.split('-')[0];
+                goToStep(numericStep);
+            }
+        });
+    });
 </script>
 </body>
 </html>
