@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 25</title>
+    <title>КЭАЗ · Процедура 25 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -148,11 +147,22 @@
             transition: 0.2s;
             width: 100%;
             text-align: left;
+            scroll-margin-top: 20px;
         }
         .step-card:hover {
             transform: translateY(-2px);
             border-color: #f6b83e;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+        .step-card.highlighted-output {
+            border: 3px solid #2e8b57;
+            background: #e6f3e6;
+            box-shadow: 0 0 0 3px rgba(46,139,86,0.2);
         }
 
         .step-num {
@@ -201,15 +211,10 @@
             background: #e8f5e9;
             color: #2e8b57;
         }
-
-        .role-pm { border-left-color: #1e90ff; }
-        .role-mp { border-left-color: #8a2be2; }
-        .role-ursd { border-left-color: #2e8b57; }
-        .role-uoitp { border-left-color: #ff8c00; }
-        .role-reklama { border-left-color: #4682b4; }
-        .role-upp { border-left-color: #daa520; }
-        .role-uop { border-left-color: #dc143c; }
-        .role-marketing { border-left-color: #ba55d3; }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
 
         .detail-panel {
             display: none;
@@ -219,6 +224,7 @@
             margin-top: 30px;
             border: 2px solid #e0e7f5;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
         }
         .detail-panel.show {
             display: block;
@@ -282,8 +288,18 @@
             gap: 8px;
             font-size: 0.9rem;
         }
-        .io-arrow {
-            font-size: 1.2rem;
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
         }
 
         .back-to-top {
@@ -303,6 +319,15 @@
             border: none;
             z-index: 1000;
         }
+
+        .role-pm { border-left-color: #1e90ff; }
+        .role-mp { border-left-color: #8a2be2; }
+        .role-ursd { border-left-color: #2e8b57; }
+        .role-uoitp { border-left-color: #ff8c00; }
+        .role-reklama { border-left-color: #4682b4; }
+        .role-upp { border-left-color: #daa520; }
+        .role-uop { border-left-color: #dc143c; }
+        .role-marketing { border-left-color: #ba55d3; }
     </style>
 </head>
 <body>
@@ -310,7 +335,7 @@
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
     <h1>Процедура 25: Объявление старта продаж нового продукта</h1>
-    <div class="subhead">Владелец: Продукт-менеджер</div>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
     <div class="swimlane">
         <div class="swimlane-table">
@@ -326,7 +351,7 @@
                 <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail('pm1')">
+                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1,4,5,7,8</span>
                             <div class="step-title">Подготовка материалов и обучение</div>
                             <div class="step-preview">Выполняет задачи по Приложению А, ставит задачи по контенту, разрабатывает бриф, готовит презентацию, проводит внутреннее обучение...</div>
@@ -334,21 +359,21 @@
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail('pm11')">
+                        <div class="step-card role-pm" data-step="11" onclick="goToStep(11)">
                             <span class="step-num">11,12</span>
                             <div class="step-title">Переговоры и план продаж</div>
                             <div class="step-preview">Готовит каскад цен, матрицу цен, перечень акций, баттл-карту. Формирует поартикульный план продаж...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail('pm15')">
+                        <div class="step-card role-pm" data-step="15" onclick="goToStep(15)">
                             <span class="step-num">15,16,18</span>
                             <div class="step-title">Планирование и обучение</div>
                             <div class="step-preview">Назначает пределы наполнения, формирует скользящий план на +5 месяцев, проводит итоговое обучение...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" onclick="showDetail('pm19')">
+                        <div class="step-card role-pm" data-step="19" onclick="goToStep(19)">
                             <span class="step-num">19,21</span>
                             <div class="step-title">Задачи на перенос и информирование</div>
                             <div class="step-preview">Ставит задачу на перенос номенклатуры, ставит задачу на информирование с приложением продуктовой новости...</div>
@@ -362,7 +387,7 @@
                 <div class="lane-label" style="border-left-color: #8a2be2;">Менеджер проекта</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-mp" onclick="showDetail('mp2')">
+                        <div class="step-card role-mp" data-step="2" onclick="goToStep(2)">
                             <span class="step-num">2,3</span>
                             <div class="step-title">Образцы</div>
                             <div class="step-preview">Информирует о поступлении образцов, проводит проверку образцов...</div>
@@ -370,14 +395,14 @@
                     </div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-mp" onclick="showDetail('mp14')">
+                        <div class="step-card role-mp" data-step="14" onclick="goToStep(14)">
                             <span class="step-num">14</span>
                             <div class="step-title">Информирование о заказе</div>
                             <div class="step-preview">Информирует ПМ о поступлении первого заказа на СГП...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-mp" onclick="showDetail('mp24')">
+                        <div class="step-card role-mp" data-step="24" onclick="goToStep(24)">
                             <span class="step-num">24</span>
                             <div class="step-title">Акт о старте</div>
                             <div class="step-preview">Готовит Акт о готовности к старту продаж...</div>
@@ -393,7 +418,7 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-ursd" onclick="showDetail('ursd11')">
+                        <div class="step-card role-ursd" data-step="11" onclick="goToStep(11)">
                             <span class="step-num">11</span>
                             <div class="step-title">Переговоры с партнерами</div>
                             <div class="step-preview">Совместно с ПМ проводит переговоры по складообразованию...</div>
@@ -412,7 +437,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-marketing" onclick="showDetail('marketing20')">
+                        <div class="step-card role-marketing" data-step="20" onclick="goToStep(20)">
                             <span class="step-num">20</span>
                             <div class="step-title">Проверка и перенос номенклатуры</div>
                             <div class="step-preview">Проверяет характеристики, инициирует перенос согласно процедуре 4...</div>
@@ -427,7 +452,7 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-uoitp" onclick="showDetail('uoitp9')">
+                        <div class="step-card role-uoitp" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">9</span>
                             <div class="step-title">Внешняя презентация и курс</div>
                             <div class="step-preview">Готовит внешнюю презентацию и электронный курс...</div>
@@ -444,7 +469,7 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-reklama" onclick="showDetail('reklama6')">
+                        <div class="step-card role-reklama" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6,10</span>
                             <div class="step-title">Подготовка новости и проверка</div>
                             <div class="step-preview">Готовит и согласовывает продуктовую новость, проверяет презентацию...</div>
@@ -452,7 +477,7 @@
                     </div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-reklama" onclick="showDetail('reklama22')">
+                        <div class="step-card role-reklama" data-step="22" onclick="goToStep(22)">
                             <span class="step-num">22</span>
                             <div class="step-title">Публикация новости</div>
                             <div class="step-preview">Публикует новость на внешних ресурсах...</div>
@@ -467,14 +492,14 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-upp" onclick="showDetail('upp13')">
+                        <div class="step-card role-upp" data-step="13" onclick="goToStep(13)">
                             <span class="step-num">13</span>
                             <div class="step-title">План продаж в УПП</div>
                             <div class="step-preview">Формирует план продаж в УПП...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-upp" onclick="showDetail('upp17')">
+                        <div class="step-card role-upp" data-step="17" onclick="goToStep(17)">
                             <span class="step-num">17</span>
                             <div class="step-title">Сводные спецификации</div>
                             <div class="step-preview">Убирает галочку "Не участвует в планировании", формирует спецификации...</div>
@@ -492,7 +517,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-uop" onclick="showDetail('uop23')">
+                        <div class="step-card role-uop" data-step="23" onclick="goToStep(23)">
                             <span class="step-num">23</span>
                             <div class="step-title">Информирование о старте</div>
                             <div class="step-preview">Проводит информирование клиентов...</div>
@@ -514,105 +539,105 @@
 
 <script>
     const stepData = {
-        'pm1': {
+        '1': {
             number: "1, 4, 5, 7, 8",
             role: "Продукт-менеджер",
             text: "1. Выполняет перечень задач перед объявлением старта продаж. Полный перечень задач представлен в Приложении А.\n\n4. Ставит задачи ответственным разработчикам контента. Перечень ответственных за разработку контента представлен в ПРОЦЕДУРЕ «Наполнение и обновление Контентом раздела 'Каталог' на сайте».\n\n5. Заполняет шаблон (Приложение Г) на разработку продуктовой новости и направляет на исполнение Начальнику управления рекламы в 1С:ДО.\n\n7. Готовит итоговую презентацию по продукту для внутреннего и внешнего обучения, а также подготовки электронного обучающего курса по шаблону (Приложение Ж).\n\n8. Проводит внутреннее промежуточное обучение для подготовки специалистов технической поддержки и сотрудников Дирекции по продажам перед последующими переговорами с партнерами по складообразованию. Обязательные участники: УОиТП, Дивизионы (ТЭС/ЦТПИ), УРП, ОПРеш, УРПР, ОРП. Материал — итоговая презентация. Организация — рассылка приглашений по эл. почте (каждый понедельник), минимум за 1 месяц до планируемой даты поступления первой промышленной партии на СГП КЭАЗ.",
             inputs: ["⬅️ Вход в процедуру"],
             outputs: ["→ Начальнику управления рекламы (шаги 6,10)", "→ Руководителю УОиТП (шаг 9)", "→ К переговорам (шаг 11)"]
         },
-        'pm11': {
+        '11': {
             number: "11, 12",
             role: "Продукт-менеджер",
             text: "11. Для совместных переговоров с партнерами по складообразованию готовит/обновляет:\n- Каскад цен (Приложение В);\n- Рекомендованную матрицу цен для дистрибьютора (согласно чек-листу Приложения А);\n- Перечень акций и мотивационных программ;\n- Баттл-карту продукта (Приложение Д).\nИтогом переговоров является согласованный и представленный в табличной форме заказ/предзаказ, распределенный по РЦ. В случае розничного ассортимента — количество продукции, которая будет размещена в розничных точках, как образцы, и как складообразование.\n\n12. Формирует поартикульный план продаж в произвольной форме с указанием артикула и количества, направляет Начальнику УПП на исполнение посредством СЗ в 1С:ДО.",
             inputs: ["⬅️ После внутреннего обучения (шаг 8)"],
             outputs: ["→ Начальнику УПП (шаг 13)", "→ Совместные переговоры с руководителями"]
         },
-        'pm15': {
+        '15': {
             number: "15, 16, 18",
             role: "Продукт-менеджер",
             text: "15. Назначает пределы наполнения согласно процедуре.\n\n16. При формировании 'скользящего свода' для вновь вводимой номенклатурной группы формирует План Продаж на +5 месяцев по номенклатурной группе (согласно процедуре «Скользящее планирование производства на 5 месяцев»). Информирует Начальника УПП о добавлении новой номенклатурной группы в сводный скользящий план, с указанием наименования номенклатурной группы.\n\n18. Организует финальное внутреннее обучение Дирекции по продажам и Управления обслуживания покупателей посредством рассылки приглашений по эл. почте по утвержденным внутренним правилам КЭАЗ (каждый понедельник) не позднее следующего понедельника с момента, как товар стал доступен на СГП КЭАЗ (для складского ассортимента).",
             inputs: ["⬅️ От УПП (шаг 13)", "⬅️ От менеджера проекта (шаг 14)"],
             outputs: ["→ Начальнику УПП (шаг 17)", "→ К задаче на перенос (шаг 19)"]
         },
-        'pm19': {
+        '19': {
             number: "19, 21",
             role: "Продукт-менеджер",
             text: "19. Ставит задачу по переносу номенклатуры.\n\n21. Ставит задачу по проведению информирования (в Битрикс24 или 1С:ДО). К задаче прикладывает ранее подготовленную и согласованную продуктовую новость.",
             inputs: ["⬅️ После финального обучения (шаг 18)"],
             outputs: ["→ Маркетологу-аналитику (шаг 20)", "→ Начальнику управления рекламы (шаг 22)", "→ Начальнику УОП (шаг 23)"]
         },
-        'mp2': {
+        '2': {
             number: "2, 3",
             role: "Менеджер проекта",
             text: "2. В Битрикс24 информирует Продукт-менеджера о поступлении образцов на склад.\n\n3. Проводит проверку образцов. Отправка образцов осуществляется в соответствии со списком получателей, согласно ранее полученному Приложению.",
             inputs: ["⬅️ Поступление образцов"],
             outputs: ["→ Продукт-менеджеру"]
         },
-        'mp14': {
+        '14': {
             number: "14",
             role: "Менеджер проекта",
             text: "Информирует ПМ о поступлении первого заказа на СГП КЭАЗ.",
             inputs: ["⬅️ Поступление первого заказа"],
             outputs: ["→ Продукт-менеджеру (шаг 15)"]
         },
-        'mp24': {
+        '24': {
             number: "24",
             role: "Менеджер проекта",
             text: "Готовит АКТ о готовности к старту продаж согласно Приложению А к ПРОЦЕДУРЕ Управление Инвестиционной стадией продуктового проекта.",
             inputs: ["⬅️ После публикации (шаг 22)", "⬅️ После информирования УОП (шаг 23)"],
             outputs: ["📤 ВЫХОД: Акт готов, старт продаж объявлен"]
         },
-        'ursd11': {
+        '11-ursd': {
             number: "11",
             role: "Руководитель УРСД / УРП / канала продаж",
             text: "Совместно с ПМ проводит переговоры с партнерами по складообразованию. Результат переговоров — согласованный заказ/предзаказ, распределенный по РЦ.",
             inputs: ["⬅️ Совместно с ПМ"],
             outputs: ["→ ПМ (для формирования плана)"]
         },
-        'marketing20': {
+        '20': {
             number: "20",
             role: "Маркетолог-аналитик",
             text: "Проверяет заполненность всех характеристик, свойств и данных о продукте и ставит задачу по переносу номенклатуры, с последующим обновлением контента на сайте, согласно ПРОЦЕДУРЕ «Ввод номенклатуры в 1С:УПП в папку Готовая продукция».",
             inputs: ["⬅️ От ПМ (шаг 19)"],
             outputs: ["→ Запуск процедуры 4 (Ввод номенклатуры)"]
         },
-        'uoitp9': {
+        '9': {
             number: "9",
             role: "Руководитель УОиТП",
             text: "Готовит внешнюю презентацию и электронный обучающий курс на основании итоговой презентации по продукту. Разработанная версия электронного курса согласовывается с ПМ.",
             inputs: ["⬅️ От ПМ (шаг 7)"],
             outputs: ["→ ПМ для согласования"]
         },
-        'reklama6': {
+        '6': {
             number: "6, 10",
             role: "Начальник управления рекламы",
             text: "6. Готовит продуктовую новость. Подготовка и согласование осуществляется не позднее, чем за месяц до планируемого объявления старта продаж. Предварительное согласование может быть проведено по электронной почте. Итоговый вариант продуктовой новости согласовывается в 1С:ДО с ПМ.\n\n10. Проверяет презентацию: проводит вычитку материала (лингвистический анализ) и приведение в соответствие брендбуку компании.",
             inputs: ["⬅️ От ПМ (шаги 5,7)"],
             outputs: ["→ Публикация (шаг 22)"]
         },
-        'reklama22': {
+        '22': {
             number: "22",
             role: "Начальник управления рекламы",
             text: "Публикует продуктовую новость на внешних интернет-ресурсах:\n- официальные социальные сети (официальный телеграм-канал КЭАЗ и официальное сообщество КЭАЗ в ВК);\n- корпоративный сайт (новость в разделе 'Пресс-центр');\n- специализированные отраслевые сообщества (при необходимости, по запросу ПМ).",
             inputs: ["⬅️ От рекламы (шаг 6)", "⬅️ От ПМ (шаг 21)"],
             outputs: ["→ Менеджеру проекта (шаг 24)"]
         },
-        'upp13': {
+        '13': {
             number: "13",
             role: "Начальник УПП",
             text: "Формирует план продаж в УПП.",
             inputs: ["⬅️ От ПМ (шаг 12)"],
             outputs: ["→ ПМ (шаг 15)"]
         },
-        'upp17': {
+        '17': {
             number: "17",
             role: "Начальник УПП",
             text: "В 1С:УПП убирает 'галочку' - 'Не участвует в оперативном планировании' и формирует сводные спецификации.",
             inputs: ["⬅️ От ПМ (шаг 16)"],
             outputs: ["→ Завершение планирования"]
         },
-        'uop23': {
+        '23': {
             number: "23",
             role: "Начальник УОП",
             text: "Проводит информирование внешних клиентов на прямом договоре — письменная рассылка по эл. почте на фирменном бланке КЭАЗ, а также внутреннее информирование через новостную ленту группы «Коммерческий блок» в Битрикс24.",
@@ -620,6 +645,8 @@
             outputs: ["→ Менеджеру проекта (шаг 24)"]
         }
     };
+
+    let currentStep = null;
 
     function showDetail(stepId) {
         const panel = document.getElementById('detailPanel');
@@ -645,7 +672,13 @@
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                const stepMatch = inp.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -653,7 +686,13 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -663,8 +702,57 @@
         io.innerHTML = ioHtml;
         
         panel.classList.add('show');
+        
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
     }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step', 'highlighted-output');
+        });
+        
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+        
+        const data = stepData[stepId];
+        if (data && data.outputs) {
+            data.outputs.forEach(out => {
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const outputStep = stepMatch[1];
+                    const outputCard = document.querySelector(`.step-card[data-step="${outputStep}"], .step-card[data-step^="${outputStep}-"]`);
+                    if (outputCard) {
+                        outputCard.classList.add('highlighted-output');
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                const numericStep = stepId.split('-')[0];
+                goToStep(numericStep);
+            }
+        });
+    });
 </script>
 </body>
 </html>
-```
