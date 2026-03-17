@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 4н</title>
+    <title>КЭАЗ · Процедура 5</title>
     <style>
         * {
             margin: 0;
@@ -336,17 +336,17 @@
             z-index: 1000;
         }
 
-        .role-spec { border-left-color: #4682b4; }
         .role-pm { border-left-color: #1e90ff; }
-        .role-rukovod { border-left-color: #8a2be2; }
-        .role-motiv { border-left-color: #ff8c00; }
+        .role-rpo { border-left-color: #8a2be2; }
+        .role-komitet { border-left-color: #ff8c00; }
+        .role-ukiot { border-left-color: #2e8b57; }
     </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
-    <h1>Процедура 4н: Выявление неликвидной и слабооборачиваемой продукции на складе ГП и ДСЕ по ОЕМ-продукции и собственном</h1>
+    <h1>Процедура 5: Завершение продуктового проекта</h1>
     <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
     <div class="swimlane">
@@ -354,146 +354,130 @@
             <div class="step-header">
                 <div class="step-header-cell">1-3</div>
                 <div class="step-header-cell">4-6</div>
-                <div class="step-header-cell">7-10</div>
-                <div class="step-header-cell">11-20</div>
+                <div class="step-header-cell">7-9</div>
+                <div class="step-header-cell">10-14</div>
             </div>
 
-            <!-- Дорожка 1: Специалист по планированию -->
+            <!-- Дорожка 1: Проект-менеджер -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #4682b4;">Специалист по планированию<br>отдела аналитики</div>
+                <div class="lane-label" style="border-left-color: #1e90ff;">Проект-менеджер</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-spec" data-step="1" onclick="goToStep(1)">
+                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
-                            <div class="step-title">Формирование отчета</div>
-                            <div class="step-preview">Ежемесячно, до 15-го числа, формирует Excel-отчет по товарному запасу и проводит анализ продаж неликвидной продукции и СНЗ-артикулов...</div>
+                            <div class="step-title">Организация окупаемости</div>
+                            <div class="step-preview">Организовывает и проводит комплекс мер по достижению окупаемости проекта...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
-                        <div class="step-card role-spec" data-step="2" onclick="goToStep(2)">
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="2" onclick="goToStep(2)">
                             <span class="step-num">2</span>
-                            <div class="step-title">Служебная записка</div>
-                            <div class="step-preview">В 1С:ДО отправляет отчет и данные анализа на ознакомление...</div>
-                        </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-spec" data-step="3" onclick="goToStep(3)">
-                            <span class="step-num">3</span>
-                            <div class="step-title">Постановка задачи</div>
-                            <div class="step-preview">В 1С:ДО формирует задачу и отправляет на исполнение...</div>
-                        </div>
-                    </div>
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-spec" data-step="13" onclick="goToStep(13)">
-                            <span class="step-num">13</span>
-                            <div class="step-title">Отправка списка</div>
-                            <div class="step-preview">В 1С:ДО отправляет список номенклатуры со сниженной ценой на исполнение...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Дорожка 2: Продукт-менеджер / Старший ПМ -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер<br>Старший ПМ</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-pm" data-step="4" onclick="goToStep(4)">
-                            <span class="step-num">4</span>
-                            <div class="step-title">Анализ причин</div>
-                            <div class="step-preview">Проводит анализ для выявления причин, по которым товар стал неликвидным...</div>
-                        </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-pm" data-step="16" onclick="goToStep(16)">
-                            <span class="step-num">16</span>
-                            <div class="step-title">Изменение цен</div>
-                            <div class="step-preview">В 1С:УПП заводит документ по изменению цен на номенклатуру...</div>
+                            <div class="step-title">Мониторинг окупаемости</div>
+                            <div class="step-preview">Проводит мониторинг окупаемости, заполняет отчет по затратам проекта...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" data-step="20" onclick="goToStep(20)">
-                            <span class="step-num">20</span>
-                            <div class="step-title">Товар распродан</div>
-                            <div class="step-preview">Неликвиды или слабооборачиваемый товар распродан...</div>
+                        <div class="step-card role-pm" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Инициирование изменений</div>
+                            <div class="step-preview">При недостижении ключевых показателей инициирует изменение проекта...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="4" onclick="goToStep(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Подготовка Акта</div>
+                            <div class="step-preview">При достижении окупаемости подготавливает Акт о завершении проекта...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Исключение из реестра</div>
+                            <div class="step-preview">Исключает проект из реестра проектов...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="13" onclick="goToStep(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Проект исключен</div>
+                            <div class="step-preview">Проект исключен из реестра проектов...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 3: Руководитель направления -->
+            <!-- Дорожка 2: Руководитель проектного офиса -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель направления</div>
+                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель проектного офиса</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-rukovod" data-step="5" onclick="goToStep(5)">
+                        <div class="step-card role-rpo" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
-                            <div class="step-title">Согласование мероприятий</div>
-                            <div class="step-preview">Согласовывает/корректирует список предложенных корректирующих мероприятий...</div>
-                        </div>
-                        <div class="step-card role-rukovod" data-step="6" onclick="goToStep(6)">
-                            <span class="step-num">6</span>
-                            <div class="step-title">Отправка согласования</div>
-                            <div class="step-preview">В 1С:ДО отправляет согласованные предложения по маркетинговым активностям...</div>
+                            <div class="step-title">Согласование Акта</div>
+                            <div class="step-preview">Согласовывает акт о завершении продуктового проекта...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-rukovod" data-step="7" onclick="goToStep(7)">
+                        <div class="step-card role-rpo" data-step="7" onclick="goToStep(7)">
                             <span class="step-num">7</span>
-                            <div class="step-title">Задача на утилизацию</div>
-                            <div class="step-preview">В 1С:ДО ставит задачу на проведение утилизации неликвидного товара...</div>
+                            <div class="step-title">Задача на ознакомление</div>
+                            <div class="step-preview">Ставит задачу на ознакомление о согласовании проекта...</div>
                         </div>
-                        <div class="step-card role-rukovod" data-step="8" onclick="goToStep(8)">
-                            <span class="step-num">8</span>
-                            <div class="step-title">Инициация переделки</div>
-                            <div class="step-preview">Инициирует процесс переделки/модернизации...</div>
-                        </div>
-                        <div class="step-card role-rukovod" data-step="11" onclick="goToStep(11)">
-                            <span class="step-num">11</span>
-                            <div class="step-title">Согласование снижения цен</div>
-                            <div class="step-preview">В 1С:ДО согласовывает условия понижения цен с Директором по продажам РФ...</div>
+                        <div class="step-card role-rpo" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Задача на снятие с учета</div>
+                            <div class="step-preview">Ставит задачу на снятие проекта с управленческого учета...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-rukovod" data-step="12" onclick="goToStep(12)">
+                        <div class="step-card role-rpo" data-step="12" onclick="goToStep(12)">
                             <span class="step-num">12</span>
-                            <div class="step-title">Информирование</div>
-                            <div class="step-preview">В 1С:ДО информирует об условиях снижения цен...</div>
-                        </div>
-                        <div class="step-card role-rukovod" data-step="15" onclick="goToStep(15)">
-                            <span class="step-num">15</span>
-                            <div class="step-title">Задача на изменение цен</div>
-                            <div class="step-preview">В 1С:ДО ставит задачу на исполнение по изменению цен...</div>
+                            <div class="step-title">Акт согласован</div>
+                            <div class="step-preview">Акт на завершение продуктового проекта согласован...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 4: Менеджер мотивационных программ -->
+            <!-- Дорожка 3: Проектный комитет -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #ff8c00;">Менеджер мотивационных программ</div>
+                <div class="lane-label" style="border-left-color: #ff8c00;">Проектный комитет</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-motiv" data-step="9" onclick="goToStep(9)">
-                            <span class="step-num">9</span>
-                            <div class="step-title">Решение по активностям</div>
-                            <div class="step-preview">Принимает решение по согласованию маркетинговых активностей...</div>
-                            <span class="step-badge badge-branch">🔀 ветвление</span>
-                        </div>
-                        <div class="step-card role-motiv" data-step="10" onclick="goToStep(10)">
-                            <span class="step-num">10</span>
-                            <div class="step-title">Разработка регламента</div>
-                            <div class="step-preview">Разрабатывает регламент проведения мероприятий и согласовывает с маркетологами дистрибьюторов...</div>
-                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        <div class="step-card role-komitet" data-step="6" onclick="goToStep(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Согласование Акта</div>
+                            <div class="step-preview">Согласовывает акт о завершении продуктового проекта...</div>
                         </div>
                     </div>
                     <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Начальник УКиОТ -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник УКиОТ</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-ukiot" data-step="10" onclick="goToStep(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Снятие с учета</div>
+                            <div class="step-preview">Снимает проект с управленческого учета...</div>
+                        </div>
+                        <div class="step-card role-ukiot" data-step="11" onclick="goToStep(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Проект снят с учета</div>
+                            <div class="step-preview">Проект снят с управленческого учета...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -513,136 +497,101 @@
     const stepData = {
         1: {
             number: "1",
-            role: "Специалист по планированию отдела аналитики цен и данных",
-            text: "Ежемесячно, до 15-го числа, специалист по планированию формирует Excel-отчет «Анализ товарного запаса» и проводит анализ продаж неликвидной продукции и сверхнормативных запасов (СНЗ-артикулов).\n\nВ отчете определяется и выделяется неликвидный товар и артикулы, по которым присутствует сверхнормативный запас.\n\nЕсли по результатам 6 месяцев с момента действия акций и снижения цен товарный запас неликвида превышает 36 месяцев, этот артикул отправляется на переделку либо, в случае невозможности переделки, к списанию.\n\nНормативы товарного запаса определяются согласно АО КЭАЗ/13.0/-18 «МЕТОДИКА формирования пределов наполнения и расчета объема товаров в канале ГП для обеспечения гарантированных дат исполнения заказов покупателей».\n\nВход в процедуру — ежемесячный плановый анализ.",
-            inputs: ["⬅️ Ежемесячный плановый анализ"],
+            role: "Проект-менеджер",
+            text: "Организовывает и проводит комплекс мер по достижению окупаемости проекта. Включает в себя:\n— контроль выполнения этапов проекта;\n— мониторинг затрат;\n— взаимодействие с командой проекта;\n— своевременное выявление отклонений.\n\nВход в процедуру — проект находится в стадии реализации и подходит к этапу завершения.",
+            inputs: ["⬅️ Вход: Проект в стадии реализации"],
             outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
-            role: "Специалист по планированию отдела аналитики цен и данных",
-            text: "В 1С:ДО создает служебную записку, в которой указывает информацию о вновь выявленных неликвидах и сверхнормативных запасах, а также результатах проведенных мероприятий по ранее выявленным позициям. Служебная записка отправляется на ознакомление руководителям направлений управления продуктового маркетинга.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От специалиста (шаг 1)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
+            role: "Проект-менеджер",
+            text: "Проводит мониторинг окупаемости проекта. В конце каждого месяца заполняет в 1С:ДО отчет по затратам проекта согласно утвержденной форме Приложение К АО КЭАЗ//32-9 «СТАНДАРТА по управлению проектами». Данный отчет отображает графики, показывающие информацию о покрытии валовой прибылью всех произведенных инвестиций. На основании полученных данных анализирует статус по окупаемости проекта.\n\nЕсли окупаемость достигнута, переход к шагу 4. Если окупаемость не достигнута, переход к шагу 3.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
+            outputs: ["✅ Если окупаемость достигнута → <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>", "❌ Если окупаемость не достигнута → <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         3: {
             number: "3",
-            role: "Руководитель направления",
-            text: "В рамках ранее полученной служебной записки создает подзадачу со списком потенциальных неликвидов и слабооборачиваемых товаров для проведения анализа. Подзадача отправляется на исполнение ответственному сотруднику (продукт-менеджеру/старшему ПМ). Контролирующим лицом подзадачи назначается специалист по планированию отдела аналитики цен и данных.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От специалиста (шаг 2)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
+            role: "Проект-менеджер",
+            text: "При недостижении ключевых показателей инициирует изменение продуктового проекта. Изменения проводятся в следующих случаях (при выходе за параметры «проектного треугольника» раздела «Критерии успеха Проекта» Паспорта проекта):\n— отклонения по времени более чем на 10% от срока;\n— отклонения по содержанию проекта (обновление технического задания, конструкторской документации);\n— превышения резерва бюджета проекта (если резерв составляет 0, то любое превышение бюджета);\n— по аргументированному требованию спонсора;\n— при наступлении риска остановки или замораживания проекта.\n\nДля принятия решения об изменении готовится форма Приложение Ж «Изменение Паспорта продуктового проекта».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2, НЕТ)</a>"],
+            outputs: ["📤 ВЫХОД: Переход к процедуре <a href='proc6.html' class='proc-link'>6 (Изменение продуктового проекта)</a>"]
         },
         4: {
             number: "4",
-            role: "Продукт-менеджер / Старший ПМ",
-            text: "Проводит анализ для выявления причин, по которым товар стал неликвидным или слабооборачиваемым. Возможные причины:\n— некорректно сформированный план продаж;\n— некорректно установленный предел наполнения;\n— отмененные заказы;\n— некомплектность продукта;\n— изменение рыночного спроса;\n— появление более конкурентных аналогов;\n— прочее.\n\nПо результатам анализа формулирует предложения по корректирующим мероприятиям, включая:\n— утилизация неликвидной продукции;\n— разборка/переделка/модернизация продукта;\n— применение акций, скидок и дополнительных мотиваций;\n— изменение цены продукта;\n— прочие мероприятия.\n\nВся информация заносится в исходный файл «Анализ товарного запаса» и отправляется на согласование посредством служебной записки в 1С:ДО.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От руководителя направления (шаг 3)</a>"],
+            role: "Проект-менеджер",
+            text: "При достижении окупаемости подготавливает Акт о завершении проекта. На основании полученной информации об окупаемости проекта создает в 1С:ДО внутренний документ «Акт на завершение проекта развития», заполняет приложенный файл «Акт на завершение проекта развития» и отправляет на согласование руководителю проектного офиса.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2, ДА)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
-            role: "Руководитель направления",
-            text: "Согласовывает и/или корректирует список предложенных корректирующих мероприятий, представленный продукт-менеджером. При необходимости вносит изменения и дополнения с учетом стратегии развития направления и текущей рыночной ситуации.",
+            role: "Руководитель проектного офиса",
+            text: "Согласовывает акт о завершении продуктового проекта в 1С:ДО, проверяет полноту и корректность заполнения. После согласования отправляет акт на согласование в проектный комитет.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От ПМ (шаг 4)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
-            role: "Руководитель направления",
-            text: "В 1С:ДО отправляет согласованные предложения по маркетинговым активностям для увеличения продаж и распродажи остатков. Предложения направляются на рассмотрение менеджеру мотивационных программ и другим заинтересованным сторонам.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От руководителя направления (шаг 5)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>", "→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>", "→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
+            role: "Проектный комитет",
+            text: "В 1С:ДО согласовывает акт о завершении продуктового проекта. Список лиц, входящих в проектный комитет, указан в АО КЭАЗ//32-9 «СТАНДАРТ управления продуктовыми проектами». Решение принимается коллегиально на основании представленных материалов.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От РПО (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
         },
         7: {
             number: "7",
-            role: "Руководитель направления",
-            text: "В 1С:ДО ставит задачу на проведение утилизации неликвидного товара. Задача направляется ответственному за утилизацию с указанием перечня номенклатуры, объемов и сроков. При инициировании процесса списания номенклатуры действует согласно процедуре УК//05-8 «Списание ТМЦ по УУ».",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От руководителя направления (шаг 6)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(18); return false;' class='io-link'>Шаг 18</a>"]
+            role: "Руководитель проектного офиса",
+            text: "В 1С:ДО ставит задачу на ознакомление о согласовании проекта и его исключении из реестра. Задача направляется всем заинтересованным сторонам для информации о завершении проекта.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От проектного комитета (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>", "→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
         },
         8: {
             number: "8",
-            role: "Руководитель направления",
-            text: "Инициирует процесс переделки или модернизации неликвидной продукции. Процесс запускается в рамках действующих процедур:\n— УК//05-63 «Переработка неликвидной ГП на СГП»;\n— УК//05-69 «Переработка неликвидной ГП с драгметаллами».",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От руководителя направления (шаг 6)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(19); return false;' class='io-link'>Шаг 19</a>"]
+            role: "Проект-менеджер",
+            text: "Исключает проект из реестра проектов. В 1С:ДО перемещает проект из папки «01 Продуктовые проекты КЭАЗ\01 Текущие инвестиционные продуктовые проекты (капитализируемые)» в папку «01 Продуктовые проекты КЭАЗ\03 Замороженные продуктовые проекты» или «01 Продуктовые проекты КЭАЗ\Остановленные продуктовые проекты» в зависимости от причины завершения.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От РПО (шаг 7)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>"]
         },
         9: {
             number: "9",
-            role: "Менеджер мотивационных программ",
-            text: "Принимает решение по согласованию маркетинговых активностей, предложенных для увеличения продаж и распродажи остатков. Оценивает соответствие предложений действующим мотивационным программам, бюджету и маркетинговой стратегии.\n\nЕсли активности не согласованы, переход к шагу 11 (снижение цен). Если согласованы, переход к шагу 10 (разработка регламента).",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От руководителя направления (шаг 6)</a>"],
-            outputs: ["❌ Если не согласовано → <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>", "✅ Если согласовано → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+            role: "Руководитель проектного офиса",
+            text: "Ставит задачу в 1С:ДО на снятие проекта с управленческого учета. Задача направляется начальнику УКиОТ с указанием проекта и необходимых действий.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От РПО (шаг 7)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
         },
         10: {
             number: "10",
-            role: "Менеджер мотивационных программ",
-            text: "Разрабатывает регламент проведения мероприятий (сроки, условия, ответственные, бюджет) и согласовывает его с маркетологами дистрибьюторов. Доводит информацию об акциях до партнеров через официальные каналы коммуникации.\n\nПо истечении срока действия акции проверяется результат:\n— если неликвид распродан, переход к шагу 20 (выход);\n— если не распродан, оценивается возможность переделки: при возможности переделки — шаг 8, при невозможности — шаг 7 (утилизация).",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От мотивационных программ (шаг 9, ДА)</a>"],
-            outputs: ["✅ Если по истечении срока распродано → <a href='#' onclick='goToStep(20); return false;' class='io-link'>Шаг 20</a>", "❌ Если не распродано → проверка переделки (<a href='#' onclick='goToStep(8); return false;' class='io-link'>шаг 8</a> или <a href='#' onclick='goToStep(7); return false;' class='io-link'>шаг 7</a>)"]
+            role: "Начальник УКиОТ",
+            text: "Снимает проект с управленческого учета. Организует закрытие всех связанных с проектом учетных позиций, проверяет корректность отнесения затрат и завершает учетные операции по проекту.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От РПО (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
         },
         11: {
             number: "11",
-            role: "Руководитель направления",
-            text: "Если предложенные маркетинговые активности не были согласованы, то по неликвидной и слабооборачиваемой продукции предлагается снижение цены. В 1С:ДО согласовывает условия понижения цены с директором по продажам РФ, предоставляя обоснование и расчеты.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От мотивационных программ (шаг 9, НЕТ)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>"]
+            role: "Начальник УКиОТ",
+            text: "Проект снят с управленческого учета. Все учетные операции по проекту завершены, проект более не отражается в управленческой отчетности. Выход из процедуры.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От УКиОТ (шаг 10)</a>"],
+            outputs: ["📤 ВЫХОД: Проект снят с управленческого учета"]
         },
         12: {
             number: "12",
-            role: "Руководитель направления",
-            text: "В 1С:ДО информирует заинтересованные стороны об утвержденных условиях снижения цен на номенклатуру. Информация направляется специалисту по планированию и продукт-менеджеру для дальнейших действий.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От руководителя направления (шаг 11)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>", "→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
+            role: "Руководитель проектного офиса",
+            text: "Акт на завершение продуктового проекта согласован всеми сторонами. Документация по проекту архивируется. Выход из процедуры.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От РПО (шаг 7)</a>"],
+            outputs: ["📤 ВЫХОД: Акт на завершение согласован"]
         },
         13: {
             number: "13",
-            role: "Специалист по планированию отдела аналитики цен и данных",
-            text: "С приложенным списком номенклатуры со сниженными ценами ставит задачу в 1С:ДО на исполнение о проведении информирования региональных директоров и региональных менеджеров продаж. В задаче указывается перечень номенклатуры, новые цены и сроки действия спецпредложений.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От руководителя направления (шаг 12)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>"]
+            role: "Проект-менеджер",
+            text: "Проект исключен из реестра проектов. Все связанные с проектом документы перемещены в архив. Выход из процедуры.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От ПМ (шаг 8)</a>"],
+            outputs: ["📤 ВЫХОД: Проект исключен из реестра"]
         },
         14: {
             number: "14",
-            role: "Продукт-менеджер / Старший ПМ",
-            text: "Получает информацию о снижении цен для дальнейшей работы — актуализации коммерческих предложений, взаимодействия с ключевыми клиентами и т.д.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От специалиста (шаг 13)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
-        },
-        15: {
-            number: "15",
-            role: "Руководитель направления",
-            text: "В 1С:ДО ставит задачу на исполнение по изменению цен для продукт-менеджера/старшего ПМ. В задаче указывается перечень номенклатуры и новые цены, утвержденные в шаге 11-12.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От руководителя направления (шаг 12)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
-        },
-        16: {
-            number: "16",
-            role: "Продукт-менеджер / Старший ПМ",
-            text: "В 1С:УПП заводит документ по изменению цен на номенклатуру согласно инструкции АО КЭАЗ//-7227 «ИНСТРУКЦИЯ Внесение цен в 1С УПП на готовую продукцию». Указывает новые цены и дату начала действия.\n\nПо истечении срока действия скидки проверяется результат:\n— если неликвид распродан, переход к шагу 20 (выход);\n— если не распродан, оценивается возможность переделки: при возможности переделки — шаг 8, при невозможности — шаг 7 (утилизация).",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От руководителя направления (шаг 14)</a>", "⬅️ <a href='#' onclick='goToStep(15); return false;' class='io-link'>От руководителя направления (шаг 15)</a>"],
-            outputs: ["✅ Если по истечении срока распродано → <a href='#' onclick='goToStep(20); return false;' class='io-link'>Шаг 20</a>", "❌ Если не распродано → проверка переделки (<a href='#' onclick='goToStep(8); return false;' class='io-link'>шаг 8</a> или <a href='#' onclick='goToStep(7); return false;' class='io-link'>шаг 7</a>)"]
-        },
-        18: {
-            number: "18",
-            role: "Выход",
-            text: "Инициирован процесс списания неликвидных ТМЦ. Дальнейшие действия выполняются согласно процедуре УК//05-8 «Списание ТМЦ по УУ» (отдельная процедура).",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От руководителя направления (шаг 7)</a>"],
-            outputs: ["📤 ВЫХОД: Переход к процедуре списания ТМЦ по УУ (<a href='proc29.html' class='proc-link'>проц.29</a>)"]
-        },
-        19: {
-            number: "19",
-            role: "Выход",
-            text: "Инициирован процесс переделки или модернизации неликвидной продукции. Дальнейшие действия выполняются в рамках процедур:\n— УК//05-63 «Переработка неликвидной ГП на СГП»;\n— УК//05-69 «Переработка неликвидной ГП с драгметаллами».",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От руководителя направления (шаг 8)</a>", "⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От мотивационных программ (шаг 10)</a>", "⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От ПМ (шаг 16)</a>"],
-            outputs: ["📤 ВЫХОД: Процесс переделки/модернизации запущен"]
-        },
-        20: {
-            number: "20",
-            role: "Выход",
-            text: "Неликвидная или слабооборачиваемая продукция полностью распродана. Задача выполнена, процедура завершена.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От мотивационных программ (шаг 10)</a>", "⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От ПМ (шаг 16)</a>"],
-            outputs: ["📤 ВЫХОД: Неликвид распродан"]
+            role: "Проект-менеджер",
+            text: "Осуществление действия согласно процедуре <a href='proc6.html' class='proc-link'>«Изменение продуктового проекта» (УК/11.0/05-22)</a>. Переход к процедуре 6 для внесения изменений в проект.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ (шаг 3)</a>"],
+            outputs: ["📤 ВЫХОД: Переход к процедуре 6"]
         }
     };
 
@@ -744,3 +693,4 @@
 </script>
 </body>
 </html>
+```
