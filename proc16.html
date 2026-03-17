@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 16</title>
+    <title>КЭАЗ · Процедура 17 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -77,7 +77,6 @@
             min-width: 1400px;
         }
 
-        /* Шапка с номерами шагов */
         .step-header {
             display: flex;
             margin-left: 220px;
@@ -95,7 +94,6 @@
             font-size: 0.85rem;
         }
 
-        /* Дорожка */
         .lane {
             display: flex;
             min-height: 120px;
@@ -105,7 +103,6 @@
             border-bottom: none;
         }
 
-        /* Название дорожки */
         .lane-label {
             width: 220px;
             font-weight: 700;
@@ -121,7 +118,6 @@
             font-size: 0.9rem;
         }
 
-        /* Ячейки с шагами */
         .lane-cells {
             display: flex;
             flex: 1;
@@ -140,7 +136,6 @@
             padding: 5px;
         }
 
-        /* Карточка шага */
         .step-card {
             background: white;
             border-radius: 16px;
@@ -153,11 +148,22 @@
             transition: 0.2s;
             width: 100%;
             text-align: left;
+            scroll-margin-top: 20px;
         }
         .step-card:hover {
             transform: translateY(-2px);
             border-color: #f6b83e;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+        .step-card.highlighted-output {
+            border: 3px solid #2e8b57;
+            background: #e6f3e6;
+            box-shadow: 0 0 0 3px rgba(46,139,86,0.2);
         }
 
         .step-num {
@@ -211,10 +217,6 @@
             color: #f6b83e;
         }
 
-        /* Цвета ролей */
-        .role-dir { border-left-color: #1e90ff; } /* Директор по маркетингу / Руководитель направления */
-        .role-fin { border-left-color: #4682b4; } /* Финансовый директор */
-
         /* Детальная панель */
         .detail-panel {
             display: none;
@@ -224,6 +226,7 @@
             margin-top: 30px;
             border: 2px solid #e0e7f5;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
         }
         .detail-panel.show {
             display: block;
@@ -287,8 +290,18 @@
             gap: 8px;
             font-size: 0.9rem;
         }
-        .io-arrow {
-            font-size: 1.2rem;
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
         }
 
         .back-to-top {
@@ -308,104 +321,173 @@
             border: none;
             z-index: 1000;
         }
+
+        .role-pm { border-left-color: #1e90ff; } /* Старший ПМ / ПМ */
+        .role-ukiot { border-left-color: #4682b4; } /* Начальник УКиОТ */
+        .role-goz { border-left-color: #8a2be2; } /* Руководитель ГОЗ */
+        .role-fin { border-left-color: #2e8b57; } /* Финансовый директор */
+        .role-sogl { border-left-color: #ff8c00; } /* Согласующие */
     </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
-    <h1>Процедура 16: Поиск и получение мер государственной поддержки для собственного производства</h1>
-    <div class="subhead">Владелец: Директор по маркетингу</div>
+    <h1>Процедура 17: Проведение исследовательского проекта</h1>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
-    <!-- SWIMLANE -->
     <div class="swimlane">
         <div class="swimlane-table">
-            <!-- Шапка с номерами шагов -->
             <div class="step-header">
-                <div class="step-header-cell">1-3</div>
-                <div class="step-header-cell">4-6</div>
-                <div class="step-header-cell">7-9</div>
-                <div class="step-header-cell">10</div>
+                <div class="step-header-cell">1-4</div>
+                <div class="step-header-cell">5-8</div>
+                <div class="step-header-cell">9-12</div>
+                <div class="step-header-cell">13-16</div>
             </div>
 
-            <!-- Дорожка 1: Руководитель направления / Директор по маркетингу -->
+            <!-- Дорожка 1: Старший ПМ / Продукт-менеджер -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #1e90ff;">Руководитель направления<br>Директор по маркетингу</div>
+                <div class="lane-label" style="border-left-color: #1e90ff;">Старший ПМ / Продукт-менеджер</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-dir" onclick="showDetail(1)">
+                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
-                            <div class="step-title">Запрос на поиск мер</div>
-                            <div class="step-preview">Формирует и отправляет запрос на поиск подходящей меры государственной поддержки...</div>
+                            <div class="step-title">Задача на управленческий учет</div>
+                            <div class="step-preview">В Битрикс24 ставит задачу по организации управленческого учета в 1С:УПП...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
+                        <div class="step-card role-pm" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Получение списка задач</div>
+                            <div class="step-preview">В Битрикс24 получает список задач проведения исследовательского проекта...</div>
+                        </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-dir" onclick="showDetail(4)">
+                        <div class="step-card role-pm" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
-                            <div class="step-title">Совещание (детальная проработка)</div>
-                            <div class="step-preview">Инициирует проведение совещания для детальной проработки и получения меры господдержки...</div>
+                            <div class="step-title">Исследование рынка</div>
+                            <div class="step-preview">Проводит исследование рынка...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
-                        <div class="step-card role-dir" onclick="showDetail(5)">
+                        <div class="step-card role-pm" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
-                            <div class="step-title">Назначение ответственного</div>
-                            <div class="step-preview">Назначает ответственного руководителя проекта...</div>
+                            <div class="step-title">Запрос на финансирование</div>
+                            <div class="step-preview">Отправляет запрос на оценку возможности получения финансирования...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Подготовка техтребований</div>
+                            <div class="step-preview">Подготавливает технические требования на продукт...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-dir" onclick="showDetail(6)">
-                            <span class="step-num">6</span>
-                            <div class="step-title">Сбор документов</div>
-                            <div class="step-preview">Проводит сбор и подготовку необходимых документов, предусмотренных регламентирующими НПА...</div>
+                        <div class="step-card role-pm" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Поиск OEM/ODM поставщика</div>
+                            <div class="step-preview">Организовывает работы по поиску OEM/ODM поставщика...</div>
                         </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-dir" onclick="showDetail(10)">
+                        <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Анализ образцов</div>
+                            <div class="step-preview">Готовит документ по анализу образцов...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="10" onclick="goToStep(10)">
                             <span class="step-num">10</span>
-                            <div class="step-title">Применение нецелесообразно</div>
-                            <div class="step-preview">Применение существующей меры господдержки невозможно/нецелесообразно...</div>
+                            <div class="step-title">Запрос стоимости денег</div>
+                            <div class="step-preview">Отправляет запрос на определение стоимости денег в проект...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="12" onclick="goToStep(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Подготовка бизнес-кейса</div>
+                            <div class="step-preview">Подготавливает бизнес-кейс (финансовую модель)...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="13" onclick="goToStep(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Отправка на согласование</div>
+                            <div class="step-preview">Отправляет на согласование результаты исследовательского проекта...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="15" onclick="goToStep(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Конвертация в Инвестиционные</div>
+                            <div class="step-preview">Конвертация карточки в "Инвестиционные" в Битрикс24...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                        <div class="step-card role-pm" data-step="16" onclick="goToStep(16)">
+                            <span class="step-num">16</span>
+                            <div class="step-title">Карточка в архив</div>
+                            <div class="step-preview">Карточка исследовательского проекта перенесена в архив...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 2: Финансовый директор -->
+            <!-- Дорожка 2: Начальник УКиОТ -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #4682b4;">Финансовый директор</div>
+                <div class="lane-label" style="border-left-color: #4682b4;">Начальник УКиОТ</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-ukiot" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Организация учета</div>
+                            <div class="step-preview">В 1С:УПП организовывает управленческий учет...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Руководитель ГОЗ и Госзакупки -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель ГОЗ и Госзакупки</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-fin" onclick="showDetail(2)">
-                            <span class="step-num">2</span>
-                            <div class="step-title">Первичный анализ</div>
-                            <div class="step-preview">Проводит первичный анализ и изучение мер государственной поддержки...</div>
+                        <div class="step-card role-goz" data-step="6" onclick="goToStep(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Мероприятия по софинансированию</div>
+                            <div class="step-preview">Проводит мероприятия по возможности получения софинансирования...</div>
                         </div>
-                        <div class="step-card role-fin" onclick="showDetail(3)">
-                            <span class="step-num">3</span>
-                            <div class="step-title">Передача информации и совещание</div>
-                            <div class="step-preview">Передает собранную информацию, инициирует проведение совещания...</div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Финансовый директор -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Финансовый директор</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-fin" data-step="11" onclick="goToStep(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Расчет стоимости денег</div>
+                            <div class="step-preview">Определяет стоимость денег в проект...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 5: Согласующие -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Согласующие</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-sogl" data-step="14" onclick="goToStep(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Решение о согласовании</div>
+                            <div class="step-preview">Принимают решение о согласовании результатов проекта...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
-                        </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-fin" onclick="showDetail(7)">
-                            <span class="step-num">7</span>
-                            <div class="step-title">Подача в госорган</div>
-                            <div class="step-preview">Передает подготовленную документацию в государственный орган...</div>
-                        </div>
-                        <div class="step-card role-fin" onclick="showDetail(8)">
-                            <span class="step-num">8</span>
-                            <div class="step-title">Контроль решения</div>
-                            <div class="step-preview">Контролирует и сопровождает принятие положительного решения...</div>
-                        </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-fin" onclick="showDetail(9)">
-                            <span class="step-num">9</span>
-                            <div class="step-title">Соглашение подписано</div>
-                            <div class="step-preview">Соглашение на получение мер государственной поддержки подписано...</div>
-                            <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
@@ -427,75 +509,119 @@
     const stepData = {
         1: {
             number: "1",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Формирует и отправляет запрос на поиск подходящей меры государственной поддержки для производства продукта по электронной почте.",
-            inputs: ["⬅️ Исследовательская фаза продуктового проекта"],
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "В 1С Битрикс24 ставит задачу по организации управленческого учета в 1С:УПП. Входом в процесс является процедура «Обработка идеи по вводу нового продукта и модернизации/кастомизации уже имеющегося» № УК/11.0/05-46. Задача формируется после согласования карточки идеи Директором по маркетингу и конвертирования карточки в исследовательский проект.",
+            inputs: ["⬅️ Согласованная карточка идеи (из проц.27)"],
             outputs: ["→ Шаг 2"]
         },
         2: {
             number: "2",
-            role: "Финансовый директор",
-            text: "Проводит первичный анализ и изучение мер государственной поддержки.\n\nИнформация может быть получена из следующих источников:\n– открытые информационные источники (СМИ, официальные сайты, Telegram-каналы Государственных органов);\n– другие участники рынка;\n– прочее.\n\nПри изучении выделяются ключевые условия и информация, и транслируются инициатору запроса.",
-            inputs: ["⬅️ От руководителя направления (шаг 1)"],
+            role: "Начальник УКиОТ",
+            text: "В 1С:УПП организовывает управленческий учет. Заводится карточка проекта в 1С:УПП и открывается заказ на производство для учета затрат по проекту. Заведенные код проекта в Управленческом учете и ссылка на проект в 1С:УПП указывается в полученном задании в Битрикс24 в соответствующих полях («Код УПП» и «Ссылка на проект в 1С»). Далее, нажимает кнопку «Сохранить».",
+            inputs: ["⬅️ От ПМ (шаг 1)"],
             outputs: ["→ Шаг 3"]
         },
         3: {
             number: "3",
-            role: "Финансовый директор",
-            text: "Передает собранную информацию с указанием комментария по электронной почте и инициирует проведение совещания для обсуждения найденной меры господдержки.\n\nИнициируется проведение совещания (первая итерация), на котором обсуждается, применима и целесообразна ли предложенная мера государственной поддержки для производства и локализации продукта.\n\nОбсуждение проходит между Финансовым директором и Директором по маркетингу (возможно участие РН). Совещание может проходить как в формате очной встречи, так и в формате online (видеоконференция).",
-            inputs: ["⬅️ От финансового директора (шаг 2)"],
-            outputs: ["✅ Если целесообразно → Шаг 4", "❌ Если нецелесообразно → Шаг 10"]
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "В Битрикс24 получает список задач проведения исследовательского проекта. Список задач исследовательского проекта формируется автоматически, после организации управленческого учета в 1С:УПП. Пока не заведена карточка проекта в 1С:УПП, не открыт заказ на производство и эти данные не внесены в карточку проекта, исследование не может перейти на следующий этап.",
+            inputs: ["⬅️ От УКиОТ (шаг 2)"],
+            outputs: ["→ Шаг 4"]
         },
         4: {
             number: "4",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Инициирует проведение совещания для детальной проработки и получения меры господдержки.\n\nИнициируется проведение совещания (вторая итерация), при участии Финансового директора, Директора по маркетингу, Руководителей направления, Директора по экономике и Директора по правовым вопросам, на котором более детально обсуждается предложенная мера Государственной поддержки для локализации продукта и необходимые мероприятия для ее получения.",
-            inputs: ["⬅️ От финансового директора (шаг 3, ДА)"],
-            outputs: ["→ Шаг 5"]
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Проводит исследование рынка. Подробный перечень действий по исследованию рынка указан в Приложении 2 «Шаблон-план полевого исследования рынка», но может быть дополнен по необходимости. Результаты проведения исследования формируются в формате презентации и прикладываются к задаче в Битрикс24 и в раздел «Документы по проекту», поле «Исследование рынка» карточки проекта.",
+            inputs: ["⬅️ От ПМ (шаг 3)"],
+            outputs: ["✅ Если получение финансирования целесообразно → Шаг 5", "❌ Если не целесообразно → Шаг 7"]
         },
         5: {
             number: "5",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Назначает ответственного руководителя проекта.",
-            inputs: ["⬅️ От руководителя направления (шаг 4)"],
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Отправляет запрос в Битрикс24 по оценке возможности получения финансирования. Мероприятия по оценке возможности получения мер софинансирования включают в себя: проверка наличия аналога продукта в реестре российского производства; проведение анализа мер господдержки для оценки возможности получения софинансирования; предоставление требований нормативных актов для подтверждения производства на территории РФ.",
+            inputs: ["⬅️ От ПМ (шаг 4, ДА)"],
             outputs: ["→ Шаг 6"]
         },
         6: {
             number: "6",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Проводит сбор и подготовку необходимых документов, предусмотренных регламентирующими НПА.",
-            inputs: ["⬅️ От руководителя направления (шаг 5)"],
+            role: "Руководитель направления ГОЗ и Госзакупки",
+            text: "Проводит мероприятия по возможности получения софинансирования.",
+            inputs: ["⬅️ От ПМ (шаг 5)"],
             outputs: ["→ Шаг 7"]
         },
         7: {
             number: "7",
-            role: "Финансовый директор",
-            text: "Передает подготовленную документацию в государственный орган, в соответствии с регламентом, прописанном в постановлении.",
-            inputs: ["⬅️ От руководителя направления (шаг 6)"],
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Подготавливает технические требования на продукт. Подготовка технических требований на продукт осуществляется согласно СТАНДАРТУ «Шаблон технических требований на ПРОДУКТ» № АО КЭАЗ/13.4/32-48 и прикладываются к задаче в Битрикс24 и в раздел «Документы по проекту», поле «Технические требования» карточки проекта.",
+            inputs: ["⬅️ От ПМ (шаг 4, НЕТ), от руководителя ГОЗ (шаг 6)"],
             outputs: ["→ Шаг 8"]
         },
         8: {
             number: "8",
-            role: "Финансовый директор",
-            text: "Контролирует и сопровождает принятие положительного решения.",
-            inputs: ["⬅️ От финансового директора (шаг 7)"],
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Организовывает работы по поиску OEM/ODM поставщика согласно Процедуре поиск OEM/ODM поставщика. Регламент проведения поиска ОЕМ/ODM поставщика описан в ПРОЦЕДУРЕ «Поиск ОЕМ/ODM поставщика».",
+            inputs: ["⬅️ От ПМ (шаг 7)"],
             outputs: ["→ Шаг 9"]
         },
         9: {
             number: "9",
-            role: "Финансовый директор",
-            text: "Соглашение на получение мер государственной поддержки подписано. Выход.",
-            inputs: ["⬅️ От финансового директора (шаг 8)"],
-            outputs: ["📤 ВЫХОД: Соглашение подписано"]
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Готовит документ, отражающий исследования и изучения полученных образцов с технической и коммерческой стороны. Результатом задачи является документ-заключение свободной формы, который включает в себя следующие пункты, но не ограничивается ими:\n– Получение актуальных существующих протоколов испытаний предоставленных образцов от производителей по их методикам;\n– Визуальный осмотр образцов, как корпусного исполнения, так и разбора внутреннего исполнения и проверка собираемости с аксессуарами. Соисполнителем является Старший промышленный дизайнер;\n– Проверка соответствия технических требований в реальных условиях с привлечением промышленной эксплуатации;\n– Оценка полученных КП.\n\nДокумент прикладывается к задаче и в раздел «Документы по проекту», поле «Анализ образцов» карточки проекта.",
+            inputs: ["⬅️ От ПМ (шаг 8)"],
+            outputs: ["→ Шаг 10"]
         },
         10: {
             number: "10",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Применение существующей меры господдержки невозможно/нецелесообразно. Выход.",
-            inputs: ["⬅️ От финансового директора (шаг 3, НЕТ)"],
-            outputs: ["📤 ВЫХОД: Мера нецелесообразна"]
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "В Битрикс24 отправляет запрос на определение стоимости денег в проект. Продукт-менеджер ставит задачу в Битрикс24 по расчёту стоимости денег в проект на Финансового директора, прикладывает к задаче предварительную финансовую модель проекта.",
+            inputs: ["⬅️ От ПМ (шаг 9)"],
+            outputs: ["→ Шаг 11"]
+        },
+        11: {
+            number: "11",
+            role: "Финансовый директор",
+            text: "Определяет стоимость денег в проект. Оценка стоимости денег при расчете срока окупаемости всех видов Проектов на фазе планирования ИНВЕСТИЦИОННОЙ СТАДИИ Проекта:\n- Инвестиции в Проект разделяются по направлениям (НИОКР, оборудование, оснастка, инфраструктура, оборотные средства…);\n- По каждому направлению Финансовый Директор определяет источники финансирования, по-максимуму изыскивая льготные;\n- Инвестиции в каждое направление оцениваются по ставке, предложенной Финансовым Директором на предыдущем шаге;\n- Исходя из сумм инвестирования в каждое направление, рассчитывается средневзвешенная ставка, которая и принимается как стоимость денег для оценки окупаемости данного проекта;\n- При этом, принимается гипотеза, что финансирование всегда производится за счет привлеченных средств.",
+            inputs: ["⬅️ От ПМ (шаг 10)"],
+            outputs: ["→ Шаг 12"]
+        },
+        12: {
+            number: "12",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Подготавливает бизнес-кейс (Финансовая модель). В бизнес-кейсе отражаются доходно-расходные операции по стадиям проекта в случае, если после стадии ODM требуется крупноузловая сборка или локализация продукта, с итогом в виде показателя срока окупаемости. Документ прикладывается в задание и в раздел «Документы по проекту», поле «Бизнес-кейс» карточки проекта.",
+            inputs: ["⬅️ От финансового директора (шаг 11)"],
+            outputs: ["→ Шаг 13"]
+        },
+        13: {
+            number: "13",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "В Битрикс24 отправляет на согласование результаты исследовательского проекта. В Битрикс24 в задание прикладывает в соответствующие поля результаты исследовательского проекта, а именно:\n– Презентация исследования рынка;\n– Технические требования на продукт;\n– Аналитическая записка по поставщикам;\n– Анализ образцов;\n– Бизнес-кейс (может именоваться «Финансовая модель»);\n– Протокол о завершении Исследовательской СТАДИИ.\nНажимает кнопку «Сохранить».",
+            inputs: ["⬅️ От ПМ (шаг 12)"],
+            outputs: ["→ Шаг 14"]
+        },
+        14: {
+            number: "14",
+            role: "Согласующие",
+            text: "Принимают решение о согласовании. Лица, принимающие решение о согласовании: 1-я итерация: согласование с Начальником отдела продуктового направления; далее определяется, согласно СТАНДАРТ «Матрица принятия решений в Проектном Управлении» УК/2.0/32-10. Руководитель проектного офиса указывается как «Наблюдатель». Согласование может быть проведено как в формате очной встречи, так и в формате ВКС (предпочтительнее в Битрикс24).",
+            inputs: ["⬅️ От ПМ (шаг 13)"],
+            outputs: ["✅ Если положительное решение → Шаг 15", "❌ Если отрицательное → Шаг 16"]
+        },
+        15: {
+            number: "15",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Конвертация карточки исследовательского проекта на ветку «Инвестиционные» в Битрикс24. Переход карточки исследовательского проекта на ветку «Инвестиционные» осуществляется с фиксацией следующих документов: Результаты проведенного анализа рынка; Технические требования на проект; Аналитическая записка по поставщикам; Анализ образцов; Бизнес-кейс (может именоваться «Финансовая модель»); Протокол о завершении Исследовательской СТАДИИ.\n\n➡️ Выход в Процедуру 23 (Создание номенклатурных групп), Процедуру 24 (Инициация продуктового проекта) и Процедуру 26 (Поиск OEM/ODM поставщика).",
+            inputs: ["⬅️ От согласующих (шаг 14, ДА)"],
+            outputs: ["📤 ВЫХОД: Проект переведен в инвестиционную стадию"]
+        },
+        16: {
+            number: "16",
+            role: "Старший ПМ / Продукт-менеджер",
+            text: "Карточка исследовательского проекта перенесена в архив. Архив располагается в Битрикс24 (Битрикс24/Задачи и проекты/Проектовые проекты/Архив).",
+            inputs: ["⬅️ От согласующих (шаг 14, НЕТ)"],
+            outputs: ["📤 ВЫХОД: Проект в архиве"]
         }
     };
+
+    let currentStep = null;
 
     function showDetail(stepId) {
         const panel = document.getElementById('detailPanel');
@@ -521,7 +647,13 @@
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                const stepMatch = inp.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -529,7 +661,13 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -539,7 +677,57 @@
         io.innerHTML = ioHtml;
         
         panel.classList.add('show');
+        
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
     }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step', 'highlighted-output');
+        });
+        
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+        
+        const data = stepData[stepId];
+        if (data && data.outputs) {
+            data.outputs.forEach(out => {
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const outputStep = stepMatch[1];
+                    const outputCard = document.querySelector(`.step-card[data-step="${outputStep}"], .step-card[data-step^="${outputStep}-"]`);
+                    if (outputCard) {
+                        outputCard.classList.add('highlighted-output');
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                const numericStep = stepId.split('-')[0];
+                goToStep(numericStep);
+            }
+        });
+    });
 </script>
 </body>
 </html>
