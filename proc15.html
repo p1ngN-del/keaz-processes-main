@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 16 (Интерактив)</title>
+    <title>КЭАЗ · Процедура 15 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -61,7 +77,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -74,7 +89,7 @@
         .swimlane-table {
             display: flex;
             flex-direction: column;
-            min-width: 1400px;
+            min-width: 1200px;
         }
 
         .step-header {
@@ -217,7 +232,6 @@
             color: #f6b83e;
         }
 
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -322,103 +336,165 @@
             z-index: 1000;
         }
 
-        .role-dir { border-left-color: #1e90ff; } /* Директор по маркетингу / Руководитель направления */
-        .role-fin { border-left-color: #4682b4; } /* Финансовый директор */
+        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
+        .role-designer { border-left-color: #ff8c00; } /* Дизайнер */
+        .role-advertising { border-left-color: #4682b4; } /* Начальник управления рекламы */
+        .role-rip { border-left-color: #ba55d3; } /* Руководитель интернет проектов */
+        .role-ovk { border-left-color: #2e8b57; } /* Начальник ОВК */
     </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
-    <h1>Процедура 16: Поиск и получение мер государственной поддержки для собственного производства</h1>
+    <h1>Процедура 15: Обработка ТЗ на дизайнерскую ЭД</h1>
     <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
     <div class="swimlane">
         <div class="swimlane-table">
             <div class="step-header">
-                <div class="step-header-cell">1-3</div>
-                <div class="step-header-cell">4-6</div>
-                <div class="step-header-cell">7-9</div>
-                <div class="step-header-cell">10</div>
+                <div class="step-header-cell">1-5</div>
+                <div class="step-header-cell">6-9</div>
+                <div class="step-header-cell">10-13</div>
+                <div class="step-header-cell">14-16</div>
             </div>
 
-            <!-- Дорожка 1: Руководитель направления / Директор по маркетингу -->
+            <!-- Дорожка 1: Продукт-менеджер -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #1e90ff;">Руководитель направления<br>Директор по маркетингу</div>
+                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-dir" data-step="1" onclick="goToStep(1)">
+                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
-                            <div class="step-title">Запрос на поиск мер</div>
-                            <div class="step-preview">Формирует и отправляет запрос на поиск подходящей меры государственной поддержки...</div>
+                            <div class="step-title">Разработка ТЗ</div>
+                            <div class="step-preview">Разрабатывает техническое задание на разработку дизайнерской ЭД (электронных документов) согласно шаблону...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-dir" data-step="4" onclick="goToStep(4)">
+                        <div class="step-card role-pm" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
-                            <div class="step-title">Совещание (детальная проработка)</div>
-                            <div class="step-preview">Инициирует проведение совещания для детальной проработки и получения меры господдержки...</div>
-                        </div>
-                        <div class="step-card role-dir" data-step="5" onclick="goToStep(5)">
-                            <span class="step-num">5</span>
-                            <div class="step-title">Назначение ответственного</div>
-                            <div class="step-preview">Назначает ответственного руководителя проекта...</div>
+                            <div class="step-title">Постановка задачи дизайнеру</div>
+                            <div class="step-preview">В 1С:ДО ставит задачу дизайнеру на разработку макетов ЭД на основе ТЗ...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-dir" data-step="6" onclick="goToStep(6)">
+                        <div class="step-card role-pm" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6</span>
-                            <div class="step-title">Сбор документов</div>
-                            <div class="step-preview">Проводит сбор и подготовку необходимых документов, предусмотренных регламентирующими НПА...</div>
+                            <div class="step-title">Проверка и согласование макетов</div>
+                            <div class="step-preview">Проверяет разработанные макеты на соответствие ТЗ, брендбуку и здравому смыслу...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-pm" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Отправка на согласование</div>
+                            <div class="step-preview">Отправляет согласованные макеты на утверждение начальнику ОВК...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-dir" data-step="10" onclick="goToStep(10)">
+                        <div class="step-card role-pm" data-step="10" onclick="goToStep(10)">
                             <span class="step-num">10</span>
-                            <div class="step-title">Применение нецелесообразно</div>
-                            <div class="step-preview">Применение существующей меры господдержки невозможно/нецелесообразно...</div>
-                            <span class="step-badge badge-out">📤 выход</span>
+                            <div class="step-title">Обработка замечаний ОВК</div>
+                            <div class="step-preview">Получает замечания от начальника ОВК, при необходимости ставит задачу дизайнеру на доработку...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="15" onclick="goToStep(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Запрос на перенос и обновление</div>
+                            <div class="step-preview">Ставит задачу на перенос утвержденных макетов в 1С:УПП и обновление каталога на сайте...</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 2: Финансовый директор -->
+            <!-- Дорожка 2: Дизайнер управления рекламы -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #4682b4;">Финансовый директор</div>
+                <div class="lane-label" style="border-left-color: #ff8c00;">Дизайнер</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-fin" data-step="2" onclick="goToStep(2)">
-                            <span class="step-num">2</span>
-                            <div class="step-title">Первичный анализ</div>
-                            <div class="step-preview">Проводит первичный анализ и изучение мер государственной поддержки...</div>
+                        <div class="step-card role-designer" data-step="5" onclick="goToStep(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Разработка макетов ЭД</div>
+                            <div class="step-preview">Разрабатывает макеты электронных документов согласно полученному ТЗ...</div>
                         </div>
-                        <div class="step-card role-fin" data-step="3" onclick="goToStep(3)">
-                            <span class="step-num">3</span>
-                            <div class="step-title">Передача информации и совещание</div>
-                            <div class="step-preview">Передает собранную информацию, инициирует проведение совещания...</div>
+                        <div class="step-card role-designer" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Доработка макетов</div>
+                            <div class="step-preview">Вносит изменения в макеты по замечаниям ПМ и повторно направляет...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-designer" data-step="11" onclick="goToStep(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Доработка макетов (ОВК)</div>
+                            <div class="step-preview">Вносит изменения в макеты по замечаниям начальника ОВК...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Начальник ОВК / Начальник управления рекламы -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник ОВК</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-ovk" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Утверждение макетов</div>
+                            <div class="step-preview">Проверяет макеты на соответствие фирменному стилю, стандартам и утверждает их или возвращает на доработку...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-ovk" data-step="12" onclick="goToStep(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Макеты утверждены</div>
+                            <div class="step-preview">Макеты дизайнерской ЭД утверждены начальником ОВК...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-ovk" data-step="14" onclick="goToStep(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Информирование ПМ</div>
+                            <div class="step-preview">Информирует ПМ об утверждении макетов...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Начальник управления рекламы / Руководитель интернет проектов -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Управление рекламы</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-advertising" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Проверка ТЗ</div>
+                            <div class="step-preview">Проверяет ТЗ на корректность формулировок, сроков и ожидаемых результатов...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-fin" data-step="7" onclick="goToStep(7)">
-                            <span class="step-num">7</span>
-                            <div class="step-title">Подача в госорган</div>
-                            <div class="step-preview">Передает подготовленную документацию в государственный орган...</div>
-                        </div>
-                        <div class="step-card role-fin" data-step="8" onclick="goToStep(8)">
-                            <span class="step-num">8</span>
-                            <div class="step-title">Контроль решения</div>
-                            <div class="step-preview">Контролирует и сопровождает принятие положительного решения...</div>
+                        <div class="step-card role-rip" data-step="13" onclick="goToStep(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Размещение на сайте</div>
+                            <div class="step-preview">Получает утвержденные макеты и размещает их в соответствующих разделах сайта...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-fin" data-step="9" onclick="goToStep(9)">
-                            <span class="step-num">9</span>
-                            <div class="step-title">Соглашение подписано</div>
-                            <div class="step-preview">Соглашение на получение мер государственной поддержки подписано...</div>
+                        <div class="step-card role-advertising" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Возврат на доработку</div>
+                            <div class="step-preview">Возвращает ТЗ продукт-менеджеру на доработку с комментариями...</div>
+                        </div>
+                        <div class="step-card role-advertising" data-step="16" onclick="goToStep(16)">
+                            <span class="step-num">16</span>
+                            <div class="step-title">Завершение процесса</div>
+                            <div class="step-preview">Процесс по разработке дизайнерской ЭД завершен...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
@@ -441,73 +517,115 @@
     const stepData = {
         1: {
             number: "1",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Формирует и отправляет запрос на поиск подходящей меры государственной поддержки для производства продукта по электронной почте.",
-            inputs: ["⬅️ Исследовательская фаза продуктового проекта"],
-            outputs: ["→ Шаг 2"]
+            role: "Продукт-менеджер",
+            text: "Разрабатывает техническое задание (ТЗ) на разработку или актуализацию дизайнерской электронной документации (ЭД). К дизайнерской ЭД относятся: каталоги, буклеты, листовки, презентации, инструкции, руководства по эксплуатации и прочие документы, требующие работы дизайнера.\n\nТЗ разрабатывается по установленному шаблону (Приложение 1 к процедуре) и должно содержать:\n- цель и задачи разработки;\n- перечень необходимых документов;\n- формат и технические требования к макетам (разрешение, цветовая модель и т.д.);\n- ссылки на исходные материалы (тексты, фото, 3D-модели);\n- сроки выполнения (дата начала и окончания работ);\n- ответственные лица со стороны ПМ и дизайнера.\n\nВходом в процедуру является выход из процедуры <a href='proc4.html' class='proc-link'>4 (Ввод номенклатуры)</a>, когда возникает потребность в создании или обновлении дизайнерской документации для новой или существующей номенклатуры.",
+            inputs: ["⬅️ <a href='proc4.html' class='proc-link'>Процедура 4 (Ввод номенклатуры)</a>", "⬅️ Плановая актуализация ЭД"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
-            role: "Финансовый директор",
-            text: "Проводит первичный анализ и изучение мер государственной поддержки.\n\nИнформация может быть получена из следующих источников:\n– открытые информационные источники (СМИ, официальные сайты, Telegram-каналы Государственных органов);\n– другие участники рынка;\n– прочее.\n\nПри изучении выделяются ключевые условия и информация, и транслируются инициатору запроса.",
-            inputs: ["⬅️ От руководителя направления (шаг 1)"],
-            outputs: ["→ Шаг 3"]
+            role: "Начальник управления рекламы",
+            text: "Получает разработанное ПМ техническое задание и проводит его первичную проверку. Основные критерии проверки:\n- корректность и однозначность формулировок;\n- реалистичность поставленных целей и сроков;\n- наличие всех необходимых для работы дизайнера исходных материалов (или ссылок на них);\n- соответствие форматов и технических требований возможностям отдела дизайна.\n\nЕсли ТЗ составлено корректно и содержит всю необходимую информацию, оно принимается в работу, и начальник управления рекламы переходит к шагу 4 (постановка задачи дизайнеру).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
+            outputs: ["✅ Если ТЗ корректно → <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>", "❌ Если есть замечания → <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         3: {
             number: "3",
-            role: "Финансовый директор",
-            text: "Передает собранную информацию с указанием комментария по электронной почте и инициирует проведение совещания для обсуждения найденной меры господдержки.\n\nИнициируется проведение совещания (первая итерация), на котором обсуждается, применима и целесообразна ли предложенная мера государственной поддержки для производства и локализации продукта.\n\nОбсуждение проходит между Финансовым директором и Директором по маркетингу (возможно участие РН). Совещание может проходить как в формате очной встречи, так и в формате online (видеоконференция).",
-            inputs: ["⬅️ От финансового директора (шаг 2)"],
-            outputs: ["✅ Если целесообразно → Шаг 4", "❌ Если нецелесообразно → Шаг 10"]
+            role: "Начальник управления рекламы",
+            text: "В случае выявления недостатков в ТЗ, возвращает его продукт-менеджеру на доработку. В 1С:ДО (или по электронной почте) направляет ПМ мотивированный отказ с подробным описанием замечаний и рекомендациями по их устранению.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От начальника управления рекламы (шаг 2, НЕТ)</a>"],
+            outputs: ["↩️ Возврат на <a href='#' onclick='goToStep(1); return false;' class='io-link'>шаг 1 (ПМ)</a>"]
         },
         4: {
             number: "4",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Инициирует проведение совещания для детальной проработки и получения меры господдержки.\n\nИнициируется проведение совещания (вторая итерация), при участии Финансового директора, Директора по маркетингу, Руководителей направления, Директора по экономике и Директора по правовым вопросам, на котором более детально обсуждается предложенная мера Государственной поддержки для локализации продукта и необходимые мероприятия для ее получения.",
-            inputs: ["⬅️ От финансового директора (шаг 3, ДА)"],
-            outputs: ["→ Шаг 5"]
+            role: "Продукт-менеджер",
+            text: "На основании проверенного и принятого ТЗ, в 1С:ДО ставит задачу на исполнение для дизайнера управления рекламы. В задаче указываются:\n- ссылка на утвержденное ТЗ;\n- перечень необходимых макетов;\n- срок выполнения (в соответствии с ТЗ).\nКонтролирующим лицом назначается Начальник управления рекламы.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От начальника управления рекламы (шаг 2, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Назначает ответственного руководителя проекта.",
-            inputs: ["⬅️ От руководителя направления (шаг 4)"],
-            outputs: ["→ Шаг 6"]
+            role: "Дизайнер управления рекламы",
+            text: "Получает задачу от ПМ и приступает к разработке макетов электронных документов строго в соответствии с техническим заданием. В процессе работы использует исходные материалы, предоставленные ПМ (фото, тексты, 3D-модели и т.д.).\n\nПо факту готовности дизайнер размещает разработанные макеты в папке на файловом ресурсе (STOR) или直接在 1С:ДО (в зависимости от технических возможностей) и уведомляет об этом продукт-менеджера.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От ПМ (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Проводит сбор и подготовку необходимых документов, предусмотренных регламентирующими НПА.",
-            inputs: ["⬅️ От руководителя направления (шаг 5)"],
-            outputs: ["→ Шаг 7"]
+            role: "Продукт-менеджер",
+            text: "Проверяет разработанные дизайнером макеты на предмет:\n- соответствия утвержденному ТЗ;\n- наличия всех заказанных элементов;\n- соответствия фирменному стилю и брендбуку компании (базовый уровень);\n- отсутствия фактических ошибок в тексте и цифрах.\n\nЕсли макеты не требуют доработки или требуют незначительной корректировки, ПМ может согласовать их с пометкой. При наличии существенных замечаний, ПМ возвращает макеты дизайнеру на доработку (шаг 7).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От дизайнера (шаг 5)</a>"],
+            outputs: ["✅ Если макеты согласованы → <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>", "❌ Если нужна доработка → <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
         },
         7: {
             number: "7",
-            role: "Финансовый директор",
-            text: "Передает подготовленную документацию в государственный орган, в соответствии с регламентом, прописанном в постановлении.",
-            inputs: ["⬅️ От руководителя направления (шаг 6)"],
-            outputs: ["→ Шаг 8"]
+            role: "Дизайнер управления рекламы",
+            text: "Получает от ПМ замечания по разработанным макетам. Вносит необходимые правки и исправления. После доработки повторно предоставляет обновленные макеты продукт-менеджеру для проверки (возврат к шагу 6).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От ПМ (шаг 6, НЕТ)</a>"],
+            outputs: ["↩️ Возврат к <a href='#' onclick='goToStep(6); return false;' class='io-link'>шагу 6 (ПМ)</a>"]
         },
         8: {
             number: "8",
-            role: "Финансовый директор",
-            text: "Контролирует и сопровождает принятие положительного решения.",
-            inputs: ["⬅️ От финансового директора (шаг 7)"],
-            outputs: ["→ Шаг 9"]
+            role: "Продукт-менеджер",
+            text: "После того как макеты согласованы на уровне ПМ, он отправляет их на финальное утверждение начальнику отдела визуальных коммуникаций (ОВК). Для этого в 1С:ДО создается задача или служебная записка с приложением финальных версий макетов.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От ПМ (шаг 6, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
         },
         9: {
             number: "9",
-            role: "Финансовый директор",
-            text: "Соглашение на получение мер государственной поддержки подписано. Выход.",
-            inputs: ["⬅️ От финансового директора (шаг 8)"],
-            outputs: ["📤 ВЫХОД: Соглашение подписано"]
+            role: "Начальник ОВК",
+            text: "Проводит финальную проверку макетов на соответствие высоким стандартам фирменного стиля, брендбука и корпоративной идентичности. Оценивает качество дизайна, верстки и общее визуальное восприятие.\n\nПринимает решение об утверждении макетов или их возврате на доработку. Если макеты утверждены, переходит к шагу 12. Если есть замечания, переходит к шагу 10.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От ПМ (шаг 8)</a>"],
+            outputs: ["✅ Если утверждено → <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>", "❌ Если есть замечания → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
         },
         10: {
             number: "10",
-            role: "Руководитель направления / Директор по маркетингу",
-            text: "Применение существующей меры господдержки невозможно/нецелесообразно. Выход.",
-            inputs: ["⬅️ От финансового директора (шаг 3, НЕТ)"],
-            outputs: ["📤 ВЫХОД: Мера нецелесообразна"]
+            role: "Продукт-менеджер",
+            text: "Получает от начальника ОВК замечания по макетам. Анализирует их и, при необходимости, ставит задачу дизайнеру на доработку (шаг 11). В случае, если замечания требуют изменения ТЗ или не могут быть выполнены дизайнером, ПМ вступает в коммуникацию с начальником ОВК для поиска компромиссного решения.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От начальника ОВК (шаг 9, НЕТ)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
+        },
+        11: {
+            number: "11",
+            role: "Дизайнер управления рекламы",
+            text: "Получает от ПМ замечания от начальника ОВК и вносит соответствующие правки в макеты. После доработки предоставляет обновленные макеты продукт-менеджеру для повторной отправки на утверждение (возврат к шагу 8).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От ПМ (шаг 10)</a>"],
+            outputs: ["↩️ Возврат к <a href='#' onclick='goToStep(8); return false;' class='io-link'>шагу 8 (ПМ)</a>"]
+        },
+        12: {
+            number: "12",
+            role: "Начальник ОВК",
+            text: "Фиксирует факт утверждения макетов дизайнерской ЭД. Утвержденные макеты считаются эталонными для дальнейшего использования.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От начальника ОВК (шаг 9, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>", "→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>"]
+        },
+        13: {
+            number: "13",
+            role: "Руководитель интернет проектов",
+            text: "Получает утвержденные макеты (например, электронные версии каталогов, буклетов) и размещает их в соответствующих разделах официального сайта компании, обеспечивая доступ для скачивания клиентам и партнерам. После размещения информирует ПМ о выполнении.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От начальника ОВК (шаг 12)</a>"],
+            outputs: ["📤 ВЫХОД: ЭД размещена на сайте"]
+        },
+        14: {
+            number: "14",
+            role: "Начальник ОВК",
+            text: "Информирует продукт-менеджера об окончательном утверждении макетов дизайнерской ЭД по принятым в компании каналам коммуникации.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От начальника ОВК (шаг 12)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
+        },
+        15: {
+            number: "15",
+            role: "Продукт-менеджер",
+            text: "После получения подтверждения об утверждении макетов от начальника ОВК, ПМ (при необходимости) инициирует процесс переноса связанной с ЭД номенклатуры в 1С:УПП (если это требовалось) или ставит задачу на обновление контента в других системах. Данный шаг может инициировать выполнение <a href='proc4.html' class='proc-link'>процедуры 4 (Ввод номенклатуры)</a> или <a href='proc13.html' class='proc-link'>процедуры 13 (Наполнение контентом)</a>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От начальника ОВК (шаг 14)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
+        },
+        16: {
+            number: "16",
+            role: "Начальник управления рекламы",
+            text: "Контролирует финальный этап процесса. Убеждается, что все задачи выполнены, документы размещены, а все участники процесса уведомлены. Фиксирует успешное завершение процедуры «Обработка ТЗ на дизайнерскую ЭД».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(15); return false;' class='io-link'>От ПМ (шаг 15)</a>"],
+            outputs: ["📤 ВЫХОД: Процедура завершена"]
         }
     };
 
@@ -532,18 +650,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -551,13 +663,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
