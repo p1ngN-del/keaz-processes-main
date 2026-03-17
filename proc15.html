@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 15 (Интерактив)</title>
+    <title>КЭАЗ · Процедура 16 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -322,19 +322,15 @@
             z-index: 1000;
         }
 
-        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
-        .role-designer { border-left-color: #ff8c00; } /* Дизайнер */
-        .role-constructor { border-left-color: #4682b4; } /* Конструктор */
-        .role-manager { border-left-color: #8a2be2; } /* Начальник управления рекламы */
-        .role-ovk { border-left-color: #2e8b57; } /* Начальник ОВК */
-        .role-rip { border-left-color: #ba55d3; } /* Руководитель интернет проектов */
+        .role-dir { border-left-color: #1e90ff; } /* Директор по маркетингу / Руководитель направления */
+        .role-fin { border-left-color: #4682b4; } /* Финансовый директор */
     </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
-    <h1>Процедура 15: Обработка ТЗ на размещение, корректировку дизайнерской ЭД</h1>
+    <h1>Процедура 16: Поиск и получение мер государственной поддержки для собственного производства</h1>
     <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
     <div class="swimlane">
@@ -343,159 +339,87 @@
                 <div class="step-header-cell">1-3</div>
                 <div class="step-header-cell">4-6</div>
                 <div class="step-header-cell">7-9</div>
-                <div class="step-header-cell">10-15</div>
+                <div class="step-header-cell">10</div>
             </div>
 
-            <!-- Дорожка 1: Продукт-менеджер -->
+            <!-- Дорожка 1: Руководитель направления / Директор по маркетингу -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
+                <div class="lane-label" style="border-left-color: #1e90ff;">Руководитель направления<br>Директор по маркетингу</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
+                        <div class="step-card role-dir" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
-                            <div class="step-title">Создание ТЗ</div>
-                            <div class="step-preview">В 1С:ДО создает внутренний документ «ТЗ на разработку эксплуатационной документации»...</div>
+                            <div class="step-title">Запрос на поиск мер</div>
+                            <div class="step-preview">Формирует и отправляет запрос на поиск подходящей меры государственной поддержки...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" data-step="3" onclick="goToStep(3)">
-                            <span class="step-num">3</span>
-                            <div class="step-title">Создание документа/ревизии в Appius</div>
-                            <div class="step-preview">Создает в 1С:Appius новый документ или ревизию для дизайнерской ЭД...</div>
-                        </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
-                            <span class="step-num">9</span>
-                            <div class="step-title">Проверка ЭД</div>
-                            <div class="step-preview">Подписывает дизайнерскую ЭД в 1С:Appius...</div>
-                        </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-pm" data-step="10" onclick="goToStep(10)">
-                            <span class="step-num">10</span>
-                            <div class="step-title">Перевод в архив</div>
-                            <div class="step-preview">Переводит дизайнерскую ЭД в состояние архива в 1С:Appius...</div>
-                        </div>
-                        <div class="step-card role-pm" data-step="11" onclick="goToStep(11)">
-                            <span class="step-num">11</span>
-                            <div class="step-title">ЭД размещена</div>
-                            <div class="step-preview">Размещена дизайнерская ЭД в Appius...</div>
-                            <span class="step-badge badge-out">📤 выход</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Дорожка 2: Конструктор -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #4682b4;">Конструктор</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-constructor" data-step="2" onclick="goToStep(2)">
-                            <span class="step-num">2</span>
-                            <div class="step-title">Разработка описания</div>
-                            <div class="step-preview">Прикрепляет файл ЭД в формате docx, выделяет цветом изменения...</div>
-                        </div>
-                    </div>
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                </div>
-            </div>
-
-            <!-- Дорожка 3: Начальник управления рекламы -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник управления рекламы</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-manager" data-step="4" onclick="goToStep(4)">
+                        <div class="step-card role-dir" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
-                            <div class="step-title">Получение задачи</div>
-                            <div class="step-preview">В 1С:ДО получает задачу и нажимает «Ознакомился»...</div>
+                            <div class="step-title">Совещание (детальная проработка)</div>
+                            <div class="step-preview">Инициирует проведение совещания для детальной проработки и получения меры господдержки...</div>
                         </div>
-                    </div>
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                </div>
-            </div>
-
-            <!-- Дорожка 4: Дизайнер управления рекламы -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #ff8c00;">Дизайнер управления рекламы</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-designer" data-step="5" onclick="goToStep(5)">
+                        <div class="step-card role-dir" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
-                            <div class="step-title">Разработка дизайнерской ЭД</div>
-                            <div class="step-preview">Разрабатывает дизайнерскую ЭД на основании ТЗ...</div>
+                            <div class="step-title">Назначение ответственного</div>
+                            <div class="step-preview">Назначает ответственного руководителя проекта...</div>
                         </div>
-                        <div class="step-card role-designer" data-step="6" onclick="goToStep(6)">
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-dir" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6</span>
-                            <div class="step-title">Размещение в ревизии</div>
-                            <div class="step-preview">Загружает дизайнерские файлы в 1С:Appius...</div>
+                            <div class="step-title">Сбор документов</div>
+                            <div class="step-preview">Проводит сбор и подготовку необходимых документов, предусмотренных регламентирующими НПА...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-designer" data-step="7" onclick="goToStep(7)">
-                            <span class="step-num">7</span>
-                            <div class="step-title">Создание извещения</div>
-                            <div class="step-preview">Сохраняет ревизию в извещении об изменении...</div>
-                        </div>
-                        <div class="step-card role-designer" data-step="8" onclick="goToStep(8)">
-                            <span class="step-num">8</span>
-                            <div class="step-title">Отправка на согласование</div>
-                            <div class="step-preview">Отправляет на согласование дизайнерскую ЭД в 1С:Appius...</div>
-                        </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-designer" data-step="12" onclick="goToStep(12)">
-                            <span class="step-num">12</span>
-                            <div class="step-title">Проведение извещения</div>
-                            <div class="step-preview">Проводит извещение, перемещает ЭД в состояние архива...</div>
-                        </div>
-                        <div class="step-card role-designer" data-step="15" onclick="goToStep(15)">
-                            <span class="step-num">15</span>
-                            <div class="step-title">ЭД утверждена</div>
-                            <div class="step-preview">Дизайнерская ЭД утверждена в Appius...</div>
+                        <div class="step-card role-dir" data-step="10" onclick="goToStep(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Применение нецелесообразно</div>
+                            <div class="step-preview">Применение существующей меры господдержки невозможно/нецелесообразно...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 5: Начальник ОВК -->
+            <!-- Дорожка 2: Финансовый директор -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник ОВК</div>
+                <div class="lane-label" style="border-left-color: #4682b4;">Финансовый директор</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
-                    <div class="cell"></div>
-                    <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-ovk" data-step="13" onclick="goToStep(13)">
-                            <span class="step-num">13</span>
-                            <div class="step-title">Ознакомление с ЭД</div>
-                            <div class="step-preview">Получает на ознакомление дизайнерскую ЭД в 1С:Appius...</div>
+                        <div class="step-card role-fin" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Первичный анализ</div>
+                            <div class="step-preview">Проводит первичный анализ и изучение мер государственной поддержки...</div>
+                        </div>
+                        <div class="step-card role-fin" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Передача информации и совещание</div>
+                            <div class="step-preview">Передает собранную информацию, инициирует проведение совещания...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Дорожка 6: Руководитель интернет проектов -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #ba55d3;">Руководитель интернет проектов</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                    <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-rip" data-step="14" onclick="goToStep(14)">
-                            <span class="step-num">14</span>
-                            <div class="step-title">Ознакомление с ЭД</div>
-                            <div class="step-preview">Получает на ознакомление дизайнерскую ЭД в 1С:Appius...</div>
+                        <div class="step-card role-fin" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Подача в госорган</div>
+                            <div class="step-preview">Передает подготовленную документацию в государственный орган...</div>
+                        </div>
+                        <div class="step-card role-fin" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Контроль решения</div>
+                            <div class="step-preview">Контролирует и сопровождает принятие положительного решения...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-fin" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Соглашение подписано</div>
+                            <div class="step-preview">Соглашение на получение мер государственной поддержки подписано...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
@@ -517,108 +441,73 @@
     const stepData = {
         1: {
             number: "1",
-            role: "Продукт-менеджер",
-            text: "В 1С:ДО создает Внутренний документ «ТЗ на разработку эксплуатационной документации»:\n– заполняет excel-файл «ТЗ на верстку и закупку ЭД»;\n– заходит во вкладку «Реквизиты» и устанавливает ответственного за продукт (Конструктора);\n– нажимает «Записать»;\n– отправляет в «Обработку ТЗ на дизайнерскую ЭД».",
-            inputs: ["⬅️ Инициация разработки ЭД (из процедуры 4)"],
-            outputs: ["→ Шаг 2 (конструктору)", "→ Шаг 3"]
+            role: "Руководитель направления / Директор по маркетингу",
+            text: "Формирует и отправляет запрос на поиск подходящей меры государственной поддержки для производства продукта по электронной почте.",
+            inputs: ["⬅️ Исследовательская фаза продуктового проекта"],
+            outputs: ["→ Шаг 2"]
         },
         2: {
             number: "2",
-            role: "Конструктор",
-            text: "Конструктор прикрепляет файл ЭД в формате docx, в котором выделяет цветом изменения, в полученную задачу в 1С:ДО:\n– Желтым цветом выделяет новые характеристики/ параметры;\n– Красным цветом выделяет то, что подлежит удалению.",
-            inputs: ["⬅️ От ПМ (шаг 1)"],
+            role: "Финансовый директор",
+            text: "Проводит первичный анализ и изучение мер государственной поддержки.\n\nИнформация может быть получена из следующих источников:\n– открытые информационные источники (СМИ, официальные сайты, Telegram-каналы Государственных органов);\n– другие участники рынка;\n– прочее.\n\nПри изучении выделяются ключевые условия и информация, и транслируются инициатору запроса.",
+            inputs: ["⬅️ От руководителя направления (шаг 1)"],
             outputs: ["→ Шаг 3"]
         },
         3: {
             number: "3",
-            role: "Продукт-менеджер",
-            text: "1. Если необходимо размещение Новой ЭД, то Продукт-менеджер создает в 1С:Appius, в папке «Дизайнерские документы», новый документ по алгоритму.\n2. Если необходимо размещение Версии ЭД, то Продукт-менеджер создает в 1С:Appius, в папке «Дизайнерские документы», ревизию документа ЭД.",
-            inputs: ["⬅️ От ПМ (шаг 1), от конструктора (шаг 2)"],
-            outputs: ["→ Шаг 4"]
+            role: "Финансовый директор",
+            text: "Передает собранную информацию с указанием комментария по электронной почте и инициирует проведение совещания для обсуждения найденной меры господдержки.\n\nИнициируется проведение совещания (первая итерация), на котором обсуждается, применима и целесообразна ли предложенная мера государственной поддержки для производства и локализации продукта.\n\nОбсуждение проходит между Финансовым директором и Директором по маркетингу (возможно участие РН). Совещание может проходить как в формате очной встречи, так и в формате online (видеоконференция).",
+            inputs: ["⬅️ От финансового директора (шаг 2)"],
+            outputs: ["✅ Если целесообразно → Шаг 4", "❌ Если нецелесообразно → Шаг 10"]
         },
         4: {
             number: "4",
-            role: "Начальник управления рекламы",
-            text: "В 1С:ДО получает задачу и нажимает «Ознакомился». После чего задача автоматически попадает Дизайнеру на разработку дизайнерской ЭД.",
-            inputs: ["⬅️ От ПМ (шаг 3)"],
+            role: "Руководитель направления / Директор по маркетингу",
+            text: "Инициирует проведение совещания для детальной проработки и получения меры господдержки.\n\nИнициируется проведение совещания (вторая итерация), при участии Финансового директора, Директора по маркетингу, Руководителей направления, Директора по экономике и Директора по правовым вопросам, на котором более детально обсуждается предложенная мера Государственной поддержки для локализации продукта и необходимые мероприятия для ее получения.",
+            inputs: ["⬅️ От финансового директора (шаг 3, ДА)"],
             outputs: ["→ Шаг 5"]
         },
         5: {
             number: "5",
-            role: "Дизайнер управления рекламы",
-            text: "В случае размещения Новой ЭД, Дизайнер разрабатывает дизайнерскую ЭД, на основании данных ТЗ, вложенного в задачу.\nВ случае размещения Версии ЭД, Дизайнер разрабатывает дизайнерскую ЭД, на основании ТЗ и описаний, предоставленных Конструктором.",
-            inputs: ["⬅️ От начальника управления рекламы (шаг 4)"],
+            role: "Руководитель направления / Директор по маркетингу",
+            text: "Назначает ответственного руководителя проекта.",
+            inputs: ["⬅️ От руководителя направления (шаг 4)"],
             outputs: ["→ Шаг 6"]
         },
         6: {
             number: "6",
-            role: "Дизайнер управления рекламы",
-            text: "После создания дизайнерского документа Дизайнер в 1С:Appius в документ ЭД загружает дизайнерские файлы (заключительная версия для типографии/Вебсайта) и заполненное ТЗ в формате pdf. В разделе документы загружает файлы в формате PDF.",
-            inputs: ["⬅️ От дизайнера (шаг 5)"],
-            outputs: ["→ Шаг 7 (для версии ЭД)", "→ Шаг 8 (для новой ЭД)"]
+            role: "Руководитель направления / Директор по маркетингу",
+            text: "Проводит сбор и подготовку необходимых документов, предусмотренных регламентирующими НПА.",
+            inputs: ["⬅️ От руководителя направления (шаг 5)"],
+            outputs: ["→ Шаг 7"]
         },
         7: {
             number: "7",
-            role: "Дизайнер управления рекламы",
-            text: "Дизайнер сохраняет ревизию (с загруженными файлами) в извещении об изменении путем нажатия команды «Сохранить в извещение» и заполняет необходимые реквизиты в карточке извещения об изменении.",
-            inputs: ["⬅️ От дизайнера (шаг 6, для версии ЭД)"],
+            role: "Финансовый директор",
+            text: "Передает подготовленную документацию в государственный орган, в соответствии с регламентом, прописанном в постановлении.",
+            inputs: ["⬅️ От руководителя направления (шаг 6)"],
             outputs: ["→ Шаг 8"]
         },
         8: {
             number: "8",
-            role: "Дизайнер управления рекламы",
-            text: "В случае размещения Новой ЭД: создает бизнес-процесс, отправляет на согласование ПМ.\nВ случае размещения Версии ЭД: создает в извещении бизнес-процесс, отправляет на согласование ПМ.\nПосле выполнения задачи ставит задачу в 1С:ДО на согласование дизайнерской ЭД в 1С:Appius Продукт-менеджеру.",
-            inputs: ["⬅️ От дизайнера (шаг 6,7)"],
+            role: "Финансовый директор",
+            text: "Контролирует и сопровождает принятие положительного решения.",
+            inputs: ["⬅️ От финансового директора (шаг 7)"],
             outputs: ["→ Шаг 9"]
         },
         9: {
             number: "9",
-            role: "Продукт-менеджер",
-            text: "Подписывает дизайнерскую ЭД в 1С:Appius:\n– заходит в панель задач в 1С:Appius;\n– устанавливает статус «Выполнена»;\n– перевод элемента в целевое состояние «Принято»;\n– заходит в панель задач в 1С:ДО и нажимает команду «Согласовано».",
-            inputs: ["⬅️ От дизайнера (шаг 8)"],
-            outputs: ["🔀 Если новая ЭД → Шаг 10", "🔀 Если версия ЭД → Шаг 12"]
+            role: "Финансовый директор",
+            text: "Соглашение на получение мер государственной поддержки подписано. Выход.",
+            inputs: ["⬅️ От финансового директора (шаг 8)"],
+            outputs: ["📤 ВЫХОД: Соглашение подписано"]
         },
         10: {
             number: "10",
-            role: "Продукт-менеджер",
-            text: "Переводит дизайнерскую ЭД в состояние архива в 1С:Appius.",
-            inputs: ["⬅️ От ПМ (шаг 9, новая ЭД)"],
-            outputs: ["→ Шаг 14, Шаг 11"]
-        },
-        11: {
-            number: "11",
-            role: "Продукт-менеджер",
-            text: "Размещена дизайнерская ЭД в Appius. Выход.",
-            inputs: ["⬅️ От ПМ (шаг 10)"],
-            outputs: ["📤 ВЫХОД: ЭД размещена"]
-        },
-        12: {
-            number: "12",
-            role: "Дизайнер управления рекламы",
-            text: "В 1С:Appius получает задачу на проведение извещения:\n– Меняет статус на «Выполнено»;\n– Нажимает кнопку «Записать и закрыть».\nПроводит извещение, перемещает дизайнерский документ ЭД в состояние Архива в Appius.",
-            inputs: ["⬅️ От ПМ (шаг 9, версия ЭД)"],
-            outputs: ["→ Шаг 13, Шаг 14, Шаг 15"]
-        },
-        13: {
-            number: "13",
-            role: "Начальник ОВК",
-            text: "В 1С:Appius получает на ознакомление дизайнерскую ЭД.",
-            inputs: ["⬅️ От дизайнера (шаг 12)"],
-            outputs: ["→ Шаг 15"]
-        },
-        14: {
-            number: "14",
-            role: "Руководитель интернет проектов",
-            text: "В 1С:Appius получает на ознакомление дизайнерскую ЭД.",
-            inputs: ["⬅️ От ПМ (шаг 10), от дизайнера (шаг 12)"],
-            outputs: ["→ Шаг 15"]
-        },
-        15: {
-            number: "15",
-            role: "Дизайнер управления рекламы",
-            text: "Дизайнерская ЭД утверждена в Appius. Выход.",
-            inputs: ["⬅️ От дизайнера (шаг 12)"],
-            outputs: ["📤 ВЫХОД: ЭД утверждена"]
+            role: "Руководитель направления / Директор по маркетингу",
+            text: "Применение существующей меры господдержки невозможно/нецелесообразно. Выход.",
+            inputs: ["⬅️ От финансового директора (шаг 3, НЕТ)"],
+            outputs: ["📤 ВЫХОД: Мера нецелесообразна"]
         }
     };
 
