@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 7 (Интерактив)</title>
+    <title>КЭАЗ · Процедура 7</title>
     <style>
         * {
             margin: 0;
@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -61,7 +77,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -217,7 +232,6 @@
             color: #f6b83e;
         }
 
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -322,7 +336,7 @@
             z-index: 1000;
         }
 
-        .role-marketing { border-left-color: #4682b4; } /* Маркетолог */
+        .role-marketing { border-left-color: #4682b4; }
     </style>
 </head>
 <body>
@@ -397,37 +411,37 @@
         1: {
             number: "1",
             role: "Маркетолог",
-            text: "Маркетолог обновляет, анализирует и выявляет новые каналы распределения.\n\nКаналы распределения:\n• Федеральные дистрибьюторы\n• Региональные дистрибьюторы\n• Щитовики\n• Щитовики отраслевые\n• OEM\n• Системные интеграторы\n• DIY федеральный\n• DIY региональный\n• Профессиональная розница\n• Интернет-платформы и E-commerce\n• Другие выявленные",
+            text: "Маркетолог обновляет, анализирует и выявляет новые каналы распределения.\n\nКаналы распределения:\n• Федеральные дистрибьюторы\n• Региональные дистрибьюторы\n• Щитовики\n• Щитовики отраслевые\n• OEM\n• Системные интеграторы\n• DIY федеральный\n• DIY региональный\n• Профессиональная розница\n• Интернет-платформы и E-commerce\n• Другие выявленные\n\nВход в процедуру — ежегодный плановый анализ перед формированием стратегии.",
             inputs: ["⬅️ Ежегодный анализ перед написанием среднесрочной стратегии"],
-            outputs: ["→ Шаг 2"]
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
             role: "Маркетолог",
             text: "Маркетолог разделяет каналы на первичные и вторичные.\n\nПервичные каналы распределения – каналы, работающие с ГК КЭАЗ напрямую (имеют прямой договор на реализацию продукции КЭАЗ (Дистрибьюторы, Щитовики)) и передают продукцию конечному потребителю.\n\nВторичные каналы распределения – каналы, приобретающие продукцию ГК КЭАЗ через партнеров (не имеют прямого договора на реализацию продукции КЭАЗ) и, далее, через посредников, либо напрямую передающие продукцию конечному потребителю.",
-            inputs: ["⬅️ От маркетолога (шаг 1)"],
-            outputs: ["→ Шаг 3,4"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От маркетолога (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>", "→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         3: {
             number: "3",
             role: "Маркетолог",
             text: "Маркетолог проводит сбор данных по первичным каналам распределения, включая следующие пункты, но не ограничиваясь ими:\n• Состав (наименование и количество клиентов)\n• Объем продаж\n• Каких клиентов обслуживает\n• Регионы обслуживания\n• Представленная номенклатура (продуктовый портфель и производители)\n• Требования их канала",
-            inputs: ["⬅️ От маркетолога (шаг 2)"],
-            outputs: ["→ Шаг 5"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От маркетолога (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         4: {
             number: "4",
             role: "Маркетолог",
             text: "После проработки первичных каналов, маркетолог проводит сбор данных по вторичным каналам распределения, включая следующие пункты, но не ограничиваясь ими:\n• Состав (наименование и количество клиентов)\n• Объем продаж\n• Каких клиентов обслуживает\n• Регионы обслуживания\n• Представленная номенклатура (продуктовый портфель и производители)\n• Требования их канала",
-            inputs: ["⬅️ От маркетолога (шаг 2)"],
-            outputs: ["→ Шаг 5"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От маркетолога (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
             role: "Маркетолог",
-            text: "Как итог, формируется:\n• карты каналов распределения (по первичным и вторичным), показывающие клиентов, заинтересованных в приобретении продукции КЭАЗ\n• объём каналов\n• количество участников\n• продуктовые приоритеты\n• требования к продукции, с которой каналы работают\n\nДанные передаются в процедуру 21 (Формирование среднесрочной стратегии развития ГК КЭАЗ).",
-            inputs: ["⬅️ От маркетолога (шаг 3,4)"],
-            outputs: ["📤 ВЫХОД: Данные для процедуры 21"]
+            text: "Как итог, формируется:\n• карты каналов распределения (по первичным и вторичным), показывающие клиентов, заинтересованных в приобретении продукции КЭАЗ\n• объём каналов\n• количество участников\n• продуктовые приоритеты\n• требования к продукции, с которой каналы работают\n\nДанные передаются в процедуру <a href='proc21.html' class='proc-link'>21 (Формирование среднесрочной стратегии развития ГК КЭАЗ)</a>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От маркетолога (шаг 3)</a>", "⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От маркетолога (шаг 4)</a>"],
+            outputs: ["📤 ВЫХОД: Данные для <a href='proc21.html' class='proc-link'>процедуры 21</a>"]
         }
     };
 
@@ -452,18 +466,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -471,13 +479,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
