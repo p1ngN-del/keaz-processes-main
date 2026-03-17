@@ -1,3 +1,6 @@
+## 📦 **ПРОЦЕДУРА 4: Ввод номенклатуры в 1С:УПП в папку Готовая продукция**
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -336,9 +339,9 @@
             z-index: 1000;
         }
 
+        .role-pm { border-left-color: #1e90ff; }
         .role-uop { border-left-color: #8a2be2; }
         .role-tech { border-left-color: #2e8b57; }
-        .role-pm { border-left-color: #1e90ff; }
         .role-constructor { border-left-color: #ff8c00; }
         .role-aod { border-left-color: #4682b4; }
         .role-marketing { border-left-color: #daa520; }
@@ -353,7 +356,7 @@
 <div class="container">
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
-    <h1>Процедура 4: Ввод номенклатуры в 1С:УПП</h1>
+    <h1>Процедура 4: Ввод номенклатуры в 1С:УПП в папку Готовая продукция</h1>
     <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
     <div class="swimlane">
@@ -725,7 +728,7 @@
                 </div>
             </div>
 
-            <!-- Специалисты (PLM, декларирование, экономист) -->
+            <!-- Специалисты -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ba55d3;">Специалисты</div>
                 <div class="lane-cells">
@@ -906,11 +909,18 @@
             inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От главного специалиста (шаг 12)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
         },
+        14: {
+            number: "14",
+            role: "Продукт-менеджер",
+            text: "В рамках согласованной служебной записки ставит задачу на исполнение главному специалисту по АОД.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От ПМ (шаг 13)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
+        },
         15: {
             number: "15",
             role: "Главный специалист по автоматизированной обработке документов",
             text: "Переносит карточку из папки «Опытные образцы» в папку «Вводимая номенклатура» на основании служебной записки от продукт-менеджера.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false             inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От ПМ (шаг 14)</a>"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От ПМ (шаг 14)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
         },
         16: {
@@ -1314,3 +1324,4 @@
 </script>
 </body>
 </html>
+```
