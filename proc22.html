@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 22</title>
+    <title>КЭАЗ · Процедура 22 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -61,7 +61,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -77,7 +76,6 @@
             min-width: 1400px;
         }
 
-        /* Шапка с номерами шагов */
         .step-header {
             display: flex;
             margin-left: 220px;
@@ -95,7 +93,6 @@
             font-size: 0.85rem;
         }
 
-        /* Дорожка */
         .lane {
             display: flex;
             min-height: 120px;
@@ -105,7 +102,6 @@
             border-bottom: none;
         }
 
-        /* Название дорожки */
         .lane-label {
             width: 220px;
             font-weight: 700;
@@ -121,7 +117,6 @@
             font-size: 0.9rem;
         }
 
-        /* Ячейки с шагами */
         .lane-cells {
             display: flex;
             flex: 1;
@@ -140,7 +135,6 @@
             padding: 5px;
         }
 
-        /* Карточка шага */
         .step-card {
             background: white;
             border-radius: 16px;
@@ -153,11 +147,22 @@
             transition: 0.2s;
             width: 100%;
             text-align: left;
+            scroll-margin-top: 20px;
         }
         .step-card:hover {
             transform: translateY(-2px);
             border-color: #f6b83e;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+        .step-card.highlighted-output {
+            border: 3px solid #2e8b57;
+            background: #e6f3e6;
+            box-shadow: 0 0 0 3px rgba(46,139,86,0.2);
         }
 
         .step-num {
@@ -211,15 +216,6 @@
             color: #f6b83e;
         }
 
-        /* Цвета ролей */
-        .role-mark { border-left-color: #1e90ff; } /* Маркетолог-аналитик */
-        .role-nopn { border-left-color: #8a2be2; } /* Начальник отдела продуктового направления */
-        .role-analitik { border-left-color: #4682b4; } /* Начальник аналитики */
-        .role-spm { border-left-color: #ff8c00; } /* Старший ПМ */
-        .role-uop { border-left-color: #2e8b57; } /* Начальник УОП */
-        .role-rip { border-left-color: #ba55d3; } /* Руководитель интернет проектов */
-
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -228,6 +224,7 @@
             margin-top: 30px;
             border: 2px solid #e0e7f5;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
         }
         .detail-panel.show {
             display: block;
@@ -291,8 +288,18 @@
             gap: 8px;
             font-size: 0.9rem;
         }
-        .io-arrow {
-            font-size: 1.2rem;
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
         }
 
         .back-to-top {
@@ -312,6 +319,13 @@
             border: none;
             z-index: 1000;
         }
+
+        .role-mark { border-left-color: #1e90ff; } /* Маркетолог-аналитик */
+        .role-nopn { border-left-color: #8a2be2; } /* Начальник отдела продуктового направления */
+        .role-analitik { border-left-color: #4682b4; } /* Начальник аналитики */
+        .role-spm { border-left-color: #ff8c00; } /* Старший ПМ */
+        .role-uop { border-left-color: #2e8b57; } /* Начальник УОП */
+        .role-rip { border-left-color: #ba55d3; } /* Руководитель интернет проектов */
     </style>
 </head>
 <body>
@@ -319,12 +333,10 @@
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
     <h1>Процедура 22: Ценообразование продукта</h1>
-    <div class="subhead">Владелец: Директор по маркетингу</div>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
-    <!-- SWIMLANE -->
     <div class="swimlane">
         <div class="swimlane-table">
-            <!-- Шапка с номерами шагов -->
             <div class="step-header">
                 <div class="step-header-cell">1-3</div>
                 <div class="step-header-cell">4-6</div>
@@ -337,13 +349,13 @@
                 <div class="lane-label" style="border-left-color: #1e90ff;">Маркетолог-аналитик</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-mark" onclick="showDetail(1)">
+                        <div class="step-card role-mark" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
                             <div class="step-title">Анализ данных</div>
                             <div class="step-preview">Проводит анализ данных (динамика цен конкурентов, рентабельность)...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
-                        <div class="step-card role-mark" onclick="showDetail(3)">
+                        <div class="step-card role-mark" data-step="3" onclick="goToStep(3)">
                             <span class="step-num">3</span>
                             <div class="step-title">Создание СЗ</div>
                             <div class="step-preview">В 1С:ДО создает СЗ о необходимости изменения цен...</div>
@@ -351,12 +363,12 @@
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-mark" onclick="showDetail(4)">
+                        <div class="step-card role-mark" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
                             <div class="step-title">Заполнение аналитической формы</div>
                             <div class="step-preview">Заполняет аналитическую форму...</div>
                         </div>
-                        <div class="step-card role-mark" onclick="showDetail(5)">
+                        <div class="step-card role-mark" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
                             <div class="step-title">Задача на заполнение формы</div>
                             <div class="step-preview">Ставит задачу в 1С:ДО по заполнению аналитической формы...</div>
@@ -364,18 +376,18 @@
                     </div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-mark" onclick="showDetail(12)">
+                        <div class="step-card role-mark" data-step="12" onclick="goToStep(12)">
                             <span class="step-num">12</span>
                             <div class="step-title">Проведение документов</div>
                             <div class="step-preview">Проводит документы по ценам в 1С:УПП...</div>
                         </div>
-                        <div class="step-card role-mark" onclick="showDetail(16)">
+                        <div class="step-card role-mark" data-step="16" onclick="goToStep(16)">
                             <span class="step-num">16</span>
                             <div class="step-title">Новые цены в учетной системе</div>
                             <div class="step-preview">Новые цены в учетной системе...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
-                        <div class="step-card role-mark" onclick="showDetail(17)">
+                        <div class="step-card role-mark" data-step="17" onclick="goToStep(17)">
                             <span class="step-num">17</span>
                             <div class="step-title">Изменение цен не происходит</div>
                             <div class="step-preview">Изменение цен не происходит...</div>
@@ -390,14 +402,14 @@
                 <div class="lane-label" style="border-left-color: #8a2be2;">Начальник отдела<br>продуктового направления</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-nopn" onclick="showDetail(2)">
+                        <div class="step-card role-nopn" data-step="2" onclick="goToStep(2)">
                             <span class="step-num">2</span>
                             <div class="step-title">Уведомление о необходимости</div>
                             <div class="step-preview">Уведомляет маркетолога-аналитика о необходимости изменения цен...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-nopn" onclick="showDetail(6)">
+                        <div class="step-card role-nopn" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6</span>
                             <div class="step-title">Заполнение аналитической формы</div>
                             <div class="step-preview">Заполняет аналитическую форму (рыночное позиционирование)...</div>
@@ -415,18 +427,18 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-analitik" onclick="showDetail(7)">
+                        <div class="step-card role-analitik" data-step="7" onclick="goToStep(7)">
                             <span class="step-num">7</span>
                             <div class="step-title">Проведение совещания</div>
                             <div class="step-preview">Проводит совещание по предлагаемым изменениям цен...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
-                        <div class="step-card role-analitik" onclick="showDetail(8)">
+                        <div class="step-card role-analitik" data-step="8" onclick="goToStep(8)">
                             <span class="step-num">8</span>
                             <div class="step-title">Согласование параметров</div>
                             <div class="step-preview">Согласовывает параметры изменения цен в 1С:ДО...</div>
                         </div>
-                        <div class="step-card role-analitik" onclick="showDetail(9)">
+                        <div class="step-card role-analitik" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">9</span>
                             <div class="step-title">Задача на информирование</div>
                             <div class="step-preview">Ставит задачу по информированию контрагентов об изменении цен...</div>
@@ -444,7 +456,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-spm" onclick="showDetail(10)">
+                        <div class="step-card role-spm" data-step="10" onclick="goToStep(10)">
                             <span class="step-num">10</span>
                             <div class="step-title">Создание документа в УПП</div>
                             <div class="step-preview">Создает в 1С:УПП документ с новыми ценами...</div>
@@ -461,17 +473,17 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-uop" onclick="showDetail(14)">
+                        <div class="step-card role-uop" data-step="14" onclick="goToStep(14)">
                             <span class="step-num">14</span>
                             <div class="step-title">Отправка НФ ЭТМ и Русскому Свету</div>
                             <div class="step-preview">Отправляет НФ ЭТМ и Русскому Свету...</div>
                         </div>
-                        <div class="step-card role-uop" onclick="showDetail(15)">
+                        <div class="step-card role-uop" data-step="15" onclick="goToStep(15)">
                             <span class="step-num">15</span>
                             <div class="step-title">Уведомление контрагентов</div>
                             <div class="step-preview">Уведомляет контрагента об изменениях цен...</div>
                         </div>
-                        <div class="step-card role-uop" onclick="showDetail(18)">
+                        <div class="step-card role-uop" data-step="18" onclick="goToStep(18)">
                             <span class="step-num">18</span>
                             <div class="step-title">Контрагенты проинформированы</div>
                             <div class="step-preview">Контрагенты проинформированы об изменениях цен...</div>
@@ -489,7 +501,7 @@
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-rip" onclick="showDetail(13)">
+                        <div class="step-card role-rip" data-step="13" onclick="goToStep(13)">
                             <span class="step-num">13</span>
                             <div class="step-title">Выгрузка номенклатурных файлов</div>
                             <div class="step-preview">Выгружает номенклатурные файлы по запросу...</div>
@@ -640,6 +652,8 @@
         }
     };
 
+    let currentStep = null;
+
     function showDetail(stepId) {
         const panel = document.getElementById('detailPanel');
         const header = document.getElementById('detailHeader');
@@ -664,7 +678,13 @@
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                const stepMatch = inp.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -672,7 +692,13 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const stepNum = stepMatch[1];
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
+                } else {
+                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+                }
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -682,7 +708,57 @@
         io.innerHTML = ioHtml;
         
         panel.classList.add('show');
+        
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
     }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step', 'highlighted-output');
+        });
+        
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+        
+        const data = stepData[stepId];
+        if (data && data.outputs) {
+            data.outputs.forEach(out => {
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const outputStep = stepMatch[1];
+                    const outputCard = document.querySelector(`.step-card[data-step="${outputStep}"], .step-card[data-step^="${outputStep}-"]`);
+                    if (outputCard) {
+                        outputCard.classList.add('highlighted-output');
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                const numericStep = stepId.split('-')[0];
+                goToStep(numericStep);
+            }
+        });
+    });
 </script>
 </body>
 </html>
