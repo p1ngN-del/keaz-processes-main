@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -61,7 +77,6 @@
             margin-bottom: 25px;
         }
 
-        /* Swimlane-таблица */
         .swimlane {
             background: #f9fbfe;
             border-radius: 24px;
@@ -217,7 +232,6 @@
             color: #f6b83e;
         }
 
-        /* Детальная панель */
         .detail-panel {
             display: none;
             background: white;
@@ -468,93 +482,93 @@
         1: {
             number: "1",
             role: "Руководитель управления стратегического маркетинга",
-            text: "В Битрикс24 получает задачу на обновление стратегий развития сегментного маркетинга. На основании сформированных стратегических целей развития компании Руководитель управления стратегического маркетинга получает задачу от Директора по маркетингу по разработке/обновлению стратегии развития сегментов маркетинга.",
-            inputs: ["⬅️ Задача от Директора по маркетингу (на основе проц.21)"],
-            outputs: ["→ Шаг 2"]
+            text: "В Битрикс24 получает задачу на обновление стратегий развития сегментного маркетинга. На основании сформированных стратегических целей развития компании Руководитель управления стратегического маркетинга получает задачу от Директора по маркетингу по разработке/обновлению стратегии развития сегментов маркетинга.\n\nВходом в процедуру является выход из <a href='proc21.html' class='proc-link'>процедуры 21 (Формирование среднесрочной стратегии развития ГК КЭАЗ)</a>.",
+            inputs: ["⬅️ <a href='proc21.html' class='proc-link'>Процедура 21 (Среднесрочная стратегия)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
             role: "Руководитель управления стратегического маркетинга",
             text: "Составляет план-график обновления стратегий сегментного маркетинга. План-график разработки/обновления стратегий развития сегментов составляется в свободной форме. На основании этого графика ставятся задачи ответственным исполнителям по разработке/обновлению стратегий развития сегментов маркетинга и определяются сроки их выполнения.\n\nОбщий срок выполнения задачи по разработке/обновлению стратегий развития сегментов маркетинга – 2 недели.",
-            inputs: ["⬅️ От руководителя (шаг 1)"],
-            outputs: ["→ Шаг 3"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От руководителя (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         3: {
             number: "3",
             role: "Руководитель управления стратегического маркетинга",
             text: "В Битрикс24 назначает ответственных исполнителей и ставит задачу по обновлению/созданию стратегии сегментного маркетинга.",
-            inputs: ["⬅️ От руководителя (шаг 2)"],
-            outputs: ["→ Шаг 4"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От руководителя (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         4: {
             number: "4",
             role: "Сегмент маркетинг-менеджер",
             text: "Инициирует проведение совещания для получения информации о рынке. Совещание может проходить как в формате очной встречи, так и в формате on-line (видеоконференция). На него приглашаются руководители следующих отделов/управлений:\n– Управление развития продаж в сегментах;\n– Управление проектных продаж;\n– Управление по работе с ключевыми клиентами;\n– Управление по разработке решений для сегментов;\n– Управление продуктового маркетинга;\n– Дирекция стратегических коммуникаций.",
-            inputs: ["⬅️ От руководителя (шаг 3)"],
-            outputs: ["→ Шаг 5"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От руководителя (шаг 3)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
             role: "Сегмент маркетинг-менеджер",
             text: "На основании полученных данных о рынке готовит презентацию по развитию сегментов маркетинга.",
-            inputs: ["⬅️ От сегмент-менеджера (шаг 4)"],
-            outputs: ["→ Шаг 6"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От сегмент-менеджера (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
             role: "Сегмент маркетинг-менеджер",
             text: "Инициирует проведение совещания для обсуждения и согласования подготовленной презентации. Инициируется совещание с Руководителем стратегического маркетинга для обсуждения и согласования подготовленной презентации по стратегии развития сегментов маркетинга. Формат проведения – очная встреча или видеоконференция.",
-            inputs: ["⬅️ От сегмент-менеджера (шаг 5)"],
-            outputs: ["→ Шаг 7"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От сегмент-менеджера (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
         },
         7: {
             number: "7",
             role: "Руководитель управления стратегического маркетинга",
             text: "Принимает решение о согласовании презентации.",
-            inputs: ["⬅️ От сегмент-менеджера (шаг 6)"],
-            outputs: ["❌ Если не согласована → Шаг 8", "✅ Если согласована → Шаг 9"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От сегмент-менеджера (шаг 6)</a>"],
+            outputs: ["❌ Если не согласована → <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>", "✅ Если согласована → <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
         },
         8: {
             number: "8",
             role: "Сегмент маркетинг-менеджер",
             text: "Вносит корректировки в презентацию и возвращается к шагу 6.",
-            inputs: ["⬅️ От руководителя (шаг 7, НЕТ)"],
-            outputs: ["→ Шаг 6"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От руководителя (шаг 7, НЕТ)</a>"],
+            outputs: ["↩️ Возврат к <a href='#' onclick='goToStep(6); return false;' class='io-link'>шагу 6</a>"]
         },
         9: {
             number: "9",
             role: "Руководитель управления стратегического маркетинга",
             text: "Инициирует проведение совещания для утверждения стратегии развития сегментов маркетинга. Инициируется совещание с Директором по маркетингу для обсуждения и утверждения подготовленной презентации по стратегии развития сегментов маркетинга. Формат проведения – очная встреча или видеоконференция.",
-            inputs: ["⬅️ От руководителя (шаг 7, ДА)"],
-            outputs: ["→ Шаг 10"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От руководителя (шаг 7, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
         },
         10: {
             number: "10",
             role: "Директор по маркетингу",
             text: "Принимает решение об утверждении стратегии развития сегментного маркетинга.",
-            inputs: ["⬅️ От руководителя (шаг 9)"],
-            outputs: ["✅ Если утверждает → Шаг 12", "❌ Если не утверждает → Шаг 11"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От руководителя (шаг 9)</a>"],
+            outputs: ["✅ Если утверждает → <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>", "❌ Если не утверждает → <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
         },
         11: {
             number: "11",
             role: "Руководитель управления стратегического маркетинга",
             text: "Проводит доработку стратегии развития сегментного маркетинга и возвращается к шагу 9.",
-            inputs: ["⬅️ От директора (шаг 10, НЕТ)"],
-            outputs: ["→ Шаг 9"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От директора (шаг 10, НЕТ)</a>"],
+            outputs: ["↩️ Возврат к <a href='#' onclick='goToStep(9); return false;' class='io-link'>шагу 9</a>"]
         },
         12: {
             number: "12",
             role: "Руководитель управления стратегического маркетинга",
             text: "Размещает обновленный файл стратегии развития сегментов в 1С:ДО. Путь: 1С:ДО/Документы и файлы/Документы внутренние/Стратегические документы/Дирекция маркетинга/Стратегический маркетинг.",
-            inputs: ["⬅️ От руководителя (шаг 10, ДА)"],
-            outputs: ["→ Шаг 13"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От руководителя (шаг 10, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>"]
         },
         13: {
             number: "13",
             role: "Руководитель управления стратегического маркетинга",
-            text: "Обновленная стратегия по сегментам утверждена.\n\n➡️ Выход в Процедуру 17 (Проведение исследовательского проекта) и Процедуру 19 (Разработка технического решения).",
-            inputs: ["⬅️ От руководителя (шаг 12)"],
-            outputs: ["📤 ВЫХОД: Процедуры 17 и 19"]
+            text: "Обновленная стратегия по сегментам утверждена.\n\n➡️ Выход в <a href='proc17.html' class='proc-link'>Процедуру 17 (Проведение исследовательского проекта)</a> и <a href='proc19.html' class='proc-link'>Процедуру 19 (Разработка технического решения)</a>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От руководителя (шаг 12)</a>"],
+            outputs: ["📤 ВЫХОД: <a href='proc17.html' class='proc-link'>Процедура 17</a>, <a href='proc19.html' class='proc-link'>Процедура 19</a>"]
         }
     };
 
@@ -579,18 +593,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -598,13 +606,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
