@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -461,64 +477,64 @@
         1: {
             number: "1",
             role: "Продукт-менеджер",
-            text: "Проект-менеджер инициирует разработку паспорта продуктового проекта на основании полученных данных по результатам экспресс-анализа, маркетинг-плана, бизнес-плана, валидации «Возможностей», а также, при необходимости, по результатам разработки технического решения.",
-            inputs: ["⬅️ Результаты исследовательского проекта (проц.17), технического решения (проц.19)"],
-            outputs: ["→ Шаг 2"]
+            text: 'Проект-менеджер инициирует разработку паспорта продуктового проекта на основании полученных данных по результатам экспресс-анализа, маркетинг-плана, бизнес-плана, валидации «Возможностей», а также, при необходимости, по результатам разработки технического решения.\n\n<b>Вход в процедуру:</b> результаты процедур <a href="proc17.html" class="proc-link">17 (Проведение исследовательского проекта)</a> и <a href="proc19.html" class="proc-link">19 (Разработка технического решения)</a>.',
+            inputs: ['⬅️ <a href="proc17.html" class="proc-link">Процедура 17</a>', '⬅️ <a href="proc19.html" class="proc-link">Процедура 19</a>'],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
             role: "Продукт-менеджер",
             text: "Проект-менеджер в 1С:ДО создает внутренний документ «Паспорт продуктового проекта» в папке, которая находится: Документация проектов\Портфель продуктовых проектов КЭАЗ\Текущие инвестиционные продуктовые проекты (капитализируемые)\«выбрать папку».",
-            inputs: ["⬅️ От ПМ (шаг 1)"],
-            outputs: ["→ Шаг 3"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         3: {
             number: "3",
             role: "Продукт-менеджер",
             text: "Заполняет приложенный к внутреннему документу файл Паспорт продуктового проекта (НАИМЕНОВАНИЕ). Затем отправляет на согласование Руководителю проектного офиса.\n\nЗаполняет/редактирует форму паспорта проекта согласно АО КЭАЗ//-8553 «МЕТОДИКА инициации продуктового проекта».",
-            inputs: ["⬅️ От ПМ (шаг 2)"],
-            outputs: ["→ Шаг 4"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         4: {
             number: "4",
             role: "Руководитель проектного офиса",
             text: "Проверяет правильность заполнения формы паспорта проекта в 1С:ДО.",
-            inputs: ["⬅️ От ПМ (шаг 3)"],
-            outputs: ["✅ Если согласовано → Шаг 5", "❌ Если не согласовано → Шаг 3 (возврат ПМ на доработку)"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ (шаг 3)</a>"],
+            outputs: ["✅ Если согласовано → <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>", "❌ Если не согласовано → <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3 (возврат ПМ на доработку)</a>"]
         },
         5: {
             number: "5",
             role: "Руководитель проектного офиса",
             text: "Далее направляет на согласование в 1С:ДО команде Проектного комитета. Список лиц, входящих в проектный комитет, указан в АО КЭАЗ//32-9 «СТАНДАРТ управления продуктовыми проектами».",
-            inputs: ["⬅️ От РПО (шаг 4, ДА)"],
-            outputs: ["→ Шаг 6"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От РПО (шаг 4, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
             role: "Проектный комитет",
             text: "Принимает решение об утверждении паспорта проекта.",
-            inputs: ["⬅️ От РПО (шаг 5)"],
-            outputs: ["✅ Если утвержден → Шаг 7", "❌ Если не утвержден → Шаг 9"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От РПО (шаг 5)</a>"],
+            outputs: ["✅ Если утвержден → <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>", "❌ Если не утвержден → <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
         },
         7: {
             number: "7",
             role: "Начальник УКиОТ",
             text: "Организует учет затрат по проекту в управленческом учете. Управленческий учет организуется только в том случае, если Проектный комитет согласовал проект.\n\nВ 1С:УПП открывает заказ на производство для учета затрат по проекту. Далее, в 1С:ДО направляет уведомление Проект-менеджеру об открытом заказе на производство для учета затрат по проекту.",
-            inputs: ["⬅️ От проектного комитета (шаг 6, ДА)"],
-            outputs: ["→ Шаг 8"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От проектного комитета (шаг 6, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
         },
         8: {
             number: "8",
             role: "Продукт-менеджер",
-            text: "План разработки продукта утвержден. Выход в процедуру 4 (Ввод номенклатуры в 1С:УПП).",
-            inputs: ["⬅️ От УКиОТ (шаг 7)"],
-            outputs: ["📤 ВЫХОД: Переход к процедуре 4"]
+            text: 'План разработки продукта утвержден. <b>Выход в <a href="proc4.html" class="proc-link">процедуру 4 (Ввод номенклатуры в 1С:УПП)</a></b>.',
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От УКиОТ (шаг 7)</a>"],
+            outputs: ['📤 ВЫХОД: <a href="proc4.html" class="proc-link">Процедура 4</a>']
         },
         9: {
             number: "9",
             role: "Проектный комитет",
             text: "Проект не принят в работу, не интересен компании на данный момент времени. Выход.",
-            inputs: ["⬅️ От проектного комитета (шаг 6, НЕТ)"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От проектного комитета (шаг 6, НЕТ)</a>"],
             outputs: ["📤 ВЫХОД: Проект отклонен"]
         }
     };
@@ -544,18 +560,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -563,13 +573,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
