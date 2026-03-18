@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>КЭАЗ · Бизнес-процессы Дирекции маркетинга</title>
     <style>
+        /* Все стили без изменений (оставлены как в предыдущей версии) */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
-
         body {
             background: linear-gradient(145deg, #0b1424 0%, #1a2642 100%);
             padding: 24px 16px;
             display: flex;
             justify-content: center;
         }
-
         .container {
             max-width: 1600px;
             width: 100%;
@@ -27,7 +26,6 @@
             padding: 28px 24px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-
         h1 {
             font-size: 2rem;
             font-weight: 600;
@@ -35,7 +33,6 @@
             text-align: center;
             margin-bottom: 4px;
         }
-
         .subhead {
             text-align: center;
             color: #2f405b;
@@ -44,7 +41,6 @@
             padding-bottom: 20px;
             margin-bottom: 24px;
         }
-
         .filter-panel {
             background: #f8fafc;
             border-radius: 60px;
@@ -52,14 +48,12 @@
             margin-bottom: 28px;
             border: 1px solid #e2e8f0;
         }
-
         .filter-row {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px 12px;
         }
-
         .filter-item {
             padding: 6px 16px;
             border-radius: 40px;
@@ -92,7 +86,6 @@
         .filter-all:hover {
             background: #1e2f47;
         }
-
         .toggle-btn {
             background: #334155;
             color: white;
@@ -109,7 +102,6 @@
         .toggle-btn:hover {
             background: #1e293b;
         }
-
         .filter-row-expandable {
             display: none;
             flex-wrap: wrap;
@@ -122,7 +114,6 @@
         .filter-row-expandable.show {
             display: flex;
         }
-
         .phases-container {
             background: #f1f5f9;
             border-radius: 28px;
@@ -130,13 +121,11 @@
             border: 1px solid #e2e8f0;
             overflow-x: auto;
         }
-
         .phases-grid {
             display: flex;
             gap: 16px;
             min-width: 1400px;
         }
-
         .phase-column {
             flex: 1;
             min-width: 180px;
@@ -144,7 +133,6 @@
             flex-direction: column;
             gap: 16px;
         }
-
         .phase-header {
             background: #0a1929;
             color: white;
@@ -164,13 +152,11 @@
         .phase5 .phase-header { background: #c91e3a; border-bottom-color: #ef4444; }
         .phase6 .phase-header { background: #b88b1f; border-bottom-color: #eab308; }
         .phase7 .phase-header { background: #a13ea1; border-bottom-color: #c084fc; }
-
         .phase-content {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
         .role-group {
             background: white;
             border-radius: 18px;
@@ -178,7 +164,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
         }
-
         .role-group-title {
             font-weight: 600;
             font-size: 0.7rem;
@@ -188,7 +173,6 @@
             margin-bottom: 8px;
             padding-left: 4px;
         }
-
         .proc-card {
             background: white;
             border-radius: 14px;
@@ -214,12 +198,10 @@
             box-shadow: 0 8px 16px rgba(0,0,0,0.08);
             z-index: 5;
         }
-
         .proc-card.filtered-out {
             opacity: 0.2;
             pointer-events: none;
         }
-
         .proc-card.start-highlight {
             border: 3px solid #f6b83e !important;
             background: #fff9e6;
@@ -232,7 +214,6 @@
             right: -8px;
             font-size: 1.1rem;
         }
-
         .proc-badge {
             display: inline-block;
             font-size: 0.55rem;
@@ -254,7 +235,6 @@
             color: white;
             border: 1px solid #f97316;
         }
-
         .proc-num {
             font-weight: 800;
             font-size: 0.65rem;
@@ -265,7 +245,6 @@
             margin-bottom: 6px;
             color: #1e293b;
         }
-
         .proc-name {
             font-weight: 600;
             font-size: 0.7rem;
@@ -274,7 +253,6 @@
             word-break: break-word;
             color: #0f172a;
         }
-
         .proc-io {
             display: flex;
             justify-content: space-between;
@@ -285,7 +263,6 @@
             margin-top: 4px;
             color: #475569;
         }
-
         .io-in {
             color: #1e6df2;
             font-weight: 600;
@@ -294,7 +271,6 @@
             color: #1f8b4c;
             font-weight: 600;
         }
-
         .phase1-color { border-left-color: #9747ff; background: #faf5ff; }
         .phase2-color { border-left-color: #3b82f6; background: #eff6ff; }
         .phase3-color { border-left-color: #22c55e; background: #f0fdf4; }
@@ -302,7 +278,6 @@
         .phase5-color { border-left-color: #ef4444; background: #fef2f2; }
         .phase6-color { border-left-color: #eab308; background: #fefce8; }
         .phase7-color { border-left-color: #c084fc; background: #faf5ff; }
-
         .back-to-top {
             position: fixed;
             bottom: 24px;
@@ -333,7 +308,7 @@
     <h1>📊 Бизнес-процессы Дирекции маркетинга</h1>
     <div class="subhead">КЭАЗ · нажми на должность — увидишь свои задачи и где твой старт 🚩</div>
 
-    <!-- Панель фильтра -->
+    <!-- Панель фильтра (основные и дополнительные роли) -->
     <div class="filter-panel">
         <div class="filter-row" id="mainRoles">
             <div class="filter-item filter-all active" data-role="all" onclick="filterByRole('all')">👥 Все роли</div>
@@ -361,11 +336,9 @@
             <div class="filter-item" data-role="analytics_head" onclick="filterByRole('analytics_head')">Начальник отдела аналитики</div>
             <div class="filter-item" data-role="planning_specialist" onclick="filterByRole('planning_specialist')">Специалист по планированию</div>
         </div>
-        
         <div style="text-align: center;">
             <button class="toggle-btn" onclick="toggleAllRoles()" id="toggleBtn">🔽 Показать все роли</button>
         </div>
-        
         <div class="filter-row-expandable" id="allRolesExpandable">
             <div class="filter-item" data-role="sales_director_rf" onclick="filterByRole('sales_director_rf')">Директор по продажам РФ</div>
             <div class="filter-item" data-role="foreign_sales_director" onclick="filterByRole('foreign_sales_director')">Директор по зарубежным продажам</div>
@@ -424,7 +397,7 @@
         </div>
     </div>
 
-    <!-- Карта процессов -->
+    <!-- Карта процессов с корректными флажками (только один на роль) -->
     <div class="phases-container">
         <div class="phases-grid">
             
@@ -438,7 +411,7 @@
                         <!-- 21: Формирование среднесрочной стратегии -->
                         <a href="proc21.html" class="proc-card phase1-color" 
                            data-roles="marketing_director,strategic_marketing_head,level1_manager,level2_manager" 
-                           data-start-for="marketing_director,strategic_marketing_head">
+                           data-start-for="marketing_director,strategic_marketing_head,level1_manager,level2_manager">
                             <div class="proc-num">21 <span class="proc-badge badge-procedure">Процедура</span></div>
                             <div class="proc-name">Формирование среднесрочной стратегии развития ГК КЭАЗ</div>
                             <div class="proc-io"><span class="io-in">⬅️ План-график</span><span class="io-out">➡️ 18</span></div>
@@ -483,8 +456,8 @@
                         
                         <!-- 17: Проведение исследовательского проекта -->
                         <a href="proc17.html" class="proc-card phase2-color" 
-                           data-roles="senior_pm,product_manager,ukiot_head,goz_head,financial_director,approvers" 
-                           data-start-for="senior_pm,ukiot_head,goz_head,financial_director">
+                           data-roles="senior_pm,product_manager,ukiot_head,goz_head,financial_director,approvers,senior_designer" 
+                           data-start-for="senior_pm,ukiot_head,goz_head,financial_director,approvers,senior_designer">
                             <div class="proc-num">17 <span class="proc-badge badge-procedure">Процедура</span></div>
                             <div class="proc-name">Проведение исследовательского проекта</div>
                             <div class="proc-io"><span class="io-in">⬅️ 18,27</span><span class="io-out">➡️ 23,24,26</span></div>
@@ -554,7 +527,7 @@
                         <!-- 4: Ввод номенклатуры в Готовую продукцию -->
                         <a href="proc4.html" class="proc-card phase3-color" 
                            data-roles="product_manager,uop_manager,technical_consultant,designer,technologist,aod_specialist,marketing_analyst,marketing_analyst_pricing,plm_administrator,declaration_specialist,honest_sign_manager,ukiot_economist,ukiot_head,internet_projects_head" 
-                           data-start-for="technical_consultant,marketing_analyst,designer,technologist,plm_administrator,declaration_specialist,honest_sign_manager,ukiot_economist">
+                           data-start-for="technical_consultant,marketing_analyst,designer,technologist,plm_administrator,declaration_specialist,honest_sign_manager,ukiot_economist,marketing_analyst_pricing">
                             <div class="proc-num">4 <span class="proc-badge badge-procedure">Процедура</span></div>
                             <div class="proc-name">Ввод номенклатуры в 1С:УПП (Готовая продукция)</div>
                             <div class="proc-io"><span class="io-in">⬅️ 23,24,4а (13)</span><span class="io-out">➡️ 11,13,15</span></div>
@@ -621,7 +594,7 @@
                         <!-- 14: Обновление файлов НиЦ и презентаций -->
                         <a href="proc14.html" class="proc-card phase4-color" 
                            data-roles="product_manager,analytics_specialist" 
-                           data-start-for="">
+                           data-start-for="analytics_specialist">
                             <div class="proc-num">14 <span class="proc-badge badge-procedure">Процедура</span></div>
                             <div class="proc-name">Обновление файлов НиЦ и презентаций в Битрикс24</div>
                             <div class="proc-io"><span class="io-in">⬅️ 11</span><span class="io-out">➡️ 20</span></div>
@@ -642,7 +615,7 @@
                         <!-- 30: Договорная работа -->
                         <a href="proc30.html" class="proc-card phase4-color" 
                            data-roles="initiator,lawyer,department_employees,managing_director,board_chairman,authorized_person,database_responsible" 
-                           data-start-for="lawyer,managing_director,board_chairman,authorized_person,database_responsible">
+                           data-start-for="lawyer,managing_director,board_chairman,authorized_person,database_responsible,department_employees">
                             <div class="proc-num">30 <span class="proc-badge badge-procedure">Процедура</span></div>
                             <div class="proc-name">Договорная работа</div>
                             <div class="proc-io"><span class="io-in">⬅️ 28,31</span><span class="io-out">➡️ Договор</span></div>
@@ -718,8 +691,8 @@
                         
                         <!-- 4н: Выявление неликвидной продукции -->
                         <a href="proc4n.html" class="proc-card phase6-color" 
-                           data-roles="product_manager,planning_specialist,marketing_analyst,product_department_head,motivation_manager" 
-                           data-start-for="planning_specialist,motivation_manager">
+                           data-roles="product_manager,planning_specialist,marketing_analyst,product_department_head,motivation_manager,analytics_head" 
+                           data-start-for="planning_specialist,motivation_manager,analytics_head">
                             <div class="proc-num">4н <span class="proc-badge badge-procedure">Процедура</span></div>
                             <div class="proc-name">Выявление неликвидной и слабооборачиваемой продукции</div>
                             <div class="proc-io"><span class="io-in">⬅️ Ежемесячно</span><span class="io-out">➡️ 3,29</span></div>
@@ -762,7 +735,7 @@
                         <!-- 5: Завершение продуктового проекта -->
                         <a href="proc5.html" class="proc-card phase7-color" 
                            data-roles="project_manager_old,project_office_head,project_committee,ukiot_head" 
-                           data-start-for="">
+                           data-start-for="project_manager_old">
                             <div class="proc-num">5 <span class="proc-badge badge-procedure">Процедура</span></div>
                             <div class="proc-name">Завершение продуктового проекта</div>
                             <div class="proc-io"><span class="io-in">⬅️ 17,19,24</span><span class="io-out">➡️ 6</span></div>
