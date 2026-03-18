@@ -334,148 +334,96 @@
     <div class="subhead">КЭАЗ · нажми на должность — увидишь свои задачи и где твой старт 🚩</div>
 
     <!-- Панель фильтра -->
-    <div class="filter-panel">
-        <div class="filter-row" id="mainRoles">
-            <div class="filter-item filter-all active" data-role="all" onclick="filterByRole('all')">👥 Все роли</div>
-            <div class="filter-item" data-role="product_manager" onclick="filterByRole('product_manager')">Продукт-менеджер</div>
-            <div class="filter-item" data-role="senior_pm" onclick="filterByRole('senior_pm')">Старший ПМ</div>
-            <div class="filter-item" data-role="project_manager" onclick="filterByRole('project_manager')">Менеджер проекта</div>
-            <div class="filter-item" data-role="project_office_head" onclick="filterByRole('project_office_head')">Руководитель проектного офиса</div>
-            <div class="filter-item" data-role="project_committee" onclick="filterByRole('project_committee')">Проектный комитет</div>
-            <div class="filter-item" data-role="initiator" onclick="filterByRole('initiator')">Инициатор</div>
-            <div class="filter-item" data-role="segment_marketing_manager" onclick="filterByRole('segment_marketing_manager')">Сегмент-маркетинг-менеджер</div>
-            <div class="filter-item" data-role="marketing_analyst" onclick="filterByRole('marketing_analyst')">Маркетолог-аналитик</div>
-            <div class="filter-item" data-role="marketing_director" onclick="filterByRole('marketing_director')">Директор по маркетингу</div>
-            <div class="filter-item" data-role="product_department_head" onclick="filterByRole('product_department_head')">Начальник отдела продуктового направления</div>
-            <div class="filter-item" data-role="strategic_marketing_head" onclick="filterByRole('strategic_marketing_head')">Руководитель стратегического маркетинга</div>
-            <div class="filter-item" data-role="designer" onclick="filterByRole('designer')">Конструктор</div>
-            <div class="filter-item" data-role="chief_designer" onclick="filterByRole('chief_designer')">Главный конструктор</div>
-            <div class="filter-item" data-role="technologist" onclick="filterByRole('technologist')">Технолог</div>
-            <div class="filter-item" data-role="technical_consultant" onclick="filterByRole('technical_consultant')">Технический консультант</div>
-            <div class="filter-item" data-role="designer_creative" onclick="filterByRole('designer_creative')">Дизайнер</div>
-            <div class="filter-item" data-role="uop_manager" onclick="filterByRole('uop_manager')">Менеджер УОП</div>
-            <div class="filter-item" data-role="uop_head" onclick="filterByRole('uop_head')">Начальник УОП</div>
-            <div class="filter-item" data-role="ursd_head" onclick="filterByRole('ursd_head')">Руководитель УРСД</div>
-            <div class="filter-item" data-role="urp_head" onclick="filterByRole('urp_head')">Руководитель УРП</div>
-            <div class="filter-item" data-role="urpr_head" onclick="filterByRole('urpr_head')">Руководитель УРПР</div>
-            <div class="filter-item" data-role="roznica_head" onclick="filterByRole('roznica_head')">Руководитель канала "Розница"</div>
-            <div class="filter-item" data-role="division_head" onclick="filterByRole('division_head')">Руководитель дивизиона</div>
-            <div class="filter-item" data-role="kam" onclick="filterByRole('kam')">КАМ</div>
-            <div class="filter-item" data-role="uoitp_head" onclick="filterByRole('uoitp_head')">Руководитель УОиТП</div>
-            <div class="filter-item" data-role="upp_head" onclick="filterByRole('upp_head')">Начальник УПП</div>
-            <div class="filter-item" data-role="gp_planning_specialist" onclick="filterByRole('gp_planning_specialist')">Главный специалист по планированию ГП</div>
-            <div class="filter-item" data-role="diu_planning_specialist" onclick="filterByRole('diu_planning_specialist')">Главный специалист по планированию ДиУ</div>
-            <div class="filter-item" data-role="planning_specialist" onclick="filterByRole('planning_specialist')">Специалист по планированию</div>
-            <div class="filter-item" data-role="upsp_specialist" onclick="filterByRole('upsp_specialist')">Главный специалист УПСП</div>
-            <div class="filter-item" data-role="analytics_head" onclick="filterByRole('analytics_head')">Начальник отдела аналитики</div>
-            <div class="filter-item" data-role="analytics_lead" onclick="filterByRole('analytics_lead')">Ведущий специалист управления аналитики</div>
-            <div class="filter-item" data-role="analytics_specialist" onclick="filterByRole('analytics_specialist')">Специалист направления аналитики</div>
-            <div class="filter-item" data-role="ukiot_head" onclick="filterByRole('ukiot_head')">Начальник УКиОТ</div>
-            <div class="filter-item" data-role="ukiot_economist" onclick="filterByRole('ukiot_economist')">Экономист УКиОТ</div>
-            <div class="filter-item" data-role="financial_director" onclick="filterByRole('financial_director')">Финансовый директор</div>
-            <div class="filter-item" data-role="aod_specialist" onclick="filterByRole('aod_specialist')">Главный специалист по АОД</div>
-            <div class="filter-item" data-role="aod_engineer" onclick="filterByRole('aod_engineer')">Инженер по АОД</div>
-            <div class="filter-item" data-role="utk_head" onclick="filterByRole('utk_head')">Начальник УТК</div>
-            <div class="filter-item" data-role="nva_head" onclick="filterByRole('nva_head')">Начальник управления разработки НВА</div>
-            <div class="filter-item" data-role="utp_head" onclick="filterByRole('utp_head')">Начальник УТП</div>
-            <div class="filter-item" data-role="metrologist" onclick="filterByRole('metrologist')">Инженер по метрологии</div>
-            <div class="filter-item" data-role="certification_specialist" onclick="filterByRole('certification_specialist')">Ведущий специалист по сертификации</div>
-            <div class="filter-item" data-role="ovk_head" onclick="filterByRole('ovk_head')">Начальник ОВК</div>
-            <div class="filter-item" data-role="kru_specialist" onclick="filterByRole('kru_specialist')">Сотрудник КРУ</div>
-            <div class="filter-item" data-role="assembly_head" onclick="filterByRole('assembly_head')">Начальник сборочного цеха</div>
-            <div class="filter-item" data-role="advertising_head" onclick="filterByRole('advertising_head')">Начальник управления рекламы</div>
-            <div class="filter-item" data-role="internet_projects_head" onclick="filterByRole('internet_projects_head')">Руководитель интернет проектов</div>
-            <div class="filter-item" data-role="strategic_communications_director" onclick="filterByRole('strategic_communications_director')">Директор по стратегическим коммуникациям</div>
-            <div class="filter-item" data-role="content_manager" onclick="filterByRole('content_manager')">Контент-менеджер</div>
-            <div class="filter-item" data-role="content_owner" onclick="filterByRole('content_owner')">Владелец контента</div>
-            <div class="filter-item" data-role="sales_director_rf" onclick="filterByRole('sales_director_rf')">Директор по продажам РФ</div>
-            <div class="filter-item" data-role="foreign_sales_director" onclick="filterByRole('foreign_sales_director')">Директор по зарубежным продажам</div>
-            <div class="filter-item" data-role="commercial_manager" onclick="filterByRole('commercial_manager')">Управляющий коммерческим блоком</div>
-            <div class="filter-item" data-role="goz_head" onclick="filterByRole('goz_head')">Руководитель ГОЗ</div>
-            <div class="filter-item" data-role="commission_members" onclick="filterByRole('commission_members')">Члены комиссии</div>
-            <div class="filter-item" data-role="security_director" onclick="filterByRole('security_director')">Директор по безопасности</div>
-            <div class="filter-item" data-role="lawyer" onclick="filterByRole('lawyer')">Юрист</div>
-            <div class="filter-item" data-role="managing_director" onclick="filterByRole('managing_director')">Управляющий директор</div>
-            <div class="filter-item" data-role="board_chairman" onclick="filterByRole('board_chairman')">Председатель Совета Директоров</div>
-            <div class="filter-item" data-role="authorized_person" onclick="filterByRole('authorized_person')">Уполномоченное лицо</div>
-            <div class="filter-item" data-role="database_responsible" onclick="filterByRole('database_responsible')">Ответственный за базу</div>
-            <div class="filter-item" data-role="procurement_manager" onclick="filterByRole('procurement_manager')">Менеджер по закупкам</div>
-            <div class="filter-item" data-role="storekeeper" onclick="filterByRole('storekeeper')">Кладовщик</div>
-            <div class="filter-item" data-role="motivation_manager" onclick="filterByRole('motivation_manager')">Менеджер мотивационных программ</div>
-            <div class="filter-item" data-role="sapr_specialist" onclick="filterByRole('sapr_specialist')">Старший специалист по САПР</div>
-            <div class="filter-item" data-role="urr_senior_specialist" onclick="filterByRole('urr_senior_specialist')">Старший специалист УРР</div>
-            <div class="filter-item" data-role="approvers" onclick="filterByRole('approvers')">Участники согласования</div>
-            <div class="filter-item" data-role="department_employees" onclick="filterByRole('department_employees')">Сотрудники подразделений</div>
-            <div class="filter-item" data-role="client" onclick="filterByRole('client')">Клиент</div>
-            <div class="filter-item" data-role="project_manager_old" onclick="filterByRole('project_manager_old')">Проект-менеджер</div>
-        </div>
-        
-        <div style="text-align: center;">
-            <button class="toggle-btn" onclick="toggleAllRoles()" id="toggleBtn">🔽 Показать все роли</button>
-        </div>
-        
-        <div class="filter-row-expandable" id="allRolesExpandable">
-    <div class="filter-item" data-role="sales_director_rf" onclick="filterByRole('sales_director_rf')">Директор по продажам РФ</div>
-    <div class="filter-item" data-role="foreign_sales_director" onclick="filterByRole('foreign_sales_director')">Директор по зарубежным продажам</div>
-    <div class="filter-item" data-role="commercial_manager" onclick="filterByRole('commercial_manager')">Управляющий коммерческим блоком</div>
-    <div class="filter-item" data-role="goz_head" onclick="filterByRole('goz_head')">Руководитель ГОЗ</div>
-    <div class="filter-item" data-role="commission_members" onclick="filterByRole('commission_members')">Члены комиссии</div>
-    <div class="filter-item" data-role="security_director" onclick="filterByRole('security_director')">Директор по безопасности</div>
-    <div class="filter-item" data-role="lawyer" onclick="filterByRole('lawyer')">Юрист</div>
-    <div class="filter-item" data-role="managing_director" onclick="filterByRole('managing_director')">Управляющий директор</div>
-    <div class="filter-item" data-role="board_chairman" onclick="filterByRole('board_chairman')">Председатель Совета Директоров</div>
-    <div class="filter-item" data-role="authorized_person" onclick="filterByRole('authorized_person')">Уполномоченное лицо</div>
-    <div class="filter-item" data-role="database_responsible" onclick="filterByRole('database_responsible')">Ответственный за базу</div>
-    <div class="filter-item" data-role="procurement_manager" onclick="filterByRole('procurement_manager')">Менеджер по закупкам</div>
-    <div class="filter-item" data-role="storekeeper" onclick="filterByRole('storekeeper')">Кладовщик</div>
-    <div class="filter-item" data-role="motivation_manager" onclick="filterByRole('motivation_manager')">Менеджер мотивационных программ</div>
-    <div class="filter-item" data-role="sapr_specialist" onclick="filterByRole('sapr_specialist')">Старший специалист по САПР</div>
-    <div class="filter-item" data-role="urr_senior_specialist" onclick="filterByRole('urr_senior_specialist')">Старший специалист УРР</div>
-    <div class="filter-item" data-role="approvers" onclick="filterByRole('approvers')">Участники согласования</div>
-    <div class="filter-item" data-role="department_employees" onclick="filterByRole('department_employees')">Сотрудники подразделений</div>
-    <div class="filter-item" data-role="client" onclick="filterByRole('client')">Клиент</div>
-    <div class="filter-item" data-role="project_manager_old" onclick="filterByRole('project_manager_old')">Проект-менеджер</div>
-    <div class="filter-item" data-role="marketing_analyst_pricing" onclick="filterByRole('marketing_analyst_pricing')">Маркетолог-аналитик по ценообразованию</div>
-    <div class="filter-item" data-role="marketer" onclick="filterByRole('marketer')">Маркетолог</div>
-    <div class="filter-item" data-role="level1_manager" onclick="filterByRole('level1_manager')">Руководитель 1 уровня</div>
-    <div class="filter-item" data-role="level2_manager" onclick="filterByRole('level2_manager')">Руководители 2 уровня</div>
-    <div class="filter-item" data-role="urr_head" onclick="filterByRole('urr_head')">Руководитель УРР</div>
-    <div class="filter-item" data-role="technical_consultant" onclick="filterByRole('technical_consultant')">Технический консультант</div>
-    <div class="filter-item" data-role="designer_creative" onclick="filterByRole('designer_creative')">Дизайнер</div>
-    <div class="filter-item" data-role="senior_designer" onclick="filterByRole('senior_designer')">Старший промышленный дизайнер</div>
-    <div class="filter-item" data-role="ursd_head" onclick="filterByRole('ursd_head')">Руководитель УРСД</div>
-    <div class="filter-item" data-role="urp_head" onclick="filterByRole('urp_head')">Руководитель УРП</div>
-    <div class="filter-item" data-role="urpr_head" onclick="filterByRole('urpr_head')">Руководитель УРПР</div>
-    <div class="filter-item" data-role="roznica_head" onclick="filterByRole('roznica_head')">Руководитель канала "Розница"</div>
-    <div class="filter-item" data-role="division_head" onclick="filterByRole('division_head')">Руководитель дивизиона</div>
-    <div class="filter-item" data-role="kam" onclick="filterByRole('kam')">КАМ</div>
-    <div class="filter-item" data-role="uoitp_head" onclick="filterByRole('uoitp_head')">Руководитель УОиТП</div>
-    <div class="filter-item" data-role="upp_head" onclick="filterByRole('upp_head')">Начальник УПП</div>
-    <div class="filter-item" data-role="gp_planning_specialist" onclick="filterByRole('gp_planning_specialist')">Главный специалист по планированию ГП</div>
-    <div class="filter-item" data-role="diu_planning_specialist" onclick="filterByRole('diu_planning_specialist')">Главный специалист по планированию ДиУ</div>
-    <div class="filter-item" data-role="planning_specialist" onclick="filterByRole('planning_specialist')">Специалист по планированию</div>
-    <div class="filter-item" data-role="upsp_specialist" onclick="filterByRole('upsp_specialist')">Главный специалист УПСП</div>
-    <div class="filter-item" data-role="analytics_head" onclick="filterByRole('analytics_head')">Начальник отдела аналитики</div>
-    <div class="filter-item" data-role="analytics_lead" onclick="filterByRole('analytics_lead')">Ведущий специалист управления аналитики</div>
-    <div class="filter-item" data-role="analytics_specialist" onclick="filterByRole('analytics_specialist')">Специалист направления аналитики</div>
-    <div class="filter-item" data-role="ukiot_head" onclick="filterByRole('ukiot_head')">Начальник УКиОТ</div>
-    <div class="filter-item" data-role="ukiot_economist" onclick="filterByRole('ukiot_economist')">Экономист УКиОТ</div>
-    <div class="filter-item" data-role="financial_director" onclick="filterByRole('financial_director')">Финансовый директор</div>
-    <div class="filter-item" data-role="aod_specialist" onclick="filterByRole('aod_specialist')">Главный специалист по АОД</div>
-    <div class="filter-item" data-role="aod_engineer" onclick="filterByRole('aod_engineer')">Инженер по АОД</div>
-    <div class="filter-item" data-role="utk_head" onclick="filterByRole('utk_head')">Начальник УТК</div>
-    <div class="filter-item" data-role="nva_head" onclick="filterByRole('nva_head')">Начальник управления разработки НВА</div>
-    <div class="filter-item" data-role="utp_head" onclick="filterByRole('utp_head')">Начальник УТП</div>
-    <div class="filter-item" data-role="metrologist" onclick="filterByRole('metrologist')">Инженер по метрологии</div>
-    <div class="filter-item" data-role="certification_specialist" onclick="filterByRole('certification_specialist')">Ведущий специалист по сертификации</div>
-    <div class="filter-item" data-role="ovk_head" onclick="filterByRole('ovk_head')">Начальник ОВК</div>
-    <div class="filter-item" data-role="kru_specialist" onclick="filterByRole('kru_specialist')">Сотрудник КРУ</div>
-    <div class="filter-item" data-role="assembly_head" onclick="filterByRole('assembly_head')">Начальник сборочного цеха</div>
-    <div class="filter-item" data-role="advertising_head" onclick="filterByRole('advertising_head')">Начальник управления рекламы</div>
-    <div class="filter-item" data-role="internet_projects_head" onclick="filterByRole('internet_projects_head')">Руководитель интернет проектов</div>
-    <div class="filter-item" data-role="strategic_communications_director" onclick="filterByRole('strategic_communications_director')">Директор по стратегическим коммуникациям</div>
-    <div class="filter-item" data-role="content_manager" onclick="filterByRole('content_manager')">Контент-менеджер</div>
-    <div class="filter-item" data-role="content_owner" onclick="filterByRole('content_owner')">Владелец контента</div>
+<div class="filter-panel">
+    <!-- Основные роли (самые частые) -->
+    <div class="filter-row" id="mainRoles">
+        <div class="filter-item filter-all active" data-role="all" onclick="filterByRole('all')">👥 Все роли</div>
+        <div class="filter-item" data-role="product_manager" onclick="filterByRole('product_manager')">Продукт-менеджер</div>
+        <div class="filter-item" data-role="senior_pm" onclick="filterByRole('senior_pm')">Старший ПМ</div>
+        <div class="filter-item" data-role="project_manager" onclick="filterByRole('project_manager')">Менеджер проекта</div>
+        <div class="filter-item" data-role="project_office_head" onclick="filterByRole('project_office_head')">Руководитель проектного офиса</div>
+        <div class="filter-item" data-role="project_committee" onclick="filterByRole('project_committee')">Проектный комитет</div>
+        <div class="filter-item" data-role="initiator" onclick="filterByRole('initiator')">Инициатор</div>
+        <div class="filter-item" data-role="segment_marketing_manager" onclick="filterByRole('segment_marketing_manager')">Сегмент-маркетинг-менеджер</div>
+        <div class="filter-item" data-role="marketing_analyst" onclick="filterByRole('marketing_analyst')">Маркетолог-аналитик</div>
+        <div class="filter-item" data-role="marketing_director" onclick="filterByRole('marketing_director')">Директор по маркетингу</div>
+        <div class="filter-item" data-role="product_department_head" onclick="filterByRole('product_department_head')">Начальник отдела продуктового направления</div>
+        <div class="filter-item" data-role="strategic_marketing_head" onclick="filterByRole('strategic_marketing_head')">Руководитель стратегического маркетинга</div>
+        <div class="filter-item" data-role="designer" onclick="filterByRole('designer')">Конструктор</div>
+        <div class="filter-item" data-role="chief_designer" onclick="filterByRole('chief_designer')">Главный конструктор</div>
+        <div class="filter-item" data-role="technologist" onclick="filterByRole('technologist')">Технолог</div>
+        <div class="filter-item" data-role="uop_manager" onclick="filterByRole('uop_manager')">Менеджер УОП</div>
+        <div class="filter-item" data-role="uop_head" onclick="filterByRole('uop_head')">Начальник УОП</div>
+        <div class="filter-item" data-role="ukiot_head" onclick="filterByRole('ukiot_head')">Начальник УКиОТ</div>
+        <div class="filter-item" data-role="financial_director" onclick="filterByRole('financial_director')">Финансовый директор</div>
+        <div class="filter-item" data-role="aod_specialist" onclick="filterByRole('aod_specialist')">Главный специалист по АОД</div>
+        <div class="filter-item" data-role="advertising_head" onclick="filterByRole('advertising_head')">Начальник управления рекламы</div>
+        <div class="filter-item" data-role="internet_projects_head" onclick="filterByRole('internet_projects_head')">Руководитель интернет проектов</div>
+        <div class="filter-item" data-role="analytics_head" onclick="filterByRole('analytics_head')">Начальник отдела аналитики</div>
+        <div class="filter-item" data-role="planning_specialist" onclick="filterByRole('planning_specialist')">Специалист по планированию</div>
+    </div>
+    
+    <div style="text-align: center;">
+        <button class="toggle-btn" onclick="toggleAllRoles()" id="toggleBtn">🔽 Показать все роли</button>
+    </div>
+    
+    <!-- Дополнительные роли (скрыты по умолчанию) -->
+    <div class="filter-row-expandable" id="allRolesExpandable">
+        <div class="filter-item" data-role="sales_director_rf" onclick="filterByRole('sales_director_rf')">Директор по продажам РФ</div>
+        <div class="filter-item" data-role="foreign_sales_director" onclick="filterByRole('foreign_sales_director')">Директор по зарубежным продажам</div>
+        <div class="filter-item" data-role="commercial_manager" onclick="filterByRole('commercial_manager')">Управляющий коммерческим блоком</div>
+        <div class="filter-item" data-role="goz_head" onclick="filterByRole('goz_head')">Руководитель ГОЗ</div>
+        <div class="filter-item" data-role="commission_members" onclick="filterByRole('commission_members')">Члены комиссии</div>
+        <div class="filter-item" data-role="security_director" onclick="filterByRole('security_director')">Директор по безопасности</div>
+        <div class="filter-item" data-role="lawyer" onclick="filterByRole('lawyer')">Юрист</div>
+        <div class="filter-item" data-role="managing_director" onclick="filterByRole('managing_director')">Управляющий директор</div>
+        <div class="filter-item" data-role="board_chairman" onclick="filterByRole('board_chairman')">Председатель Совета Директоров</div>
+        <div class="filter-item" data-role="authorized_person" onclick="filterByRole('authorized_person')">Уполномоченное лицо</div>
+        <div class="filter-item" data-role="database_responsible" onclick="filterByRole('database_responsible')">Ответственный за базу</div>
+        <div class="filter-item" data-role="procurement_manager" onclick="filterByRole('procurement_manager')">Менеджер по закупкам</div>
+        <div class="filter-item" data-role="storekeeper" onclick="filterByRole('storekeeper')">Кладовщик</div>
+        <div class="filter-item" data-role="motivation_manager" onclick="filterByRole('motivation_manager')">Менеджер мотивационных программ</div>
+        <div class="filter-item" data-role="sapr_specialist" onclick="filterByRole('sapr_specialist')">Старший специалист по САПР</div>
+        <div class="filter-item" data-role="urr_senior_specialist" onclick="filterByRole('urr_senior_specialist')">Старший специалист УРР</div>
+        <div class="filter-item" data-role="approvers" onclick="filterByRole('approvers')">Участники согласования</div>
+        <div class="filter-item" data-role="department_employees" onclick="filterByRole('department_employees')">Сотрудники подразделений</div>
+        <div class="filter-item" data-role="client" onclick="filterByRole('client')">Клиент</div>
+        <div class="filter-item" data-role="project_manager_old" onclick="filterByRole('project_manager_old')">Проект-менеджер</div>
+        <div class="filter-item" data-role="marketing_analyst_pricing" onclick="filterByRole('marketing_analyst_pricing')">Маркетолог-аналитик по ценообразованию</div>
+        <div class="filter-item" data-role="marketer" onclick="filterByRole('marketer')">Маркетолог</div>
+        <div class="filter-item" data-role="level1_manager" onclick="filterByRole('level1_manager')">Руководитель 1 уровня</div>
+        <div class="filter-item" data-role="level2_manager" onclick="filterByRole('level2_manager')">Руководители 2 уровня</div>
+        <div class="filter-item" data-role="urr_head" onclick="filterByRole('urr_head')">Руководитель УРР</div>
+        <div class="filter-item" data-role="technical_consultant" onclick="filterByRole('technical_consultant')">Технический консультант</div>
+        <div class="filter-item" data-role="designer_creative" onclick="filterByRole('designer_creative')">Дизайнер</div>
+        <div class="filter-item" data-role="senior_designer" onclick="filterByRole('senior_designer')">Старший промышленный дизайнер</div>
+        <div class="filter-item" data-role="ursd_head" onclick="filterByRole('ursd_head')">Руководитель УРСД</div>
+        <div class="filter-item" data-role="urp_head" onclick="filterByRole('urp_head')">Руководитель УРП</div>
+        <div class="filter-item" data-role="urpr_head" onclick="filterByRole('urpr_head')">Руководитель УРПР</div>
+        <div class="filter-item" data-role="roznica_head" onclick="filterByRole('roznica_head')">Руководитель канала "Розница"</div>
+        <div class="filter-item" data-role="division_head" onclick="filterByRole('division_head')">Руководитель дивизиона</div>
+        <div class="filter-item" data-role="kam" onclick="filterByRole('kam')">КАМ</div>
+        <div class="filter-item" data-role="uoitp_head" onclick="filterByRole('uoitp_head')">Руководитель УОиТП</div>
+        <div class="filter-item" data-role="upp_head" onclick="filterByRole('upp_head')">Начальник УПП</div>
+        <div class="filter-item" data-role="gp_planning_specialist" onclick="filterByRole('gp_planning_specialist')">Главный специалист по планированию ГП</div>
+        <div class="filter-item" data-role="diu_planning_specialist" onclick="filterByRole('diu_planning_specialist')">Главный специалист по планированию ДиУ</div>
+        <div class="filter-item" data-role="upsp_specialist" onclick="filterByRole('upsp_specialist')">Главный специалист УПСП</div>
+        <div class="filter-item" data-role="analytics_lead" onclick="filterByRole('analytics_lead')">Ведущий специалист управления аналитики</div>
+        <div class="filter-item" data-role="analytics_specialist" onclick="filterByRole('analytics_specialist')">Специалист направления аналитики</div>
+        <div class="filter-item" data-role="ukiot_economist" onclick="filterByRole('ukiot_economist')">Экономист УКиОТ</div>
+        <div class="filter-item" data-role="aod_engineer" onclick="filterByRole('aod_engineer')">Инженер по АОД</div>
+        <div class="filter-item" data-role="utk_head" onclick="filterByRole('utk_head')">Начальник УТК</div>
+        <div class="filter-item" data-role="nva_head" onclick="filterByRole('nva_head')">Начальник управления разработки НВА</div>
+        <div class="filter-item" data-role="utp_head" onclick="filterByRole('utp_head')">Начальник УТП</div>
+        <div class="filter-item" data-role="metrologist" onclick="filterByRole('metrologist')">Инженер по метрологии</div>
+        <div class="filter-item" data-role="certification_specialist" onclick="filterByRole('certification_specialist')">Ведущий специалист по сертификации</div>
+        <div class="filter-item" data-role="ovk_head" onclick="filterByRole('ovk_head')">Начальник ОВК</div>
+        <div class="filter-item" data-role="kru_specialist" onclick="filterByRole('kru_specialist')">Сотрудник КРУ</div>
+        <div class="filter-item" data-role="assembly_head" onclick="filterByRole('assembly_head')">Начальник сборочного цеха</div>
+        <div class="filter-item" data-role="strategic_communications_director" onclick="filterByRole('strategic_communications_director')">Директор по стратегическим коммуникациям</div>
+        <div class="filter-item" data-role="content_manager" onclick="filterByRole('content_manager')">Контент-менеджер</div>
+        <div class="filter-item" data-role="content_owner" onclick="filterByRole('content_owner')">Владелец контента</div>
+    </div>
 </div>
 
     <!-- Карта процессов -->
