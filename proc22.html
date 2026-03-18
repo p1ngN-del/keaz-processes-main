@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -527,127 +543,127 @@
         1: {
             number: "1",
             role: "Маркетолог-аналитик",
-            text: "Проводит анализ данных. Индикатором проведения очередной (раз в квартал) или внеочередной сессии по изменению цен является информация на основе регулярного анализа:\n– динамики цен конкурентов;\n– рентабельности, рост себестоимости более чем на 3%.",
-            inputs: ["⬅️ Регулярный анализ / изменения рыночной ситуации"],
-            outputs: ["→ Шаг 3"]
+            text: 'Проводит анализ данных. Индикатором проведения очередной (раз в квартал) или внеочередной сессии по изменению цен является информация на основе регулярного анализа:\n– динамики цен конкурентов;\n– рентабельности, рост себестоимости более чем на 3%.\n\n<b>Вход в процедуру:</b> результаты процедур <a href="proc12.html" class="proc-link">12 (Классификация ОЕМ номенклатуры)</a> и <a href="proc10.html" class="proc-link">10 (Сбор и анализ данных о конкурентах)</a>.',
+            inputs: ['⬅️ <a href="proc12.html" class="proc-link">Процедура 12</a>', '⬅️ <a href="proc10.html" class="proc-link">Процедура 10</a>'],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         2: {
             number: "2",
             role: "Начальник отдела продуктового направления",
             text: "Уведомляет маркетолога-аналитика о необходимости изменения цен. Индикатором проведения внеочередной сессии по изменению цен являются изменения:\n– каскада ценообразования для партнеров (перевод проектных позиций в дистрибьюторскую матрицу или наоборот, активация новых каналов продаж);\n– трендов продаж (рост или спад продаж);\n– перепозиционирования продукта – перевод НГ из одного ценового сегмента в другой;\n– цен поставщиков.",
             inputs: ["⬅️ Изменения рыночной ситуации"],
-            outputs: ["→ Шаг 4"]
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         3: {
             number: "3",
             role: "Маркетолог-аналитик",
             text: "В 1С:ДО создает СЗ о необходимости изменения цен и отправляет на согласование.",
-            inputs: ["⬅️ От маркетолога (шаг 1), от НОПН (шаг 2)"],
-            outputs: ["✅ Если необходимо → Шаг 4", "❌ Если нет необходимости → Шаг 17"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От маркетолога (шаг 1)</a>", "⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От НОПН (шаг 2)</a>"],
+            outputs: ["✅ Если необходимо → <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>", "❌ Если нет необходимости → <a href='#' onclick='goToStep(17); return false;' class='io-link'>Шаг 17</a>"]
         },
         4: {
             number: "4",
             role: "Маркетолог-аналитик",
             text: "Заполняет аналитическую форму. Аналитическая форма представляет из себя excel-таблицу с указанием ключевых факторов, влияющих на принятие решения о ценообразовании:\n– анализ план-факт;\n– динамика продаж г/г накопительным итогом;\n– размер товарного запаса на собственном складе.\nОтдельная вкладка в форме – сравнение цен с конкурентами по топ-позициям основных номенклатурных групп.\nЗаполнение формы является обязательным в случае пересмотра цен по всей номенклатуре. В остальных случаях необходимость заполнения определяется индивидуально.\nМаркетолог-аналитик вносит внутреннюю информацию.",
-            inputs: ["⬅️ От маркетолога (шаг 3, ДА)"],
-            outputs: ["→ Шаг 5"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От маркетолога (шаг 3, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
             role: "Маркетолог-аналитик",
             text: "Ставит задачу в 1С:ДО по заполнению аналитической формы (для НОПН). При постановке задачи Маркетолог-аналитик ставит контролером Начальника отдела аналитики цен и данных.",
-            inputs: ["⬅️ От маркетолога (шаг 4)"],
-            outputs: ["→ Шаг 6"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От маркетолога (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
             role: "Начальник отдела продуктового направления",
             text: "Заполняет аналитическую форму (информация по рыночному позиционированию и предлагаемым изменениям цен с обоснованием таких изменений).",
-            inputs: ["⬅️ От маркетолога (шаг 5)"],
-            outputs: ["→ Шаг 7"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От маркетолога (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
         },
         7: {
             number: "7",
             role: "Начальник аналитики цен и данных",
             text: "Проводит совещание по предлагаемым изменениям цен. Участники совещания:\n– Начальник отдела аналитики данных и цен;\n– Начальники отделов продуктовых направлений (НОПН);\n– Директор по маркетингу;\n– Директор по продажам;\n– Управляющий коммерческим блоком.",
-            inputs: ["⬅️ От НОПН (шаг 6)"],
-            outputs: ["✅ Если согласовано → Шаг 8", "❌ Если не согласовано → повторять шаг 7"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От НОПН (шаг 6)</a>"],
+            outputs: ["✅ Если согласовано → <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>", "❌ Если не согласовано → повторять <a href='#' onclick='goToStep(7); return false;' class='io-link'>шаг 7</a>"]
         },
         8: {
             number: "8",
             role: "Начальник аналитики цен и данных",
             text: "Согласовывает параметры изменения цен в 1С:ДО с участниками совещания.",
-            inputs: ["⬅️ От начальника аналитики (шаг 7, ДА)"],
-            outputs: ["→ Шаг 9, Шаг 10"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От начальника аналитики (шаг 7, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>", "→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
         },
         9: {
             number: "9",
             role: "Начальник аналитики цен и данных",
             text: "Ставит задачу в 1С:ДО по информированию контрагентов об изменении цен.",
-            inputs: ["⬅️ От начальника аналитики (шаг 8)"],
-            outputs: ["→ Шаг 13, Шаг 14, Шаг 15"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От начальника аналитики (шаг 8)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>", "→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>", "→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
         },
         10: {
             number: "10",
             role: "Старший продукт-менеджер",
             text: "Создает в 1С:УПП документ с новыми ценами. Путь заведения документа в 1С:УПП: Документы/Ценообразование/Установка цен номенклатуры. Дата документа = дата изменения цен.",
-            inputs: ["⬅️ От начальника аналитики (шаг 8)"],
-            outputs: ["→ Шаг 12"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От начальника аналитики (шаг 8)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>"]
         },
         11: {
             number: "11",
             role: "Маркетолог-аналитик",
             text: "(В требованиях) Приложение к письму, в котором указывается средний % изменения цен по номенклатурным группам, подготавливает Маркетолог-аналитик.",
             inputs: [],
-            outputs: ["→ Шаг 13"]
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>"]
         },
         12: {
             number: "12",
             role: "Маркетолог-аналитик",
-            text: "Проводит документы по ценам в 1С:УПП.",
-            inputs: ["⬅️ От старшего ПМ (шаг 10)"],
-            outputs: ["→ Шаг 16"]
+            text: 'Проводит документы по ценам в 1С:УПП.\n\n<b>Выход из процедуры (частичный):</b> новые цены зафиксированы в системе.',
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От старшего ПМ (шаг 10)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
         },
         13: {
             number: "13",
             role: "Руководитель интернет проектов",
             text: "Выгружает номенклатурные файлы по запросу.",
-            inputs: ["⬅️ От начальника аналитики (шаг 9)"],
-            outputs: ["→ Шаг 14"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От начальника аналитики (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>"]
         },
         14: {
             number: "14",
             role: "Начальник УОП",
             text: "Отправляет НФ ЭТМ и Русскому Свету.",
-            inputs: ["⬅️ От начальника аналитики (шаг 9), от РИП (шаг 13)"],
-            outputs: ["→ Шаг 18"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От начальника аналитики (шаг 9)</a>", "⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От РИП (шаг 13)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(18); return false;' class='io-link'>Шаг 18</a>"]
         },
         15: {
             number: "15",
             role: "Начальник УОП",
             text: "Уведомляет контрагента об изменениях цен. Цель информирования заключается в передаче данных заинтересованным службам о средней величине изменения цен номенклатуры и о дате, с которой эта цена начнет действовать.",
-            inputs: ["⬅️ От начальника аналитики (шаг 9)"],
-            outputs: ["→ Шаг 18"]
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От начальника аналитики (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(18); return false;' class='io-link'>Шаг 18</a>"]
         },
         16: {
             number: "16",
             role: "Маркетолог-аналитик",
-            text: "Новые цены в учетной системе. Выход.",
-            inputs: ["⬅️ От маркетолога (шаг 12)"],
-            outputs: ["📤 ВЫХОД: Цены обновлены в 1С:УПП"]
+            text: 'Новые цены в учетной системе. Информация передается для дальнейших действий.\n\n<b>Выход из процедуры:</b> переход к <a href="proc8.html" class="proc-link">процедуре 8 (Корректировка плана продаж)</a> и <a href="proc3.html" class="proc-link">процедуре 3 (Вывод номенклатуры)</a>.',
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От маркетолога (шаг 12)</a>"],
+            outputs: ['📤 ВЫХОД: <a href="proc8.html" class="proc-link">Процедура 8</a>, <a href="proc3.html" class="proc-link">Процедура 3</a>']
         },
         17: {
             number: "17",
             role: "Маркетолог-аналитик",
             text: "Изменение цен не происходит. Выход.",
-            inputs: ["⬅️ От маркетолога (шаг 3, НЕТ)"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От маркетолога (шаг 3, НЕТ)</a>"],
             outputs: ["📤 ВЫХОД: Цены не меняются"]
         },
         18: {
             number: "18",
             role: "Начальник УОП",
             text: "Контрагенты проинформированы об изменениях цен. Выход.",
-            inputs: ["⬅️ От УОП (шаг 14,15)"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От УОП (шаг 14)</a>", "⬅️ <a href='#' onclick='goToStep(15); return false;' class='io-link'>От УОП (шаг 15)</a>"],
             outputs: ["📤 ВЫХОД: Информирование завершено"]
         }
     };
@@ -673,18 +689,12 @@
             <span class="detail-role">${data.role}</span>
         `;
         
-        text.innerText = data.text;
+        text.innerHTML = data.text;
         
         let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
         if (data.inputs && data.inputs.length) {
             data.inputs.forEach(inp => {
-                const stepMatch = inp.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${inp}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
@@ -692,13 +702,7 @@
         ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
         if (data.outputs && data.outputs.length) {
             data.outputs.forEach(out => {
-                const stepMatch = out.match(/шаг (\d+)/i);
-                if (stepMatch) {
-                    const stepNum = stepMatch[1];
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> <a href="#" onclick="goToStep(${stepNum}); return false;" class="io-link">${out}</a></div>`;
-                } else {
-                    ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
-                }
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
             });
         } else {
             ioHtml += `<div class="io-item">Нет данных</div>`;
