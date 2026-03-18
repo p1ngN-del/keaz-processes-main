@@ -46,22 +46,6 @@
             transform: translateX(-5px);
         }
 
-        .proc-link {
-            color: #1e6df2;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 12px;
-            background: #e6f0ff;
-            transition: 0.2s;
-            white-space: nowrap;
-        }
-        .proc-link:hover {
-            background: #f6b83e;
-            color: #0a1929;
-            text-decoration: none;
-        }
-
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -345,6 +329,7 @@
         .role-sborka { border-left-color: #daa520; } /* Начальник сборочного цеха */
         .role-aod { border-left-color: #4682b4; } /* Главный специалист по АОД */
         .role-diU { border-left-color: #2e8b57; } /* Главный специалист по планированию ДиУ */
+        .role-exit { border-left-color: #ff0000; } /* Выход */
     </style>
 </head>
 <body>
@@ -363,7 +348,7 @@
                 <div class="step-header-cell">13-15</div>
             </div>
 
-            <!-- Дорожка: Продукт-менеджер -->
+            <!-- Дорожка 1: Продукт-менеджер -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
                 <div class="lane-cells">
@@ -399,7 +384,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка: Руководитель управления -->
+            <!-- Дорожка 2: Руководитель управления -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель управления</div>
                 <div class="lane-cells">
@@ -407,17 +392,16 @@
                     <div class="cell">
                         <div class="step-card role-rukovod" data-step="3" onclick="goToStep(3)">
                             <span class="step-num">3</span>
-                            <div class="step-title">Согласование (Рук. управления)</div>
+                            <div class="step-title">Согласование</div>
                             <div class="step-preview">Принимает решение о согласовании...</div>
                         </div>
-                        <span class="step-badge badge-branch">🔀 ветвление</span>
                     </div>
                     <div class="cell"></div>
                     <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка: Начальник УКиОТ -->
+            <!-- Дорожка 3: Начальник УКиОТ -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #4682b4;">Начальник УКиОТ</div>
                 <div class="lane-cells">
@@ -425,30 +409,24 @@
                     <div class="cell">
                         <div class="step-card role-ukiot" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
-                            <div class="step-title">Согласование (УКиОТ)</div>
+                            <div class="step-title">Согласование</div>
                             <div class="step-preview">Принимает решение о согласовании...</div>
                         </div>
                     </div>
                     <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-ukiot" data-step="14" onclick="goToStep(14)">
-                            <span class="step-num">14</span>
-                            <div class="step-title">Внесение базового срока</div>
-                            <div class="step-preview">Вносит в регистр сведений базовый срок...</div>
-                        </div>
-                    </div>
+                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка: Начальник аналитики -->
+            <!-- Дорожка 4: Начальник отдела аналитики цен и данных -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник аналитики</div>
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник отдела аналитики<br>цен и данных</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-analitik" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
-                            <div class="step-title">Согласование (аналитика)</div>
+                            <div class="step-title">Согласование</div>
                             <div class="step-preview">Принимает решение о согласовании...</div>
                         </div>
                     </div>
@@ -457,18 +435,19 @@
                 </div>
             </div>
 
-            <!-- Дорожка: Главный специалист ГП -->
+            <!-- Дорожка 5: Главный специалист по планированию ГП -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #ff8c00;">Гл.спец. ГП</div>
+                <div class="lane-label" style="border-left-color: #ff8c00;">Главный специалист по планированию ГП</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-gp" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6</span>
-                            <div class="step-title">Согласование (ГП)</div>
+                            <div class="step-title">Согласование</div>
                             <div class="step-preview">Принимает решение о согласовании...</div>
                         </div>
                     </div>
+                    <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-gp" data-step="13" onclick="goToStep(13)">
                             <span class="step-num">13</span>
@@ -476,11 +455,10 @@
                             <div class="step-preview">Вносит константы КЭАЗ, срок открытия потребностей...</div>
                         </div>
                     </div>
-                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка: Начальник УПП -->
+            <!-- Дорожка 6: Начальник УПП -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ba55d3;">Начальник УПП</div>
                 <div class="lane-cells">
@@ -488,10 +466,38 @@
                     <div class="cell">
                         <div class="step-card role-upp" data-step="7" onclick="goToStep(7)">
                             <span class="step-num">7</span>
-                            <div class="step-title">Согласование (УПП)</div>
+                            <div class="step-title">Согласование</div>
                             <div class="step-preview">Принимает решение о согласовании...</div>
                         </div>
                     </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 7: Начальник сборочного цеха -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #daa520;">Начальник сборочного цеха</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-sborka" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Согласование</div>
+                            <div class="step-preview">Принимает решение о согласовании...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 8: Главный специалист по автоматизированной обработке документов -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Главный специалист по АОД</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-aod" data-step="11" onclick="goToStep(11)">
                             <span class="step-num">11</span>
@@ -509,30 +515,30 @@
                 </div>
             </div>
 
-            <!-- Дорожка: Начальник сборочного цеха -->
+            <!-- Дорожка 9: Главный специалист по планированию деталей и узлов -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #daa520;">Нач. сборочного цеха</div>
+                <div class="lane-label" style="border-left-color: #2e8b57;">Главный специалист по планированию ДиУ</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-sborka" data-step="8" onclick="goToStep(8)">
-                            <span class="step-num">8</span>
-                            <div class="step-title">Согласование (сборочный)</div>
-                            <div class="step-preview">Принимает решение о согласовании...</div>
+                        <div class="step-card role-diU" data-step="14" onclick="goToStep(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Внесение базового срока</div>
+                            <div class="step-preview">Вносит в регистр сведений базовый срок...</div>
                         </div>
                     </div>
-                    <div class="cell"></div>
-                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка: Выход "Группа не создана" -->
+            <!-- Дорожка 10: Выход "Группа не создана" -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ff0000;">Выход</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card" data-step="9" onclick="goToStep(9)" style="border-left-color: #ff0000;">
+                        <div class="step-card role-exit" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">9</span>
                             <div class="step-title">НГ не создана</div>
                             <div class="step-preview">В 1С:УПП не создана новая номенклатурная группа...</div>
@@ -659,5 +665,107 @@
         15: {
             number: "15",
             role: "Продукт-менеджер",
-            text: "Номенклатурная группа создана. <b>Выход в <a href='proc4.html' class='proc-link'>процедуру 4 (Ввод номенклатуры)</a></b>.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От планирования ДиУ (шаг 14)</
+            text: "Номенклатурная группа создана. Выход в <a href='proc4.html' class='proc-link'>процедуру 4 (Ввод номенклатуры)</a>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От планирования ДиУ (шаг 14)</a>"],
+            outputs: ['📤 ВЫХОД: <a href="proc4.html" class="proc-link">Процедура 4</a>']
+        }
+    };
+
+    let currentStep = null;
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerHTML = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+        
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
+    }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step', 'highlighted-output');
+        });
+        
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"], .step-card[data-step^="${stepId}-"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+        
+        const data = stepData[stepId];
+        if (data && data.outputs) {
+            data.outputs.forEach(out => {
+                const stepMatch = out.match(/шаг (\d+)/i);
+                if (stepMatch) {
+                    const outputStep = stepMatch[1];
+                    const outputCard = document.querySelector(`.step-card[data-step="${outputStep}"], .step-card[data-step^="${outputStep}-"]`);
+                    if (outputCard) {
+                        outputCard.classList.add('highlighted-output');
+                    }
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                const numericStep = stepId.split('-')[0];
+                goToStep(numericStep);
+            }
+        });
+    });
+</script>
+</body>
+</html>
