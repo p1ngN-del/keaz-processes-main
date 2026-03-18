@@ -356,10 +356,10 @@
     <div class="swimlane">
         <div class="swimlane-table">
             <div class="step-header">
-                <div class="step-header-cell">1-2</div>
-                <div class="step-header-cell">3-6</div>
-                <div class="step-header-cell">7-15</div>
-                <div class="step-header-cell">16-23</div>
+                <div class="step-header-cell">1-5</div>
+                <div class="step-header-cell">6-10</div>
+                <div class="step-header-cell">11-16</div>
+                <div class="step-header-cell">17-23</div>
             </div>
 
             <!-- Дорожка 1: Продукт-менеджер -->
@@ -369,18 +369,24 @@
                     <div class="cell">
                         <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
-                            <div class="step-title">Согласование ТН на ОКР</div>
-                            <div class="step-preview">Согласовывает техническое задание на ОКР...</div>
+                            <div class="step-title">Создание и согласование СЗ</div>
+                            <div class="step-preview">В 1С:ДО создает служебную записку на ввод номенклатуры, согласовывает с РН и ДПМ...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
                         <div class="step-card role-pm" data-step="2" onclick="goToStep(2)">
                             <span class="step-num">2</span>
-                            <div class="step-title">Создание и согласование СЗ</div>
-                            <div class="step-preview">В 1С:ДО создает и согласовывает служебную записку с РН и ДПМ...</div>
+                            <div class="step-title">Определение типа ввода</div>
+                            <div class="step-preview">Определяет тип ввода: единичный или массовый...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                        <div class="step-card role-pm" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Создание заявки (единичный ввод)</div>
+                            <div class="step-preview">В 1С:УПП создает заявку на ввод номенклатуры...</div>
                         </div>
                         <div class="step-card role-pm" data-step="4" onclick="goToStep(4)">
                             <span class="step-num">4</span>
-                            <div class="step-title">Формирование Excel-файла</div>
+                            <div class="step-title">Формирование Excel-файла (массовый ввод)</div>
                             <div class="step-preview">Формирует Excel-файл с перечнем номенклатуры...</div>
                         </div>
                         <div class="step-card role-pm" data-step="5" onclick="goToStep(5)">
@@ -393,27 +399,28 @@
                         <div class="step-card role-pm" data-step="11" onclick="goToStep(11)">
                             <span class="step-num">11</span>
                             <div class="step-title">Задача на внесение свойств</div>
-                            <div class="step-preview">В 1С:ДО ставит задачу на необходимость внесения свойств...</div>
+                            <div class="step-preview">В 1С:ДО ставит задачу на внесение свойств номенклатуры...</div>
                         </div>
                     </div>
                     <div class="cell">
                         <div class="step-card role-pm" data-step="15" onclick="goToStep(15)">
                             <span class="step-num">15</span>
                             <div class="step-title">Внесение цены</div>
-                            <div class="step-preview">Вносит цену номенклатуры в 1С:УПП...</div>
+                            <div class="step-preview">Вносит цену номенклатуры в 1С:УПП, информирует УРП...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                         <div class="step-card role-pm" data-step="17" onclick="goToStep(17)">
                             <span class="step-num">17</span>
                             <div class="step-title">Задача на заведение техкарты</div>
                             <div class="step-preview">В 1С:ДО ставит задачу на заведение технологической карты...</div>
                         </div>
+                    </div>
+                    <div class="cell">
                         <div class="step-card role-pm" data-step="19" onclick="goToStep(19)">
                             <span class="step-num">19</span>
                             <div class="step-title">Задача на заведение техкарты (2)</div>
                             <div class="step-preview">В 1С:ДО ставит задачу на заведение технологической карты...</div>
                         </div>
-                    </div>
-                    <div class="cell">
                         <div class="step-card role-pm" data-step="21" onclick="goToStep(21)">
                             <span class="step-num">21</span>
                             <div class="step-title">Номенклатура внесена (Опытные образцы)</div>
@@ -436,7 +443,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 2: Главный специалист по автоматизированной обработке документов (АОД) -->
+            <!-- Дорожка 2: Главный специалист по АОД -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #4682b4;">Главный специалист по АОД</div>
                 <div class="lane-cells">
@@ -445,18 +452,18 @@
                         <div class="step-card role-aod" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6</span>
                             <div class="step-title">Проверка заявки</div>
-                            <div class="step-preview">Проверяет заявку на соответствие правилам...</div>
+                            <div class="step-preview">Проверяет заявку на соответствие правилам заполнения...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                         <div class="step-card role-aod" data-step="7" onclick="goToStep(7)">
                             <span class="step-num">7</span>
                             <div class="step-title">Заведение карточки (Опытные образцы)</div>
-                            <div class="step-preview">Заводит карточку номенклатуры в 1С:УПП в папку «Опытные образцы»...</div>
+                            <div class="step-preview">Заводит карточку номенклатуры в папку «Опытные образцы»...</div>
                         </div>
                         <div class="step-card role-aod" data-step="8" onclick="goToStep(8)">
                             <span class="step-num">8</span>
                             <div class="step-title">Заведение карточки (ДСЕ)</div>
-                            <div class="step-preview">Заводит карточку номенклатуры в папку «ДСЕ и комплектующие покупные»...</div>
+                            <div class="step-preview">Заводит карточку номенклатуры в папку «ДСЕ и комплектующие»...</div>
                         </div>
                     </div>
                     <div class="cell"></div>
@@ -474,7 +481,7 @@
                         <div class="step-card role-marketing" data-step="12" onclick="goToStep(12)">
                             <span class="step-num">12</span>
                             <div class="step-title">Выгрузка шаблона и постановка задачи</div>
-                            <div class="step-preview">Выгружает шаблон из 1С:УПП для заполнения свойств и ставит задачу...</div>
+                            <div class="step-preview">Выгружает шаблон из 1С:УПП для заполнения свойств...</div>
                         </div>
                         <div class="step-card role-marketing" data-step="14" onclick="goToStep(14)">
                             <span class="step-num">14</span>
@@ -530,7 +537,6 @@
                 <div class="lane-label" style="border-left-color: #8a2be2;">Начальник ОВК</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
-                    <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-ovk" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">9</span>
@@ -538,6 +544,7 @@
                             <div class="step-preview">Вносит цену номенклатуры в 1С:УПП...</div>
                         </div>
                     </div>
+                    <div class="cell"></div>
                     <div class="cell"></div>
                 </div>
             </div>
@@ -548,7 +555,6 @@
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell"></div>
-                    <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-urp" data-step="16" onclick="goToStep(16)">
                             <span class="step-num">16</span>
@@ -556,6 +562,7 @@
                             <div class="step-preview">Проводит цену в 1С:УПП...</div>
                         </div>
                     </div>
+                    <div class="cell"></div>
                 </div>
             </div>
 
@@ -564,7 +571,6 @@
                 <div class="lane-label" style="border-left-color: #dc143c;">Сотрудник КРУ</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
-                    <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-kru" data-step="10" onclick="goToStep(10)">
                             <span class="step-num">10</span>
@@ -572,6 +578,7 @@
                             <div class="step-preview">Проводит цену в 1С:УПП...</div>
                         </div>
                     </div>
+                    <div class="cell"></div>
                     <div class="cell"></div>
                 </div>
             </div>
@@ -593,14 +600,14 @@
         1: {
             number: "1",
             role: "Продукт-менеджер",
-            text: "Согласовывает техническое задание на опытно-конструкторские работы (ОКР). Входом в процедуру является инициатива по вводу новой номенклатуры в папки «Опытные образцы» или «ДСЕ и комплектующие покупные».\n\n<b>Вход в процедуру:</b> инициатива по вводу новой номенклатуры.",
+            text: "В 1С:ДО создает внутренний документ «Служебная записка» в папке: Документация проектов / Портфель продуктовых проектов КЭАЗ / Текущие инвестиционные продуктовые проекты (капитализируемые) / соответствующая папка проекта.\n\nВ служебной записке указывает:\n– наименование ассортимента номенклатуры, которую необходимо ввести;\n– обоснование необходимости ввода;\n– ссылки на документы-основания (ТЗ на ОКР, протоколы испытаний, маркетинговые исследования);\n– предполагаемую папку назначения: «Опытные образцы» или «ДСЕ и комплектующие покупные».\n\nПрикладывает к служебной записке:\n– техническое задание на разработку (при наличии);\n– спецификации или чертежи (при наличии);\n– обоснование выбора папки назначения.\n\nОтправляет служебную записку на согласование:\n– Руководителю направления (РН);\n– Директору по продуктовому маркетингу (ДПМ).\n\nКонтролирует прохождение согласования. При наличии замечаний — дорабатывает служебную записку и повторно направляет на согласование.\n\n<b>Вход в процедуру:</b> инициатива по вводу новой номенклатуры.",
             inputs: ["⬅️ Инициатива по вводу новой номенклатуры"],
             outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
             role: "Продукт-менеджер",
-            text: "В 1С:ДО создает и отправляет на согласование служебную записку (СЗ) с Руководителем направления (РН) и Директором по продуктовому маркетингу (ДПМ), в которой указывает наименования ассортимента номенклатуры, которую необходимо ввести в 1С:УПП.",
+            text: "Определяет тип ввода номенклатуры:\n– если требуется ввод более 50 единиц номенклатуры, то это массовый ввод;\n– если менее 50 единиц, то единичный ввод.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
             outputs: ["✅ Если массовый ввод (более 50 единиц) → <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>", "✅ Если единичный ввод → <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
@@ -621,27 +628,27 @@
         5: {
             number: "5",
             role: "Продукт-менеджер",
-            text: "В 1С:ДО направляет на исполнение задачу на заведение карточек товара в 1С:УПП Главному специалисту по автоматизированной обработке документов (АОД), прикладывая сформированный Excel-файл.",
+            text: "В 1С:ДО направляет на исполнение задачу на заведение карточек товара в 1С:УПП Инженеру по автоматизированной обработке документов (УМПП), прикладывая сформированный Excel-файл.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От ПМ (шаг 4)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
-            role: "Главный специалист по автоматизированной обработке документов (АОД)",
-            text: "Проверяет заявку на соответствие правилам заполнения и полноту предоставленной информации. Проверяет правильность внесенной информации и соответствие номенклатуры условиям.",
+            role: "Главный специалист по автоматизированной обработке документов (УМПП)",
+            text: "При получении заявки на ввод номенклатуры в 1С:УПП проверяет правильность внесенной информации и соответствие номенклатуры условиям.\n\nПроверяет:\n– полноту заполнения обязательных полей;\n– соответствие наименования утвержденной структуре;\n– корректность указанных реквизитов.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ (шаг 3)</a>", "⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От ПМ (шаг 5)</a>"],
-            outputs: ["❌ Если не соответствует правилам → <a href='#' onclick='goToStep(22); return false;' class='io-link'>Шаг 22</a>", "✅ Если соответствует → проверка папки"]
+            outputs: ["❌ Если не соответствует правилам → <a href='#' onclick='goToStep(22); return false;' class='io-link'>Шаг 22</a>", "✅ Если соответствует → определить папку назначения"]
         },
         7: {
             number: "7",
-            role: "Главный специалист по автоматизированной обработке документов (АОД)",
-            text: "Заводит карточку номенклатуры в 1С:УПП в папку «Опытные образцы». При получении заявки на ввод номенклатуры, путем нажатия кнопки «Записать» в интерфейсе создания новой заявки, вносит номенклатуру в 1С:УПП.",
+            role: "Главный специалист по автоматизированной обработке документов (УМПП)",
+            text: "Заводит карточку номенклатуры в 1С:УПП в папку «Опытные образцы». Путем нажатия кнопки «Записать» в интерфейсе создания новой заявки вносит номенклатуру в 1С:УПП.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От АОД (шаг 6, ДА, Опытные образцы)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
         },
         8: {
             number: "8",
-            role: "Главный специалист по автоматизированной обработке документов (АОД)",
+            role: "Главный специалист по автоматизированной обработке документов (УМПП)",
             text: "Заводит карточку номенклатуры в 1С:УПП в папку «ДСЕ и комплектующие покупные (ОСНОВНОЕ ПРОИЗВОДСТВО)».",
             inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От АОД (шаг 6, ДА, ДСЕ)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>", "→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
@@ -691,9 +698,9 @@
         15: {
             number: "15",
             role: "Продукт-менеджер",
-            text: "Вносит цену номенклатуры в 1С:УПП и информирует руководителей УРП об этом по электронной почте с указанием номера добавленной строки.",
+            text: "Вносит цену номенклатуры в 1С:УПП. Для внесения цены необходимо выбрать интерфейс «Управление продажами». Далее Цены/Установка цен номенклатуры, добавляет строку с новой номенклатурой, указывает базовую цену и записывает. Затем отправляет на электронную почту руководителя УРП письмо с указанием номера добавленной строки.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От маркетолога-аналитика (шаг 14)</a>"],
-            outputs: ["🔀 Если продукция покупная → <a href='#' onclick='goToStep(21); return false;' class='io-link'>Шаг 21</a>", "🔀 Если не покупная → <a href='#' onclick='goToStep(17); return false;' class='io-link'>Шаг 17</a>"]
+            outputs: ["✅ Если продукция покупная → <a href='#' onclick='goToStep(21); return false;' class='io-link'>Шаг 21</a>", "✅ Если не покупная → <a href='#' onclick='goToStep(17); return false;' class='io-link'>Шаг 17</a>"]
         },
         16: {
             number: "16",
