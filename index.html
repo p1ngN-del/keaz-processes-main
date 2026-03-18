@@ -465,47 +465,55 @@
             </div>
 
             <!-- Фаза 3 · Создание базы -->
-            <div class="phase-column phase3">
-                <div class="phase-header">Фаза 3 · Создание базы</div>
-                <div class="phase-content">
-                    <div class="role-group">
-                        <div class="role-group-title">Продукт-менеджмент</div>
-                        <!-- 24: Процедура -->
-                        <a href="proc24.html" class="proc-card phase3-color" data-roles="product_manager,project_manager" data-start-for='project_office_head,project_committee'>
-                            <div class="proc-num">24 <span class="proc-badge badge-procedure">Процедура</span></div>
-                            <div class="proc-name">Инициация продуктового проекта</div>
-                            <div class="proc-io"><span class="io-in">⬅️ 17,19</span><span class="io-out">➡️ 4</span></div>
-                        </a>
-                        <!-- 23: Процедура -->
-                        <a href="proc23.html" class="proc-card phase3-color" data-roles="product_manager,designer,ukiot,gp_planning_specialist,diu_planning_specialist,aod_specialist" data-start-for='ukiot,gp_planning_specialist,diu_planning_specialist,aod_specialist'>
-                            <div class="proc-num">23 <span class="proc-badge badge-procedure">Процедура</span></div>
-                            <div class="proc-name">Создание номенклатурных групп</div>
-                            <div class="proc-io"><span class="io-in">⬅️ 17,19</span><span class="io-out">➡️ 4</span></div>
-                        </a>
-                    </div>
-                    <div class="role-group">
-                        <div class="role-group-title">Создание базы / закупки</div>
-                        <!-- 4: Процедура -->
-                        <a href="proc4.html" class="proc-card phase3-color" data-roles="product_manager,uop,technical_consultant,designer,technologist,aod_specialist,marketing_analyst,pricing_analyst,plm_administrator,declaration_specialist,honest_sign_manager,ekonomist,ukiot,internet_projects_head" data-start-for='uop,technical_consultant,technologist,pricing_analyst,plm_administrator,declaration_specialist,honest_sign_manager,ekonomist'>
-                            <div class="proc-num">4 <span class="proc-badge badge-procedure">Процедура</span></div>
-                            <div class="proc-name">Ввод номенклатуры в 1С:УПП</div>
-                            <div class="proc-io"><span class="io-in">⬅️ 23,24</span><span class="io-out">➡️ 11,13,15</span></div>
-                        </a>
-                        <!-- 26: Процедура -->
-                        <a href="proc26.html" class="proc-card phase3-color" data-roles="product_manager,utk_head,nva_head" data-start-for='utk_head,nva_head'>
-                            <div class="proc-num">26 <span class="proc-badge badge-procedure">Процедура</span></div>
-                            <div class="proc-name">Поиск OEM-ODM поставщика</div>
-                            <div class="proc-io"><span class="io-in">⬅️ 17</span><span class="io-out">➡️ 31</span></div>
-                        </a>
-                        <!-- 31: Процедура -->
-                        <a href="proc31.html" class="proc-card phase3-color" data-roles="product_manager,storekeeper,procurement_manager" data-start-for='storekeeper,procurement_manager'>
-                            <div class="proc-num">31 <span class="proc-badge badge-procedure">Процедура</span></div>
-                            <div class="proc-name">Закупка образцов для целей проектов</div>
-                            <div class="proc-io"><span class="io-in">⬅️ 26</span><span class="io-out">➡️ Испытания</span></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
+<div class="phase-column phase3">
+    <div class="phase-header">Фаза 3 · Создание базы</div>
+    <div class="phase-content">
+        <div class="role-group">
+            <div class="role-group-title">Продукт-менеджмент</div>
+            <!-- 24: Процедура -->
+            <a href="proc24.html" class="proc-card phase3-color" data-roles="product_manager,project_manager" data-start-for='project_office_head,project_committee'>
+                <div class="proc-num">24 <span class="proc-badge badge-procedure">Процедура</span></div>
+                <div class="proc-name">Инициация продуктового проекта</div>
+                <div class="proc-io"><span class="io-in">⬅️ 17,19</span><span class="io-out">➡️ 4</span></div>
+            </a>
+            <!-- 23: Процедура -->
+            <a href="proc23.html" class="proc-card phase3-color" data-roles="product_manager,designer,ukiot,gp_planning_specialist,diu_planning_specialist,aod_specialist" data-start-for='ukiot,gp_planning_specialist,diu_planning_specialist,aod_specialist'>
+                <div class="proc-num">23 <span class="proc-badge badge-procedure">Процедура</span></div>
+                <div class="proc-name">Создание номенклатурных групп</div>
+                <div class="proc-io"><span class="io-in">⬅️ 17,19</span><span class="io-out">➡️ 4</span></div>
+            </a>
+        </div>
+        <div class="role-group">
+            <div class="role-group-title">Создание базы / закупки</div>
+            
+            <!-- НОВАЯ ПРОЦЕДУРА 4а -->
+            <a href="proc4a.html" class="proc-card phase3-color" data-roles="product_manager,designer,technologist,aod_specialist,marketing_analyst,ovk_head,urp_head,kru_specialist" data-start-for='aod_specialist,marketing_analyst,technologist'>
+                <div class="proc-num">4а <span class="proc-badge badge-procedure">Процедура</span></div>
+                <div class="proc-name">Ввод номенклатуры в папки «Опытные образцы», «ДСЕ и комплектующие»</div>
+                <div class="proc-io"><span class="io-in">⬅️ Инициатива</span><span class="io-out">➡️ 21,23,22</span></div>
+            </a>
+            
+            <!-- 4: Процедура -->
+            <a href="proc4.html" class="proc-card phase3-color" data-roles="product_manager,uop,technical_consultant,designer,technologist,aod_specialist,marketing_analyst,pricing_analyst,plm_administrator,declaration_specialist,honest_sign_manager,ekonomist,ukiot,internet_projects_head" data-start-for='uop,technical_consultant,technologist,pricing_analyst,plm_administrator,declaration_specialist,honest_sign_manager,ekonomist'>
+                <div class="proc-num">4 <span class="proc-badge badge-procedure">Процедура</span></div>
+                <div class="proc-name">Ввод номенклатуры в 1С:УПП (Готовая продукция)</div>
+                <div class="proc-io"><span class="io-in">⬅️ 23,24</span><span class="io-out">➡️ 11,13,15</span></div>
+            </a>
+            <!-- 26: Процедура -->
+            <a href="proc26.html" class="proc-card phase3-color" data-roles="product_manager,utk_head,nva_head" data-start-for='utk_head,nva_head'>
+                <div class="proc-num">26 <span class="proc-badge badge-procedure">Процедура</span></div>
+                <div class="proc-name">Поиск OEM-ODM поставщика</div>
+                <div class="proc-io"><span class="io-in">⬅️ 17</span><span class="io-out">➡️ 31</span></div>
+            </a>
+            <!-- 31: Процедура -->
+            <a href="proc31.html" class="proc-card phase3-color" data-roles="product_manager,storekeeper,procurement_manager" data-start-for='storekeeper,procurement_manager'>
+                <div class="proc-num">31 <span class="proc-badge badge-procedure">Процедура</span></div>
+                <div class="proc-name">Закупка образцов для целей проектов</div>
+                <div class="proc-io"><span class="io-in">⬅️ 26</span><span class="io-out">➡️ Испытания</span></div>
+            </a>
+        </div>
+    </div>
+</div>
 
             <!-- Фаза 4 · Подготовка к продажам -->
             <div class="phase-column phase4">
