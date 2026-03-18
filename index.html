@@ -735,29 +735,38 @@
     }
 
     function filterByRole(role) {
+        // Сбрасываем активный класс у всех фильтров
         document.querySelectorAll('.filter-item').forEach(el => el.classList.remove('active'));
         
+        // Активируем выбранный фильтр
         const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
         if (activeFilter) activeFilter.classList.add('active');
         
         const cards = document.querySelectorAll('.proc-card');
         
+        // Сбрасываем подсветку старта
         cards.forEach(card => card.classList.remove('start-highlight'));
         
         if (role === 'all') {
+            // Показываем все карточки
             cards.forEach(card => card.classList.remove('filtered-out'));
         } else {
             cards.forEach(card => {
+                // Получаем список ролей из атрибута data-roles
                 const rolesAttr = card.getAttribute('data-roles');
                 if (rolesAttr) {
                     const rolesList = rolesAttr.split(',');
+                    
+                    // Проверяем, есть ли выбранная роль в карточке
                     if (rolesList.includes(role)) {
                         card.classList.remove('filtered-out');
                         
+                        // Проверяем, является ли эта роль стартовой для данной процедуры
                         const startForAttr = card.getAttribute('data-start-for');
                         if (startForAttr) {
                             const cleanStr = startForAttr.replace(/[\[\]'"]/g, '');
                             const startRoles = cleanStr.split(',');
+                            
                             if (startRoles.includes(role)) {
                                 card.classList.add('start-highlight');
                             }
