@@ -368,7 +368,7 @@
                         <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
                             <div class="step-title">Разработка ТЗ</div>
-                            <div class="step-preview">Разрабатывает техническое задание на разработку дизайнерской ЭД согласно шаблону...</div>
+                            <div class="step-preview">Разрабатывает техническое задание на разработку дизайнерской ЭД...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
                     </div>
@@ -383,7 +383,7 @@
                     <div class="cell">
                         <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
                             <span class="step-num">9</span>
-                            <div class="step-title">Проверка макетов 1</div>
+                            <div class="step-title">Проверка макетов</div>
                             <div class="step-preview">Проверяет макеты на соответствие ТЗ...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
@@ -476,7 +476,8 @@
                          <div class="step-card role-designer-creative" data-step="15" onclick="goToStep(15)">
                             <span class="step-num">15</span>
                             <div class="step-title">Финальные макеты</div>
-                            <div class="step-preview">Передает финальные макеты...</div>
+                            <div class="step-preview">Фиксирует успешное размещение...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
@@ -588,12 +589,12 @@
             outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9 (ПМ)</a>"]
         },
         9: {
-    number: "9",
-    role: "Продукт-менеджер",
-    text: "Проверяет разработанные дизайнером макеты на соответствие утвержденному ТЗ и брендбуку.",
-    inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От дизайнера (шаг 6)</a>", "⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От дизайнера (шаг 8)</a>"],
-    outputs: ["✅ Если макеты согласованы → <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>", "❌ Если нужна доработка → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
-},
+            number: "9",
+            role: "Продукт-менеджер",
+            text: "Проверяет разработанные дизайнером макеты на соответствие утвержденному ТЗ и брендбуку.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От дизайнера (шаг 6)</a>", "⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От дизайнера (шаг 8)</a>"],
+            outputs: ["✅ Если макеты согласованы → <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>", "❌ Если нужна доработка → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+        },
         10: {
             number: "10",
             role: "Продукт-менеджер",
@@ -602,12 +603,12 @@
             outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7 (Дизайнеру)</a>"]
         },
         11: {
-    number: "11",
-    role: "Продукт-менеджер",
-    text: "После того как макеты согласованы на уровне ПМ, он отправляет их на финальное утверждение начальнику ОВК.",
-    inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От ПМ (шаг 9, ДА)</a>"],
-    outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13 (ОВК)</a>"]
-},
+            number: "11",
+            role: "Продукт-менеджер",
+            text: "После того как макеты согласованы на уровне ПМ, он отправляет их на финальное утверждение начальнику ОВК.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От ПМ (шаг 9, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13 (ОВК)</a>"]
+        },
         12: {
             number: "12",
             role: "Дизайнер",
@@ -623,19 +624,19 @@
             outputs: ["✅ Если утверждено → <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14 (РИП)</a>", "❌ Если есть замечания → <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12 (Дизайнеру)</a>"]
         },
         14: {
-    number: "14",
-    role: "Руководитель интернет проектов",
-    text: "Получает утвержденные макеты и размещает их в соответствующих разделах официального сайта компании, обеспечивая доступ для скачивания клиентам и партнерам.",
-    inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От ОВК (шаг 13, ДА)</a>"],
-    outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
-},
+            number: "14",
+            role: "Руководитель интернет проектов",
+            text: "Получает утвержденные макеты и размещает их в соответствующих разделах официального сайта компании, обеспечивая доступ для скачивания клиентам и партнерам.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От ОВК (шаг 13, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
+        },
         15: {
-    number: "15",
-    role: "Дизайнер",
-    text: "Фиксирует успешное размещение и закрывает свои задачи по процедуре.",
-    inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От РИП (шаг 14)</a>"],
-    outputs: ["📤 ВЫХОД: Процедура завершена"]
-}
+            number: "15",
+            role: "Дизайнер",
+            text: "Фиксирует успешное размещение и закрывает свои задачи по процедуре.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От РИП (шаг 14)</a>"],
+            outputs: ["📤 ВЫХОД: Процедура завершена"]
+        }
     };
 
     let currentStep = null;
