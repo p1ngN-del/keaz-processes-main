@@ -588,12 +588,12 @@
             outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9 (ПМ)</a>"]
         },
         9: {
-            number: "9",
-            role: "Продукт-менеджер",
-            text: "Проверяет разработанные дизайнером макеты на соответствие утвержденному ТЗ и брендбуку.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От дизайнера (шаг 6)</a>", "⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От дизайнера (шаг 8)</a>"],
-            outputs: ["✅ Если макеты согласованы → <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>", "❌ Если нужна доработка → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
-        },
+    number: "9",
+    role: "Продукт-менеджер",
+    text: "Проверяет разработанные дизайнером макеты на соответствие утвержденному ТЗ и брендбуку.",
+    inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От дизайнера (шаг 6)</a>", "⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От дизайнера (шаг 8)</a>"],
+    outputs: ["✅ Если макеты согласованы → <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>", "❌ Если нужна доработка → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+},
         10: {
             number: "10",
             role: "Продукт-менеджер",
@@ -623,19 +623,19 @@
             outputs: ["✅ Если утверждено → <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14 (РИП)</a>", "❌ Если есть замечания → <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12 (Дизайнеру)</a>"]
         },
         14: {
-            number: "14",
-            role: "Руководитель интернет проектов",
-            text: "Получает утвержденные макеты и размещает их в соответствующих разделах официального сайта компании, обеспечивая доступ для скачивания клиентам и партнерам.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От ОВК (шаг 13, ДА)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
-        },
+    number: "14",
+    role: "Руководитель интернет проектов",
+    text: "Получает утвержденные макеты и размещает их в соответствующих разделах официального сайта компании, обеспечивая доступ для скачивания клиентам и партнерам.",
+    inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От ОВК (шаг 13, ДА)</a>"],
+    outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
+},
         15: {
-            number: "15",
-            role: "Дизайнер",
-            text: "Фиксирует успешное размещение и закрывает свои задачи по процедуре.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От РИП (шаг 14)</a>"],
-            outputs: ["📤 ВЫХОД: Процедура завершена"]
-        }
+    number: "15",
+    role: "Дизайнер",
+    text: "Фиксирует успешное размещение и закрывает свои задачи по процедуре.",
+    inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От РИП (шаг 14)</a>"],
+    outputs: ["📤 ВЫХОД: Процедура завершена"]
+}
     };
 
     let currentStep = null;
