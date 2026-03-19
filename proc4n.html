@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 4н</title>
+    <title>КЭАЗ · Процедура 4н (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -336,10 +336,10 @@
             z-index: 1000;
         }
 
-        .role-spec { border-left-color: #4682b4; }
-        .role-pm { border-left-color: #1e90ff; }
-        .role-rukovod { border-left-color: #8a2be2; }
-        .role-motiv { border-left-color: #ff8c00; }
+        .role-spec { border-left-color: #4682b4; } /* Специалист по планированию */
+        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер / Старший ПМ */
+        .role-rukovod { border-left-color: #8a2be2; } /* Руководитель направления */
+        .role-motiv { border-left-color: #ff8c00; } /* Менеджер мотивационных программ */
     </style>
 </head>
 <body>
@@ -358,7 +358,7 @@
                 <div class="step-header-cell">11-20</div>
             </div>
 
-            <!-- Дорожка 1: Специалист по планированию -->
+            <!-- Дорожка 1: Специалист по планированию (шаги 1,2,13) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #4682b4;">Специалист по планированию<br>отдела аналитики</div>
                 <div class="lane-cells">
@@ -376,24 +376,18 @@
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-spec" data-step="3" onclick="goToStep(3)">
-                            <span class="step-num">3</span>
-                            <div class="step-title">Постановка задачи</div>
-                            <div class="step-preview">В 1С:ДО формирует задачу и отправляет на исполнение...</div>
-                        </div>
-                    </div>
-                    <div class="cell"></div>
-                    <div class="cell">
                         <div class="step-card role-spec" data-step="13" onclick="goToStep(13)">
                             <span class="step-num">13</span>
                             <div class="step-title">Отправка списка</div>
                             <div class="step-preview">В 1С:ДО отправляет список номенклатуры со сниженной ценой на исполнение...</div>
                         </div>
                     </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка 2: Продукт-менеджер / Старший ПМ -->
+            <!-- Дорожка 2: Продукт-менеджер / Старший ПМ (шаги 4,16) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер<br>Старший ПМ</div>
                 <div class="lane-cells">
@@ -413,22 +407,21 @@
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                     </div>
-                    <div class="cell">
-                        <div class="step-card role-pm" data-step="20" onclick="goToStep(20)">
-                            <span class="step-num">20</span>
-                            <div class="step-title">Товар распродан</div>
-                            <div class="step-preview">Неликвиды или слабооборачиваемый товар распродан...</div>
-                            <span class="step-badge badge-out">📤 выход</span>
-                        </div>
-                    </div>
+                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка 3: Руководитель направления -->
+            <!-- Дорожка 3: Руководитель направления (шаги 3,5,6,11,12,15,7,8,19,18,20) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель направления</div>
                 <div class="lane-cells">
-                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rukovod" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Постановка задачи</div>
+                            <div class="step-preview">В 1С:ДО формирует задачу и отправляет на исполнение...</div>
+                        </div>
+                    </div>
                     <div class="cell">
                         <div class="step-card role-rukovod" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
@@ -457,23 +450,41 @@
                             <div class="step-title">Согласование снижения цен</div>
                             <div class="step-preview">В 1С:ДО согласовывает условия понижения цен с Директором по продажам РФ...</div>
                         </div>
-                    </div>
-                    <div class="cell">
                         <div class="step-card role-rukovod" data-step="12" onclick="goToStep(12)">
                             <span class="step-num">12</span>
                             <div class="step-title">Информирование</div>
                             <div class="step-preview">В 1С:ДО информирует об условиях снижения цен...</div>
                         </div>
+                    </div>
+                    <div class="cell">
                         <div class="step-card role-rukovod" data-step="15" onclick="goToStep(15)">
                             <span class="step-num">15</span>
                             <div class="step-title">Задача на изменение цен</div>
                             <div class="step-preview">В 1С:ДО ставит задачу на исполнение по изменению цен...</div>
                         </div>
+                        <div class="step-card role-rukovod" data-step="18" onclick="goToStep(18)">
+                            <span class="step-num">18</span>
+                            <div class="step-title">Инициирование списания</div>
+                            <div class="step-preview">Инициирует процесс списания неликвидного товара...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                        <div class="step-card role-rukovod" data-step="19" onclick="goToStep(19)">
+                            <span class="step-num">19</span>
+                            <div class="step-title">Инициирование переделки</div>
+                            <div class="step-preview">Инициирует процесс переделки/модернизации...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                        <div class="step-card role-rukovod" data-step="20" onclick="goToStep(20)">
+                            <span class="step-num">20</span>
+                            <div class="step-title">Товар распродан</div>
+                            <div class="step-preview">Неликвидная продукция полностью распродана...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 4: Менеджер мотивационных программ -->
+            <!-- Дорожка 4: Менеджер мотивационных программ (шаги 9,10,14,17) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ff8c00;">Менеджер мотивационных программ</div>
                 <div class="lane-cells">
@@ -492,8 +503,20 @@
                             <div class="step-preview">Разрабатывает регламент проведения мероприятий и согласовывает с маркетологами дистрибьюторов...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
+                        <div class="step-card role-motiv" data-step="14" onclick="goToStep(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Информирование ПМ</div>
+                            <div class="step-preview">Получает информацию о снижении цен для дальнейшей работы...</div>
+                        </div>
                     </div>
-                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-motiv" data-step="17" onclick="goToStep(17)">
+                            <span class="step-num">17</span>
+                            <div class="step-title">Завершение работы</div>
+                            <div class="step-preview">Завершает работу по мотивационным программам...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -604,7 +627,7 @@
         },
         14: {
             number: "14",
-            role: "Продукт-менеджер / Старший ПМ",
+            role: "Менеджер мотивационных программ",
             text: "Получает информацию о снижении цен для дальнейшей работы — актуализации коммерческих предложений, взаимодействия с ключевыми клиентами и т.д.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От специалиста (шаг 13)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
@@ -623,24 +646,31 @@
             inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От руководителя направления (шаг 14)</a>", "⬅️ <a href='#' onclick='goToStep(15); return false;' class='io-link'>От руководителя направления (шаг 15)</a>"],
             outputs: ["✅ Если по истечении срока распродано → <a href='#' onclick='goToStep(20); return false;' class='io-link'>Шаг 20</a>", "❌ Если не распродано → проверка переделки (<a href='#' onclick='goToStep(8); return false;' class='io-link'>шаг 8</a> или <a href='#' onclick='goToStep(7); return false;' class='io-link'>шаг 7</a>)"]
         },
+        17: {
+            number: "17",
+            role: "Менеджер мотивационных программ",
+            text: "Завершает работу по мотивационным программам для данного продукта. Выход.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От ПМ (шаг 16)</a>"],
+            outputs: ["📤 ВЫХОД: Работа завершена"]
+        },
         18: {
             number: "18",
-            role: "Выход",
-            text: "Инициирован процесс списания неликвидных ТМЦ. Дальнейшие действия выполняются согласно процедуре УК//05-8 «Списание ТМЦ по УУ» (отдельная процедура).",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От руководителя направления (шаг 7)</a>"],
-            outputs: ["📤 ВЫХОД: Переход к процедуре списания ТМЦ по УУ (<a href='proc29.html' class='proc-link'>проц.29</a>)"]
+            role: "Руководитель направления",
+            text: 'Инициирован процесс списания неликвидных ТМЦ. Дальнейшие действия выполняются согласно процедуре УК//05-8 «Списание ТМЦ по УУ» (отдельная процедура).\n\n<b>Выход из процедуры:</b> переход к <a href="proc29.html" class="proc-link">процедуре 29 (Списание ТМЦ по УУ)</a>.',
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От руководителя направления (шаг 7)</a>", "⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От мотивационных программ (шаг 10)</a>", "⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От ПМ (шаг 16)</a>"],
+            outputs: ['📤 ВЫХОД: <a href="proc29.html" class="proc-link">Процедура 29</a>']
         },
         19: {
             number: "19",
-            role: "Выход",
+            role: "Руководитель направления",
             text: "Инициирован процесс переделки или модернизации неликвидной продукции. Дальнейшие действия выполняются в рамках процедур:\n— УК//05-63 «Переработка неликвидной ГП на СГП»;\n— УК//05-69 «Переработка неликвидной ГП с драгметаллами».",
             inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От руководителя направления (шаг 8)</a>", "⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От мотивационных программ (шаг 10)</a>", "⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От ПМ (шаг 16)</a>"],
             outputs: ["📤 ВЫХОД: Процесс переделки/модернизации запущен"]
         },
         20: {
             number: "20",
-            role: "Выход",
-            text: "Неликвидная или слабооборачиваемая продукция полностью распродана. Задача выполнена, процедура завершена.",
+            role: "Руководитель направления",
+            text: "Неликвидная или слабооборачиваемая продукция полностью распродана. Задача выполнена, процедура завершена.\n\n<b>Выход из процедуры:</b> завершение.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От мотивационных программ (шаг 10)</a>", "⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От ПМ (шаг 16)</a>"],
             outputs: ["📤 ВЫХОД: Неликвид распродан"]
         }
