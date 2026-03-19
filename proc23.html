@@ -46,6 +46,22 @@
             transform: translateX(-5px);
         }
 
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
         h1 {
             font-size: 2rem;
             color: #0a1a3a;
@@ -348,7 +364,7 @@
                 <div class="step-header-cell">13-15</div>
             </div>
 
-            <!-- Дорожка 1: Продукт-менеджер -->
+            <!-- Дорожка 1: Продукт-менеджер (шаги 1,2,9,10,15) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
                 <div class="lane-cells">
@@ -367,6 +383,12 @@
                     </div>
                     <div class="cell"></div>
                     <div class="cell">
+                        <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">НГ не создана</div>
+                            <div class="step-preview">В 1С:УПП не создана новая номенклатурная группа...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
                         <div class="step-card role-pm" data-step="10" onclick="goToStep(10)">
                             <span class="step-num">10</span>
                             <div class="step-title">Отправка на исполнение</div>
@@ -384,7 +406,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 2: Руководитель управления -->
+            <!-- Дорожка 2: Руководитель управления (шаг 3) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель управления</div>
                 <div class="lane-cells">
@@ -401,7 +423,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 3: Начальник УКиОТ -->
+            <!-- Дорожка 3: Начальник УКиОТ (шаг 4) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #4682b4;">Начальник УКиОТ</div>
                 <div class="lane-cells">
@@ -418,7 +440,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 4: Начальник отдела аналитики цен и данных -->
+            <!-- Дорожка 4: Начальник отдела аналитики цен и данных (шаг 5) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #2e8b57;">Начальник отдела аналитики<br>цен и данных</div>
                 <div class="lane-cells">
@@ -435,7 +457,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 5: Главный специалист по планированию ГП -->
+            <!-- Дорожка 5: Главный специалист по планированию ГП (шаги 6,13) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ff8c00;">Главный специалист по планированию ГП</div>
                 <div class="lane-cells">
@@ -458,7 +480,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 6: Начальник УПП -->
+            <!-- Дорожка 6: Начальник УПП (шаг 7) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ba55d3;">Начальник УПП</div>
                 <div class="lane-cells">
@@ -475,7 +497,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 7: Начальник сборочного цеха -->
+            <!-- Дорожка 7: Начальник сборочного цеха (шаг 8) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #daa520;">Начальник сборочного цеха</div>
                 <div class="lane-cells">
@@ -492,7 +514,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 8: Главный специалист по автоматизированной обработке документов -->
+            <!-- Дорожка 8: Главный специалист по АОД (шаги 11,12) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #4682b4;">Главный специалист по АОД</div>
                 <div class="lane-cells">
@@ -515,7 +537,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 9: Главный специалист по планированию деталей и узлов -->
+            <!-- Дорожка 9: Главный специалист по планированию деталей и узлов (шаг 14) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #2e8b57;">Главный специалист по планированию ДиУ</div>
                 <div class="lane-cells">
@@ -532,23 +554,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 10: Выход "Группа не создана" -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #ff0000;">Выход</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-exit" data-step="9" onclick="goToStep(9)">
-                            <span class="step-num">9</span>
-                            <div class="step-title">НГ не создана</div>
-                            <div class="step-preview">В 1С:УПП не создана новая номенклатурная группа...</div>
-                            <span class="step-badge badge-out">📤 выход</span>
-                        </div>
-                    </div>
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                </div>
-            </div>
+            <!-- Дорожка 10: Выход (уже включен в ПМ) -->
         </div>
     </div>
 
@@ -622,7 +628,7 @@
         },
         9: {
             number: "9",
-            role: "Выход",
+            role: "Продукт-менеджер",
             text: "В 1С:УПП не создана новая номенклатурная группа. Процедура завершена.",
             inputs: ["⬅️ Отказ любого из согласующих (шаги 3-8)"],
             outputs: ["📤 ВЫХОД: Группа не создана"]
