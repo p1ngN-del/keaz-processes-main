@@ -340,7 +340,7 @@
         .role-rukovod { border-left-color: #8a2be2; } /* Руководитель УРР */
         .role-spec { border-left-color: #4682b4; } /* Старший специалист */
         .role-dir { border-left-color: #2e8b57; } /* Директор по маркетингу */
-        .role-dir2 { border-left-color: #ff8c00; } /* Директор по продажам */
+        .role-dir2 { border-left-color: #ff8c00; } /* Директор по продажам РФ */
     </style>
 </head>
 <body>
@@ -353,13 +353,13 @@
     <div class="swimlane">
         <div class="swimlane-table">
             <div class="step-header">
-                <div class="step-header-cell">1-4</div>
-                <div class="step-header-cell">5-9</div>
+                <div class="step-header-cell">1-5</div>
+                <div class="step-header-cell">6-9</div>
                 <div class="step-header-cell">10-15</div>
                 <div class="step-header-cell">16-19</div>
             </div>
 
-            <!-- Дорожка 1: Инициатор -->
+            <!-- Дорожка 1: Инициатор (шаги 1,3,8,13,17) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #1e90ff;">Инициатор</div>
                 <div class="lane-cells">
@@ -383,6 +383,8 @@
                             <div class="step-preview">Согласовывает разработанный паспорт и презентацию...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
+                    </div>
+                    <div class="cell">
                         <div class="step-card role-ini" data-step="13" onclick="goToStep(13)">
                             <span class="step-num">13</span>
                             <div class="step-title">Согласование чертежей</div>
@@ -390,7 +392,6 @@
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                     </div>
-                    <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-ini" data-step="17" onclick="goToStep(17)">
                             <span class="step-num">17</span>
@@ -398,17 +399,11 @@
                             <div class="step-preview">Уведомляет по почте о готовности технического решения...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
-                        <div class="step-card role-ini" data-step="18" onclick="goToStep(18)">
-                            <span class="step-num">18</span>
-                            <div class="step-title">Получение уведомления</div>
-                            <div class="step-preview">Получает уведомление о готовности ТР (для ознакомления)...</div>
-                            <span class="step-badge badge-out">📤 выход</span>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 2: Руководитель УРР -->
+            <!-- Дорожка 2: Руководитель УРР (шаги 2,4,5) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель УРР</div>
                 <div class="lane-cells">
@@ -437,7 +432,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 3: Старший специалист УРР -->
+            <!-- Дорожка 3: Старший специалист УРР (шаги 6,7,9,11,12,14,16,19) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #4682b4;">Старший специалист УРР</div>
                 <div class="lane-cells">
@@ -493,7 +488,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 4: Директор по маркетингу -->
+            <!-- Дорожка 4: Директор по маркетингу (шаги 10,15) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #2e8b57;">Директор по маркетингу</div>
                 <div class="lane-cells">
@@ -518,7 +513,7 @@
                 </div>
             </div>
 
-            <!-- Дорожка 5: Директор по продажам РФ -->
+            <!-- Дорожка 5: Директор по продажам РФ (шаг 18) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ff8c00;">Директор по продажам РФ</div>
                 <div class="lane-cells">
@@ -530,6 +525,7 @@
                             <span class="step-num">18</span>
                             <div class="step-title">Ознакомление</div>
                             <div class="step-preview">Получает уведомление о разработанном ТР для ознакомления...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
@@ -552,8 +548,8 @@
         1: {
             number: "1",
             role: "Инициатор",
-            text: 'В 1С:ДО формирует заявку на разработку технического решения. Инициатором может выступать сотрудник Технической дирекции, Дирекции по продажам, Дирекции маркетинга, Дирекции зарубежных продаж, Дирекции стратегических коммуникаций. В 1С:ДО создает Служебную записку, в которой указывает описание предлагаемого решения, включая данные, достаточные для его осуществления, а также ожидаемый технический и экономический эффект, и отправляет на исполнение Начальнику управления по разработке решений для сегментов.\n\nВходом в процедуру является выход из <a href="proc18.html" class="proc-link">процедуры 18 (Разработка стратегии развития сегментов)</a>.',
-            inputs: ['⬅️ <a href="proc18.html" class="proc-link">Процедура 18 (Стратегия развития сегментов)</a>'],
+            text: 'В 1С:ДО формирует заявку на разработку технического решения. Инициатором может выступать сотрудник Технической дирекции, Дирекции по продажам, Дирекции маркетинга, Дирекции зарубежных продаж, Дирекции стратегических коммуникаций. В 1С:ДО создает Служебную записку, в которой указывает описание предлагаемого решения, включая данные, достаточные для его осуществления, а также ожидаемый технический и экономический эффект, и отправляет на исполнение Начальнику управления по разработке решений для сегментов.\n\n<b>Вход в процедуру:</b> результаты <a href="proc18.html" class="proc-link">процедуры 18 (Стратегия развития сегментов)</a>.',
+            inputs: ['⬅️ <a href="proc18.html" class="proc-link">Процедура 18</a>'],
             outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
@@ -670,9 +666,9 @@
         },
         18: {
             number: "18",
-            role: "Директор по продажам РФ / Инициатор",
+            role: "Директор по продажам РФ",
             text: "Получает уведомление о разработанном техническом решении для ознакомления. Выход.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От специалиста (шаг 16)</a>", "⬅️ <a href='#' onclick='goToStep(17); return false;' class='io-link'>От инициатора (шаг 17)</a>"],
+            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От специалиста (шаг 16)</a>"],
             outputs: ["📤 ВЫХОД: Ознакомление"]
         },
         19: {
