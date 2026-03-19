@@ -336,7 +336,7 @@
             z-index: 1000;
         }
 
-        .role-pm { border-left-color: #1e90ff; } /* Продукт-менеджер */
+        .role-pm { border-left-color: #1e90ff; } /* Проект-менеджер */
         .role-rpo { border-left-color: #8a2be2; } /* Руководитель проектного офиса */
         .role-komitet { border-left-color: #ff8c00; } /* Проектный комитет */
         .role-ukiot { border-left-color: #2e8b57; } /* Начальник УКиОТ */
@@ -353,14 +353,14 @@
         <div class="swimlane-table">
             <div class="step-header">
                 <div class="step-header-cell">1-3</div>
-                <div class="step-header-cell">4-6</div>
-                <div class="step-header-cell">7-8</div>
-                <div class="step-header-cell">9</div>
+                <div class="step-header-cell">4-5</div>
+                <div class="step-header-cell">6-7</div>
+                <div class="step-header-cell">8-9</div>
             </div>
 
-            <!-- Дорожка 1: Продукт-менеджер -->
+            <!-- Дорожка 1: Проект-менеджер (шаги 1,2,3,8,9) -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
+                <div class="lane-label" style="border-left-color: #1e90ff;">Проект-менеджер</div>
                 <div class="lane-cells">
                     <div class="cell">
                         <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
@@ -382,6 +382,7 @@
                             <div class="step-preview">Заполняет форму паспорта и отправляет на согласование...</div>
                         </div>
                     </div>
+                    <div class="cell"></div>
                     <div class="cell">
                         <div class="step-card role-pm" data-step="8" onclick="goToStep(8)">
                             <span class="step-num">8</span>
@@ -389,12 +390,17 @@
                             <div class="step-preview">План разработки продукта утвержден...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
+                        <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Проект не принят</div>
+                            <div class="step-preview">Проект не принят в работу, не интересен компании...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
                     </div>
-                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка 2: Руководитель проектного офиса -->
+            <!-- Дорожка 2: Руководитель проектного офиса (шаги 4,5) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель проектного офиса</div>
                 <div class="lane-cells">
@@ -406,8 +412,6 @@
                             <div class="step-preview">Проверяет правильность заполнения формы паспорта проекта...</div>
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
-                    </div>
-                    <div class="cell">
                         <div class="step-card role-rpo" data-step="5" onclick="goToStep(5)">
                             <span class="step-num">5</span>
                             <div class="step-title">Отправка на утверждение</div>
@@ -415,10 +419,11 @@
                         </div>
                     </div>
                     <div class="cell"></div>
+                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка 3: Проектный комитет -->
+            <!-- Дорожка 3: Проектный комитет (шаг 6) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #ff8c00;">Проектный комитет</div>
                 <div class="lane-cells">
@@ -432,18 +437,11 @@
                             <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                     </div>
-                    <div class="cell">
-                        <div class="step-card" data-step="9" onclick="goToStep(9)" style="border-left-color: #ff0000;">
-                            <span class="step-num">9</span>
-                            <div class="step-title">Проект не принят</div>
-                            <div class="step-preview">Проект не принят в работу, не интересен компании...</div>
-                            <span class="step-badge badge-out">📤 выход</span>
-                        </div>
-                    </div>
+                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка 4: Начальник УКиОТ -->
+            <!-- Дорожка 4: Начальник УКиОТ (шаг 7) -->
             <div class="lane">
                 <div class="lane-label" style="border-left-color: #2e8b57;">Начальник УКиОТ</div>
                 <div class="lane-cells">
@@ -476,21 +474,21 @@
     const stepData = {
         1: {
             number: "1",
-            role: "Продукт-менеджер",
+            role: "Проект-менеджер",
             text: 'Проект-менеджер инициирует разработку паспорта продуктового проекта на основании полученных данных по результатам экспресс-анализа, маркетинг-плана, бизнес-плана, валидации «Возможностей», а также, при необходимости, по результатам разработки технического решения.\n\n<b>Вход в процедуру:</b> результаты процедур <a href="proc17.html" class="proc-link">17 (Проведение исследовательского проекта)</a> и <a href="proc19.html" class="proc-link">19 (Разработка технического решения)</a>.',
             inputs: ['⬅️ <a href="proc17.html" class="proc-link">Процедура 17</a>', '⬅️ <a href="proc19.html" class="proc-link">Процедура 19</a>'],
             outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
-            role: "Продукт-менеджер",
+            role: "Проект-менеджер",
             text: "Проект-менеджер в 1С:ДО создает внутренний документ «Паспорт продуктового проекта» в папке, которая находится: Документация проектов\Портфель продуктовых проектов КЭАЗ\Текущие инвестиционные продуктовые проекты (капитализируемые)\«выбрать папку».",
             inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         3: {
             number: "3",
-            role: "Продукт-менеджер",
+            role: "Проект-менеджер",
             text: "Заполняет приложенный к внутреннему документу файл Паспорт продуктового проекта (НАИМЕНОВАНИЕ). Затем отправляет на согласование Руководителю проектного офиса.\n\nЗаполняет/редактирует форму паспорта проекта согласно АО КЭАЗ//-8553 «МЕТОДИКА инициации продуктового проекта».",
             inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
@@ -525,14 +523,14 @@
         },
         8: {
             number: "8",
-            role: "Продукт-менеджер",
+            role: "Проект-менеджер",
             text: 'План разработки продукта утвержден. <b>Выход в <a href="proc4.html" class="proc-link">процедуру 4 (Ввод номенклатуры в 1С:УПП)</a></b>.',
             inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От УКиОТ (шаг 7)</a>"],
             outputs: ['📤 ВЫХОД: <a href="proc4.html" class="proc-link">Процедура 4</a>']
         },
         9: {
             number: "9",
-            role: "Проектный комитет",
+            role: "Проект-менеджер",
             text: "Проект не принят в работу, не интересен компании на данный момент времени. Выход.",
             inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От проектного комитета (шаг 6, НЕТ)</a>"],
             outputs: ["📤 ВЫХОД: Проект отклонен"]
