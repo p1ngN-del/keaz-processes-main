@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>КЭАЗ · Бизнес-процессы Дирекции маркетинга</title>
     <style>
+        /* --- СТИЛИ (без изменений, как в предыдущей версии) --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
-
         body {
             background: linear-gradient(145deg, #0b1424 0%, #1a2642 100%);
             padding: 24px 16px;
             display: flex;
             justify-content: center;
         }
-
         .container {
             max-width: 1600px;
             width: 100%;
@@ -27,7 +26,6 @@
             padding: 28px 24px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-
         h1 {
             font-size: 2rem;
             font-weight: 600;
@@ -35,7 +33,6 @@
             text-align: center;
             margin-bottom: 4px;
         }
-
         .subhead {
             text-align: center;
             color: #2f405b;
@@ -44,7 +41,6 @@
             padding-bottom: 20px;
             margin-bottom: 24px;
         }
-
         .filter-panel {
             background: #f8fafc;
             border-radius: 60px;
@@ -52,14 +48,12 @@
             margin-bottom: 28px;
             border: 1px solid #e2e8f0;
         }
-
         .filter-row {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px 12px;
         }
-
         .filter-item {
             padding: 6px 16px;
             border-radius: 40px;
@@ -92,7 +86,6 @@
         .filter-all:hover {
             background: #1e2f47;
         }
-
         .toggle-btn {
             background: #334155;
             color: white;
@@ -109,7 +102,6 @@
         .toggle-btn:hover {
             background: #1e293b;
         }
-
         .filter-row-expandable {
             display: none;
             flex-wrap: wrap;
@@ -122,7 +114,6 @@
         .filter-row-expandable.show {
             display: flex;
         }
-
         .phases-container {
             background: #f1f5f9;
             border-radius: 28px;
@@ -130,13 +121,11 @@
             border: 1px solid #e2e8f0;
             overflow-x: auto;
         }
-
         .phases-grid {
             display: flex;
             gap: 16px;
             min-width: 1400px;
         }
-
         .phase-column {
             flex: 1;
             min-width: 180px;
@@ -144,7 +133,6 @@
             flex-direction: column;
             gap: 16px;
         }
-
         .phase-header {
             background: #0a1929;
             color: white;
@@ -164,13 +152,11 @@
         .phase5 .phase-header { background: #c91e3a; border-bottom-color: #ef4444; }
         .phase6 .phase-header { background: #b88b1f; border-bottom-color: #eab308; }
         .phase7 .phase-header { background: #a13ea1; border-bottom-color: #c084fc; }
-
         .phase-content {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
         .role-group {
             background: white;
             border-radius: 18px;
@@ -178,7 +164,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
         }
-
         .role-group-title {
             font-weight: 600;
             font-size: 0.7rem;
@@ -188,7 +173,6 @@
             margin-bottom: 8px;
             padding-left: 4px;
         }
-
         .proc-card {
             background: white;
             border-radius: 14px;
@@ -205,21 +189,17 @@
             display: block;
             position: relative;
         }
-        .proc-card:last-child {
-            margin-bottom: 0;
-        }
+        .proc-card:last-child { margin-bottom: 0; }
         .proc-card:hover {
             transform: translateY(-2px);
             border-color: #f6b83e !important;
             box-shadow: 0 8px 16px rgba(0,0,0,0.08);
             z-index: 5;
         }
-
         .proc-card.filtered-out {
             opacity: 0.2;
             pointer-events: none;
         }
-
         .proc-card.start-highlight {
             border: 3px solid #f6b83e !important;
             background: #fff9e6;
@@ -232,7 +212,6 @@
             right: -8px;
             font-size: 1.1rem;
         }
-
         .proc-badge {
             display: inline-block;
             font-size: 0.55rem;
@@ -254,7 +233,6 @@
             color: white;
             border: 1px solid #f97316;
         }
-
         .proc-num {
             font-weight: 800;
             font-size: 0.65rem;
@@ -265,7 +243,6 @@
             margin-bottom: 6px;
             color: #1e293b;
         }
-
         .proc-name {
             font-weight: 600;
             font-size: 0.7rem;
@@ -274,7 +251,6 @@
             word-break: break-word;
             color: #0f172a;
         }
-
         .proc-io {
             display: flex;
             justify-content: space-between;
@@ -285,16 +261,8 @@
             margin-top: 4px;
             color: #475569;
         }
-
-        .io-in {
-            color: #1e6df2;
-            font-weight: 600;
-        }
-        .io-out {
-            color: #1f8b4c;
-            font-weight: 600;
-        }
-
+        .io-in { color: #1e6df2; font-weight: 600; }
+        .io-out { color: #1f8b4c; font-weight: 600; }
         .phase1-color { border-left-color: #9747ff; background: #faf5ff; }
         .phase2-color { border-left-color: #3b82f6; background: #eff6ff; }
         .phase3-color { border-left-color: #22c55e; background: #f0fdf4; }
@@ -302,7 +270,6 @@
         .phase5-color { border-left-color: #ef4444; background: #fef2f2; }
         .phase6-color { border-left-color: #eab308; background: #fefce8; }
         .phase7-color { border-left-color: #c084fc; background: #faf5ff; }
-
         .back-to-top {
             position: fixed;
             bottom: 24px;
@@ -361,11 +328,9 @@
             <div class="filter-item" data-role="analytics_head" onclick="filterByRole('analytics_head')">Начальник отдела аналитики</div>
             <div class="filter-item" data-role="planning_specialist" onclick="filterByRole('planning_specialist')">Специалист по планированию</div>
         </div>
-        
         <div style="text-align: center;">
             <button class="toggle-btn" onclick="toggleAllRoles()" id="toggleBtn">🔽 Показать все роли</button>
         </div>
-        
         <div class="filter-row-expandable" id="allRolesExpandable">
             <div class="filter-item" data-role="sales_director_rf" onclick="filterByRole('sales_director_rf')">Директор по продажам РФ</div>
             <div class="filter-item" data-role="foreign_sales_director" onclick="filterByRole('foreign_sales_director')">Директор по зарубежным продажам</div>
@@ -424,7 +389,7 @@
         </div>
     </div>
 
-    <!-- Карта процессов с правильными флагами -->
+    <!-- Карта процессов с правильными флагами (по 1 на роль) -->
     <div class="phases-container">
         <div class="phases-grid">
             
@@ -551,7 +516,7 @@
                             <div class="proc-io"><span class="io-in">⬅️ 17,19,23,26</span><span class="io-out">➡️ 4 (13),23</span></div>
                         </a>
                         
-                        <!-- 4: ФЛАГИ: technical_consultant, marketing_analyst, designer, technologist, marketing_analyst_pricing, plm_administrator, declaration_specialist, honest_sign_manager, ukiot_economist, aod_specialist (частично) -->
+                        <!-- 4: ФЛАГИ: technical_consultant, marketing_analyst, designer, technologist, marketing_analyst_pricing, plm_administrator, declaration_specialist, honest_sign_manager, ukiot_economist, aod_specialist -->
                         <a href="proc4.html" class="proc-card phase3-color" 
                            data-roles="product_manager,uop_manager,technical_consultant,designer,technologist,aod_specialist,marketing_analyst,marketing_analyst_pricing,plm_administrator,declaration_specialist,honest_sign_manager,ukiot_economist,ukiot_head,internet_projects_head" 
                            data-start-for="technical_consultant,designer,technologist,marketing_analyst,marketing_analyst_pricing,plm_administrator,declaration_specialist,honest_sign_manager,ukiot_economist,aod_specialist">
@@ -569,7 +534,7 @@
                             <div class="proc-io"><span class="io-in">⬅️ 17</span><span class="io-out">➡️ 31,4а</span></div>
                         </a>
                         
-                        <!-- 31: ФЛАГИ: procurement_manager, storekeeper, approvers (approvers уже есть в 17) -->
+                        <!-- 31: ФЛАГИ: procurement_manager, storekeeper -->
                         <a href="proc31.html" class="proc-card phase3-color" 
                            data-roles="initiator,procurement_manager,storekeeper,approvers" 
                            data-start-for="procurement_manager,storekeeper">
@@ -597,10 +562,10 @@
                             <div class="proc-io"><span class="io-in">⬅️ 4</span><span class="io-out">➡️ 14</span></div>
                         </a>
                         
-                        <!-- 15: ФЛАГИ: designer_creative, ovk_head -->
+                        <!-- 15: ФЛАГИ: designer_creative, ovk_head, advertising_head, internet_projects_head -->
                         <a href="proc15.html" class="proc-card phase4-color" 
                            data-roles="product_manager,designer_creative,advertising_head,internet_projects_head,ovk_head" 
-                           data-start-for="designer_creative,ovk_head">
+                           data-start-for="designer_creative,ovk_head,advertising_head,internet_projects_head">
                             <div class="proc-num">15 <span class="proc-badge badge-procedure">Процедура</span></div>
                             <div class="proc-name">Обработка ТЗ на дизайнерскую ЭД</div>
                             <div class="proc-io"><span class="io-in">⬅️ 4</span><span class="io-out">➡️ 13</span></div>
@@ -716,7 +681,7 @@
                             <div class="proc-io"><span class="io-in">⬅️ 12,10</span><span class="io-out">➡️ 8,3</span></div>
                         </a>
                         
-                        <!-- 4н: ФЛАГИ: planning_specialist, motivation_manager, analytics_head (analytics_head уже в 23) -->
+                        <!-- 4н: ФЛАГИ: planning_specialist, motivation_manager -->
                         <a href="proc4n.html" class="proc-card phase6-color" 
                            data-roles="product_manager,planning_specialist,marketing_analyst,product_department_head,motivation_manager,analytics_head" 
                            data-start-for="planning_specialist,motivation_manager">
@@ -803,7 +768,6 @@
     function toggleAllRoles() {
         const expandable = document.getElementById('allRolesExpandable');
         const btn = document.getElementById('toggleBtn');
-        
         if (expanded) {
             expandable.classList.remove('show');
             btn.innerHTML = '🔽 Показать все роли';
@@ -817,12 +781,10 @@
 
     function filterByRole(role) {
         document.querySelectorAll('.filter-item').forEach(el => el.classList.remove('active'));
-        
         const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
         if (activeFilter) activeFilter.classList.add('active');
         
         const cards = document.querySelectorAll('.proc-card');
-        
         cards.forEach(card => card.classList.remove('start-highlight'));
         
         if (role === 'all') {
@@ -832,15 +794,12 @@
                 const rolesAttr = card.getAttribute('data-roles');
                 if (rolesAttr) {
                     const rolesList = rolesAttr.split(',');
-                    
                     if (rolesList.includes(role)) {
                         card.classList.remove('filtered-out');
-                        
                         const startForAttr = card.getAttribute('data-start-for');
                         if (startForAttr) {
                             const cleanStr = startForAttr.replace(/[\[\]'"]/g, '');
                             const startRoles = cleanStr.split(',');
-                            
                             if (startRoles.includes(role)) {
                                 card.classList.add('start-highlight');
                             }
