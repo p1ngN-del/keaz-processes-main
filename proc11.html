@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Процедура 11</title>
+    <title>КЭАЗ · Процедура 11 (Интерактив)</title>
     <style>
         * {
             margin: 0;
@@ -336,174 +336,196 @@
             z-index: 1000;
         }
 
-        .role-pm { border-left-color: #1e90ff; }
-        .role-rukovod { border-left-color: #8a2be2; }
-        .role-analitik { border-left-color: #4682b4; }
+        .role-pricing { border-left-color: #1e90ff; } /* Маркетолог-аналитик по ценообразованию */
+        .role-product { border-left-color: #8a2be2; } /* Начальник отдела продуктового направления */
+        .role-analytics { border-left-color: #4682b4; } /* Начальник аналитики цен и данных */
+        .role-spm { border-left-color: #ff8c00; } /* Старший продукт-менеджер */
+        .role-uop { border-left-color: #2e8b57; } /* Начальник УОП */
+        .role-rip { border-left-color: #ba55d3; } /* Руководитель интернет проектов */
     </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
-    <h1>ИНСТРУКЦИЯ проведения ценообразования нового продукта</h1>
+    <h1>Процедура 11: Ценообразование продукта</h1>
     <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
     <div class="swimlane">
         <div class="swimlane-table">
             <div class="step-header">
-                <div class="step-header-cell">Исследовательская фаза<br>1-4</div>
-                <div class="step-header-cell">Пилотные продажи<br>1-3</div>
-                <div class="step-header-cell">Пилотные продажи<br>4-6</div>
+                <div class="step-header-cell">1-5</div>
+                <div class="step-header-cell">6-9</div>
+                <div class="step-header-cell">10-13</div>
+                <div class="step-header-cell">14-18</div>
             </div>
 
-            <!-- Дорожка 1: Продукт-менеджер -->
+            <!-- Дорожка 1: Маркетолог-аналитик по ценообразованию (шаги 1,3,4,5,12,16,17) -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
+                <div class="lane-label" style="border-left-color: #1e90ff;">Маркетолог-аналитик по ценообразованию</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
-                            <span class="step-num">Исслед.1</span>
-                            <div class="step-title">Получение задачи</div>
-                            <div class="step-preview">Получает в 1С:ДО задачу на исполнение от проект-менеджера на подготовку ценового позиционирования...</div>
+                        <div class="step-card role-pricing" data-step="1" onclick="goToStep(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Анализ данных</div>
+                            <div class="step-preview">Проводит анализ данных (динамика цен конкурентов, рентабельность)...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
-                        <div class="step-card role-pm" data-step="2" onclick="goToStep(2)">
-                            <span class="step-num">Исслед.2</span>
-                            <div class="step-title">Подготовка файла Рентабельность</div>
-                            <div class="step-preview">Готовит/актуализирует файл «Рентабельность» с расчетной (целевой) себестоимостью...</div>
-                        </div>
-                    </div>
-                    <div class="cell">
-                        <div class="step-card role-pm" data-step="3" onclick="goToStep(3)">
-                            <span class="step-num">Исслед.3</span>
+                        <div class="step-card role-pricing" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
                             <div class="step-title">Создание СЗ</div>
-                            <div class="step-preview">Создает служебную записку с файлом «Рентабельность» и отправляет на согласование...</div>
-                        </div>
-                        <div class="step-card role-pm" data-step="4" onclick="goToStep(4)">
-                            <span class="step-num">Исслед.4</span>
-                            <div class="step-title">Завершение задачи</div>
-                            <div class="step-preview">Завершает задачу, размещает файл в 1С:ДО/Файлы/Информация для продаж...</div>
-                        </div>
-                        <div class="step-card role-pm" data-step="5" onclick="goToStep(5)">
-                            <span class="step-num">Пилот.1</span>
-                            <div class="step-title">Получение задачи на актуализацию</div>
-                            <div class="step-preview">Получает задачу на актуализацию файла «Рентабельность» и подготовку файла «НиЦ»...</div>
+                            <div class="step-preview">В 1С:ДО создает СЗ о необходимости изменения цен...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" data-step="6" onclick="goToStep(6)">
-                            <span class="step-num">Пилот.2</span>
-                            <div class="step-title">Актуализация файла</div>
-                            <div class="step-preview">Актуализирует информацию в файле «Рентабельность» с учетом изменений рыночной среды...</div>
+                        <div class="step-card role-pricing" data-step="4" onclick="goToStep(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Заполнение аналитической формы</div>
+                            <div class="step-preview">Заполняет аналитическую форму...</div>
                         </div>
-                        <div class="step-card role-pm" data-step="7" onclick="goToStep(7)">
-                            <span class="step-num">Пилот.3</span>
-                            <div class="step-title">Создание СЗ на согласование</div>
-                            <div class="step-preview">Создает служебную записку с актуальным файлом и отправляет на согласование...</div>
+                        <div class="step-card role-pricing" data-step="5" onclick="goToStep(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Задача на заполнение формы</div>
+                            <div class="step-preview">Ставит задачу в 1С:ДО по заполнению аналитической формы...</div>
                         </div>
-                        <div class="step-card role-pm" data-step="8" onclick="goToStep(8)">
-                            <span class="step-num">Пилот.4</span>
-                            <div class="step-title">Внесение цены в 1С:УПП</div>
-                            <div class="step-preview">Вносит цену на новую номенклатуру в 1С:УПП согласно инструкции...</div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pricing" data-step="12" onclick="goToStep(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Проведение документов</div>
+                            <div class="step-preview">Проводит документы по ценам в 1С:УПП...</div>
                         </div>
-                        <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
-                            <span class="step-num">Пилот.5</span>
-                            <div class="step-title">Подготовка файла НиЦ</div>
-                            <div class="step-preview">Готовит файл «НиЦ» на основании согласованного файла «Рентабельность»...</div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pricing" data-step="16" onclick="goToStep(16)">
+                            <span class="step-num">16</span>
+                            <div class="step-title">Новые цены в учетной системе</div>
+                            <div class="step-preview">Новые цены в учетной системе...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
                         </div>
-                        <div class="step-card role-pm" data-step="10" onclick="goToStep(10)">
-                            <span class="step-num">Пилот.6</span>
-                            <div class="step-title">Размещение и ознакомление</div>
-                            <div class="step-preview">Размещает файлы в 1С:ДО и отправляет на ознакомление ведущему специалисту...</div>
+                        <div class="step-card role-pricing" data-step="17" onclick="goToStep(17)">
+                            <span class="step-num">17</span>
+                            <div class="step-title">Изменение цен не происходит</div>
+                            <div class="step-preview">Изменение цен не происходит...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 2: Начальник отдела управления продуктового маркетинга -->
+            <!-- Дорожка 2: Начальник отдела продуктового направления (шаги 2,6) -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник отдела<br>управления продуктового маркетинга</div>
+                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник отдела продуктового направления</div>
                 <div class="lane-cells">
                     <div class="cell">
-                        <div class="step-card role-rukovod" data-step="11" onclick="goToStep(11)">
-                            <span class="step-num">Исслед.3</span>
-                            <div class="step-title">Согласование СЗ</div>
-                            <div class="step-preview">Согласует служебную записку с файлом «Рентабельность» (исследовательская фаза)...</div>
+                        <div class="step-card role-product" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Уведомление о необходимости</div>
+                            <div class="step-preview">Уведомляет маркетолога-аналитика о необходимости изменения цен...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-product" data-step="6" onclick="goToStep(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Заполнение аналитической формы</div>
+                            <div class="step-preview">Заполняет аналитическую форму (рыночное позиционирование)...</div>
                         </div>
                     </div>
                     <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Начальник аналитики цен и данных (шаги 7,8,9) -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Начальник аналитики цен и данных</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-rukovod" data-step="12" onclick="goToStep(12)">
-                            <span class="step-num">Пилот.3</span>
-                            <div class="step-title">Согласование (1 итерация)</div>
-                            <div class="step-preview">Согласует служебную записку (1-ая итерация)...</div>
+                        <div class="step-card role-analytics" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Проведение совещания</div>
+                            <div class="step-preview">Проводит совещание по предлагаемым изменениям цен...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-analytics" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Согласование параметров</div>
+                            <div class="step-preview">Согласовывает параметры изменения цен в 1С:ДО...</div>
+                        </div>
+                        <div class="step-card role-analytics" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Задача на информирование</div>
+                            <div class="step-preview">Ставит задачу по информированию контрагентов об изменении цен...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Старший продукт-менеджер (шаг 10) -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Старший продукт-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-spm" data-step="10" onclick="goToStep(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Создание документа в УПП</div>
+                            <div class="step-preview">Создает в 1С:УПП документ с новыми ценами...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 5: Начальник УОП (шаги 14,15,18) -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник УОП</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-uop" data-step="14" onclick="goToStep(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Отправка НФ ЭТМ и Русскому Свету</div>
+                            <div class="step-preview">Отправляет НФ ЭТМ и Русскому Свету...</div>
+                        </div>
+                        <div class="step-card role-uop" data-step="15" onclick="goToStep(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Уведомление контрагентов</div>
+                            <div class="step-preview">Уведомляет контрагента об изменениях цен...</div>
+                        </div>
+                        <div class="step-card role-uop" data-step="18" onclick="goToStep(18)">
+                            <span class="step-num">18</span>
+                            <div class="step-title">Контрагенты проинформированы</div>
+                            <div class="step-preview">Контрагенты проинформированы об изменениях цен...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Дорожка 3: Начальник управления продуктового маркетинга -->
+            <!-- Дорожка 6: Руководитель интернет проектов (шаг 13) -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #8a2be2;">Начальник управления<br>продуктового маркетинга</div>
+                <div class="lane-label" style="border-left-color: #ba55d3;">Руководитель интернет проектов</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
                     <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-rukovod" data-step="13" onclick="goToStep(13)">
-                            <span class="step-num">Пилот.3</span>
-                            <div class="step-title">Согласование (2 итерация)</div>
-                            <div class="step-preview">Согласует служебную записку (2-ая итерация)...</div>
+                        <div class="step-card role-rip" data-step="13" onclick="goToStep(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Выгрузка номенклатурных файлов</div>
+                            <div class="step-preview">Выгружает номенклатурные файлы по запросу...</div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Дорожка 4: Директор по маркетингу -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #8a2be2;">Директор по маркетингу</div>
-                <div class="lane-cells">
                     <div class="cell"></div>
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-rukovod" data-step="14" onclick="goToStep(14)">
-                            <span class="step-num">Пилот.3</span>
-                            <div class="step-title">Согласование (3 итерация)</div>
-                            <div class="step-preview">Согласует служебную записку (3-ая итерация)...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Дорожка 5: Директора по продажам -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #8a2be2;">Директор по продажам РФ<br>Директор по зарубежным продажам</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-rukovod" data-step="15" onclick="goToStep(15)">
-                            <span class="step-num">Пилот.3</span>
-                            <div class="step-title">Согласование (4 итерация)</div>
-                            <div class="step-preview">Согласуют служебную записку (4-ая итерация)...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Дорожка 6: Ведущий специалист управления аналитики -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #4682b4;">Ведущий специалист<br>управления аналитики</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-analitik" data-step="16" onclick="goToStep(16)">
-                            <span class="step-num">Пилот.6</span>
-                            <div class="step-title">Ознакомление</div>
-                            <div class="step-preview">Получает файлы на ознакомление в 1С:ДО...</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -522,116 +544,130 @@
 <script>
     const stepData = {
         1: {
-            number: "Исслед.1",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер получает в 1С:ДО задачу на исполнение от проект-менеджера на подготовку ценового позиционирования.\n\nВход в процедуру — получение задачи от проект-менеджера.",
-            inputs: ["⬅️ Задача от проект-менеджера"],
-            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2 (Исслед.2)</a>"]
+            number: "1",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: 'Проводит анализ данных. Индикатором проведения очередной (раз в квартал) или внеочередной сессии по изменению цен является информация на основе регулярного анализа:\n– динамики цен конкурентов;\n– рентабельности, рост себестоимости более чем на 3%.\n\n<b>Вход в процедуру:</b> результаты процедур <a href="proc12.html" class="proc-link">12 (Классификация ОЕМ номенклатуры)</a> и <a href="proc10.html" class="proc-link">10 (Сбор и анализ данных о конкурентах)</a>.',
+            inputs: ['⬅️ <a href="proc12.html" class="proc-link">Процедура 12</a>', '⬅️ <a href="proc10.html" class="proc-link">Процедура 10</a>'],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         2: {
-            number: "Исслед.2",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер в 1С:ДО готовит/актуализирует файл «Рентабельность» в соответствии с инструкцией, ссылка на инструкцию в 1С:ДО: e1cib/data/Справочник.ВнутренниеДокументы?ref=9a84549f350a96c411ec927780d3d704. В части себестоимости указывается расчетная (целевая) себестоимость, полученная на базе подготовленного спецификатора на продукт.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3 (Исслед.3)</a>"]
+            number: "2",
+            role: "Начальник отдела продуктового направления",
+            text: "Уведомляет маркетолога-аналитика о необходимости изменения цен. Индикатором проведения внеочередной сессии по изменению цен являются изменения:\n– каскада ценообразования для партнеров (перевод проектных позиций в дистрибьюторскую матрицу или наоборот, активация новых каналов продаж);\n– трендов продаж (рост или спад продаж);\n– перепозиционирования продукта – перевод НГ из одного ценового сегмента в другой;\n– цен поставщиков.",
+            inputs: ["⬅️ Изменения рыночной ситуации"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         3: {
-            number: "Исслед.3",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер в 1С:ДО создает служебную записку с приложенными готовым/обновленным файлом «Рентабельность» с обоснованием предложенного ценового позиционирования и отправляет на согласование Начальнику отдела управления продуктового маркетинга, отвечающего за направление, в которое добавляется новый продукт.\n\nПримечание: если Начальник отдела не согласовал служебную записку, продукт-менеджер вносит корректировки, учитывая полученные замечания и повторно запускает процесс согласования в 1С:ДО.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Начальнику отдела (согласование)</a>"]
+            number: "3",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "В 1С:ДО создает СЗ о необходимости изменения цен и отправляет на согласование.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От маркетолога (шаг 1)</a>", "⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От НОПН (шаг 2)</a>"],
+            outputs: ["✅ Если необходимо → <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>", "❌ Если нет необходимости → <a href='#' onclick='goToStep(17); return false;' class='io-link'>Шаг 17</a>"]
         },
         4: {
-            number: "Исслед.4",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер завершает задачу по подготовке ценового позиционирования в 1С:ДО и прикладывает, согласованный Начальником отдела, файл «Рентабельность». Также, размещает данный файл в 1С:ДО/Файлы/Информация для продаж в соответствующую папку с названием нового продукта.",
-            inputs: ["⬅️ После согласования начальником отдела"],
-            outputs: ["→ Ожидание этапа пилотных продаж"]
+            number: "4",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "Заполняет аналитическую форму. Аналитическая форма представляет из себя excel-таблицу с указанием ключевых факторов, влияющих на принятие решения о ценообразовании:\n– анализ план-факт;\n– динамика продаж г/г накопительным итогом;\n– размер товарного запаса на собственном складе.\nОтдельная вкладка в форме – сравнение цен с конкурентами по топ-позициям основных номенклатурных групп.\nЗаполнение формы является обязательным в случае пересмотра цен по всей номенклатуре. В остальных случаях необходимость заполнения определяется индивидуально.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От маркетолога (шаг 3, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
-            number: "Пилот.1",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер получает в 1С:ДО задачу на исполнение от проект-менеджера на актуализацию файла «Рентабельность» и подготовку файла «НиЦ».",
-            inputs: ["⬅️ Задача от проект-менеджера (этап пилотных продаж)"],
-            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6 (Пилот.2)</a>"]
+            number: "5",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "Ставит задачу в 1С:ДО по заполнению аналитической формы (для НОПН). При постановке задачи Маркетолог-аналитик ставит контролером Начальника отдела аналитики цен и данных.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От маркетолога (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
-            number: "Пилот.2",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер актуализирует информацию в ранее подготовленном файле «Рентабельность». При необходимости добавляет дополнительную информацию в связи с изменением рыночной среды, в том числе:\n• изменение ценового позиционирования конкурентов\n• появление новых линеек аналогичных продуктов конкурентов\n• изменение ценовой и коммерческой политики компании\n• прочие факторы",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От ПМ (шаг 5)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7 (Пилот.3)</a>"]
+            number: "6",
+            role: "Начальник отдела продуктового направления",
+            text: "Заполняет аналитическую форму (информация по рыночному позиционированию и предлагаемым изменениям цен с обоснованием таких изменений).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От маркетолога (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
         },
         7: {
-            number: "Пилот.3",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер в 1С:ДО создает служебную записку с приложенным актуальным файлом «Рентабельность» и отправляет на согласование.\n\nСогласующие лица:\n• Начальник отдела управления продуктового маркетинга (1-ая итерация)\n• Начальник управления продуктового маркетинга (2-ая итерация)\n• Директор по маркетингу (3-ая итерация)\n• Директор по продажам РФ и Директор по зарубежным продажам (4-ая итерация)\n\nПримечание: если на каком-либо из этапов согласования файл был не согласован, продукт-менеджер вносит корректировки, учитывая полученные замечания и повторно запускает процесс согласования в 1С:ДО.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От ПМ (шаг 6)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>На согласование (1 итерация)</a>"]
+            number: "7",
+            role: "Начальник аналитики цен и данных",
+            text: "Проводит совещание по предлагаемым изменениям цен. Участники совещания:\n– Начальник отдела аналитики данных и цен;\n– Начальники отделов продуктовых направлений (НОПН);\n– Директор по маркетингу;\n– Директор по продажам;\n– Управляющий коммерческим блоком.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От НОПН (шаг 6)</a>"],
+            outputs: ["✅ Если согласовано → <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>", "❌ Если не согласовано → повторять <a href='#' onclick='goToStep(7); return false;' class='io-link'>шаг 7</a>"]
         },
         8: {
-            number: "Пилот.4",
-            role: "Продукт-менеджер",
-            text: "После согласования файла рентабельность Продукт-менеджер вносит цену на новую номенклатуру в 1С:УПП, согласно действующей инструкции.\n\nСсылка на инструкцию: e1cib/data/РегистрСведений.ДанныеВнутреннихДокументов?ДатаСортировки=20220810085417&ПометкаУдаления=0&Документ=9c45549f350a96c411ed17ed9f696da4",
-            inputs: ["⬅️ После согласования"],
-            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9 (Пилот.5)</a>"]
+            number: "8",
+            role: "Начальник аналитики цен и данных",
+            text: "Согласовывает параметры изменения цен в 1С:ДО с участниками совещания.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От начальника аналитики (шаг 7, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>", "→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
         },
         9: {
-            number: "Пилот.5",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер готовит, на основании согласованного файла «Рентабельность», файл «НиЦ», в соответствии с инструкцией, ссылка на инструкцию в 1С:ДО: e1cib/data/Справочник.ВнутренниеДокументы?ref=9a84549f350a96c411ec927780d3d704",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От ПМ (шаг 8)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10 (Пилот.6)</a>"]
+            number: "9",
+            role: "Начальник аналитики цен и данных",
+            text: "Ставит задачу в 1С:ДО по информированию контрагентов об изменении цен.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От начальника аналитики (шаг 8)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>", "→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>", "→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
         },
         10: {
-            number: "Пилот.6",
-            role: "Продукт-менеджер",
-            text: "Продукт-менеджер размещает обновленные файлы «Рентабельность» и «НиЦ» в 1С:ДО, путь: 1С:ДО/Документы внутренние/Файлы/Информация для продаж/ и отправляет их на ознакомление Ведущему специалисту управления аналитики в 1С:ДО.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От ПМ (шаг 9)</a>"],
-            outputs: ["📤 ВЫХОД: Файлы переданы для использования в продажах"]
+            number: "10",
+            role: "Старший продукт-менеджер",
+            text: "Создает в 1С:УПП документ с новыми ценами. Путь заведения документа в 1С:УПП: Документы/Ценообразование/Установка цен номенклатуры. Дата документа = дата изменения цен.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От начальника аналитики (шаг 8)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>"]
         },
         11: {
-            number: "Исслед.3",
-            role: "Начальник отдела управления продуктового маркетинга",
-            text: "Согласует служебную записку с файлом «Рентабельность» в исследовательской фазе. При несоответствиях возвращает на доработку.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ</a>"],
-            outputs: ["→ Обратно ПМ (при доработке) или далее"]
+            number: "11",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "(В требованиях) Приложение к письму, в котором указывается средний % изменения цен по номенклатурным группам, подготавливает Маркетолог-аналитик.",
+            inputs: [],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>"]
         },
         12: {
-            number: "Пилот.3",
-            role: "Начальник отдела управления продуктового маркетинга",
-            text: "Согласует служебную записку (1-ая итерация) на этапе пилотных продаж.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От ПМ</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Начальнику управления</a>"]
+            number: "12",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: 'Проводит документы по ценам в 1С:УПП.\n\n<b>Выход из процедуры (частичный):</b> новые цены зафиксированы в системе.',
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От старшего ПМ (шаг 10)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
         },
         13: {
-            number: "Пилот.3",
-            role: "Начальник управления продуктового маркетинга",
-            text: "Согласует служебную записку (2-ая итерация) на этапе пилотных продаж.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От начальника отдела</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Директору по маркетингу</a>"]
+            number: "13",
+            role: "Руководитель интернет проектов",
+            text: "Выгружает номенклатурные файлы по запросу.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От начальника аналитики (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>"]
         },
         14: {
-            number: "Пилот.3",
-            role: "Директор по маркетингу",
-            text: "Согласует служебную записку (3-ая итерация) на этапе пилотных продаж.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От начальника управления</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Директорам по продажам</a>"]
+            number: "14",
+            role: "Начальник УОП",
+            text: "Отправляет НФ ЭТМ и Русскому Свету.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От начальника аналитики (шаг 9)</a>", "⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От РИП (шаг 13)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(18); return false;' class='io-link'>Шаг 18</a>"]
         },
         15: {
-            number: "Пилот.3",
-            role: "Директор по продажам РФ, Директор по зарубежным продажам",
-            text: "Согласуют служебную записку (4-ая итерация) на этапе пилотных продаж.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От директора по маркетингу</a>"],
-            outputs: ["→ Обратно ПМ (завершение согласования)"]
+            number: "15",
+            role: "Начальник УОП",
+            text: "Уведомляет контрагента об изменениях цен. Цель информирования заключается в передаче данных заинтересованным службам о средней величине изменения цен номенклатуры и о дате, с которой эта цена начнет действовать.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От начальника аналитики (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(18); return false;' class='io-link'>Шаг 18</a>"]
         },
         16: {
-            number: "Пилот.6",
-            role: "Ведущий специалист управления аналитики",
-            text: "Получает на ознакомление файлы «Рентабельность» и «НиЦ» в 1С:ДО.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От ПМ</a>"],
-            outputs: ["→ Ознакомлен"]
+            number: "16",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: 'Новые цены в учетной системе. Информация передается для дальнейших действий.\n\n<b>Выход из процедуры:</b> переход к <a href="proc8.html" class="proc-link">процедуре 8 (Корректировка плана продаж)</a> и <a href="proc3.html" class="proc-link">процедуре 3 (Вывод номенклатуры)</a>.',
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От маркетолога (шаг 12)</a>"],
+            outputs: ['📤 ВЫХОД: <a href="proc8.html" class="proc-link">Процедура 8</a>, <a href="proc3.html" class="proc-link">Процедура 3</a>']
+        },
+        17: {
+            number: "17",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "Изменение цен не происходит. Выход.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От маркетолога (шаг 3, НЕТ)</a>"],
+            outputs: ["📤 ВЫХОД: Цены не меняются"]
+        },
+        18: {
+            number: "18",
+            role: "Начальник УОП",
+            text: "Контрагенты проинформированы об изменениях цен. Выход.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От УОП (шаг 14)</a>", "⬅️ <a href='#' onclick='goToStep(15); return false;' class='io-link'>От УОП (шаг 15)</a>"],
+            outputs: ["📤 ВЫХОД: Информирование завершено"]
         }
     };
 
