@@ -45,7 +45,6 @@
             margin-bottom: 24px;
         }
 
-        /* Панель фильтра */
         .filter-panel {
             background: #f8fafc;
             border-radius: 60px;
@@ -177,8 +176,13 @@
             right: -2px;
             font-size: 0.6rem;
         }
-        .legend-color.arrow { background: #64748b; width: 20px; height: 4px; border-radius: 2px; }
-        .legend-color.parallel { background: #22c55e; }
+        .legend-color.phase1 { background: #9747ff; }
+        .legend-color.phase2 { background: #3b82f6; }
+        .legend-color.phase3 { background: #22c55e; }
+        .legend-color.phase4 { background: #f97316; }
+        .legend-color.phase5 { background: #ef4444; }
+        .legend-color.phase6 { background: #eab308; }
+        .legend-color.phase7 { background: #c084fc; }
 
         .filter-row-expandable {
             display: none;
@@ -193,122 +197,6 @@
             display: flex;
         }
 
-        /* Контейнер для цепочки процедур */
-        .chain-container {
-            background: #f1f5f9;
-            border-radius: 28px;
-            padding: 24px 20px;
-            border: 1px solid #e2e8f0;
-            overflow-x: auto;
-            min-height: 400px;
-        }
-
-        /* Стили для цепочки */
-        .chain-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            min-width: 800px;
-        }
-
-        .chain-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 12px;
-            background: white;
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            position: relative;
-        }
-
-        .chain-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 140px;
-            background: white;
-            border-radius: 16px;
-            padding: 12px;
-            border-left: 5px solid;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: transform 0.2s;
-            cursor: pointer;
-            text-decoration: none;
-            color: #0a1929;
-        }
-        .chain-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-        }
-        .chain-item.start {
-            border-left-color: #f6b83e;
-            background: #fff9e6;
-        }
-        .chain-item.end {
-            border-left-color: #ef4444;
-            background: #fef2f2;
-        }
-        .chain-item .chain-num {
-            font-weight: 800;
-            font-size: 1rem;
-            background: #eef2f6;
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 30px;
-            margin-bottom: 8px;
-        }
-        .chain-item .chain-name {
-            font-weight: 600;
-            font-size: 0.75rem;
-            text-align: center;
-            line-height: 1.3;
-        }
-        .chain-item .chain-badge {
-            font-size: 0.6rem;
-            margin-top: 6px;
-            padding: 2px 8px;
-            border-radius: 20px;
-            background: #eef2fa;
-        }
-
-        .chain-arrow {
-            font-size: 1.5rem;
-            color: #94a3b8;
-            font-weight: 300;
-        }
-
-        .parallel-branch {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-left: 40px;
-            padding-left: 20px;
-            border-left: 3px dashed #22c55e;
-            position: relative;
-        }
-        .parallel-branch::before {
-            content: "⚡ Параллельно";
-            position: absolute;
-            top: -20px;
-            left: 0;
-            font-size: 0.65rem;
-            color: #22c55e;
-            background: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
-        .parallel-items {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* Обычный вид фаз (когда нет фильтра) */
         .phases-container {
             background: #f1f5f9;
             border-radius: 28px;
@@ -384,7 +272,7 @@
             border: 1px solid #e9edf2;
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
             cursor: pointer;
-            transition: opacity 0.3s ease, transform 0.2s;
+            transition: opacity 0.3s ease, transform 0.2s, margin 0.3s ease, padding 0.3s ease;
             font-size: 0.7rem;
             text-decoration: none;
             color: #0a1929;
@@ -517,26 +405,6 @@
             transform: translateY(-4px);
             box-shadow: 0 12px 28px rgba(246, 184, 62, 0.5);
         }
-
-        .mode-toggle {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 16px;
-        }
-        .mode-btn {
-            background: #e2e8f0;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .mode-btn.active {
-            background: #f6b83e;
-            color: #0a1929;
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
@@ -573,6 +441,7 @@
             <div class="filter-item" data-role="planning_specialist" onclick="filterByRole('planning_specialist')">Специалист по планированию</div>
         </div>
         
+        <!-- Быстрый переход -->
         <div class="quick-nav">
             <span class="quick-nav-label">⚡ Быстрый переход:</span>
             <select id="quickNavSelect" class="quick-nav-select" onchange="quickNavChange()">
@@ -583,6 +452,13 @@
                 <option value="project_office_head">Руководитель проектного офиса</option>
                 <option value="project_committee">Проектный комитет</option>
                 <option value="initiator">Инициатор</option>
+                <option value="segment_marketing_manager">Сегмент-маркетинг-менеджер</option>
+                <option value="marketing_analyst">Маркетолог-аналитик</option>
+                <option value="marketing_director">Директор по маркетингу</option>
+                <option value="designer">Конструктор</option>
+                <option value="technologist">Технолог</option>
+                <option value="ukiot_head">Начальник УКиОТ</option>
+                <option value="financial_director">Финансовый директор</option>
             </select>
         </div>
         
@@ -591,7 +467,6 @@
         </div>
         
         <div class="filter-row-expandable" id="allRolesExpandable">
-            <!-- Дополнительные роли (сокращено для краткости) -->
             <div class="filter-item" data-role="sales_director_rf" onclick="filterByRole('sales_director_rf')">Директор по продажам РФ</div>
             <div class="filter-item" data-role="foreign_sales_director" onclick="filterByRole('foreign_sales_director')">Директор по зарубежным продажам</div>
             <div class="filter-item" data-role="commercial_manager" onclick="filterByRole('commercial_manager')">Управляющий коммерческим блоком</div>
@@ -648,254 +523,275 @@
             <div class="filter-item" data-role="content_owner" onclick="filterByRole('content_owner')">Владелец контента</div>
         </div>
         
+        <!-- Легенда -->
         <div class="legend">
             <div class="legend-item"><div class="legend-color procedure"></div><span>Процедура</span></div>
             <div class="legend-item"><div class="legend-color instruction"></div><span>Инструкция</span></div>
             <div class="legend-item"><div class="legend-color start"></div><span>Твой старт 🚩</span></div>
-            <div class="legend-item"><div class="legend-color arrow"></div><span>Последовательность →</span></div>
-            <div class="legend-item"><div class="legend-color parallel"></div><span>Параллельные процессы</span></div>
+            <div class="legend-item"><div class="legend-color phase1"></div><span>Фаза 1</span></div>
+            <div class="legend-item"><div class="legend-color phase2"></div><span>Фаза 2</span></div>
+            <div class="legend-item"><div class="legend-color phase3"></div><span>Фаза 3</span></div>
+            <div class="legend-item"><div class="legend-color phase4"></div><span>Фаза 4</span></div>
+            <div class="legend-item"><div class="legend-color phase5"></div><span>Фаза 5</span></div>
+            <div class="legend-item"><div class="legend-color phase6"></div><span>Фаза 6</span></div>
+            <div class="legend-item"><div class="legend-color phase7"></div><span>Фаза 7</span></div>
         </div>
     </div>
 
-    <!-- Контейнер для отображения карты -->
-    <div id="mapContainer"></div>
+    <!-- Карта процессов (ОСТАЛАСЬ БЕЗ ИЗМЕНЕНИЙ) -->
+    <div class="phases-container">
+        <div class="phases-grid">
+            <!-- Фаза 1 · Стратегия -->
+            <div class="phase-column phase1">
+                <div class="phase-header">Фаза 1 · Стратегия</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Стратегический маркетинг</div>
+                        <a href="proc21.html" class="proc-card phase1-color" data-roles="marketing_director,strategic_marketing_head,level1_manager,level2_manager" data-start-for="marketing_director,strategic_marketing_head">
+                            <div class="proc-num">21 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Формирование среднесрочной стратегии развития ГК КЭАЗ</div>
+                            <div class="proc-io"><span class="io-in">⬅️ План-график</span><span class="io-out">➡️ 18</span></div>
+                        </a>
+                        <a href="proc7.html" class="proc-card phase1-color" data-roles="marketer" data-start-for="marketer">
+                            <div class="proc-num">7 <span class="proc-badge badge-instruction">Инструкция</span></div>
+                            <div class="proc-name">Анализ цепочки поставок (каналов распределения)</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Ежегодно</span><span class="io-out">➡️ 21</span></div>
+                        </a>
+                        <a href="proc18.html" class="proc-card phase1-color" data-roles="strategic_marketing_head,segment_marketing_manager,marketing_director" data-start-for="segment_marketing_manager">
+                            <div class="proc-num">18 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Разработка стратегии развития сегментов</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 21</span><span class="io-out">➡️ 17,19</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 2 · Инициация -->
+            <div class="phase-column phase2">
+                <div class="phase-header">Фаза 2 · Инициация</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc27.html" class="proc-card phase2-color" data-roles="initiator,product_department_head,segment_marketing_manager,senior_pm,product_manager,marketing_director" data-start-for="initiator,product_manager,product_department_head">
+                            <div class="proc-num">27 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Обработка идеи по вводу нового продукта и модернизации</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Запрос</span><span class="io-out">➡️ 17</span></div>
+                        </a>
+                        <a href="proc17.html" class="proc-card phase2-color" data-roles="senior_pm,product_manager,ukiot_head,goz_head,financial_director,approvers,senior_designer" data-start-for="senior_pm,ukiot_head,goz_head,financial_director,approvers,senior_designer">
+                            <div class="proc-num">17 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Проведение исследовательского проекта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 18,27</span><span class="io-out">➡️ 23,24,26</span></div>
+                        </a>
+                        <a href="proc19.html" class="proc-card phase2-color" data-roles="initiator,urr_head,urr_senior_specialist,marketing_director,sales_director_rf" data-start-for="urr_head,urr_senior_specialist">
+                            <div class="proc-num">19 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Разработка технического решения</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 18</span><span class="io-out">➡️ 24</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Создание базы / закупки</div>
+                        <a href="proc16.html" class="proc-card phase2-color" data-roles="product_manager,marketing_director,financial_director" data-start-for="financial_director">
+                            <div class="proc-num">16 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Поиск и получение мер государственной поддержки</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Исследование</span><span class="io-out">➡️ Соглашение</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 3 · Создание базы -->
+            <div class="phase-column phase3">
+                <div class="phase-header">Фаза 3 · Создание базы</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc24.html" class="proc-card phase3-color" data-roles="product_manager,project_office_head,project_committee,ukiot_head" data-start-for="project_office_head,project_committee">
+                            <div class="proc-num">24 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Инициация продуктового проекта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17,19</span><span class="io-out">➡️ 4</span></div>
+                        </a>
+                        <a href="proc23.html" class="proc-card phase3-color" data-roles="product_manager,ukiot_head,analytics_head,gp_planning_specialist,upp_head,assembly_head,aod_specialist,diu_planning_specialist" data-start-for="analytics_head,gp_planning_specialist,diu_planning_specialist,assembly_head">
+                            <div class="proc-num">23 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Создание номенклатурных групп</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17,19</span><span class="io-out">➡️ 4,4а</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Создание базы / закупки</div>
+                        <a href="proc4a.html" class="proc-card phase3-color" data-roles="product_manager,chief_designer,technologist,aod_specialist,marketing_analyst,ovk_head,urp_head,kru_specialist" data-start-for="chief_designer,urp_head,kru_specialist">
+                            <div class="proc-num">4а <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Ввод номенклатуры в папки «Опытные образцы», «ДСЕ и комплектующие»</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17,19,23,26</span><span class="io-out">➡️ 4 (13),23</span></div>
+                        </a>
+                        <a href="proc4.html" class="proc-card phase3-color" data-roles="product_manager,uop_manager,technical_consultant,designer,technologist,aod_specialist,marketing_analyst,marketing_analyst_pricing,plm_administrator,declaration_specialist,honest_sign_manager,ukiot_economist,ukiot_head,internet_projects_head" data-start-for="technical_consultant,designer,technologist,marketing_analyst,marketing_analyst_pricing,plm_administrator,declaration_specialist,honest_sign_manager,ukiot_economist,aod_specialist">
+                            <div class="proc-num">4 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Ввод номенклатуры в 1С:УПП (Готовая продукция)</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 23,24,4а (13)</span><span class="io-out">➡️ 11,13,15</span></div>
+                        </a>
+                        <a href="proc26.html" class="proc-card phase3-color" data-roles="senior_pm,product_manager,utk_head,nva_head" data-start-for="utk_head,nva_head">
+                            <div class="proc-num">26 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Поиск OEM-ODM поставщика</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17</span><span class="io-out">➡️ 31,4а</span></div>
+                        </a>
+                        <a href="proc31.html" class="proc-card phase3-color" data-roles="initiator,procurement_manager,storekeeper,approvers,product_manager,senior_pm" data-start-for="procurement_manager,storekeeper">
+                            <div class="proc-num">31 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Закупка образцов для целей проектов</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 26</span><span class="io-out">➡️ Испытания</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 4 · Подготовка к продажам -->
+            <div class="phase-column phase4">
+                <div class="phase-header">Фаза 4 · Подготовка к продажам</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc11.html" class="proc-card phase4-color" data-roles="product_manager,product_department_head,strategic_marketing_head,marketing_director,sales_director_rf,foreign_sales_director,analytics_lead" data-start-for="analytics_lead">
+                            <div class="proc-num">11 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Ценообразование нового продукта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4</span><span class="io-out">➡️ 14</span></div>
+                        </a>
+                        <a href="proc15.html" class="proc-card phase4-color" data-roles="product_manager,designer_creative,advertising_head,internet_projects_head,ovk_head" data-start-for="designer_creative,ovk_head,advertising_head,internet_projects_head">
+                            <div class="proc-num">15 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Обработка ТЗ на дизайнерскую ЭД</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4</span><span class="io-out">➡️ 13</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Подготовка к продажам</div>
+                        <a href="proc13.html" class="proc-card phase4-color" data-roles="client,strategic_communications_director,content_manager,product_manager,content_owner" data-start-for="strategic_communications_director,content_manager,content_owner,client">
+                            <div class="proc-num">13 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Наполнение контентом раздела каталог на сайте</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4,15</span><span class="io-out">➡️ 20</span></div>
+                        </a>
+                        <a href="proc14.html" class="proc-card phase4-color" data-roles="product_manager,analytics_specialist" data-start-for="analytics_specialist">
+                            <div class="proc-num">14 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Обновление файлов НиЦ и презентаций в Битрикс24</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 11</span><span class="io-out">➡️ 20</span></div>
+                        </a>
+                        <a href="proc28.html" class="proc-card phase4-color" data-roles="initiator,designer,utp_head,metrologist,certification_specialist" data-start-for="utp_head,metrologist,certification_specialist">
+                            <div class="proc-num">28 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Согласование макета сертификата / Получение разрешительных документов</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4,26</span><span class="io-out">➡️ 30</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Поддерживающие процессы</div>
+                        <a href="proc30.html" class="proc-card phase4-color" data-roles="initiator,lawyer,department_employees,managing_director,board_chairman,authorized_person,database_responsible" data-start-for="lawyer,managing_director,board_chairman,authorized_person,database_responsible,department_employees">
+                            <div class="proc-num">30 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Договорная работа</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 28,31</span><span class="io-out">➡️ Договор</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 5 · Запуск продаж -->
+            <div class="phase-column phase5">
+                <div class="phase-header">Фаза 5 · Запуск продаж</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc20.html" class="proc-card phase5-color" data-roles="product_manager,project_manager,ursd_head,roznica_head,sapr_specialist,division_head,urpr_head,kam,uoitp_head,advertising_head,upp_head" data-start-for="project_manager,ursd_head,roznica_head,sapr_specialist,division_head,urpr_head,kam,uoitp_head">
+                            <div class="proc-num">20 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Подготовка к старту продаж (pre-sale)</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4,13,14,15</span><span class="io-out">➡️ 25</span></div>
+                        </a>
+                        <a href="proc25.html" class="proc-card phase5-color" data-roles="product_manager,project_manager,ursd_head,marketing_analyst,uoitp_head,advertising_head,upp_head,uop_head" data-start-for="">
+                            <div class="proc-num">25 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Объявление старта продаж нового продукта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 20</span><span class="io-out">➡️ Акт</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 6 · Управление -->
+            <div class="phase-column phase6">
+                <div class="phase-header">Фаза 6 · Управление</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc8.html" class="proc-card phase6-color" data-roles="product_manager,planning_specialist,marketing_analyst,marketing_director,analytics_head,level1_manager,sales_director_rf,foreign_sales_director,commercial_manager,upsp_specialist" data-start-for="planning_specialist,upsp_specialist,sales_director_rf,foreign_sales_director,commercial_manager">
+                            <div class="proc-num">8 <span class="proc-badge badge-instruction">Инструкция</span></div>
+                            <div class="proc-name">Корректировка и согласование плана продаж</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 20,25</span><span class="io-out">➡️ 12</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Управление и аналитика</div>
+                        <a href="proc12.html" class="proc-card phase6-color" data-roles="product_manager,planning_specialist,analytics_head,approvers" data-start-for="">
+                            <div class="proc-num">12 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Классификация ОЕМ номенклатуры с установкой параметров складских запасов</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 8</span><span class="io-out">➡️ 22</span></div>
+                        </a>
+                        <a href="proc22.html" class="proc-card phase6-color" data-roles="product_manager,marketing_analyst,product_department_head,analytics_head,uop_manager,internet_projects_head" data-start-for="uop_head">
+                            <div class="proc-num">22 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Ценообразование продукта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 12,10</span><span class="io-out">➡️ 8,3</span></div>
+                        </a>
+                        <a href="proc4n.html" class="proc-card phase6-color" data-roles="product_manager,planning_specialist,marketing_analyst,product_department_head,motivation_manager,analytics_head" data-start-for="planning_specialist,motivation_manager">
+                            <div class="proc-num">4н <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Выявление неликвидной и слабооборачиваемой продукции</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Ежемесячно</span><span class="io-out">➡️ 3,29</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Поддерживающие процессы</div>
+                        <a href="proc10.html" class="proc-card phase6-color" data-roles="product_manager,senior_pm,marketing_analyst,analytics_head,product_department_head" data-start-for="">
+                            <div class="proc-num">10 <span class="proc-badge badge-instruction">Инструкция</span></div>
+                            <div class="proc-name">Сбор и анализ данных о конкурентах</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Регулярно</span><span class="io-out">➡️ 11,22</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Фаза 7 · Вывод и утилизация -->
+            <div class="phase-column phase7">
+                <div class="phase-header">Фаза 7 · Вывод и утилизация</div>
+                <div class="phase-content">
+                    <div class="role-group">
+                        <div class="role-group-title">Продукт-менеджмент</div>
+                        <a href="proc3.html" class="proc-card phase7-color" data-roles="product_manager,uop_manager,aod_engineer,gp_planning_specialist,advertising_head,internet_projects_head" data-start-for="uop_manager,aod_engineer,advertising_head,internet_projects_head">
+                            <div class="proc-num">3 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Вывод номенклатуры из папки «Готовая продукция»</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 22,4н</span><span class="io-out">➡️ Архив</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Проектный офис</div>
+                        <a href="proc5.html" class="proc-card phase7-color" data-roles="project_manager_old,project_office_head,project_committee,ukiot_head" data-start-for="project_manager_old">
+                            <div class="proc-num">5 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Завершение продуктового проекта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 17,19,24</span><span class="io-out">➡️ 6</span></div>
+                        </a>
+                        <a href="proc6.html" class="proc-card phase7-color" data-roles="project_manager_old,project_office_head,project_committee" data-start-for="">
+                            <div class="proc-num">6 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Изменение продуктового проекта</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 5</span><span class="io-out">➡️ Корректировка</span></div>
+                        </a>
+                    </div>
+                    <div class="role-group">
+                        <div class="role-group-title">Поддерживающие процессы</div>
+                        <a href="proc29.html" class="proc-card phase7-color" data-roles="initiator,commission_members,security_director,ukiot_head" data-start-for="commission_members,security_director">
+                            <div class="proc-num">29 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Списание ТМЦ по УУ</div>
+                            <div class="proc-io"><span class="io-in">⬅️ 4н и др.</span><span class="io-out">➡️ Списание</span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 </div>
 
 <script>
-    // Данные о процедурах (сокращенно для примера, в реальности полные данные)
-    const proceduresData = {
-        '21': { name: 'Формирование среднесрочной стратегии развития ГК КЭАЗ', phase: 1, outgoing: ['18'] },
-        '7': { name: 'Анализ цепочки поставок (каналов распределения)', phase: 1, outgoing: ['21'] },
-        '18': { name: 'Разработка стратегии развития сегментов', phase: 1, outgoing: ['17','19'] },
-        '27': { name: 'Обработка идеи по вводу нового продукта и модернизации', phase: 2, outgoing: ['17'] },
-        '17': { name: 'Проведение исследовательского проекта', phase: 2, outgoing: ['23','24','26'] },
-        '19': { name: 'Разработка технического решения', phase: 2, outgoing: ['24'] },
-        '16': { name: 'Поиск и получение мер государственной поддержки', phase: 2, outgoing: [] },
-        '24': { name: 'Инициация продуктового проекта', phase: 3, outgoing: ['4'] },
-        '23': { name: 'Создание номенклатурных групп', phase: 3, outgoing: ['4','4a'] },
-        '4a': { name: 'Ввод номенклатуры в папки «Опытные образцы», «ДСЕ и комплектующие»', phase: 3, outgoing: ['4','23'] },
-        '4': { name: 'Ввод номенклатуры в 1С:УПП (Готовая продукция)', phase: 3, outgoing: ['11','13','15'] },
-        '26': { name: 'Поиск OEM-ODM поставщика', phase: 3, outgoing: ['31','4a'] },
-        '31': { name: 'Закупка образцов для целей проектов', phase: 3, outgoing: [] },
-        '11': { name: 'Ценообразование нового продукта', phase: 4, outgoing: ['14'] },
-        '15': { name: 'Обработка ТЗ на дизайнерскую ЭД', phase: 4, outgoing: ['13'] },
-        '13': { name: 'Наполнение контентом раздела каталог на сайте', phase: 4, outgoing: ['20'] },
-        '14': { name: 'Обновление файлов НиЦ и презентаций в Битрикс24', phase: 4, outgoing: ['20'] },
-        '28': { name: 'Согласование макета сертификата / Получение разрешительных документов', phase: 4, outgoing: ['30'] },
-        '30': { name: 'Договорная работа', phase: 4, outgoing: [] },
-        '20': { name: 'Подготовка к старту продаж (pre-sale)', phase: 5, outgoing: ['25'] },
-        '25': { name: 'Объявление старта продаж нового продукта', phase: 5, outgoing: [] },
-        '8': { name: 'Корректировка и согласование плана продаж', phase: 6, outgoing: ['12'] },
-        '12': { name: 'Классификация ОЕМ номенклатуры с установкой параметров складских запасов', phase: 6, outgoing: ['22'] },
-        '22': { name: 'Ценообразование продукта', phase: 6, outgoing: ['8','3'] },
-        '4n': { name: 'Выявление неликвидной и слабооборачиваемой продукции', phase: 6, outgoing: ['3','29'] },
-        '10': { name: 'Сбор и анализ данных о конкурентах', phase: 6, outgoing: ['11','22'] },
-        '3': { name: 'Вывод номенклатуры из папки «Готовая продукция»', phase: 7, outgoing: [] },
-        '5': { name: 'Завершение продуктового проекта', phase: 7, outgoing: ['6'] },
-        '6': { name: 'Изменение продуктового проекта', phase: 7, outgoing: [] },
-        '29': { name: 'Списание ТМЦ по УУ', phase: 7, outgoing: [] }
-    };
-
-    // Стартовые процедуры для ролей
-    const startForRole = {
-        'product_manager': '27',
-        'senior_pm': '17',
-        'project_manager': '20',
-        'project_office_head': '24',
-        'project_committee': '24',
-        'initiator': '27',
-        'segment_marketing_manager': '18',
-        'marketing_analyst': '4',
-        'marketing_director': '21',
-        'product_department_head': '27',
-        'strategic_marketing_head': '21',
-        'designer': '4',
-        'chief_designer': '4a',
-        'technologist': '4',
-        'uop_manager': '3',
-        'uop_head': '22',
-        'ukiot_head': '17',
-        'financial_director': '16',
-        'aod_specialist': '4',
-        'advertising_head': '3',
-        'internet_projects_head': '15',
-        'analytics_head': '23',
-        'planning_specialist': '4n'
-    };
-
-    let currentRole = 'all';
-    let currentMode = 'chain'; // 'chain' или 'phases'
-
-    function buildChain(startProc) {
-        let chain = [];
-        let visited = new Set();
-        let queue = [startProc];
-        
-        while (queue.length > 0) {
-            let current = queue.shift();
-            if (visited.has(current)) continue;
-            visited.add(current);
-            chain.push(current);
-            
-            let proc = proceduresData[current];
-            if (proc && proc.outgoing) {
-                for (let next of proc.outgoing) {
-                    if (!visited.has(next)) {
-                        queue.push(next);
-                    }
-                }
-            }
-        }
-        return chain;
-    }
-
-    function buildParallelBranches(startProc) {
-        let branches = [];
-        let mainChain = buildChain(startProc);
-        
-        // Находим процедуры с множественными выходами
-        for (let procId of mainChain) {
-            let proc = proceduresData[procId];
-            if (proc && proc.outgoing && proc.outgoing.length > 1) {
-                let branch = {
-                    from: procId,
-                    to: proc.outgoing
-                };
-                branches.push(branch);
-            }
-        }
-        return { mainChain, branches };
-    }
-
-    function renderChainView(role) {
-        let startProc = startForRole[role];
-        if (!startProc) {
-            document.getElementById('mapContainer').innerHTML = '<div class="chain-container" style="padding: 40px; text-align: center;">🔍 Для этой роли нет стартовой процедуры</div>';
-            return;
-        }
-        
-        let { mainChain, branches } = buildParallelBranches(startProc);
-        
-        let html = `<div class="chain-container"><div class="chain-wrapper">`;
-        
-        // Основная цепочка
-        html += `<div class="chain-row">`;
-        for (let i = 0; i < mainChain.length; i++) {
-            let procId = mainChain[i];
-            let proc = proceduresData[procId];
-            let isStart = (procId === startProc);
-            let isEnd = (i === mainChain.length - 1);
-            
-            html += `
-                <a href="proc${procId}.html" class="chain-item ${isStart ? 'start' : ''} ${isEnd ? 'end' : ''}" style="border-left-color: ${getPhaseColor(proc.phase)}">
-                    <div class="chain-num">${procId}</div>
-                    <div class="chain-name">${proc.name.substring(0, 50)}${proc.name.length > 50 ? '...' : ''}</div>
-                    <div class="chain-badge">${isStart ? '🚩 Старт' : (isEnd ? '🏁 Финал' : '')}</div>
-                </a>
-            `;
-            
-            if (i < mainChain.length - 1) {
-                html += `<div class="chain-arrow">→</div>`;
-            }
-        }
-        html += `</div>`;
-        
-        // Параллельные ветки
-        for (let branch of branches) {
-            let fromProc = proceduresData[branch.from];
-            html += `
-                <div class="parallel-branch">
-                    <div style="font-size:0.7rem; color:#475569; margin-bottom:8px;">📌 Из процедуры ${branch.from} (${fromProc.name.substring(0, 30)}...) запускаются:</div>
-                    <div class="parallel-items">
-            `;
-            for (let toProcId of branch.to) {
-                let toProc = proceduresData[toProcId];
-                html += `
-                    <a href="proc${toProcId}.html" class="chain-item" style="border-left-color: #22c55e; min-width: 120px;">
-                        <div class="chain-num">${toProcId}</div>
-                        <div class="chain-name">${toProc.name.substring(0, 40)}${toProc.name.length > 40 ? '...' : ''}</div>
-                    </a>
-                    <div class="chain-arrow" style="color:#22c55e;">→</div>
-                `;
-            }
-            html += `</div></div>`;
-        }
-        
-        html += `</div></div>`;
-        document.getElementById('mapContainer').innerHTML = html;
-    }
-
-    function getPhaseColor(phase) {
-        const colors = {
-            1: '#9747ff',
-            2: '#3b82f6',
-            3: '#22c55e',
-            4: '#f97316',
-            5: '#ef4444',
-            6: '#eab308',
-            7: '#c084fc'
-        };
-        return colors[phase] || '#64748b';
-    }
-
-    function renderPhasesView(role) {
-        // Здесь рендерим обычную карту по фазам
-        // Для краткости показываем заглушку
-        document.getElementById('mapContainer').innerHTML = `
-            <div class="phases-container">
-                <div class="phases-grid">
-                    <div class="phase-column phase1">
-                        <div class="phase-header">Фаза 1 · Стратегия</div>
-                        <div class="phase-content">
-                            <div class="role-group">
-                                <div class="role-group-title">Стратегический маркетинг</div>
-                                <a href="proc21.html" class="proc-card phase1-color" data-roles="marketing_director,strategic_marketing_head,level1_manager,level2_manager" data-start-for="marketing_director,strategic_marketing_head">
-                                    <div class="proc-num">21 <span class="proc-badge badge-procedure">Процедура</span></div>
-                                    <div class="proc-name">Формирование среднесрочной стратегии развития ГК КЭАЗ</div>
-                                    <div class="proc-io"><span class="io-in">⬅️ План-график</span><span class="io-out">➡️ 18</span></div>
-                                </a>
-                                <a href="proc7.html" class="proc-card phase1-color" data-roles="marketer" data-start-for="marketer">
-                                    <div class="proc-num">7 <span class="proc-badge badge-instruction">Инструкция</span></div>
-                                    <div class="proc-name">Анализ цепочки поставок (каналов распределения)</div>
-                                    <div class="proc-io"><span class="io-in">⬅️ Ежегодно</span><span class="io-out">➡️ 21</span></div>
-                                </a>
-                                <a href="proc18.html" class="proc-card phase1-color" data-roles="strategic_marketing_head,segment_marketing_manager,marketing_director" data-start-for="segment_marketing_manager">
-                                    <div class="proc-num">18 <span class="proc-badge badge-procedure">Процедура</span></div>
-                                    <div class="proc-name">Разработка стратегии развития сегментов</div>
-                                    <div class="proc-io"><span class="io-in">⬅️ 21</span><span class="io-out">➡️ 17,19</span></div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Остальные фазы аналогично -->
-                </div>
-            </div>
-        `;
-    }
-
-    function updateView() {
-        if (currentRole === 'all') {
-            renderPhasesView();
-        } else {
-            renderChainView(currentRole);
-        }
-    }
-
-    function filterByRole(role) {
-        currentRole = role;
-        updateURL(role);
-        
-        const select = document.getElementById('quickNavSelect');
-        if (select) select.value = role || '';
-        
-        document.querySelectorAll('.filter-item').forEach(el => el.classList.remove('active'));
-        const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
-        if (activeFilter) activeFilter.classList.add('active');
-        
-        updateView();
-    }
+    let expanded = false;
 
     function updateURL(role) {
         if (role && role !== 'all') {
@@ -921,23 +817,59 @@
     function toggleAllRoles() {
         const expandable = document.getElementById('allRolesExpandable');
         const btn = document.getElementById('toggleBtn');
-        let expanded = expandable.classList.contains('show');
         if (expanded) {
             expandable.classList.remove('show');
             btn.innerHTML = '🔽 Показать все роли';
+            expanded = false;
         } else {
             expandable.classList.add('show');
             btn.innerHTML = '🔼 Скрыть дополнительные роли';
+            expanded = true;
         }
     }
 
-    // Инициализация
+    function filterByRole(role) {
+        updateURL(role);
+        
+        const select = document.getElementById('quickNavSelect');
+        if (select) select.value = role || '';
+        
+        document.querySelectorAll('.filter-item').forEach(el => el.classList.remove('active'));
+        const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
+        if (activeFilter) activeFilter.classList.add('active');
+        
+        const cards = document.querySelectorAll('.proc-card');
+        cards.forEach(card => card.classList.remove('start-highlight'));
+        
+        if (role === 'all') {
+            cards.forEach(card => card.classList.remove('filtered-out'));
+        } else {
+            cards.forEach(card => {
+                const rolesAttr = card.getAttribute('data-roles');
+                if (rolesAttr) {
+                    const rolesList = rolesAttr.split(',');
+                    if (rolesList.includes(role)) {
+                        card.classList.remove('filtered-out');
+                        const startForAttr = card.getAttribute('data-start-for');
+                        if (startForAttr) {
+                            const cleanStr = startForAttr.replace(/[\[\]'"]/g, '');
+                            const startRoles = cleanStr.split(',');
+                            if (startRoles.includes(role)) {
+                                card.classList.add('start-highlight');
+                            }
+                        }
+                    } else {
+                        card.classList.add('filtered-out');
+                    }
+                }
+            });
+        }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         const urlRole = getRoleFromURL();
-        if (urlRole && startForRole[urlRole]) {
+        if (urlRole) {
             filterByRole(urlRole);
-        } else {
-            filterByRole('all');
         }
     });
 </script>
