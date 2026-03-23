@@ -1,4 +1,4 @@
-// highlight.js - яркая подсветка блоков
+// highlight.js - подсветка блоков по data-атрибуту
 (function() {
     console.log('highlight.js загружен');
     
@@ -13,26 +13,19 @@
     searchTerm = decodeURIComponent(searchTerm).toLowerCase();
     console.log('Ищем:', searchTerm);
     
-    // Функция проверки, содержит ли элемент искомый текст
-    function containsText(node, term) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            return node.textContent.toLowerCase().includes(term);
-        } else if (node.nodeType === Node.ELEMENT_NODE && 
-                   !['SCRIPT', 'STYLE'].includes(node.tagName)) {
-            for (let child of node.childNodes) {
-                if (containsText(child, term)) return true;
-            }
-        }
-        return false;
-    }
-    
-    // Подсвечиваем блоки .step-card, где есть искомый текст
+    // Сначала проходим по всем step-card и добавляем им data-search-text
     const cards = document.querySelectorAll('.step-card');
-    let foundCount = 0;
+    cards.forEach(card => {
+        // Собираем весь текст из карточки (включая дочерние элементы)
+        const fullText = card.textContent.toLowerCase();
+        card.setAttribute('data-search-text', fullText);
+    });
+    
     let foundCards = [];
     
     cards.forEach(card => {
-        if (containsText(card, searchTerm)) {
+        const text = card.getAttribute('data-search-text');
+        if (text && text.includes(searchTerm)) {
             // Яркая подсветка
             card.style.border = '3px solid #f6b83e';
             card.style.backgroundColor = '#fff3cf';
@@ -40,7 +33,6 @@
             card.style.transition = 'all 0.3s ease';
             card.style.transform = 'scale(1.02)';
             card.style.zIndex = '10';
-            foundCount++;
             foundCards.push(card);
         } else {
             // Восстанавливаем исходный стиль
@@ -52,25 +44,28 @@
         }
     });
     
-    // Плавный скролл к первому найденному блоку
-    if (foundCards.length > 0) {
-        setTimeout(() => {
-            foundCards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
-    }
-    
-    // Также проверяем детальную панель, если открыта
+    // Подсветка детальной панели
     const detailPanel = document.getElementById('detailPanel');
-    if (detailPanel && containsText(detailPanel, searchTerm)) {
-        detailPanel.style.border = '3px solid #f6b83e';
-        detailPanel.style.backgroundColor = '#fff3cf';
-        detailPanel.style.boxShadow = '0 0 0 3px rgba(246, 184, 62, 0.4), 0 8px 20px rgba(0,0,0,0.15)';
-        detailPanel.style.transition = 'all 0.3s ease';
+    if (detailPanel) {
+        const panelText = detailPanel.textContent.toLowerCase();
+        if (panelText.includes(searchTerm)) {
+            detailPanel.style.border = '3px solid #f6b83e';
+            detailPanel.style.backgroundColor = '#fff3cf';
+            detailPanel.style.boxShadow = '0 0 0 3px rgba(246, 184, 62, 0.4), 0 8px 20px rgba(0,0,0,0.15)';
+            detailPanel.style.transition = 'all 0.3s ease';
+        }
     }
     
+    const foundCount = foundCards.length;
     console.log('Найдено блоков:', foundCount);
     
     if (foundCount > 0) {
+        // Плавный скролл к первому
+        setTimeout(() => {
+            foundCards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+        
+        // Уведомление
         const notice = document.createElement('div');
         notice.textContent = `🔍 Найдено ${foundCount} блоков по запросу "${searchTerm}"`;
         notice.style.cssText = `
@@ -116,11 +111,9 @@
         nextBtn.onmouseleave = () => nextBtn.style.transform = 'scale(1)';
         nextBtn.onclick = () => {
             if (foundCards.length === 0) return;
-            // Снимаем дополнительную подсветку с предыдущего
-            foundCards.forEach(c => c.style.border = '3px solid #f6b83e');
             currentIndex = (currentIndex + 1) % foundCards.length;
             foundCards[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Временно усиливаем подсветку текущего
+            // Временно усиливаем подсветку
             foundCards[currentIndex].style.border = '4px solid #f6b83e';
             foundCards[currentIndex].style.backgroundColor = '#ffe6a3';
             setTimeout(() => {
@@ -130,6 +123,7 @@
         };
         document.body.appendChild(nextBtn);
         
+        // Автоудаление через 6 секунд
         setTimeout(() => {
             notice.style.opacity = '0';
             notice.style.transition = 'opacity 0.3s';
