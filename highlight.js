@@ -1,87 +1,75 @@
-// highlight.js - подсветка поискового запроса на странице процедуры
+// highlight.js - подсветка поискового запроса
 (function() {
+    console.log('highlight.js загружен');
+    
     // Получаем поисковый запрос из URL
     const urlParams = new URLSearchParams(window.location.search);
     let searchTerm = urlParams.get('search');
     
-    // Если нет в URL, пробуем взять из localStorage (на случай, если перешли не по ссылке)
     if (!searchTerm) {
-        searchTerm = localStorage.getItem('searchTerm');
-    }
-    
-    if (!searchTerm) {
-        console.log('Нет поискового запроса');
+        console.log('Нет параметра search в URL');
         return;
     }
     
-    // Декодируем
-    searchTerm = decodeURIComponent(searchTerm);
-    console.log('Подсветка:', searchTerm);
+    // Декодируем и приводим к нижнему регистру для поиска
+    searchTerm = decodeURIComponent(searchTerm).toLowerCase();
+    console.log('Ищем:', searchTerm);
     
-    // Экранируем спецсимволы для регулярного выражения
-    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(${escapeRegex(searchTerm)})`, 'gi');
-    
-    // Функция подсветки текста внутри элемента (рекурсивно обходит узлы)
-    function highlightNode(node) {
+    // Функция для подсветки текста
+    function highlightText(node, term) {
         if (node.nodeType === Node.TEXT_NODE) {
             const text = node.textContent;
-            if (regex.test(text)) {
-                // Сбрасываем lastIndex, так как test его сдвинул
-                regex.lastIndex = 0;
+            const lowerText = text.toLowerCase();
+            const index = lowerText.indexOf(term);
+            
+            if (index !== -1) {
                 const span = document.createElement('span');
-                let lastIndex = 0;
-                let match;
+                const before = text.substring(0, index);
+                const match = text.substring(index, index + term.length);
+                const after = text.substring(index + term.length);
                 
-                // Находим все совпадения
-                while ((match = regex.exec(text)) !== null) {
-                    // Текст до совпадения
-                    const before = text.substring(lastIndex, match.index);
-                    if (before) {
-                        span.appendChild(document.createTextNode(before));
-                    }
-                    // Само совпадение (оборачиваем в mark)
-                    const mark = document.createElement('mark');
-                    mark.style.backgroundColor = '#f6b83e';
-                    mark.style.color = '#0a1929';
-                    mark.style.padding = '0 2px';
-                    mark.style.borderRadius = '4px';
-                    mark.style.fontWeight = '500';
-                    mark.textContent = match[0];
-                    span.appendChild(mark);
-                    
-                    lastIndex = match.index + match[0].length;
-                }
-                // Текст после последнего совпадения
-                const after = text.substring(lastIndex);
-                if (after) {
-                    span.appendChild(document.createTextNode(after));
-                }
+                span.appendChild(document.createTextNode(before));
+                
+                const mark = document.createElement('mark');
+                mark.style.backgroundColor = '#f6b83e';
+                mark.style.color = '#0a1929';
+                mark.style.padding = '0 2px';
+                mark.style.borderRadius = '4px';
+                mark.style.fontWeight = '500';
+                mark.textContent = match;
+                span.appendChild(mark);
+                
+                span.appendChild(document.createTextNode(after));
                 
                 node.parentNode.replaceChild(span, node);
                 return true;
             }
         } else if (node.nodeType === Node.ELEMENT_NODE && 
-                   !['SCRIPT', 'STYLE', 'MARK'].includes(node.tagName)) {
-            // Проходим по дочерним узлам в обратном порядке, чтобы не ломать итерацию
+                   !['SCRIPT', 'STYLE', 'MARK', 'CODE', 'PRE'].includes(node.tagName)) {
+            let changed = false;
             const children = Array.from(node.childNodes);
-            for (let i = children.length - 1; i >= 0; i--) {
-                highlightNode(children[i]);
+            for (let child of children) {
+                if (highlightText(child, term)) {
+                    changed = true;
+                }
             }
+            return changed;
         }
         return false;
     }
     
     // Запускаем подсветку
-    highlightNode(document.body);
+    highlightText(document.body, searchTerm);
     
     // Считаем количество подсвеченных элементов
     const marks = document.querySelectorAll('mark');
     const count = marks.length;
+    console.log('Найдено совпадений:', count);
     
     if (count > 0) {
         // Показываем уведомление
         const notice = document.createElement('div');
+        notice.textContent = `🔍 Найдено ${count} совпадений по запросу "${searchTerm}"`;
         notice.style.cssText = `
             position: fixed;
             bottom: 20px;
@@ -96,46 +84,31 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             font-family: inherit;
         `;
-        notice.innerHTML = `🔍 Найдено ${count} совпадений по запросу "${searchTerm}"`;
         document.body.appendChild(notice);
         
-        // Автоматически скрываем через 4 секунды
         setTimeout(() => {
             notice.style.opacity = '0';
             notice.style.transition = 'opacity 0.3s';
             setTimeout(() => notice.remove(), 400);
         }, 4000);
-        
-        // Добавляем кнопку прокрутки к следующему совпадению (опционально)
-        let currentMarkIndex = 0;
-        const scrollBtn = document.createElement('div');
-        scrollBtn.style.cssText = `
+    } else {
+        console.log('Совпадений не найдено');
+        // Показываем сообщение, что ничего не найдено
+        const notice = document.createElement('div');
+        notice.textContent = `🔍 Ничего не найдено по запросу "${searchTerm}"`;
+        notice.style.cssText = `
             position: fixed;
-            bottom: 90px;
+            bottom: 20px;
             right: 20px;
-            background: #0a1929;
-            color: #f6b83e;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
             z-index: 10000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            font-family: monospace;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         `;
-        scrollBtn.innerHTML = '↓';
-        scrollBtn.title = 'Перейти к следующему совпадению';
-        scrollBtn.onclick = () => {
-            if (marks.length === 0) return;
-            marks[currentMarkIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            marks.forEach(m => m.style.backgroundColor = '#f6b83e');
-            marks[currentMarkIndex].style.backgroundColor = '#ffaa33';
-            currentMarkIndex = (currentMarkIndex + 1) % marks.length;
-        };
-        document.body.appendChild(scrollBtn);
+        document.body.appendChild(notice);
+        setTimeout(() => notice.remove(), 3000);
     }
 })();
