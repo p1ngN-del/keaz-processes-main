@@ -874,50 +874,69 @@
 
     // ПОИСК по JSON и по карточкам
     function applySearch() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.proc-card');
-        let visibleCount = 0;
-        
-        if (!searchTerm) {
-            cards.forEach(card => {
-                card.classList.remove('search-hidden');
-                visibleCount++;
-            });
-        } else {
-            cards.forEach(card => {
-                const procId = card.getAttribute('data-proc-id');
-                let found = false;
-                
-                // Сначала ищем в видимом тексте карточки
-                const cardText = card.textContent.toLowerCase();
-                if (cardText.includes(searchTerm)) {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.proc-card');
+    let visibleCount = 0;
+    
+    // Сохраняем поисковый запрос для передачи в процедуры
+    if (searchTerm) {
+        localStorage.setItem('searchTerm', searchTerm);
+    } else {
+        localStorage.removeItem('searchTerm');
+    }
+    
+    // Обновляем ссылки у всех карточек — добавляем search параметр
+    cards.forEach(card => {
+        const href = card.getAttribute('href');
+        if (href) {
+            if (searchTerm) {
+                card.setAttribute('href', href + '?search=' + encodeURIComponent(searchTerm));
+            } else {
+                // убираем параметр, если поиск пустой
+                const cleanHref = href.split('?')[0];
+                card.setAttribute('href', cleanHref);
+            }
+        }
+    });
+    
+    if (!searchTerm) {
+        cards.forEach(card => {
+            card.classList.remove('search-hidden');
+            visibleCount++;
+        });
+    } else {
+        cards.forEach(card => {
+            const procId = card.getAttribute('data-proc-id');
+            let found = false;
+            
+            const cardText = card.textContent.toLowerCase();
+            if (cardText.includes(searchTerm)) {
+                found = true;
+            }
+            
+            if (!found && procId && proceduresSearchData.has(procId)) {
+                const fullText = proceduresSearchData.get(procId);
+                if (fullText.includes(searchTerm)) {
                     found = true;
                 }
-                
-                // Если не нашли, ищем в JSON-данных
-                if (!found && procId && proceduresSearchData.has(procId)) {
-                    const fullText = proceduresSearchData.get(procId);
-                    if (fullText.includes(searchTerm)) {
-                        found = true;
-                    }
-                }
-                
-                if (found) {
-                    card.classList.remove('search-hidden');
-                    visibleCount++;
-                } else {
-                    card.classList.add('search-hidden');
-                }
-            });
-        }
-        
-        const countEl = document.getElementById('searchResultCount');
-        if (searchTerm) {
-            countEl.textContent = `🔍 Найдено: ${visibleCount} процедур`;
-        } else {
-            countEl.textContent = '';
-        }
+            }
+            
+            if (found) {
+                card.classList.remove('search-hidden');
+                visibleCount++;
+            } else {
+                card.classList.add('search-hidden');
+            }
+        });
     }
+    
+    const countEl = document.getElementById('searchResultCount');
+    if (searchTerm) {
+        countEl.textContent = `🔍 Найдено: ${visibleCount} процедур`;
+    } else {
+        countEl.textContent = '';
+    }
+}
     
     function clearSearch() {
         document.getElementById('searchInput').value = '';
