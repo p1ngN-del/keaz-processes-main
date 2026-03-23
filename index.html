@@ -885,16 +885,16 @@
         localStorage.removeItem('searchTerm');
     }
     
-    // Обновляем ссылки у всех карточек — добавляем search параметр
+    // Обновляем ссылки у всех карточек — добавляем search параметр (заменяем старый, если был)
     cards.forEach(card => {
-        const href = card.getAttribute('href');
+        let href = card.getAttribute('href');
         if (href) {
+            // Убираем старый параметр search, если был
+            const baseHref = href.split('?')[0];
             if (searchTerm) {
-                card.setAttribute('href', href + '?search=' + encodeURIComponent(searchTerm));
+                card.setAttribute('href', baseHref + '?search=' + encodeURIComponent(searchTerm));
             } else {
-                // убираем параметр, если поиск пустой
-                const cleanHref = href.split('?')[0];
-                card.setAttribute('href', cleanHref);
+                card.setAttribute('href', baseHref);
             }
         }
     });
