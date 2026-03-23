@@ -1,4 +1,4 @@
-// highlight.js - подсветка без поломки обработчиков
+// highlight.js - подсветка блоков, а не текста
 (function() {
     console.log('highlight.js загружен');
     
@@ -13,75 +13,51 @@
     searchTerm = decodeURIComponent(searchTerm).toLowerCase();
     console.log('Ищем:', searchTerm);
     
-    // Функция для подсветки без замены узлов (сохраняет обработчики)
-    function highlightTextSafe(node, term) {
+    // Функция проверки, содержит ли элемент искомый текст
+    function containsText(node, term) {
         if (node.nodeType === Node.TEXT_NODE) {
-            const text = node.textContent;
-            const lowerText = text.toLowerCase();
-            const index = lowerText.indexOf(term);
-            
-            if (index !== -1) {
-                // Создаём временный контейнер
-                const span = document.createElement('span');
-                const before = text.substring(0, index);
-                const match = text.substring(index, index + term.length);
-                const after = text.substring(index + term.length);
-                
-                span.appendChild(document.createTextNode(before));
-                const mark = document.createElement('mark');
-                mark.style.backgroundColor = '#f6b83e';
-                mark.style.color = '#0a1929';
-                mark.style.padding = '0 2px';
-                mark.style.borderRadius = '4px';
-                mark.textContent = match;
-                span.appendChild(mark);
-                span.appendChild(document.createTextNode(after));
-                
-                node.parentNode.replaceChild(span, node);
-                return true;
-            }
+            return node.textContent.toLowerCase().includes(term);
         } else if (node.nodeType === Node.ELEMENT_NODE && 
-                   !['SCRIPT', 'STYLE', 'MARK', 'A'].includes(node.tagName) &&
-                   !node.hasAttribute('onclick')) {
-            // Пропускаем элементы с onclick и ссылки, чтобы не ломать обработчики
-            const children = Array.from(node.childNodes);
-            for (let child of children) {
-                highlightTextSafe(child, term);
+                   !['SCRIPT', 'STYLE'].includes(node.tagName)) {
+            for (let child of node.childNodes) {
+                if (containsText(child, term)) return true;
             }
         }
         return false;
     }
     
-    // Запускаем подсветку (обойдёт step-card с onclick, чтобы их не сломать)
+    // Подсвечиваем блоки .step-card, где есть искомый текст
     const cards = document.querySelectorAll('.step-card');
+    let foundCount = 0;
+    
     cards.forEach(card => {
-        // Сохраняем исходный onclick
-        const originalOnclick = card.getAttribute('onclick');
-        // Временно удаляем атрибут, чтобы подсветка не сломала
-        if (originalOnclick) {
-            card.removeAttribute('onclick');
-        }
-        // Подсвечиваем текст внутри карточки
-        highlightTextSafe(card, searchTerm);
-        // Восстанавливаем onclick
-        if (originalOnclick) {
-            card.setAttribute('onclick', originalOnclick);
+        if (containsText(card, searchTerm)) {
+            card.style.border = '3px solid #f6b83e';
+            card.style.backgroundColor = '#fff9e6';
+            card.style.boxShadow = '0 0 0 3px rgba(246, 184, 62, 0.2), 0 4px 12px rgba(0,0,0,0.1)';
+            card.style.transition = 'all 0.2s';
+            foundCount++;
+        } else {
+            // Восстанавливаем исходный стиль (убираем подсветку)
+            card.style.border = '';
+            card.style.backgroundColor = '';
+            card.style.boxShadow = '';
         }
     });
     
-    // Также подсвечиваем текст в детальной панели, если она открыта
+    // Также проверяем детальную панель, если открыта
     const detailPanel = document.getElementById('detailPanel');
-    if (detailPanel) {
-        highlightTextSafe(detailPanel, searchTerm);
+    if (detailPanel && containsText(detailPanel, searchTerm)) {
+        detailPanel.style.border = '3px solid #f6b83e';
+        detailPanel.style.backgroundColor = '#fff9e6';
+        detailPanel.style.transition = 'all 0.2s';
     }
     
-    const marks = document.querySelectorAll('mark');
-    const count = marks.length;
-    console.log('Найдено совпадений:', count);
+    console.log('Найдено блоков:', foundCount);
     
-    if (count > 0) {
+    if (foundCount > 0) {
         const notice = document.createElement('div');
-        notice.textContent = `🔍 Найдено ${count} совпадений по запросу "${searchTerm}"`;
+        notice.textContent = `🔍 Найдено ${foundCount} блоков по запросу "${searchTerm}"`;
         notice.style.cssText = `
             position: fixed;
             bottom: 20px;
