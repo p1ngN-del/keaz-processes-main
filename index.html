@@ -53,6 +53,51 @@
             border: 1px solid #e2e8f0;
         }
 
+        /* ПОИСК — ДОБАВЛЕНО */
+        .search-section {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+        .search-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex: 1;
+            max-width: 450px;
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .search-input:focus {
+            border-color: #f6b83e;
+            box-shadow: 0 0 0 2px rgba(246,184,62,0.2);
+        }
+        .search-clear {
+            background: #e2e8f0;
+            border: none;
+            border-radius: 40px;
+            padding: 6px 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .search-clear:hover {
+            background: #cbd5e1;
+        }
+        .search-result-count {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        /* конец поиска */
+
         .filter-row {
             display: flex;
             flex-wrap: wrap;
@@ -299,6 +344,11 @@
             overflow: hidden;
         }
 
+        /* ПОИСК: скрытие карточек */
+        .proc-card.search-hidden {
+            display: none !important;
+        }
+
         .proc-card.start-highlight {
             border: 3px solid #f6b83e !important;
             background: #fff9e6;
@@ -414,6 +464,15 @@
 
     <!-- Панель фильтра -->
     <div class="filter-panel">
+        <!-- ПОИСК - ДОБАВЛЕНО -->
+        <div class="search-section">
+            <div class="search-row">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по процедурам (название, номер, ТНВЭД, сертификат...)" onkeyup="applySearch()">
+                <button class="search-clear" onclick="clearSearch()">✖ Очистить</button>
+            </div>
+            <div id="searchResultCount" class="search-result-count"></div>
+        </div>
+
         <div class="filter-row" id="mainRoles">
             <div class="filter-item filter-all active" data-role="all" onclick="filterByRole('all')">👥 Все роли</div>
             <div class="filter-item" data-role="product_manager" onclick="filterByRole('product_manager')">Продукт-менеджер</div>
@@ -538,7 +597,7 @@
         </div>
     </div>
 
-    <!-- Карта процессов (ОСТАЛАСЬ БЕЗ ИЗМЕНЕНИЙ) -->
+    <!-- Карта процессов (БЕЗ ИЗМЕНЕНИЙ — твоя полная карта) -->
     <div class="phases-container">
         <div class="phases-grid">
             <!-- Фаза 1 · Стратегия -->
@@ -828,6 +887,33 @@
         }
     }
 
+    // ПОИСК
+    function applySearch() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.proc-card');
+        let visibleCount = 0;
+        cards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            if (!searchTerm || text.includes(searchTerm)) {
+                card.classList.remove('search-hidden');
+                visibleCount++;
+            } else {
+                card.classList.add('search-hidden');
+            }
+        });
+        const countEl = document.getElementById('searchResultCount');
+        if (searchTerm) {
+            countEl.textContent = `🔍 Найдено: ${visibleCount} процедур`;
+        } else {
+            countEl.textContent = '';
+        }
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        applySearch();
+    }
+
     function filterByRole(role) {
         updateURL(role);
         
@@ -864,6 +950,8 @@
                 }
             });
         }
+        // после фильтрации применяем поиск
+        applySearch();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
