@@ -1,4 +1,4 @@
-// highlight.js - подсветка блоков по data-атрибуту
+// highlight.js - подсветка блоков через CSS-класс
 (function() {
     console.log('highlight.js загружен');
     
@@ -13,47 +13,62 @@
     searchTerm = decodeURIComponent(searchTerm).toLowerCase();
     console.log('Ищем:', searchTerm);
     
-    // Сначала проходим по всем step-card и добавляем им data-search-text
-    const cards = document.querySelectorAll('.step-card');
-    cards.forEach(card => {
-        // Собираем весь текст из карточки (включая дочерние элементы)
-        const fullText = card.textContent.toLowerCase();
-        card.setAttribute('data-search-text', fullText);
-    });
+    // Добавляем CSS-класс для подсветки, если его ещё нет
+    if (!document.getElementById('highlight-styles')) {
+        const style = document.createElement('style');
+        style.id = 'highlight-styles';
+        style.textContent = `
+            .highlight-card {
+                border: 3px solid #f6b83e !important;
+                background-color: #fff3cf !important;
+                box-shadow: 0 0 0 3px rgba(246, 184, 62, 0.4), 0 8px 20px rgba(0,0,0,0.15) !important;
+                transition: all 0.3s ease !important;
+                transform: scale(1.02) !important;
+                z-index: 10 !important;
+                position: relative !important;
+            }
+            .highlight-panel {
+                border: 3px solid #f6b83e !important;
+                background-color: #fff3cf !important;
+                box-shadow: 0 0 0 3px rgba(246, 184, 62, 0.4), 0 8px 20px rgba(0,0,0,0.15) !important;
+                transition: all 0.3s ease !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
     
+    // Функция проверки, содержит ли элемент искомый текст
+    function containsText(node, term) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            return node.textContent.toLowerCase().includes(term);
+        } else if (node.nodeType === Node.ELEMENT_NODE && 
+                   !['SCRIPT', 'STYLE'].includes(node.tagName)) {
+            for (let child of node.childNodes) {
+                if (containsText(child, term)) return true;
+            }
+        }
+        return false;
+    }
+    
+    // Подсвечиваем блоки .step-card
+    const cards = document.querySelectorAll('.step-card');
     let foundCards = [];
     
     cards.forEach(card => {
-        const text = card.getAttribute('data-search-text');
-        if (text && text.includes(searchTerm)) {
-            // Яркая подсветка
-            card.style.border = '3px solid #f6b83e';
-            card.style.backgroundColor = '#fff3cf';
-            card.style.boxShadow = '0 0 0 3px rgba(246, 184, 62, 0.4), 0 8px 20px rgba(0,0,0,0.15)';
-            card.style.transition = 'all 0.3s ease';
-            card.style.transform = 'scale(1.02)';
-            card.style.zIndex = '10';
+        if (containsText(card, searchTerm)) {
+            card.classList.add('highlight-card');
             foundCards.push(card);
         } else {
-            // Восстанавливаем исходный стиль
-            card.style.border = '';
-            card.style.backgroundColor = '';
-            card.style.boxShadow = '';
-            card.style.transform = '';
-            card.style.zIndex = '';
+            card.classList.remove('highlight-card');
         }
     });
     
     // Подсветка детальной панели
     const detailPanel = document.getElementById('detailPanel');
-    if (detailPanel) {
-        const panelText = detailPanel.textContent.toLowerCase();
-        if (panelText.includes(searchTerm)) {
-            detailPanel.style.border = '3px solid #f6b83e';
-            detailPanel.style.backgroundColor = '#fff3cf';
-            detailPanel.style.boxShadow = '0 0 0 3px rgba(246, 184, 62, 0.4), 0 8px 20px rgba(0,0,0,0.15)';
-            detailPanel.style.transition = 'all 0.3s ease';
-        }
+    if (detailPanel && containsText(detailPanel, searchTerm)) {
+        detailPanel.classList.add('highlight-panel');
+    } else if (detailPanel) {
+        detailPanel.classList.remove('highlight-panel');
     }
     
     const foundCount = foundCards.length;
@@ -114,16 +129,14 @@
             currentIndex = (currentIndex + 1) % foundCards.length;
             foundCards[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
             // Временно усиливаем подсветку
-            foundCards[currentIndex].style.border = '4px solid #f6b83e';
-            foundCards[currentIndex].style.backgroundColor = '#ffe6a3';
+            foundCards[currentIndex].classList.add('highlight-card');
+            foundCards[currentIndex].style.transform = 'scale(1.03)';
             setTimeout(() => {
-                foundCards[currentIndex].style.border = '3px solid #f6b83e';
-                foundCards[currentIndex].style.backgroundColor = '#fff3cf';
+                foundCards[currentIndex].style.transform = '';
             }, 500);
         };
         document.body.appendChild(nextBtn);
         
-        // Автоудаление через 6 секунд
         setTimeout(() => {
             notice.style.opacity = '0';
             notice.style.transition = 'opacity 0.3s';
