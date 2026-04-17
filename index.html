@@ -1097,7 +1097,6 @@
 
     <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 </div>
-
 <script>
     let expanded = false;
     let currentRole = 'all';
@@ -1316,6 +1315,226 @@
             document.getElementById('searchInput').value = searchTermFromCookie;
         }
     });
+    // ============================================
+// AI-АССИСТЕНТ DEEPSEEK - ЛОГИКА
+// ============================================
+
+// Адрес вашего прокси-сервера (из Шага 2)
+const PROXY_URL = 'http://localhost:3000/api/chat';
+
+// История сообщений для контекста
+let aiMessages = [
+    {
+        role: 'system',
+        content: `Ты — AI-ассистент КЭАЗ (Курский электроаппаратный завод). 
+        Твоя задача — помогать сотрудникам находить информацию о бизнес-процессах и процедурах.
+        
+        Отвечай кратко, по делу, дружелюбным тоном.
+        При ответе обязательно указывай номер процедуры в формате "Процедура X" или "procX.html".
+        
+        Важно: Если пользователь спрашивает о том, как выполнить какое-то действие, 
+        предложи ему перейти на соответствующую страницу процедуры.
+        
+        Доступные процедуры (номера и краткое описание):
+        - proc3.html: Вывод номенклатуры из ассортимента
+        - proc4.html: Ввод номенклатуры в 1С:УПП (Готовая продукция)
+        - proc4a.html: Ввод номенклатуры в опытные образцы и ДСЕ
+        - proc4n.html: Выявление неликвидной продукции
+        - proc5.html: Завершение продуктового проекта
+        - proc6.html: Изменение продуктового проекта
+        - proc7.html: Анализ цепочки поставок (каналы распределения)
+        - proc8.html: Корректировка плана продаж
+        - proc10.html: Сбор и анализ данных о конкурентах
+        - proc11.html: Ценообразование нового продукта
+        - proc12.html: Классификация ОЕМ номенклатуры
+        - proc13.html: Наполнение контентом раздела "Каталог"
+        - proc14.html: Обновление файлов НиЦ и презентаций
+        - proc15.html: Обработка ТЗ на дизайнерскую ЭД
+        - proc16.html: Поиск и получение мер господдержки
+        - proc17.html: Проведение исследовательского проекта
+        - proc18.html: Разработка стратегии развития сегментов
+        - proc19.html: Разработка технического решения
+        - proc20.html: Подготовка к старту продаж (pre-sale)
+        - proc21.html: Формирование среднесрочной стратегии
+        - proc22.html: Ценообразование продукта (управление)
+        - proc23.html: Создание номенклатурных групп
+        - proc24.html: Инициация продуктового проекта
+        - proc25.html: Объявление старта продаж
+        - proc26.html: Поиск OEM-ODM поставщика
+        - proc27.html: Обработка идеи по вводу нового продукта
+        - proc28.html: Согласование макета сертификата / ТНВЭД
+        - proc29.html: Списание ТМЦ по УУ
+        - proc30.html: Договорная работа
+        - proc31.html: Закупка образцов для целей проектов`
+    }
+];
+
+// Переключение виджета (открыть/закрыть)
+function toggleAIWidget() {
+    const widget = document.getElementById('aiWidget');
+    widget.classList.toggle('open');
+    
+    // Если открыли - ставим фокус на поле ввода
+    if (widget.classList.contains('open')) {
+        setTimeout(() => {
+            document.getElementById('aiInput').focus();
+        }, 100);
+    }
+}
+
+// Закрыть виджет (для внешнего вызова)
+function closeAIAssistant() {
+    document.getElementById('aiWidget').classList.remove('open');
+}
+
+// Обработка нажатия Enter в поле ввода
+function handleAIKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendAIMessage();
+    }
+}
+
+// Показать индикатор "печатает..."
+function showTypingIndicator() {
+    const messagesDiv = document.getElementById('aiMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'typing-indicator';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = '<span></span><span></span><span></span>';
+    messagesDiv.appendChild(typingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Убрать индикатор "печатает..."
+function removeTypingIndicator() {
+    const typingDiv = document.getElementById('typingIndicator');
+    if (typingDiv) {
+        typingDiv.remove();
+    }
+}
+
+// Добавить сообщение в чат
+function addMessageToChat(text, sender) {
+    const messagesDiv = document.getElementById('aiMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `ai-message ai-message-${sender}`;
+    
+    // Преобразуем упоминания процедур в кликабельные ссылки
+    let formattedText = text
+        // proc3.html -> ссылка
+        .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => {
+            return `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`;
+        })
+        // "Процедура X" -> ссылка
+        .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
+            return `<a href="proc${num}.html" target="_blank">${match}</a>`;
+        })
+        // "процедуру X" -> ссылка
+        .replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => {
+            return `<a href="proc${num}.html" target="_blank">${match}</a>`;
+        });
+    
+    messageDiv.innerHTML = formattedText;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Отправка сообщения к DeepSeek
+async function sendAIMessage() {
+    const input = document.getElementById('aiInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Очищаем поле ввода
+    input.value = '';
+    
+    // Добавляем сообщение пользователя в чат
+    addMessageToChat(message, 'user');
+    
+    // Добавляем в историю
+    aiMessages.push({ role: 'user', content: message });
+    
+    // Показываем индикатор печати
+    showTypingIndicator();
+    
+    // Отключаем кнопку отправки
+    const sendBtn = document.getElementById('aiSendBtn');
+    sendBtn.disabled = true;
+    
+    try {
+        // Отправляем запрос к прокси-серверу
+        const response = await fetch(PROXY_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                messages: aiMessages 
+            })
+        });
+        
+        // Убираем индикатор печати
+        removeTypingIndicator();
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Добавляем ответ ассистента
+            addMessageToChat(data.content, 'bot');
+            
+            // Сохраняем ответ в историю
+            aiMessages.push({ 
+                role: 'assistant', 
+                content: data.content 
+            });
+        } else {
+            addMessageToChat(
+                '❌ Извините, произошла ошибка. Проверьте, запущен ли прокси-сервер (http://localhost:3000).', 
+                'bot'
+            );
+        }
+    } catch (error) {
+        console.error('Ошибка при запросе к DeepSeek:', error);
+        removeTypingIndicator();
+        
+        addMessageToChat(
+            '❌ Не удалось подключиться к серверу.<br><br>' +
+            '<strong>Возможные причины:</strong><br>' +
+            '1. Прокси-сервер не запущен (выполните <code>node server.js</code>)<br>' +
+            '2. Порт 3000 занят другим приложением<br>' +
+            '3. Ошибка в API-ключе DeepSeek<br><br>' +
+            'Проверьте консоль сервера для деталей.',
+            'bot'
+        );
+    }
+    
+    // Включаем кнопку обратно
+    sendBtn.disabled = false;
+}
+
+// Проверка соединения с сервером при загрузке
+async function checkAIServer() {
+    try {
+        const response = await fetch('http://localhost:3000/health');
+        if (response.ok) {
+            console.log('✅ AI-сервер DeepSeek доступен');
+        } else {
+            console.warn('⚠️ AI-сервер отвечает с ошибкой');
+        }
+    } catch (error) {
+        console.warn('⚠️ AI-сервер не запущен. Запустите: node server.js');
+    }
+}
+
+// Проверяем сервер при загрузке страницы
+window.addEventListener('DOMContentLoaded', () => {
+    checkAIServer();
+});
 </script>
     <!-- ============================================ -->
 <!-- AI-АССИСТЕНТ DEEPSEEK - HTML                  -->
