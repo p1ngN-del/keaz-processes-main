@@ -1488,19 +1488,29 @@
     }
 
     function addMessageToChat(text, sender) {
-        const messagesDiv = document.getElementById('aiMessages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `ai-message ai-message-${sender}`;
-        
-        let formattedText = text
-            .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`)
-            .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`)
-            .replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
-        
-        messageDiv.innerHTML = formattedText;
-        messagesDiv.appendChild(messageDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
+    const messagesDiv = document.getElementById('aiMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `ai-message ai-message-${sender}`;
+    
+    // Преобразуем Markdown в HTML
+    let formattedText = text
+        // Жирный текст **bold** -> <strong>bold</strong>
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        // Курсив *italic* -> <em>italic</em>
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        // Код `code` -> <code>code</code>
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        // Переносы строк
+        .replace(/\n/g, '<br>')
+        // Ссылки на процедуры
+        .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`)
+        .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`)
+        .replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
+    
+    messageDiv.innerHTML = formattedText;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
 
     // Отправка сообщения к DeepSeek (улучшенная версия с большим контекстом)
 async function sendAIMessage() {
