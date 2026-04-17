@@ -1435,8 +1435,15 @@ function toggleAIWidget() {
     const widget = document.getElementById('aiWidget');
     widget.classList.toggle('open');
     
+    const btnText = document.querySelector('.ai-toggle-btn .ai-btn-text');
+    const isOpen = widget.classList.contains('open');
+    
+    if (btnText) {
+        btnText.textContent = isOpen ? 'Закрыть AI-ассистента' : 'Спросить AI-ассистента';
+    }
+    
     // Если открыли - ставим фокус на поле ввода
-    if (widget.classList.contains('open')) {
+    if (isOpen) {
         setTimeout(() => {
             document.getElementById('aiInput').focus();
         }, 100);
