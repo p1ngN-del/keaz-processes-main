@@ -1699,10 +1699,6 @@ function resetAIFilter() {
 
 // Проверка соединения с сервером при загрузке
 async function checkAIServer() {
-    ...
-
-// Проверка соединения с сервером при загрузке
-async function checkAIServer() {
     try {
         const response = await fetch('http://localhost:3000/health');
         if (response.ok) {
