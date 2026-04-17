@@ -1246,76 +1246,37 @@
     }
     
     const questionLower = question.toLowerCase();
-    
-    // Разбиваем на слова и НЕ фильтруем короткие (оставляем все)
     let words = questionLower.split(/\s+/);
     
-    // Добавляем также слитные варианты для аббревиатур
-    // Например, если есть "ТН ВЭД", добавляем "тнвэд"
+    // Добавляем слитные варианты (для аббревиатур)
     const joinedQuestion = words.join('');
-    if (joinedQuestion !== questionLower) {
-        words.push(joinedQuestion);
-    }
-    
-    // Также ищем аббревиатуры без пробелов
-    const abbreviations = [];
-    for (let i = 0; i < words.length; i++) {
-        for (let j = i + 1; j <= words.length; j++) {
-            const combo = words.slice(i, j).join('');
-            if (combo.length >= 3 && !words.includes(combo)) {
-                abbreviations.push(combo);
-            }
-        }
-    }
-    words = [...words, ...abbreviations];
+    if (joinedQuestion !== questionLower) words.push(joinedQuestion);
     
     console.log('🔎 Ищем по словам:', words);
-    
-    if (words.length === 0) return [];
     
     const scored = proceduresFullData.map(proc => {
         const fullText = (proc.num + ' ' + proc.name + ' ' + proc.content).toLowerCase();
         let score = 0;
         
         words.forEach(word => {
-            if (word.length < 2) return; // Пропускаем только 1-буквенные
+            if (word.length < 2) return;
             
-            // Ищем слово как отдельное или как часть
             const regex = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
             const matches = fullText.match(regex);
-            if (matches) {
-                score += matches.length * 15; // Увеличил вес
-            }
+            if (matches) score += matches.length * 15;
             
-            // Бонус за точное совпадение номера
-            if (proc.num.toLowerCase() === word) {
-                score += 100;
-            }
-            
-            // Бонус за упоминание в названии
-            if (proc.name.toLowerCase().includes(word)) {
-                score += 30;
-            }
+            if (proc.num.toLowerCase() === word) score += 100;
+            if (proc.name.toLowerCase().includes(word)) score += 30;
         });
         
-        // Специальные правила для известных терминов
+        // Специальные правила для частых запросов
         if (questionLower.includes('тнвэд') || questionLower.includes('тн вэд')) {
-            if (fullText.includes('тнвэд') || fullText.includes('тн вэд')) {
-                score += 100; // Большой бонус за ТНВЭД в любом написании
-            }
+            if (fullText.includes('тнвэд') || fullText.includes('тн вэд')) score += 100;
         }
-        
-        if (questionLower.includes('сертификат')) {
-            if (fullText.includes('сертификат')) {
-                score += 80;
-            }
-        }
-        
-        if (questionLower.includes('поставщик')) {
-            if (fullText.includes('поставщик') || fullText.includes('oem') || fullText.includes('odm')) {
-                score += 80;
-            }
-        }
+        if (questionLower.includes('сертификат') && fullText.includes('сертификат')) score += 80;
+        if (questionLower.includes('поставщик') && (fullText.includes('поставщик') || fullText.includes('oem'))) score += 80;
+        if (questionLower.includes('вывод') && fullText.includes('вывод')) score += 50;
+        if (questionLower.includes('цена') && fullText.includes('цена')) score += 50;
         
         return { proc, score };
     });
@@ -1328,34 +1289,7 @@
     
     console.log(`🔍 Найдено ${relevant.length} релевантных процедур`);
     if (relevant.length > 0) {
-        console.log('📋 Процедуры (с очками):', relevant.map(p => {
-            const item = scored.find(s => s.proc.num === p.num);
-            return `${p.num}: ${p.name} (${item.score})`;
-        }).join('\n   '));
-    } else {
-        // Если ничего не нашли — покажем все процедуры, где есть хоть одно слово
-        console.log('⚠️ Ничего не найдено, ищем по отдельным буквам...');
-        const fallbackScored = proceduresFullData.map(proc => {
-            const fullText = (proc.num + ' ' + proc.name + ' ' + proc.content).toLowerCase();
-            let score = 0;
-            
-            // Проверяем каждую букву из вопроса
-            const letters = questionLower.replace(/\s+/g, '').split('');
-            letters.forEach(letter => {
-                if (fullText.includes(letter)) score += 1;
-            });
-            
-            return { proc, score };
-        });
-        
-        const fallback = fallbackScored
-            .filter(item => item.score > questionLower.length * 0.3)
-            .sort((a, b) => b.score - a.score)
-            .slice(0, maxResults)
-            .map(item => item.proc);
-            
-        console.log('📋 Fallback результаты:', fallback.map(p => `${p.num}: ${p.name}`).join(', '));
-        return fallback;
+        console.log('📋 Процедуры:', relevant.map(p => `${p.num}: ${p.name}`).join(', '));
     }
     
     return relevant;
@@ -1591,7 +1525,7 @@ async function sendAIMessage() {
             contextText = '\n\n=== РЕЛЕВАНТНЫЕ ПРОЦЕДУРЫ ИЗ БАЗЫ ЗНАНИЙ КЭАЗ ===\n\n';
             relevantProcs.forEach((proc) => {
                 contextText += `--- ПРОЦЕДУРА ${proc.num}: ${proc.name} ---\n`;
-                // Отправляем до 15 000 символов (в 7 раз больше, чем было!)
+                // Отправляем до 15 000 символов
                 const maxLength = 15000;
                 if (proc.content.length > maxLength) {
                     contextText += proc.content.substring(0, maxLength);
@@ -1671,155 +1605,87 @@ async function sendAIMessage() {
     
     sendBtn.disabled = false;
 }
+
+let originalRoleFilter = 'all';
+let originalSearchTerm = '';
+
+function filterByAIProcedures(procNumbers) {
+    originalRoleFilter = currentRole;
+    originalSearchTerm = document.getElementById('searchInput').value;
     
-    contextText += '\n\n';
-});
-                contextText += '=== КОНЕЦ КОНТЕКСТА ===\n\n';
-            } else {
-                contextText = '\n\n(Релевантные процедуры не найдены в базе знаний)\n\n';
-            }
-            
-            const messagesWithContext = [
-                {
-                    role: 'system',
-                    content: `Ты — AI-ассистент КЭАЗ. Отвечай на вопросы сотрудников, основываясь ТОЛЬКО на предоставленном контексте.
-                    Если ответ есть в контексте — дай чёткий ответ с номером процедуры.
-                    Если нет — скажи, что не знаешь.
-                    ВАЖНО: В конце ответа добавь [PROC:номера] (например [PROC:4] или [PROC:none])`
-                },
-                {
-                    role: 'user',
-                    content: `КОНТЕКСТ:\n${contextText}\n\nВОПРОС: ${message}`
-                }
-            ];
-            
-            const response = await fetch(PROXY_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messages: messagesWithContext })
-            });
-            
-            removeTypingIndicator();
-            
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                const procMatch = data.content.match(/\[PROC:([^\]]+)\]/);
-                let procNumbers = [];
-                
-                if (procMatch && procMatch[1] !== 'none') {
-                    procNumbers = procMatch[1].split(',').map(p => p.trim());
-                }
-                
-                let cleanContent = data.content.replace(/\[PROC:[^\]]+\]/, '').trim();
-                addMessageToChat(cleanContent, 'bot');
-                
-                if (procNumbers.length > 0) {
-                    filterByAIProcedures(procNumbers);
-                    
-                    const messagesDiv = document.getElementById('aiMessages');
-                    const filterMsg = document.createElement('div');
-                    filterMsg.className = 'ai-message ai-message-bot';
-                    filterMsg.style.background = '#fff3cf';
-                    filterMsg.style.borderColor = '#f6b83e';
-                    filterMsg.innerHTML = `🎯 <strong>Карта отфильтрована</strong> — показаны процедуры: ${procNumbers.map(p => `<code style="background:#f6b83e; color:#0a1929; padding:2px 6px; border-radius:12px; margin:0 2px;">${p}</code>`).join(', ')}<br><br>
-                    <a href="#" onclick="resetAIFilter(); return false;" style="color: #0a1929; background: #f6b83e; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block;">🔄 Сбросить фильтр</a>`;
-                    messagesDiv.appendChild(filterMsg);
-                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                }
-            } else {
-                addMessageToChat('❌ Ошибка. Проверьте прокси-сервер.', 'bot');
-            }
-        } catch (error) {
-            console.error('Ошибка:', error);
-            removeTypingIndicator();
-            addMessageToChat('❌ Не удалось подключиться к серверу. Запустите: node server.js', 'bot');
-        }
-        
-        sendBtn.disabled = false;
-    }
-
-    let originalRoleFilter = 'all';
-    let originalSearchTerm = '';
-
-    function filterByAIProcedures(procNumbers) {
-        originalRoleFilter = currentRole;
-        originalSearchTerm = document.getElementById('searchInput').value;
-        
-        const cards = document.querySelectorAll('.proc-card');
-        cards.forEach(card => {
-            const procId = card.getAttribute('data-proc-id');
-            if (procNumbers.includes(procId)) {
-                card.classList.remove('search-hidden', 'filtered-out');
-                card.classList.add('ai-highlight');
-            } else {
-                card.classList.add('search-hidden');
-            }
-        });
-        
-        const countEl = document.getElementById('searchResultCount');
-        countEl.textContent = `🤖 AI рекомендует: ${procNumbers.length} процедур`;
-        countEl.style.color = '#f6b83e';
-        countEl.style.fontWeight = '600';
-    }
-
-    function resetAIFilter() {
-        const cards = document.querySelectorAll('.proc-card');
-        cards.forEach(card => card.classList.remove('search-hidden', 'ai-highlight'));
-        
-        if (originalRoleFilter && originalRoleFilter !== 'all') {
-            filterByRole(originalRoleFilter);
+    const cards = document.querySelectorAll('.proc-card');
+    cards.forEach(card => {
+        const procId = card.getAttribute('data-proc-id');
+        if (procNumbers.includes(procId)) {
+            card.classList.remove('search-hidden', 'filtered-out');
+            card.classList.add('ai-highlight');
         } else {
-            applySearch();
+            card.classList.add('search-hidden');
         }
-        
-        const countEl = document.getElementById('searchResultCount');
-        countEl.style.color = '';
-        countEl.style.fontWeight = '';
-    }
-
-    async function checkAIServer() {
-        try {
-            const response = await fetch('http://localhost:3000/health');
-            if (response.ok) {
-                console.log('✅ AI-сервер DeepSeek доступен');
-            } else {
-                console.warn('⚠️ AI-сервер отвечает с ошибкой');
-            }
-        } catch (error) {
-            console.warn('⚠️ AI-сервер не запущен. Запустите: node server.js');
-        }
-    }
-
-    // ============================================
-    // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
-    // ============================================
-
-    window.addEventListener('DOMContentLoaded', () => {
-        loadProceduresFullData();
-        
-        document.querySelectorAll('.proc-card').forEach(card => {
-            card.setAttribute('data-original-href', card.getAttribute('href'));
-        });
-        
-        loadProceduresData();
-        
-        const urlRole = getRoleFromURL();
-        if (urlRole) {
-            filterByRole(urlRole);
-        }
-        
-        const searchTermFromCookie = getCookie('searchTerm');
-        if (searchTermFromCookie) {
-            document.getElementById('searchInput').value = searchTermFromCookie;
-        }
-        
-        checkAIServer();
     });
+    
+    const countEl = document.getElementById('searchResultCount');
+    countEl.textContent = `🤖 AI рекомендует: ${procNumbers.length} процедур`;
+    countEl.style.color = '#f6b83e';
+    countEl.style.fontWeight = '600';
+}
+
+function resetAIFilter() {
+    const cards = document.querySelectorAll('.proc-card');
+    cards.forEach(card => card.classList.remove('search-hidden', 'ai-highlight'));
+    
+    if (originalRoleFilter && originalRoleFilter !== 'all') {
+        filterByRole(originalRoleFilter);
+    } else {
+        applySearch();
+    }
+    
+    const countEl = document.getElementById('searchResultCount');
+    countEl.style.color = '';
+    countEl.style.fontWeight = '';
+}
+
+async function checkAIServer() {
+    try {
+        const response = await fetch('http://localhost:3000/health');
+        if (response.ok) {
+            console.log('✅ AI-сервер DeepSeek доступен');
+        } else {
+            console.warn('⚠️ AI-сервер отвечает с ошибкой');
+        }
+    } catch (error) {
+        console.warn('⚠️ AI-сервер не запущен. Запустите: node server.js');
+    }
+}
+
+// ============================================
+// ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+// ============================================
+
+window.addEventListener('DOMContentLoaded', () => {
+    loadProceduresFullData();
+    
+    document.querySelectorAll('.proc-card').forEach(card => {
+        card.setAttribute('data-original-href', card.getAttribute('href'));
+    });
+    
+    loadProceduresData();
+    
+    const urlRole = getRoleFromURL();
+    if (urlRole) {
+        filterByRole(urlRole);
+    }
+    
+    const searchTermFromCookie = getCookie('searchTerm');
+    if (searchTermFromCookie) {
+        document.getElementById('searchInput').value = searchTermFromCookie;
+    }
+    
+    checkAIServer();
+});
 </script>
-    <!-- ============================================ -->
+
+<!-- ============================================ -->
 <!-- AI-АССИСТЕНТ DEEPSEEK - HTML                  -->
 <!-- ============================================ -->
 
