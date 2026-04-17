@@ -1,8 +1,8 @@
-// highlight.js - подсветка блоков и шагов по поисковому запросу
+// highlight.js - подсветка блоков и шагов по поисковому запросу (с анализом stepData)
 (function() {
-    console.log('highlight.js загружен (версия 2.0)');
+    console.log('highlight.js загружен (версия 2.2 - deep search)');
 
-    // --- Функции для работы с куками (более надежный способ передачи данных между страницами) ---
+    // --- Функции для работы с куками ---
     function setCookie(name, value, days) {
         var expires = "";
         if (days) {
@@ -28,30 +28,30 @@
         document.cookie = name + '=; Max-Age=-99999999; path=/';
     }
 
-    // Получаем поисковый запрос из параметров URL (для страниц процедур)
+    // Получаем поисковый запрос
     const urlParams = new URLSearchParams(window.location.search);
     let searchTerm = urlParams.get('search');
     
-    // Если в URL нет параметра, пробуем получить из куки (на случай перехода не по ссылке)
     if (!searchTerm) {
         searchTerm = getCookie('searchTerm');
     }
 
     if (!searchTerm) {
-        console.log('Нет параметра search в URL и в куках');
+        console.log('Нет параметра search. Выход.');
+        deleteCookie('searchTerm');
         return;
     }
 
-    // Декодируем и очищаем поисковый запрос
     searchTerm = decodeURIComponent(searchTerm).toLowerCase().trim();
-    if (!searchTerm) return;
+    if (!searchTerm) {
+        deleteCookie('searchTerm');
+        return;
+    }
     
-    // Сохраняем поисковый запрос в куки для надежности
     setCookie('searchTerm', searchTerm, 1);
-    
-    console.log('Ищем (из URL или кук):', searchTerm);
+    console.log('Ищем (глубокий поиск):', searchTerm);
 
-    // --- Добавление CSS-классов для подсветки, если их ещё нет ---
+    // --- Добавление CSS-классов для подсветки ---
     if (!document.getElementById('highlight-styles')) {
         const style = document.createElement('style');
         style.id = 'highlight-styles';
@@ -75,17 +75,15 @@
         document.head.appendChild(style);
     }
 
-    // --- Функция для проверки, содержит ли элемент искомый текст ---
-    // Ищет как в текстовом содержимом, так и в значениях атрибутов
-    function containsSearchTerm(element, term) {
+    // --- Улучшенная функция проверки: анализирует и DOM, и глобальный объект stepData ---
+    function containsSearchTermDeep(element, term) {
         if (!element) return false;
         
-        // Проверяем текстовое содержимое
+        // 1. Проверка видимого текста и атрибутов
         if (element.textContent && element.textContent.toLowerCase().includes(term)) {
             return true;
         }
         
-        // Проверяем некоторые ключевые атрибуты, если они есть
         const attributesToCheck = ['data-step', 'data-proc-id', 'data-num', 'data-name'];
         for (let attr of attributesToCheck) {
             const attrValue = element.getAttribute(attr);
@@ -93,32 +91,44 @@
                 return true;
             }
         }
-        
-        return false;
-    }
 
-    // --- Функция для глубокой проверки наличия текста (используется для панели деталей) ---
-    function containsTextDeep(node, term) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            return node.textContent.toLowerCase().includes(term);
-        } else if (node.nodeType === Node.ELEMENT_NODE && 
-                   !['SCRIPT', 'STYLE'].includes(node.tagName)) {
-            for (let child of node.childNodes) {
-                if (containsTextDeep(child, term)) return true;
+        // 2. Проверка в глобальном объекте stepData (если он есть)
+        // Каждая карточка шага имеет атрибут data-step="1" (или составной "13-14")
+        let stepId = element.getAttribute('data-step');
+        if (stepId) {
+            // Берем только номер до дефиса (для шагов типа "13-14" -> "13")
+            const baseStepId = stepId.split('-')[0];
+            
+            // Проверяем, существует ли глобальная переменная stepData и есть ли в ней такой ключ
+            if (typeof window.stepData !== 'undefined' && window.stepData[baseStepId]) {
+                const data = window.stepData[baseStepId];
+                // Собираем весь текст из объекта шага
+                const fullStepText = (data.number + ' ' + data.role + ' ' + data.text + ' ' + (data.inputs || []).join(' ') + ' ' + (data.outputs || []).join(' ')).toLowerCase();
+                if (fullStepText.includes(term)) {
+                    return true;
+                }
             }
         }
+        
         return false;
     }
 
     // --- Логика подсветки ---
     
-    // 1. Подсвечиваем карточки на странице
-    // Ищем как карточки процедур (`.proc-card`), так и шаги (`.step-card`)
-    const cards = document.querySelectorAll('.proc-card, .step-card');
+    const cards = document.querySelectorAll('.step-card, .proc-card');
     let foundElements = [];
 
     cards.forEach(card => {
-        if (containsSearchTerm(card, searchTerm)) {
+        // Пропускаем карточки внутри детальной панели
+        if (card.closest('#detailPanel')) {
+            return;
+        }
+        
+        const isVisible = !!(card.offsetWidth || card.offsetHeight || card.getClientRects().length);
+        if (!isVisible) return;
+
+        // Используем новую функцию глубокого поиска
+        if (containsSearchTermDeep(card, searchTerm)) {
             card.classList.add('highlight-card');
             foundElements.push(card);
         } else {
@@ -126,11 +136,11 @@
         }
     });
 
-    // 2. Подсветка детальной панели (если она есть и содержит текст)
+    // Подсветка панели детализации
     const detailPanel = document.getElementById('detailPanel');
-    if (detailPanel) {
-        // Для панели деталей используем глубокий поиск, так как там много вложенного текста
-        if (containsTextDeep(detailPanel, searchTerm)) {
+    const detailText = document.getElementById('detailText');
+    if (detailPanel && detailText) {
+        if (detailText.textContent.toLowerCase().includes(searchTerm)) {
             detailPanel.classList.add('highlight-panel');
         } else {
             detailPanel.classList.remove('highlight-panel');
@@ -138,16 +148,14 @@
     }
 
     const foundCount = foundElements.length;
-    console.log(`Найдено элементов: ${foundCount}`);
+    console.log(`Найдено элементов (включая stepData): ${foundCount}`);
 
-    // --- UI для навигации по найденным элементам ---
+    // --- UI (Навигация) ---
     if (foundCount > 0) {
-        // Плавный скролл к первому найденному элементу
         setTimeout(() => {
             foundElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
 
-        // Создаем уведомление
         const notice = document.createElement('div');
         notice.textContent = `🔍 Найдено совпадений: ${foundCount}`;
         notice.style.cssText = `
@@ -158,7 +166,6 @@
         `;
         document.body.appendChild(notice);
 
-        // Кнопка "Следующий элемент"
         let currentIndex = 0;
         const nextBtn = document.createElement('div');
         nextBtn.textContent = '↓';
@@ -177,14 +184,12 @@
             currentIndex = (currentIndex + 1) % foundElements.length;
             foundElements[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
             
-            // Визуально выделяем текущий элемент
             foundElements.forEach(el => el.style.outline = '');
             foundElements[currentIndex].style.outline = '3px solid red';
             setTimeout(() => foundElements[currentIndex].style.outline = '', 1000);
         };
         document.body.appendChild(nextBtn);
 
-        // Автоматическое скрытие уведомления и кнопки через 8 секунд
         setTimeout(() => {
             notice.style.opacity = '0';
             notice.style.transition = 'opacity 0.3s';
@@ -194,9 +199,8 @@
             }, 400);
         }, 8000);
     } else {
-        // Уведомление, если ничего не найдено
         const notice = document.createElement('div');
-        notice.textContent = `🔍 По запросу "${searchTerm}" ничего не найдено`;
+        notice.textContent = `🔍 По запросу "${searchTerm}" ничего не найдено в шагах`;
         notice.style.cssText = `
             position: fixed; bottom: 20px; right: 20px; background: #6c757d;
             color: white; padding: 10px 20px; border-radius: 40px;
