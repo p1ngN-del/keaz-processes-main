@@ -819,7 +819,33 @@
     let currentRole = 'all';
     let proceduresSearchData = new Map(); // id -> полный текст для поиска
 
-    // Загрузка JSON с полными текстами процедур
+    // --- Вспомогательные функции для работы с куками (синхронизация с highlight.js) ---
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function deleteCookie(name) {
+        document.cookie = name + '=; Max-Age=-99999999; path=/';
+    }
+
+    // --- Загрузка данных процедур из JSON ---
     async function loadProceduresData() {
         try {
             const response = await fetch('procedures_data.json');
@@ -834,9 +860,10 @@
         } catch (error) {
             console.error('Ошибка загрузки procedures_data.json:', error);
         }
-        applySearch();
+        applySearch(); // Применяем поиск после загрузки данных
     }
 
+    // --- Обновление URL при фильтрации по роли ---
     function updateURL(role) {
         if (role && role !== 'all') {
             window.history.pushState({}, '', `?role=${role}`);
@@ -872,77 +899,83 @@
         }
     }
 
-    // ПОИСК по JSON и по карточкам
+    // --- ПОИСК: Основная функция фильтрации и обновления ссылок ---
     function applySearch() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    const cards = document.querySelectorAll('.proc-card');
-    let visibleCount = 0;
-    
-    // Сохраняем поисковый запрос для передачи в процедуры
-    if (searchTerm) {
-        localStorage.setItem('searchTerm', searchTerm);
-    } else {
-        localStorage.removeItem('searchTerm');
-    }
-    
-    // Обновляем ссылки у всех карточек — добавляем search параметр (заменяем старый, если был)
-    cards.forEach(card => {
-        let href = card.getAttribute('href');
-        if (href) {
-            // Убираем старый параметр search, если был
-            const baseHref = href.split('?')[0];
-            if (searchTerm) {
-                card.setAttribute('href', baseHref + '?search=' + encodeURIComponent(searchTerm));
-            } else {
-                card.setAttribute('href', baseHref);
-            }
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.proc-card');
+        let visibleCount = 0;
+        
+        // 1. Сохраняем поисковый запрос в куки для использования в highlight.js
+        if (searchTerm) {
+            setCookie('searchTerm', searchTerm, 1);
+        } else {
+            deleteCookie('searchTerm');
         }
-    });
-    
-    if (!searchTerm) {
+        
+        // 2. Обновляем ссылки у всех карточек — добавляем search параметр, сохраняя существующие (например, role)
         cards.forEach(card => {
-            card.classList.remove('search-hidden');
-            visibleCount++;
-        });
-    } else {
-        cards.forEach(card => {
-            const procId = card.getAttribute('data-proc-id');
-            let found = false;
-            
-            const cardText = card.textContent.toLowerCase();
-            if (cardText.includes(searchTerm)) {
-                found = true;
-            }
-            
-            if (!found && procId && proceduresSearchData.has(procId)) {
-                const fullText = proceduresSearchData.get(procId);
-                if (fullText.includes(searchTerm)) {
-                    found = true;
+            let href = card.getAttribute('href');
+            if (href) {
+                // Создаем URL объект для удобной работы с параметрами
+                let url = new URL(href, window.location.origin);
+                if (searchTerm) {
+                    url.searchParams.set('search', searchTerm);
+                } else {
+                    url.searchParams.delete('search');
                 }
+                card.setAttribute('href', url.pathname + url.search);
             }
-            
-            if (found) {
+        });
+        
+        // 3. Скрываем/показываем карточки на главной
+        if (!searchTerm) {
+            cards.forEach(card => {
                 card.classList.remove('search-hidden');
                 visibleCount++;
-            } else {
-                card.classList.add('search-hidden');
-            }
-        });
+            });
+        } else {
+            cards.forEach(card => {
+                const procId = card.getAttribute('data-proc-id');
+                let found = false;
+                
+                // Поиск в тексте карточки
+                const cardText = card.textContent.toLowerCase();
+                if (cardText.includes(searchTerm)) {
+                    found = true;
+                }
+                
+                // Поиск в полном JSON описании процедуры
+                if (!found && procId && proceduresSearchData.has(procId)) {
+                    const fullText = proceduresSearchData.get(procId);
+                    if (fullText.includes(searchTerm)) {
+                        found = true;
+                    }
+                }
+                
+                if (found) {
+                    card.classList.remove('search-hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('search-hidden');
+                }
+            });
+        }
+        
+        // 4. Обновляем счетчик
+        const countEl = document.getElementById('searchResultCount');
+        if (searchTerm) {
+            countEl.textContent = `🔍 Найдено: ${visibleCount} процедур`;
+        } else {
+            countEl.textContent = '';
+        }
     }
-    
-    const countEl = document.getElementById('searchResultCount');
-    if (searchTerm) {
-        countEl.textContent = `🔍 Найдено: ${visibleCount} процедур`;
-    } else {
-        countEl.textContent = '';
-    }
-}
     
     function clearSearch() {
         document.getElementById('searchInput').value = '';
         applySearch();
     }
 
+    // --- ФИЛЬТРАЦИЯ ПО РОЛЯМ ---
     function filterByRole(role) {
         currentRole = role;
         updateURL(role);
@@ -981,15 +1014,24 @@
             });
         }
         
+        // Повторно применяем поиск, так как фильтр по ролям мог изменить видимые элементы
         applySearch();
     }
 
+    // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ---
     window.addEventListener('DOMContentLoaded', () => {
         loadProceduresData();
         
         const urlRole = getRoleFromURL();
         if (urlRole) {
             filterByRole(urlRole);
+        }
+        
+        // Проверяем куки на наличие поискового запроса и применяем его к полю ввода
+        const searchTermFromCookie = getCookie('searchTerm');
+        if (searchTermFromCookie) {
+            document.getElementById('searchInput').value = searchTermFromCookie;
+            // applySearch() вызовется после загрузки данных процедур
         }
     });
 </script>
