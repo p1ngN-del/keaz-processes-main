@@ -456,33 +456,33 @@
             box-shadow: 0 12px 28px rgba(246, 184, 62, 0.5);
         }
         /* ============================================ */
-/* AI-АССИСТЕНТ DEEPSEEK - СТИЛИ (В ПАНЕЛИ ФИЛЬТРОВ) */
+/* AI-АССИСТЕНТ DEEPSEEK - СТИЛИ (РЯДОМ С ПОИСКОМ) */
 /* ============================================ */
 
-/* Кнопка вызова AI - теперь в панели фильтров */
-.ai-toggle-btn {
+/* Кнопка AI рядом с поиском */
+.ai-search-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 12px 24px;
+    gap: 8px;
+    padding: 10px 20px;
     border-radius: 40px;
     background: linear-gradient(135deg, #f6b83e, #ff8c00);
     color: #0a1929;
     border: none;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(246, 184, 62, 0.3);
+    box-shadow: 0 4px 12px rgba(246, 184, 62, 0.3);
     transition: all 0.3s ease;
     animation: softPulse 2.5s infinite;
     border: 2px solid rgba(255, 255, 255, 0.3);
-    margin: 0 auto;
+    white-space: nowrap;
 }
 
-.ai-toggle-btn:hover {
-    transform: scale(1.03);
-    box-shadow: 0 8px 25px rgba(246, 184, 62, 0.5);
+.ai-search-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(246, 184, 62, 0.5);
     animation: none;
     background: linear-gradient(135deg, #ff8c00, #f6b83e);
     border-color: white;
@@ -490,41 +490,25 @@
 
 @keyframes softPulse {
     0% {
-        box-shadow: 0 4px 15px rgba(246, 184, 62, 0.3);
+        box-shadow: 0 4px 12px rgba(246, 184, 62, 0.3);
     }
     50% {
-        box-shadow: 0 6px 20px rgba(246, 184, 62, 0.5), 0 0 0 3px rgba(246, 184, 62, 0.1);
+        box-shadow: 0 6px 18px rgba(246, 184, 62, 0.5), 0 0 0 3px rgba(246, 184, 62, 0.1);
     }
     100% {
-        box-shadow: 0 4px 15px rgba(246, 184, 62, 0.3);
+        box-shadow: 0 4px 12px rgba(246, 184, 62, 0.3);
     }
 }
 
-.ai-toggle-btn .ai-btn-text {
-    display: inline;
+.ai-search-btn .ai-btn-icon {
+    font-size: 20px;
 }
 
-.ai-toggle-btn .ai-btn-icon {
-    font-size: 24px;
+.ai-search-btn .ai-btn-text {
+    font-weight: 600;
 }
 
-.ai-toggle-btn .ai-close-icon {
-    display: none;
-}
-
-.ai-widget.open ~ .ai-toggle-btn .ai-chat-icon {
-    display: none;
-}
-
-.ai-widget.open ~ .ai-toggle-btn .ai-close-icon {
-    display: inline;
-}
-
-.ai-widget.open ~ .ai-toggle-btn .ai-btn-text {
-    content: "Закрыть AI";
-}
-
-/* Виджет чата - теперь фиксирован слева */
+/* Виджет чата - фиксирован слева по центру */
 .ai-widget {
     position: fixed;
     top: 50%;
@@ -758,12 +742,20 @@
     box-shadow: none;
 }
 
-/* Контейнер для кнопки в панели фильтров */
+/* Скрываем старую обёртку кнопки (она больше не нужна) */
 .ai-button-wrapper {
-    text-align: center;
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 2px dashed #cbd5e1;
+    display: none;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 600px) {
+    .ai-search-btn .ai-btn-text {
+        display: none;
+    }
+    
+    .ai-search-btn {
+        padding: 10px 16px;
+    }
 }
     </style>
 </head>
