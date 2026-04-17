@@ -1511,33 +1511,49 @@ async function sendAIMessage() {
     
     if (!message) return;
     
+    // Очищаем поле ввода
     input.value = '';
+    
+    // Добавляем сообщение пользователя в чат
     addMessageToChat(message, 'user');
+    
+    // Добавляем в историю
     aiMessages.push({ role: 'user', content: message });
     
+    // Показываем индикатор печати
     showTypingIndicator();
+    
+    // Отключаем кнопку отправки
     const sendBtn = document.getElementById('aiSendBtn');
     sendBtn.disabled = true;
     
     try {
-        // Добавляем инструкцию для AI возвращать номера процедур в формате [PROC:3,4н]
+        // Добавляем инструкцию для AI возвращать номера процедур
         const messagesWithInstruction = [...aiMessages];
         messagesWithInstruction.push({
             role: 'system',
             content: `ВАЖНО: В конце ответа в квадратных скобках укажи номера процедур, которые ты упомянул. 
-            Например: [PROC:3,4н,28]
+            Например: [PROC:3] или [PROC:3,4н,28]
             Если не упоминал процедуры — напиши [PROC:none]`
         });
         
+        // Отправляем запрос к прокси-серверу
         const response = await fetch(PROXY_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: messagesWithInstruction })
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                messages: messagesWithInstruction 
+            })
         });
         
+        // Убираем индикатор печати
         removeTypingIndicator();
         
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const data = await response.json();
         
@@ -1553,32 +1569,114 @@ async function sendAIMessage() {
             // Убираем служебную метку из текста
             let cleanContent = data.content.replace(/\[PROC:[^\]]+\]/, '').trim();
             
-            // Добавляем ответ
+            // Добавляем ответ ассистента
             addMessageToChat(cleanContent, 'bot');
-            aiMessages.push({ role: 'assistant', content: cleanContent });
+            
+            // Сохраняем ответ в историю (без метки)
+            aiMessages.push({ 
+                role: 'assistant', 
+                content: cleanContent 
+            });
             
             // Если AI упомянул процедуры — фильтруем карту
             if (procNumbers.length > 0) {
                 filterByAIProcedures(procNumbers);
                 
                 // Добавляем сообщение о фильтрации
+                const messagesDiv = document.getElementById('aiMessages');
                 const filterMsg = document.createElement('div');
                 filterMsg.className = 'ai-message ai-message-bot';
-                filterMsg.innerHTML = `🎯 <strong>Карта отфильтрована</strong> — показаны процедуры: ${procNumbers.map(p => `<code>${p}</code>`).join(', ')}<br>
-                <a href="#" onclick="resetAIFilter()" style="color: #f6b83e;">← Сбросить фильтр и показать все процедуры</a>`;
-                document.getElementById('aiMessages').appendChild(filterMsg);
+                filterMsg.style.background = '#fff3cf';
+                filterMsg.style.borderColor = '#f6b83e';
+                filterMsg.innerHTML = `🎯 <strong>Карта отфильтрована</strong> — показаны процедуры: ${procNumbers.map(p => `<code style="background:#f6b83e; color:#0a1929; padding:2px 6px; border-radius:12px; margin:0 2px;">${p}</code>`).join(', ')}<br><br>
+                <a href="#" onclick="resetAIFilter(); return false;" style="color: #0a1929; background: #f6b83e; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block;">🔄 Сбросить фильтр</a>`;
+                messagesDiv.appendChild(filterMsg);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
             }
         } else {
-            addMessageToChat('❌ Ошибка. Проверьте сервер.', 'bot');
+            addMessageToChat(
+                '❌ Извините, произошла ошибка. Проверьте, запущен ли прокси-сервер (http://localhost:3000).', 
+                'bot'
+            );
         }
     } catch (error) {
-        console.error('Ошибка:', error);
+        console.error('Ошибка при запросе к DeepSeek:', error);
         removeTypingIndicator();
-        addMessageToChat('❌ Не удалось подключиться к серверу.', 'bot');
+        
+        addMessageToChat(
+            '❌ Не удалось подключиться к серверу.<br><br>' +
+            '<strong>Возможные причины:</strong><br>' +
+            '1. Прокси-сервер не запущен (выполните <code>node server.js</code>)<br>' +
+            '2. Порт 3000 занят другим приложением<br>' +
+            '3. Ошибка в API-ключе DeepSeek',
+            'bot'
+        );
     }
     
+    // Включаем кнопку обратно
     sendBtn.disabled = false;
 }
+
+// ============================================
+// ФИЛЬТРАЦИЯ КАРТЫ ПО РЕКОМЕНДАЦИЯМ AI
+// ============================================
+
+// Сохраняем исходное состояние карты перед AI-фильтрацией
+let originalRoleFilter = 'all';
+let originalSearchTerm = '';
+
+// Фильтрация карты по номерам процедур от AI
+function filterByAIProcedures(procNumbers) {
+    // Сохраняем текущее состояние
+    originalRoleFilter = currentRole;
+    originalSearchTerm = document.getElementById('searchInput').value;
+    
+    const cards = document.querySelectorAll('.proc-card');
+    
+    cards.forEach(card => {
+        const procId = card.getAttribute('data-proc-id');
+        
+        if (procNumbers.includes(procId)) {
+            card.classList.remove('search-hidden', 'filtered-out');
+            card.classList.add('ai-highlight');
+        } else {
+            card.classList.add('search-hidden');
+        }
+    });
+    
+    // Обновляем счётчик
+    const countEl = document.getElementById('searchResultCount');
+    countEl.textContent = `🤖 AI рекомендует: ${procNumbers.length} процедур`;
+    countEl.style.color = '#f6b83e';
+    countEl.style.fontWeight = '600';
+}
+
+// Сброс AI-фильтра и возврат к обычному виду
+function resetAIFilter() {
+    const cards = document.querySelectorAll('.proc-card');
+    
+    // Убираем AI-подсветку
+    cards.forEach(card => {
+        card.classList.remove('search-hidden', 'ai-highlight');
+    });
+    
+    // Возвращаем фильтр по роли (если был)
+    if (originalRoleFilter && originalRoleFilter !== 'all') {
+        filterByRole(originalRoleFilter);
+    } else {
+        // Иначе просто применяем поиск
+        applySearch();
+    }
+    
+    // Восстанавливаем счётчик
+    const countEl = document.getElementById('searchResultCount');
+    countEl.style.color = '';
+    countEl.style.fontWeight = '';
+}
+
+// Проверка соединения с сервером при загрузке
+async function checkAIServer() {
+    ...
 
 // Проверка соединения с сервером при загрузке
 async function checkAIServer() {
