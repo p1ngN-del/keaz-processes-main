@@ -1317,5 +1317,43 @@
         }
     });
 </script>
+    <!-- ============================================ -->
+<!-- AI-АССИСТЕНТ DEEPSEEK - HTML                  -->
+<!-- ============================================ -->
+
+<!-- Виджет чата -->
+<div class="ai-widget" id="aiWidget">
+    <div class="ai-header">
+        <span class="ai-icon">🤖</span>
+        <span class="ai-title">DeepSeek AI · Ассистент КЭАЗ</span>
+        <button class="ai-close" onclick="toggleAIWidget()">✕</button>
+    </div>
+    <div class="ai-messages" id="aiMessages">
+        <div class="ai-message ai-message-bot">
+            👋 <strong>Здравствуйте!</strong> Я AI-ассистент КЭАЗ на базе DeepSeek.<br><br>
+            <strong>Я могу помочь:</strong><br>
+            🔹 Найти нужную процедуру<br>
+            🔹 Объяснить, кто за что отвечает<br>
+            🔹 Подсказать последовательность действий<br>
+            🔹 Разобраться в бизнес-процессах<br><br>
+            <em>Примеры вопросов:</em><br>
+            • "Как вывести продукт из ассортимента?"<br>
+            • "Кто отвечает за ценообразование?"<br>
+            • "Что такое процедура 28?"<br>
+            • "Как найти поставщика?"<br><br>
+            Задайте ваш вопрос! 👇
+        </div>
+    </div>
+    <div class="ai-input-row">
+        <input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="handleAIKeyPress(event)">
+        <button class="ai-send" id="aiSendBtn" onclick="sendAIMessage()">➤</button>
+    </div>
+</div>
+
+<!-- Плавающая кнопка вызова AI -->
+<button class="ai-toggle-btn" onclick="toggleAIWidget()">
+    <span class="ai-chat-icon">💬</span>
+    <span class="ai-close-icon">✕</span>
+</button>
 </body>
 </html>
