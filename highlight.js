@@ -1,6 +1,6 @@
-// highlight.js - подсветка блоков и шагов по поисковому запросу (с анализом stepData)
+// highlight.js - подсветка блоков и шагов по поисковому запросу (универсальный поиск)
 (function() {
-    console.log('highlight.js загружен (версия 2.2 - deep search)');
+    console.log('highlight.js загружен (версия 2.3 - универсальный поиск)');
 
     // --- Функции для работы с куками ---
     function setCookie(name, value, days) {
@@ -49,7 +49,7 @@
     }
     
     setCookie('searchTerm', searchTerm, 1);
-    console.log('Ищем (глубокий поиск):', searchTerm);
+    console.log('Ищем:', searchTerm);
 
     // --- Добавление CSS-классов для подсветки ---
     if (!document.getElementById('highlight-styles')) {
@@ -75,15 +75,17 @@
         document.head.appendChild(style);
     }
 
-    // --- Улучшенная функция проверки: анализирует и DOM, и глобальный объект stepData ---
-    function containsSearchTermDeep(element, term) {
+    // --- УНИВЕРСАЛЬНАЯ функция проверки ---
+    function containsSearchTermUniversal(element, term) {
         if (!element) return false;
         
-        // 1. Проверка видимого текста и атрибутов
-        if (element.textContent && element.textContent.toLowerCase().includes(term)) {
+        // 1. Проверяем ВЕСЬ HTML-контент элемента (включая скрытые блоки)
+        // .innerHTML содержит полный HTML, .textContent - весь текст
+        if (element.innerHTML && element.innerHTML.toLowerCase().includes(term)) {
             return true;
         }
         
+        // 2. Проверяем атрибуты
         const attributesToCheck = ['data-step', 'data-proc-id', 'data-num', 'data-name'];
         for (let attr of attributesToCheck) {
             const attrValue = element.getAttribute(attr);
@@ -92,18 +94,22 @@
             }
         }
 
-        // 2. Проверка в глобальном объекте stepData (если он есть)
-        // Каждая карточка шага имеет атрибут data-step="1" (или составной "13-14")
+        // 3. Проверка в глобальном объекте stepData (если он есть)
         let stepId = element.getAttribute('data-step');
         if (stepId) {
-            // Берем только номер до дефиса (для шагов типа "13-14" -> "13")
             const baseStepId = stepId.split('-')[0];
             
-            // Проверяем, существует ли глобальная переменная stepData и есть ли в ней такой ключ
-            if (typeof window.stepData !== 'undefined' && window.stepData[baseStepId]) {
+            if (typeof window.stepData !== 'undefined' && window.stepData && window.stepData[baseStepId]) {
                 const data = window.stepData[baseStepId];
                 // Собираем весь текст из объекта шага
-                const fullStepText = (data.number + ' ' + data.role + ' ' + data.text + ' ' + (data.inputs || []).join(' ') + ' ' + (data.outputs || []).join(' ')).toLowerCase();
+                const fullStepText = (
+                    (data.number || '') + ' ' + 
+                    (data.role || '') + ' ' + 
+                    (data.text || '') + ' ' + 
+                    (data.inputs || []).join(' ') + ' ' + 
+                    (data.outputs || []).join(' ')
+                ).toLowerCase();
+                
                 if (fullStepText.includes(term)) {
                     return true;
                 }
@@ -119,16 +125,19 @@
     let foundElements = [];
 
     cards.forEach(card => {
-        // Пропускаем карточки внутри детальной панели
+        // Пропускаем карточки внутри детальной панели (чтобы кнопка "Далее" не скроллила в закрытый блок)
         if (card.closest('#detailPanel')) {
+            // Но если они внутри панели, мы всё равно можем их подсветить, но не добавляем в навигацию
+            if (containsSearchTermUniversal(card, searchTerm)) {
+                card.classList.add('highlight-card');
+            }
             return;
         }
         
         const isVisible = !!(card.offsetWidth || card.offsetHeight || card.getClientRects().length);
         if (!isVisible) return;
 
-        // Используем новую функцию глубокого поиска
-        if (containsSearchTermDeep(card, searchTerm)) {
+        if (containsSearchTermUniversal(card, searchTerm)) {
             card.classList.add('highlight-card');
             foundElements.push(card);
         } else {
@@ -140,7 +149,7 @@
     const detailPanel = document.getElementById('detailPanel');
     const detailText = document.getElementById('detailText');
     if (detailPanel && detailText) {
-        if (detailText.textContent.toLowerCase().includes(searchTerm)) {
+        if (detailText.innerHTML.toLowerCase().includes(searchTerm)) {
             detailPanel.classList.add('highlight-panel');
         } else {
             detailPanel.classList.remove('highlight-panel');
@@ -148,7 +157,7 @@
     }
 
     const foundCount = foundElements.length;
-    console.log(`Найдено элементов (включая stepData): ${foundCount}`);
+    console.log(`Найдено видимых элементов: ${foundCount}`);
 
     // --- UI (Навигация) ---
     if (foundCount > 0) {
@@ -199,19 +208,38 @@
             }, 400);
         }, 8000);
     } else {
-        const notice = document.createElement('div');
-        notice.textContent = `🔍 По запросу "${searchTerm}" ничего не найдено в шагах`;
-        notice.style.cssText = `
-            position: fixed; bottom: 20px; right: 20px; background: #6c757d;
-            color: white; padding: 10px 20px; border-radius: 40px;
-            font-size: 0.85rem; font-weight: 500; z-index: 10000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: inherit;
-        `;
-        document.body.appendChild(notice);
-        setTimeout(() => {
-            notice.style.opacity = '0';
-            notice.style.transition = 'opacity 0.3s';
-            setTimeout(() => notice.remove(), 400);
-        }, 3000);
+        // Проверяем, может быть слово найдено в скрытых карточках внутри detailPanel?
+        const hiddenHighlights = document.querySelectorAll('#detailPanel .highlight-card');
+        if (hiddenHighlights.length > 0) {
+            const notice = document.createElement('div');
+            notice.textContent = `🔍 Совпадения найдены в описании шагов. Откройте панель деталей.`;
+            notice.style.cssText = `
+                position: fixed; bottom: 20px; right: 20px; background: #f6b83e;
+                color: #0a1929; padding: 10px 20px; border-radius: 40px;
+                font-size: 0.85rem; font-weight: 500; z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: inherit;
+            `;
+            document.body.appendChild(notice);
+            setTimeout(() => {
+                notice.style.opacity = '0';
+                notice.style.transition = 'opacity 0.3s';
+                setTimeout(() => notice.remove(), 400);
+            }, 5000);
+        } else {
+            const notice = document.createElement('div');
+            notice.textContent = `🔍 По запросу "${searchTerm}" ничего не найдено`;
+            notice.style.cssText = `
+                position: fixed; bottom: 20px; right: 20px; background: #6c757d;
+                color: white; padding: 10px 20px; border-radius: 40px;
+                font-size: 0.85rem; font-weight: 500; z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-family: inherit;
+            `;
+            document.body.appendChild(notice);
+            setTimeout(() => {
+                notice.style.opacity = '0';
+                notice.style.transition = 'opacity 0.3s';
+                setTimeout(() => notice.remove(), 400);
+            }, 3000);
+        }
     }
 })();
