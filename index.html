@@ -1630,10 +1630,14 @@ window.addEventListener('DOMContentLoaded', () => {
     </div>
 </div>
 
-<!-- Плавающая кнопка вызова AI -->
-<button class="ai-toggle-btn" onclick="toggleAIWidget()">
-    <span class="ai-chat-icon">💬</span>
-    <span class="ai-close-icon">✕</span>
-</button>
+<!-- КНОПКА AI-АССИСТЕНТА В ПАНЕЛИ ФИЛЬТРОВ -->
+<div class="ai-button-wrapper">
+    <button class="ai-toggle-btn" onclick="toggleAIWidget()">
+        <span class="ai-btn-icon">🤖</span>
+        <span class="ai-btn-text">Спросить AI-ассистента</span>
+        <span class="ai-btn-icon ai-chat-icon">💬</span>
+        <span class="ai-btn-icon ai-close-icon">✕</span>
+    </button>
+</div>
 </body>
 </html>
