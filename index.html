@@ -944,7 +944,7 @@
         }
     }
 
-    // --- ПОИСК: Основная функция фильтрации и обновления ссылок ---
+    // --- ПОИСК: Основная функция фильтрации и обновления ссылок (ИСПРАВЛЕНО) ---
     function applySearch() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
         const cards = document.querySelectorAll('.proc-card');
@@ -957,18 +957,35 @@
             deleteCookie('searchTerm');
         }
         
-        // 2. Обновляем ссылки у всех карточек — добавляем search параметр, сохраняя существующие (например, role)
+        // 2. Обновляем ссылки у всех карточек — добавляем search параметр
+        // ВАЖНО: Используем оригинальный href без домена, чтобы не ломать ссылки на GitHub Pages
         cards.forEach(card => {
-            let href = card.getAttribute('href');
-            if (href) {
-                // Создаем URL объект для удобной работы с параметрами
-                let url = new URL(href, window.location.origin);
+            // Получаем оригинальную ссылку, сохраненную при загрузке страницы
+            let originalHref = card.getAttribute('data-original-href');
+            if (!originalHref) {
+                // Если атрибут еще не создан, берем текущий href и сохраняем его
+                originalHref = card.getAttribute('href');
+                card.setAttribute('data-original-href', originalHref);
+            }
+            
+            // Работаем с оригинальной ссылкой
+            if (originalHref) {
+                // Разделяем путь и параметры
+                let [basePath, queryString] = originalHref.split('?');
+                let params = new URLSearchParams(queryString || '');
+                
                 if (searchTerm) {
-                    url.searchParams.set('search', searchTerm);
+                    params.set('search', searchTerm);
                 } else {
-                    url.searchParams.delete('search');
+                    params.delete('search');
                 }
-                card.setAttribute('href', url.pathname + url.search);
+                
+                // Формируем финальную ссылку
+                let finalHref = basePath;
+                if (params.toString()) {
+                    finalHref += '?' + params.toString();
+                }
+                card.setAttribute('href', finalHref);
             }
         });
         
@@ -1066,6 +1083,11 @@
 
     // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ---
     window.addEventListener('DOMContentLoaded', () => {
+        // Сохраняем оригинальные href для всех карточек до того, как applySearch их изменит
+        document.querySelectorAll('.proc-card').forEach(card => {
+            card.setAttribute('data-original-href', card.getAttribute('href'));
+        });
+        
         loadProceduresData();
         
         const urlRole = getRoleFromURL();
