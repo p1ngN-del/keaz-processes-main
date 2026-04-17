@@ -1239,48 +1239,127 @@
         }
     }
 
-    function findRelevantProcedures(question, maxResults = 3) {
-        if (!proceduresFullData || proceduresFullData.length === 0) {
-            console.warn('⚠️ Данные процедур ещё не загружены');
-            return [];
+    function findRelevantProcedures(question, maxResults = 5) {
+    if (!proceduresFullData || proceduresFullData.length === 0) {
+        console.warn('⚠️ Данные процедур ещё не загружены');
+        return [];
+    }
+    
+    const questionLower = question.toLowerCase();
+    
+    // Разбиваем на слова и НЕ фильтруем короткие (оставляем все)
+    let words = questionLower.split(/\s+/);
+    
+    // Добавляем также слитные варианты для аббревиатур
+    // Например, если есть "ТН ВЭД", добавляем "тнвэд"
+    const joinedQuestion = words.join('');
+    if (joinedQuestion !== questionLower) {
+        words.push(joinedQuestion);
+    }
+    
+    // Также ищем аббревиатуры без пробелов
+    const abbreviations = [];
+    for (let i = 0; i < words.length; i++) {
+        for (let j = i + 1; j <= words.length; j++) {
+            const combo = words.slice(i, j).join('');
+            if (combo.length >= 3 && !words.includes(combo)) {
+                abbreviations.push(combo);
+            }
+        }
+    }
+    words = [...words, ...abbreviations];
+    
+    console.log('🔎 Ищем по словам:', words);
+    
+    if (words.length === 0) return [];
+    
+    const scored = proceduresFullData.map(proc => {
+        const fullText = (proc.num + ' ' + proc.name + ' ' + proc.content).toLowerCase();
+        let score = 0;
+        
+        words.forEach(word => {
+            if (word.length < 2) return; // Пропускаем только 1-буквенные
+            
+            // Ищем слово как отдельное или как часть
+            const regex = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            const matches = fullText.match(regex);
+            if (matches) {
+                score += matches.length * 15; // Увеличил вес
+            }
+            
+            // Бонус за точное совпадение номера
+            if (proc.num.toLowerCase() === word) {
+                score += 100;
+            }
+            
+            // Бонус за упоминание в названии
+            if (proc.name.toLowerCase().includes(word)) {
+                score += 30;
+            }
+        });
+        
+        // Специальные правила для известных терминов
+        if (questionLower.includes('тнвэд') || questionLower.includes('тн вэд')) {
+            if (fullText.includes('тнвэд') || fullText.includes('тн вэд')) {
+                score += 100; // Большой бонус за ТНВЭД в любом написании
+            }
         }
         
-        const questionLower = question.toLowerCase();
-        const words = questionLower.split(/\s+/).filter(word => word.length >= 3);
+        if (questionLower.includes('сертификат')) {
+            if (fullText.includes('сертификат')) {
+                score += 80;
+            }
+        }
         
-        if (words.length === 0) return [];
+        if (questionLower.includes('поставщик')) {
+            if (fullText.includes('поставщик') || fullText.includes('oem') || fullText.includes('odm')) {
+                score += 80;
+            }
+        }
         
-        const scored = proceduresFullData.map(proc => {
+        return { proc, score };
+    });
+    
+    const relevant = scored
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, maxResults)
+        .map(item => item.proc);
+    
+    console.log(`🔍 Найдено ${relevant.length} релевантных процедур`);
+    if (relevant.length > 0) {
+        console.log('📋 Процедуры (с очками):', relevant.map(p => {
+            const item = scored.find(s => s.proc.num === p.num);
+            return `${p.num}: ${p.name} (${item.score})`;
+        }).join('\n   '));
+    } else {
+        // Если ничего не нашли — покажем все процедуры, где есть хоть одно слово
+        console.log('⚠️ Ничего не найдено, ищем по отдельным буквам...');
+        const fallbackScored = proceduresFullData.map(proc => {
             const fullText = (proc.num + ' ' + proc.name + ' ' + proc.content).toLowerCase();
             let score = 0;
             
-            words.forEach(word => {
-                const regex = new RegExp(word, 'gi');
-                const matches = fullText.match(regex);
-                if (matches) score += matches.length * 10;
-                if (proc.num.toLowerCase() === word) score += 100;
-                if (proc.name.toLowerCase().includes(word)) score += 20;
+            // Проверяем каждую букву из вопроса
+            const letters = questionLower.replace(/\s+/g, '').split('');
+            letters.forEach(letter => {
+                if (fullText.includes(letter)) score += 1;
             });
-            
-            if (proc.num === '4' && questionLower.includes('тнвэд')) score += 50;
-            if (proc.num === '28' && questionLower.includes('сертификат')) score += 30;
             
             return { proc, score };
         });
         
-        const relevant = scored
-            .filter(item => item.score > 0)
+        const fallback = fallbackScored
+            .filter(item => item.score > questionLower.length * 0.3)
             .sort((a, b) => b.score - a.score)
             .slice(0, maxResults)
             .map(item => item.proc);
-        
-        console.log(`🔍 Найдено ${relevant.length} релевантных процедур`);
-        if (relevant.length > 0) {
-            console.log('📋 Процедуры:', relevant.map(p => `${p.num}: ${p.name}`).join(', '));
-        }
-        
-        return relevant;
+            
+        console.log('📋 Fallback результаты:', fallback.map(p => `${p.num}: ${p.name}`).join(', '));
+        return fallback;
     }
+    
+    return relevant;
+}
 
     function updateURL(role) {
         if (role && role !== 'all') {
