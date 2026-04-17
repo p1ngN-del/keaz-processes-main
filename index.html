@@ -773,13 +773,18 @@
     <div class="subhead">КЭАЗ · нажми на должность — увидишь свои задачи и где твой старт 🚩</div>
 
     <div class="filter-panel">
-        <div class="search-section">
-            <div class="search-row">
-                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по процедурам (название, номер, ТНВЭД, сертификат...)" onkeyup="applySearch()">
-                <button class="search-clear" onclick="clearSearch()">✖ Очистить</button>
-            </div>
-            <div id="searchResultCount" class="search-result-count"></div>
-        </div>
+        <!-- ПОИСК + AI-АССИСТЕНТ -->
+<div class="search-section">
+    <div class="search-row">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по процедурам (название, номер, ТНВЭД, сертификат...)" onkeyup="applySearch()">
+        <button class="search-clear" onclick="clearSearch()">✖ Очистить</button>
+        <button class="ai-search-btn" onclick="toggleAIWidget()" title="Спросить AI-ассистента">
+            <span class="ai-btn-icon">🤖</span>
+            <span class="ai-btn-text">AI</span>
+        </button>
+    </div>
+    <div id="searchResultCount" class="search-result-count"></div>
+</div>
 
         <div class="filter-row" id="mainRoles">
             <div class="filter-item filter-all active" data-role="all" onclick="filterByRole('all')">👥 Все роли</div>
