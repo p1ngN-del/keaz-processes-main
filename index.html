@@ -1588,11 +1588,19 @@
             if (relevantProcs.length > 0) {
                 contextText = '\n\n=== РЕЛЕВАНТНЫЕ ПРОЦЕДУРЫ ИЗ БАЗЫ ЗНАНИЙ КЭАЗ ===\n\n';
                 relevantProcs.forEach((proc) => {
-                    contextText += `--- ПРОЦЕДУРА ${proc.num}: ${proc.name} ---\n`;
-                    contextText += proc.content.substring(0, 2000);
-                    if (proc.content.length > 2000) contextText += '\n... (текст сокращён)';
-                    contextText += '\n\n';
-                });
+    contextText += `--- ПРОЦЕДУРА ${proc.num}: ${proc.name} ---\n`;
+    
+    const maxLength = 10000; // 10 000 символов вместо 2 000
+    if (proc.content.length > maxLength) {
+        // Если процедура очень длинная — берём первые 10 000
+        contextText += proc.content.substring(0, maxLength);
+        contextText += `\n... (процедура содержит ещё ${proc.content.length - maxLength} символов)`;
+    } else {
+        contextText += proc.content;
+    }
+    
+    contextText += '\n\n';
+});
                 contextText += '=== КОНЕЦ КОНТЕКСТА ===\n\n';
             } else {
                 contextText = '\n\n(Релевантные процедуры не найдены в базе знаний)\n\n';
