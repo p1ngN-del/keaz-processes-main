@@ -456,49 +456,56 @@
             box-shadow: 0 12px 28px rgba(246, 184, 62, 0.5);
         }
         /* ============================================ */
-/* AI-АССИСТЕНТ DEEPSEEK - СТИЛИ (ВЕРСИЯ СВЕРХУ) */
+/* AI-АССИСТЕНТ DEEPSEEK - СТИЛИ (В ПАНЕЛИ ФИЛЬТРОВ) */
 /* ============================================ */
 
-/* Плавающая кнопка вызова AI - теперь слева сверху */
+/* Кнопка вызова AI - теперь в панели фильтров */
 .ai-toggle-btn {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-    width: 60px;
-    height: 60px;
-    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border-radius: 40px;
     background: linear-gradient(135deg, #f6b83e, #ff8c00);
     color: #0a1929;
     border: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    box-shadow: 0 8px 20px rgba(246, 184, 62, 0.4);
-    z-index: 9998;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(246, 184, 62, 0.3);
     transition: all 0.3s ease;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 8px 20px rgba(246, 184, 62, 0.4);
-    }
-    50% {
-        box-shadow: 0 8px 30px rgba(246, 184, 62, 0.7), 0 0 0 4px rgba(246, 184, 62, 0.2);
-        transform: scale(1.02);
-    }
-    100% {
-        box-shadow: 0 8px 20px rgba(246, 184, 62, 0.4);
-    }
+    animation: softPulse 2.5s infinite;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    margin: 0 auto;
 }
 
 .ai-toggle-btn:hover {
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 12px 35px rgba(246, 184, 62, 0.6);
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(246, 184, 62, 0.5);
     animation: none;
     background: linear-gradient(135deg, #ff8c00, #f6b83e);
+    border-color: white;
+}
+
+@keyframes softPulse {
+    0% {
+        box-shadow: 0 4px 15px rgba(246, 184, 62, 0.3);
+    }
+    50% {
+        box-shadow: 0 6px 20px rgba(246, 184, 62, 0.5), 0 0 0 3px rgba(246, 184, 62, 0.1);
+    }
+    100% {
+        box-shadow: 0 4px 15px rgba(246, 184, 62, 0.3);
+    }
+}
+
+.ai-toggle-btn .ai-btn-text {
+    display: inline;
+}
+
+.ai-toggle-btn .ai-btn-icon {
+    font-size: 24px;
 }
 
 .ai-toggle-btn .ai-close-icon {
@@ -510,14 +517,19 @@
 }
 
 .ai-widget.open ~ .ai-toggle-btn .ai-close-icon {
-    display: block;
+    display: inline;
 }
 
-/* Виджет чата - теперь выезжает слева */
+.ai-widget.open ~ .ai-toggle-btn .ai-btn-text {
+    content: "Закрыть AI";
+}
+
+/* Виджет чата - теперь фиксирован слева */
 .ai-widget {
     position: fixed;
-    top: 100px;
+    top: 50%;
     left: 24px;
+    transform: translateY(-50%);
     width: 420px;
     max-width: calc(100vw - 40px);
     background: white;
@@ -537,11 +549,11 @@
 @keyframes slideInLeft {
     from {
         opacity: 0;
-        transform: translateX(-20px);
+        transform: translateY(-50%) translateX(-20px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(-50%) translateX(0);
     }
 }
 
@@ -746,10 +758,12 @@
     box-shadow: none;
 }
 
-/* Адаптация для кнопки "Наверх" - чтобы не перекрывала */
-.back-to-top {
-    right: 24px !important;
-    left: auto !important;
+/* Контейнер для кнопки в панели фильтров */
+.ai-button-wrapper {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px dashed #cbd5e1;
 }
     </style>
 </head>
