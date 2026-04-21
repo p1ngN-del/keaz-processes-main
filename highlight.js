@@ -722,3 +722,62 @@ if (!window.location.pathname.includes('index')) {
         }
     }
 })();
+// ============================================
+// ПЕРЕХВАТ ОТКРЫТИЯ ПАНЕЛИ ДЕТАЛИЗАЦИИ
+// ============================================
+
+(function interceptDetailPanel() {
+    if (window.location.pathname.includes('index')) return;
+    
+    // Ждём, пока оригинальная функция showDetail станет доступна
+    const waitForShowDetail = setInterval(() => {
+        if (typeof window.showDetail === 'function') {
+            clearInterval(waitForShowDetail);
+            
+            // Сохраняем оригинальную функцию
+            const originalShowDetail = window.showDetail;
+            
+            // Переопределяем её
+            window.showDetail = function(stepId) {
+                // Вызываем оригинал
+                originalShowDetail(stepId);
+                
+                // Ждём немного, пока DOM обновится, и добавляем ссылки
+                setTimeout(() => {
+                    // Загружаем JSON и обновляем выходы
+                    fetch('procedures_data.json')
+                        .then(r => r.json())
+                        .then(data => {
+                            const procMap = {};
+                            data.procedures.forEach(p => { procMap[p.num] = p.name; });
+                            
+                            // Обновляем выходы в панели
+                            const ioItems = document.querySelectorAll('.io-items');
+                            ioItems.forEach(container => {
+                                container.querySelectorAll('a').forEach(link => {
+                                    const text = link.textContent;
+                                    const match = text.match(/^(\d+[а-яa-z]?)$/);
+                                    if (match && procMap[match[1]]) {
+                                        link.textContent = `Процедура ${match[1]}`;
+                                        link.style.cssText = 'color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 12px; background: #e6f0ff;';
+                                    }
+                                });
+                            });
+                            
+                            const detailText = document.getElementById('detailText');
+                            if (detailText) {
+                                let html = detailText.innerHTML;
+                                Object.keys(procMap).forEach(num => {
+                                    const regex = new RegExp(`(?<![>.])\\b${num}\\b(?![<])`, 'g');
+                                    html = html.replace(regex, `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 12px; background: #e6f0ff;">Процедура ${num}</a>`);
+                                });
+                                detailText.innerHTML = html;
+                            }
+                        });
+                }, 100);
+            };
+            
+            console.log('✅ Перехват showDetail установлен');
+        }
+    }, 500);
+})();
