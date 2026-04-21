@@ -528,7 +528,7 @@ if (!window.location.pathname.includes('index')) {
 }
 
 // ============================================
-// ССЫЛКИ НА ВЫХОДЫ ДЛЯ ВСЕХ ПРОЦЕДУР
+// ССЫЛКИ НА ВЫХОДЫ ДЛЯ ВСЕХ ПРОЦЕДУР (ИСПРАВЛЕНО)
 // ============================================
 (function() {
     if (window.location.pathname.includes('index')) return;
@@ -537,7 +537,7 @@ if (!window.location.pathname.includes('index')) {
     const filename = path.substring(path.lastIndexOf('/') + 1);
     const procId = filename.replace('proc', '').replace('.html', '');
     
-    // Карта выходов для всех процедур (из главной карты)
+    // Карта выходов для всех процедур
     const outputsMap = {
         '3': [],
         '4': ['11', '13', '15'],
@@ -559,7 +559,6 @@ if (!window.location.pathname.includes('index')) {
         '19': ['24'],
         '20': ['25'],
         '21': ['18'],
-        '22': ['8', '3'],
         '23': ['4', '4a'],
         '24': ['4'],
         '25': [],
@@ -574,13 +573,14 @@ if (!window.location.pathname.includes('index')) {
     const outputs = outputsMap[procId] || [];
     if (outputs.length === 0) return;
     
-    // Шаги, которые НЕ являются успешными выходами (отказы, ошибки)
-    const skipSteps = {
-        '4': ['5'],  // шаг 5 - отказ клиенту
-        // Добавьте сюда другие шаги-отказы для других процедур, если нужно
+    // Шаги, которые являются ОТКАЗАМИ (для них ссылки НЕ добавляем)
+    const skipStepsByProc = {
+        '4': ['5'],           // шаг 5 - отказ клиенту
+        '4a': ['22'],         // шаг 22 - отказ в заведении
+        // Добавьте другие, если знаете
     };
     
-    const skipList = skipSteps[procId] || [];
+    const skipSteps = skipStepsByProc[procId] || [];
     
     const waitForShowDetail = setInterval(() => {
         if (typeof window.showDetail === 'function') {
@@ -591,43 +591,83 @@ if (!window.location.pathname.includes('index')) {
                 original(stepId);
                 
                 setTimeout(() => {
-                    // Проверяем, не в списке ли пропуска
-                    if (skipList.includes(stepId)) return;
+                    // ПРОПУСКАЕМ шаги-отказы
+                    if (skipSteps.includes(stepId)) {
+                        console.log('⏭️ Шаг ' + stepId + ' - отказ, ссылки не добавляем');
+                        return;
+                    }
                     
                     const detailText = document.getElementById('detailText');
                     if (!detailText) return;
                     
                     const stepText = detailText.textContent;
                     
-                    // Проверяем, что это действительно выход
-                    const isOutput = stepText.includes('Выход из процедуры') || 
-                                    stepText.includes('📤 ВЫХОД') ||
-                                    stepText.includes('Процедура завершена') ||
-                                    stepText.includes('выход из процедуры');
+                    // Проверяем, что это УСПЕШНЫЙ выход (не отказ)
+                    const isSuccessOutput = (stepText.includes('Выход из процедуры') || 
+                                           stepText.includes('📤 ВЫХОД') ||
+                                           stepText.includes('Процедура завершена')) &&
+                                           !stepText.includes('Отказ') &&
+                                           !stepText.includes('не принят') &&
+                                           !stepText.includes('не создана');
                     
-                    if (!isOutput) return;
+                    if (!isSuccessOutput) {
+                        console.log('⏭️ Шаг ' + stepId + ' - не является успешным выходом');
+                        return;
+                    }
                     
-                    // Находим блок io-items
+                    console.log('✅ Шаг ' + stepId + ' - успешный выход, добавляем ссылки');
+                    
+                    // Ищем ВСЕ блоки io-items
                     const ioItems = document.querySelectorAll('.io-items');
+                    let added = false;
+                    
                     ioItems.forEach(container => {
-                        // Проверяем, что это блок выходов
-                        if (container.textContent.includes('➡️ Выходы') || container.textContent.includes('Выходы')) {
+                        // Ищем блок с выходами
+                        const title = container.querySelector('.io-title');
+                        if (title && (title.textContent.includes('➡️ Выходы') || title.textContent.includes('Выходы'))) {
                             // Проверяем, нет ли уже ссылок
-                            if (container.innerHTML.includes('Процедура')) return;
+                            if (container.innerHTML.includes('Процедура')) {
+                                added = true;
+                                return;
+                            }
+                            
+                            // Удаляем старые кнопки "Следующий элемент" если они там есть (баг)
+                            const oldLinks = container.querySelectorAll('a[href^="proc"]');
+                            oldLinks.forEach(el => el.parentElement?.remove());
                             
                             // Создаём ссылки
                             const links = outputs.map(num => 
                                 `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #e6f0ff; margin: 0 4px;">Процедура ${num}</a>`
                             ).join(', ');
                             
-                            // Добавляем в конец контейнера
+                            // Добавляем новый элемент
                             const div = document.createElement('div');
                             div.className = 'io-item';
+                            div.style.marginTop = '8px';
                             div.innerHTML = `<span class="io-arrow">→</span> ${links}`;
                             container.appendChild(div);
+                            added = true;
                         }
                     });
-                }, 150);
+                    
+                    // Если не нашли через io-items, пробуем добавить прямо в detailText (запасной вариант)
+                    if (!added) {
+                        console.log('⚠️ Не найден блок io-items, пробуем detailText');
+                        let html = detailText.innerHTML;
+                        if (!html.includes('Процедура')) {
+                            const links = outputs.map(num => 
+                                `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #e6f0ff; margin: 0 4px;">Процедура ${num}</a>`
+                            ).join(', ');
+                            
+                            if (html.includes('Выход из процедуры')) {
+                                html = html.replace('Выход из процедуры', `Выход в процедуры ${links}`);
+                            } else if (html.includes('📤 ВЫХОД')) {
+                                html = html.replace('📤 ВЫХОД', `📤 ВЫХОД в процедуры ${links}`);
+                            }
+                            detailText.innerHTML = html;
+                        }
+                    }
+                }, 200);
             };
         }
     }, 200);
