@@ -79,12 +79,10 @@
     function containsSearchTermInDOM(element, term) {
         if (!element) return false;
         
-        // Проверяем текстовое содержимое
         if (element.textContent && element.textContent.toLowerCase().includes(term)) {
             return true;
         }
         
-        // Проверяем атрибуты
         const attributesToCheck = ['data-step', 'data-proc-id', 'data-num', 'data-name'];
         for (let attr of attributesToCheck) {
             const attrValue = element.getAttribute(attr);
@@ -96,7 +94,6 @@
     }
 
     // --- Определяем ID текущей процедуры ---
-    // Например, из "proc26.html" -> "26"
     const path = window.location.pathname;
     const filename = path.substring(path.lastIndexOf('/') + 1);
     const procId = filename.replace('proc', '').replace('.html', '');
@@ -120,12 +117,10 @@
             
             console.log('Найдено в JSON:', foundInJSON);
             
-            // 1. Подсвечиваем DOM-элементы (шаги), если они содержат слово
             const cards = document.querySelectorAll('.step-card, .proc-card');
             let foundElements = [];
 
             cards.forEach(card => {
-                // Пропускаем карточки внутри детальной панели для навигации
                 if (card.closest('#detailPanel')) {
                     return;
                 }
@@ -141,7 +136,6 @@
                 }
             });
 
-            // 2. Подсветка панели детализации
             const detailPanel = document.getElementById('detailPanel');
             const detailText = document.getElementById('detailText');
             if (detailPanel && detailText) {
@@ -155,21 +149,16 @@
             const foundCount = foundElements.length;
             console.log(`Найдено в DOM: ${foundCount}`);
 
-            // --- Показываем результат ---
             if (foundCount > 0) {
-                // Есть подсвеченные шаги
                 showNavigationUI(foundElements, foundCount);
             } else if (foundInJSON) {
-                // В DOM не нашли, но в JSON слово есть
                 showInfoMessage(`🔍 Слово "${searchTerm}" найдено в полном тексте процедуры, но не в названиях шагов.`);
             } else {
-                // Нигде не найдено
                 showNoResultsMessage(searchTerm);
             }
         })
         .catch(error => {
             console.error('Ошибка загрузки procedures_data.json:', error);
-            // Fallback: просто ищем в DOM
             const cards = document.querySelectorAll('.step-card, .proc-card');
             let foundElements = [];
             
@@ -277,15 +266,14 @@
         }, 3000);
     }
 })();
+
 // ============================================
 // AI-АССИСТЕНТ ДЛЯ СТРАНИЦ ПРОЦЕДУР
 // (автоматически добавляется на все proc*.html)
 // ============================================
 
-// Проверяем, что мы НЕ на главной странице (index.html)
 if (!window.location.pathname.includes('index')) {
     (function() {
-        // Стили
         const style = document.createElement('style');
         style.textContent = `
             .ai-search-btn {
@@ -464,7 +452,6 @@ if (!window.location.pathname.includes('index')) {
         `;
         document.head.appendChild(style);
 
-        // HTML виджета
         const widget = document.createElement('div');
         widget.className = 'ai-widget';
         widget.id = 'aiWidget';
@@ -487,7 +474,6 @@ if (!window.location.pathname.includes('index')) {
         `;
         document.body.appendChild(widget);
 
-        // Кнопка открытия
         const btn = document.createElement('button');
         btn.className = 'ai-search-btn';
         btn.innerHTML = '<span>🤖</span><span>AI</span>';
@@ -503,7 +489,6 @@ if (!window.location.pathname.includes('index')) {
             h1.appendChild(btn);
         }
 
-        // Логика
         const PROXY_URL = 'https://keeaz-ai-server-production.up.railway.app/api/chat';
 
         window.toggleAIWidget = function() {
@@ -582,173 +567,3 @@ if (!window.location.pathname.includes('index')) {
         };
     })();
 }
-// ============================================
-// АВТОМАТИЧЕСКОЕ ДОБАВЛЕНИЕ ССЫЛОК НА ВЫХОДЫ
-// ============================================
-
-(function addOutputLinks() {
-    if (window.location.pathname.includes('index')) return;
-    
-    // Ждём загрузки DOM
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-    
-    async function init() {
-        try {
-            const response = await fetch('procedures_data.json');
-            const data = await response.json();
-            
-            const procMap = {};
-            data.procedures.forEach(p => { procMap[p.num] = p.name; });
-            
-            // Запускаем улучшение уже загруженных элементов
-            enhanceAllOutputs(procMap);
-            
-            // Перехватываем открытие панели детализации
-            interceptDetailPanel(procMap);
-            
-        } catch (e) {
-            console.warn('⚠️ Не удалось добавить ссылки на выходы:', e);
-        }
-    }
-    
-    function enhanceAllOutputs(procMap) {
-        // 1. Карточки шагов
-        document.querySelectorAll('.step-card').forEach(card => {
-            enhanceElement(card, procMap);
-        });
-        
-        // 2. Панель детализации (если уже открыта)
-        const detailText = document.getElementById('detailText');
-        if (detailText) {
-            enhanceElement(detailText, procMap);
-        }
-        
-        // 3. IO-items в панели
-        document.querySelectorAll('.io-items').forEach(container => {
-            container.querySelectorAll('a').forEach(link => {
-                const text = link.textContent.trim();
-                const match = text.match(/^(\d+[а-яa-z]?)$/);
-                if (match && procMap[match[1]]) {
-                    link.textContent = `Процедура ${match[1]}`;
-                    link.style.cssText = 'color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #e6f0ff;';
-                }
-            });
-            enhanceElement(container, procMap);
-        });
-    }
-    
-    function enhanceElement(element, procMap) {
-        if (!element) return;
-        
-        // Обрабатываем текст внутри элемента
-        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
-        const textNodes = [];
-        while (walker.nextNode()) textNodes.push(walker.currentNode);
-        
-        textNodes.forEach(node => {
-            const text = node.textContent;
-            const matches = text.match(/\b\d+[а-яa-z]?\b/g);
-            if (!matches) return;
-            
-            let newHTML = text;
-            let changed = false;
-            
-            matches.forEach(num => {
-                if (procMap[num]) {
-                    changed = true;
-                    const regex = new RegExp(`\\b${num}\\b`, 'g');
-                    newHTML = newHTML.replace(regex, `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #e6f0ff;">Процедура ${num}</a>`);
-                }
-            });
-            
-            if (changed) {
-                const span = document.createElement('span');
-                span.innerHTML = newHTML;
-                node.parentNode.replaceChild(span, node);
-            }
-        });
-    }
-    
-    function interceptDetailPanel(procMap) {
-        const waitForShowDetail = setInterval(() => {
-            if (typeof window.showDetail === 'function') {
-                clearInterval(waitForShowDetail);
-                
-                const originalShowDetail = window.showDetail;
-                
-                window.showDetail = function(stepId) {
-                    originalShowDetail(stepId);
-                    
-                    setTimeout(() => {
-                        enhanceAllOutputs(procMap);
-                    }, 100);
-                };
-                
-                console.log('✅ Перехват showDetail установлен — ссылки на выходы будут добавляться автоматически');
-            }
-        }, 200);
-    }
-})();
-// ============================================
-// ПЕРЕХВАТ ОТКРЫТИЯ ПАНЕЛИ ДЕТАЛИЗАЦИИ
-// ============================================
-
-(function interceptDetailPanel() {
-    if (window.location.pathname.includes('index')) return;
-    
-    // Ждём, пока оригинальная функция showDetail станет доступна
-    const waitForShowDetail = setInterval(() => {
-        if (typeof window.showDetail === 'function') {
-            clearInterval(waitForShowDetail);
-            
-            // Сохраняем оригинальную функцию
-            const originalShowDetail = window.showDetail;
-            
-            // Переопределяем её
-            window.showDetail = function(stepId) {
-                // Вызываем оригинал
-                originalShowDetail(stepId);
-                
-                // Ждём немного, пока DOM обновится, и добавляем ссылки
-                setTimeout(() => {
-                    // Загружаем JSON и обновляем выходы
-                    fetch('procedures_data.json')
-                        .then(r => r.json())
-                        .then(data => {
-                            const procMap = {};
-                            data.procedures.forEach(p => { procMap[p.num] = p.name; });
-                            
-                            // Обновляем выходы в панели
-                            const ioItems = document.querySelectorAll('.io-items');
-                            ioItems.forEach(container => {
-                                container.querySelectorAll('a').forEach(link => {
-                                    const text = link.textContent;
-                                    const match = text.match(/^(\d+[а-яa-z]?)$/);
-                                    if (match && procMap[match[1]]) {
-                                        link.textContent = `Процедура ${match[1]}`;
-                                        link.style.cssText = 'color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 12px; background: #e6f0ff;';
-                                    }
-                                });
-                            });
-                            
-                            const detailText = document.getElementById('detailText');
-                            if (detailText) {
-                                let html = detailText.innerHTML;
-                                Object.keys(procMap).forEach(num => {
-                                    const regex = new RegExp(`(?<![>.])\\b${num}\\b(?![<])`, 'g');
-                                    html = html.replace(regex, `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 12px; background: #e6f0ff;">Процедура ${num}</a>`);
-                                });
-                                detailText.innerHTML = html;
-                            }
-                        });
-                }, 100);
-            };
-            
-            console.log('✅ Перехват showDetail установлен');
-        }
-    }, 500);
-})();
