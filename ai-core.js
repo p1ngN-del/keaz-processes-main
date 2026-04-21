@@ -409,7 +409,7 @@
             container.style.gap = '12px';
             container.appendChild(btn);
             
-            // Внедряем стили перед созданием виджета
+            // Внедряем стили и создаем виджет
             injectStyles();
             createWidget();
             loadProceduresFullData(); // Загружаем данные сразу при инициализации
