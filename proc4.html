@@ -1406,6 +1406,57 @@
         });
     });
     </script>
-    <script src="outputs.js"></script>
+    <script>
+(function() {
+    console.log('🚀 Скрипт выходов запущен (встроенный)');
+    
+    const procId = '4';
+    const outputs = ['11', '13', '15'];
+    const skipSteps = ['5'];
+    
+    console.log('📌 Процедура:', procId);
+    console.log('🔢 Выходы:', outputs);
+    
+    const wait = setInterval(function() {
+        if (typeof window.showDetail === 'function') {
+            clearInterval(wait);
+            console.log('✅ showDetail найдена');
+            
+            const original = window.showDetail;
+            window.showDetail = function(stepId) {
+                console.log('🖱️ Шаг:', stepId);
+                
+                setTimeout(function() {
+                    if (skipSteps.includes(stepId)) {
+                        console.log('⏭️ Отказ, пропускаем');
+                        return;
+                    }
+                    
+                    const detailText = document.getElementById('detailText');
+                    if (!detailText) return;
+                    
+                    if (detailText.innerHTML.includes('Процедура 11')) return;
+                    
+                    const links = outputs.map(function(num) {
+                        return '<a href="proc' + num + '.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ' + num + '</a>';
+                    }).join(', ');
+                    
+                    const linksBlock = document.createElement('div');
+                    linksBlock.style.marginTop = '15px';
+                    linksBlock.style.padding = '12px';
+                    linksBlock.style.background = '#f0f7ff';
+                    linksBlock.style.borderRadius = '10px';
+                    linksBlock.style.border = '1px solid #1e6df2';
+                    linksBlock.innerHTML = '<strong>🔗 Выходы в процедуры:</strong> ' + links;
+                    
+                    detailText.appendChild(linksBlock);
+                    console.log('✅ Ссылки добавлены!');
+                    
+                }, 150);
+            };
+        }
+    }, 200);
+})();
+</script>
 </body>
 </html>
