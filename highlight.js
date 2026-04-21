@@ -152,28 +152,41 @@ if (!window.location.pathname.includes('index')) {
     })();
 }
 // ============================================
-// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ (ЗАПУСК ПОСЛЕ ЗАГРУЗКИ)
+// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ
 // ============================================
-window.addEventListener('load', function() {
-    console.log('🚀 Скрипт выходов запущен (после загрузки)');
-    
+(function() {
     if (window.location.pathname.includes('index')) return;
     
-    const path = window.location.pathname;
-    const filename = path.substring(path.lastIndexOf('/') + 1);
-    const procId = filename.replace('proc', '').replace('.html', '');
-    
-    console.log('📌 ID процедуры:', procId);
+    const procId = window.location.pathname.match(/proc(\d+[a-z]*)\.html/)?.[1];
+    if (!procId) return;
     
     const outputsMap = {
-        '3': [], '4': ['11', '13', '15'], '4a': ['4', '23'], '4n': ['3', '29'], '5': ['6'], '6': [], '7': ['21'], '8': ['12'],
-        '10': ['11', '22'], '11': ['14'], '12': ['22'], '13': ['20'], '14': ['20'], '15': ['13'], '16': [], '17': ['23', '24', '26'],
-        '18': ['17', '19'], '19': ['24'], '20': ['25'], '21': ['18'], '22': ['8', '3'], '23': ['4', '4a'], '24': ['4'], '25': [],
-        '26': ['31', '4a'], '27': ['17'], '28': ['30'], '29': [], '30': [], '31': []
+        '4': ['11', '13', '15'],
+        '4a': ['4', '23'],
+        '4n': ['3', '29'],
+        '5': ['6'],
+        '8': ['12'],
+        '10': ['11', '22'],
+        '11': ['14'],
+        '12': ['22'],
+        '13': ['20'],
+        '14': ['20'],
+        '15': ['13'],
+        '17': ['23', '24', '26'],
+        '18': ['17', '19'],
+        '19': ['24'],
+        '20': ['25'],
+        '21': ['18'],
+        '22': ['8', '3'],
+        '23': ['4', '4a'],
+        '24': ['4'],
+        '26': ['31', '4a'],
+        '27': ['17'],
+        '28': ['30'],
+        '31': []
     };
     
     const outputs = outputsMap[procId] || [];
-    console.log('🔢 Выходы:', outputs);
     if (outputs.length === 0) return;
     
     const skipSteps = { '4': ['5'], '4a': ['22'] };
@@ -183,7 +196,6 @@ window.addEventListener('load', function() {
     const wait = setInterval(function() {
         if (typeof window.showDetail === 'function') {
             clearInterval(wait);
-            console.log('✅ showDetail найдена!');
             
             const original = window.showDetail;
             window.showDetail = function(stepId) {
@@ -195,13 +207,16 @@ window.addEventListener('load', function() {
                     const detailText = document.getElementById('detailText');
                     if (!detailText) return;
                     
-                    const text = detailText.textContent;
-                    if (!text.includes('Выход') && !text.includes('📤')) return;
+                    // Проверяем, что это выход (ищем "Выход" или "📤")
+                    if (!detailText.textContent.includes('Выход') && !detailText.textContent.includes('📤')) return;
+                    
+                    // Не добавляем дважды
                     if (detailText.innerHTML.includes('🔗 Выходы')) return;
                     
-                    const links = outputs.map(function(num) {
-                        return '<a href="proc' + num + '.html" class="proc-link" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ' + num + '</a>';
-                    }).join(', ');
+                    // Создаём ссылки
+                    const links = outputs.map(num => 
+                        `<a href="proc${num}.html" style="color:#1e6df2;background:#e6f0ff;padding:4px 12px;border-radius:20px;text-decoration:none;font-weight:600;margin:0 4px;display:inline-block;">Процедура ${num}</a>`
+                    ).join('');
                     
                     const linksBlock = document.createElement('div');
                     linksBlock.style.marginTop = '20px';
@@ -209,12 +224,12 @@ window.addEventListener('load', function() {
                     linksBlock.style.background = '#f0f7ff';
                     linksBlock.style.borderRadius = '12px';
                     linksBlock.style.border = '1px solid #1e6df2';
-                    linksBlock.innerHTML = '<strong style="color: #0a1929;">🔗 Выходы в процедуры:</strong> ' + links;
+                    linksBlock.innerHTML = `<strong style="color:#0a1929;">🔗 Выходы в процедуры:</strong><br><div style="margin-top:10px;">${links}</div>`;
                     
                     detailText.appendChild(linksBlock);
-                    console.log('🎉 Ссылки добавлены для шага', stepId);
-                }, 150);
+                    console.log(`✅ Ссылки добавлены для шага ${stepId} в процедуре ${procId}`);
+                }, 200);
             };
         }
-    }, 200);
-});
+    }, 100);
+})();
