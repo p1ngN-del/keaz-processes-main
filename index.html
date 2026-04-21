@@ -101,8 +101,8 @@
             margin-top: 8px;
         }
 
-        /* ============================================ */
-/* ГРУППЫ - ДВЕ КОЛОНКИ, КОМПАКТНАЯ ВЕРСИЯ     */
+       /* ============================================ */
+/* ГРУППЫ - ДВЕ КОЛОНКИ, НЕЗАВИСИМАЯ ВЫСОТА   */
 /* ============================================ */
 
 .filter-row {
@@ -110,6 +110,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 12px;
+    align-items: flex-start;
 }
 
 .filter-group {
@@ -117,8 +118,9 @@
     background: white;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
-    overflow: visible; /* Меняем с hidden на visible */
-    height: auto; /* Явно задаём auto */
+    overflow: visible;
+    height: auto;
+    align-self: flex-start;
 }
 
 .filter-group-header {
@@ -198,7 +200,6 @@
 .filter-all:hover {
     background: #1e2f47;
 }
-
 /* Ограничиваем высоту группы и добавляем прокрутку если нужно */
 .filter-group-items {
     max-height: 200px;
