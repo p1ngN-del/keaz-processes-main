@@ -587,7 +587,6 @@ if (!window.location.pathname.includes('index')) {
 // ============================================
 
 (function addOutputLinks() {
-    // Только на страницах процедур (не на index.html)
     if (window.location.pathname.includes('index')) return;
     
     // Ждём загрузки DOM
@@ -599,127 +598,99 @@ if (!window.location.pathname.includes('index')) {
     
     async function init() {
         try {
-            // Загружаем JSON
             const response = await fetch('procedures_data.json');
             const data = await response.json();
             
-            // Определяем ID текущей процедуры
-            const path = window.location.pathname;
-            const filename = path.substring(path.lastIndexOf('/') + 1);
-            const currentProcId = filename.replace('proc', '').replace('.html', '');
-            
-            // Находим текущую процедуру
-            const currentProc = data.procedures.find(p => p.id === currentProcId);
-            if (!currentProc) return;
-            
-            // Создаём карту: номер процедуры -> название
             const procMap = {};
-            data.procedures.forEach(p => {
-                procMap[p.num] = p.name;
-            });
+            data.procedures.forEach(p => { procMap[p.num] = p.name; });
             
-            // Ищем все элементы с выходами (в detail-panel, в io-items, и в step-card)
-            enhanceOutputs(currentProc.content, procMap);
+            // Запускаем улучшение уже загруженных элементов
+            enhanceAllOutputs(procMap);
+            
+            // Перехватываем открытие панели детализации
+            interceptDetailPanel(procMap);
             
         } catch (e) {
             console.warn('⚠️ Не удалось добавить ссылки на выходы:', e);
         }
     }
     
-    function enhanceOutputs(content, procMap) {
-        // 1. Обновляем выходы в детальной панели (если она есть)
-        const ioItems = document.querySelectorAll('.io-items');
-        ioItems.forEach(container => {
-            const links = container.querySelectorAll('a');
-            links.forEach(link => {
-                enhanceLink(link, procMap);
-            });
-            
-            // Также обрабатываем текстовые узлы
-            container.childNodes.forEach(node => {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    enhanceTextNode(node, procMap);
-                }
-            });
+    function enhanceAllOutputs(procMap) {
+        // 1. Карточки шагов
+        document.querySelectorAll('.step-card').forEach(card => {
+            enhanceElement(card, procMap);
         });
         
-        // 2. Обновляем выходы в карточках шагов (.step-card)
-        const stepCards = document.querySelectorAll('.step-card');
-        stepCards.forEach(card => {
-            const badges = card.querySelectorAll('.step-badge');
-            badges.forEach(badge => {
-                if (badge.textContent.includes('📤') || badge.classList.contains('badge-out')) {
-                    enhanceElement(badge, procMap);
-                }
-            });
-            
-            // Также ищем в preview
-            const preview = card.querySelector('.step-preview');
-            if (preview) {
-                enhanceElement(preview, procMap);
-            }
-        });
-        
-        // 3. Обновляем панель детализации (detailText)
+        // 2. Панель детализации (если уже открыта)
         const detailText = document.getElementById('detailText');
         if (detailText) {
             enhanceElement(detailText, procMap);
         }
+        
+        // 3. IO-items в панели
+        document.querySelectorAll('.io-items').forEach(container => {
+            container.querySelectorAll('a').forEach(link => {
+                const text = link.textContent.trim();
+                const match = text.match(/^(\d+[а-яa-z]?)$/);
+                if (match && procMap[match[1]]) {
+                    link.textContent = `Процедура ${match[1]}`;
+                    link.style.cssText = 'color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #e6f0ff;';
+                }
+            });
+            enhanceElement(container, procMap);
+        });
     }
     
     function enhanceElement(element, procMap) {
         if (!element) return;
         
-        let html = element.innerHTML;
-        let changed = false;
+        // Обрабатываем текст внутри элемента
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
         
-        // Ищем номера процедур (цифры, возможно с буквой)
-        html = html.replace(/(?<![>.])\b(\d+[а-яa-z]?)\b(?![<])/g, (match, num) => {
-            // Проверяем, есть ли такая процедура в карте
-            if (procMap[num]) {
-                changed = true;
-                return `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 12px; background: #e6f0ff;">Процедура ${num}</a>`;
-            }
-            return match;
-        });
-        
-        if (changed) {
-            element.innerHTML = html;
-        }
-    }
-    
-    function enhanceLink(link, procMap) {
-        const text = link.textContent;
-        const match = text.match(/^(\d+[а-яa-z]?)$/);
-        if (match && procMap[match[1]]) {
-            link.textContent = `Процедура ${match[1]}`;
-            link.style.cssText = 'color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 12px; background: #e6f0ff;';
-        }
-    }
-    
-    function enhanceTextNode(node, procMap) {
-        if (!node || !node.textContent) return;
-        
-        const text = node.textContent;
-        const matches = text.match(/\b\d+[а-яa-z]?\b/g);
-        if (!matches) return;
-        
-        let newHTML = text;
-        let changed = false;
-        
-        matches.forEach(num => {
-            if (procMap[num]) {
-                changed = true;
-                const regex = new RegExp(`\\b${num}\\b`, 'g');
-                newHTML = newHTML.replace(regex, `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 12px; background: #e6f0ff;">Процедура ${num}</a>`);
+        textNodes.forEach(node => {
+            const text = node.textContent;
+            const matches = text.match(/\b\d+[а-яa-z]?\b/g);
+            if (!matches) return;
+            
+            let newHTML = text;
+            let changed = false;
+            
+            matches.forEach(num => {
+                if (procMap[num]) {
+                    changed = true;
+                    const regex = new RegExp(`\\b${num}\\b`, 'g');
+                    newHTML = newHTML.replace(regex, `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #e6f0ff;">Процедура ${num}</a>`);
+                }
+            });
+            
+            if (changed) {
+                const span = document.createElement('span');
+                span.innerHTML = newHTML;
+                node.parentNode.replaceChild(span, node);
             }
         });
-        
-        if (changed) {
-            const span = document.createElement('span');
-            span.innerHTML = newHTML;
-            node.parentNode.replaceChild(span, node);
-        }
+    }
+    
+    function interceptDetailPanel(procMap) {
+        const waitForShowDetail = setInterval(() => {
+            if (typeof window.showDetail === 'function') {
+                clearInterval(waitForShowDetail);
+                
+                const originalShowDetail = window.showDetail;
+                
+                window.showDetail = function(stepId) {
+                    originalShowDetail(stepId);
+                    
+                    setTimeout(() => {
+                        enhanceAllOutputs(procMap);
+                    }, 100);
+                };
+                
+                console.log('✅ Перехват showDetail установлен — ссылки на выходы будут добавляться автоматически');
+            }
+        }, 200);
     }
 })();
 // ============================================
