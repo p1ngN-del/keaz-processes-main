@@ -1438,179 +1438,6 @@
         
         applySearch();
     }
-
-    // ============================================
-    // AI-АССИСТЕНТ DEEPSEEK
-    // ============================================
-
-    const PROXY_URL = 'https://keeaz-ai-server-production.up.railway.app/api/chat';
-    let aiMessages = [];
-
-    function toggleAIWidget() {
-        const widget = document.getElementById('aiWidget');
-        widget.classList.toggle('open');
-        
-        if (widget.classList.contains('open')) {
-            setTimeout(() => {
-                document.getElementById('aiInput').focus();
-            }, 100);
-        }
-    }
-
-    function closeAIAssistant() {
-        document.getElementById('aiWidget').classList.remove('open');
-    }
-
-    function handleAIKeyPress(event) {
-        if (event.key === 'Enter') {
-            sendAIMessage();
-        }
-    }
-
-    function showTypingIndicator() {
-        const messagesDiv = document.getElementById('aiMessages');
-        const typingDiv = document.createElement('div');
-        typingDiv.className = 'typing-indicator';
-        typingDiv.id = 'typingIndicator';
-        typingDiv.innerHTML = '<span></span><span></span><span></span>';
-        messagesDiv.appendChild(typingDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
-    function removeTypingIndicator() {
-        const typingDiv = document.getElementById('typingIndicator');
-        if (typingDiv) typingDiv.remove();
-    }
-
-    function addMessageToChat(text, sender) {
-    const messagesDiv = document.getElementById('aiMessages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `ai-message ai-message-${sender}`;
-    
-    // Преобразуем Markdown в HTML
-    let formattedText = text
-        // Жирный текст **bold** -> <strong>bold</strong>
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        // Курсив *italic* -> <em>italic</em>
-        .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        // Код `code` -> <code>code</code>
-        .replace(/`(.+?)`/g, '<code>$1</code>')
-        // Переносы строк
-        .replace(/\n/g, '<br>')
-        // Ссылки на процедуры
-        .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`)
-        .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`)
-        .replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
-    
-    messageDiv.innerHTML = formattedText;
-    messagesDiv.appendChild(messageDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
-
-    // Отправка сообщения к DeepSeek (улучшенная версия с большим контекстом)
-async function sendAIMessage() {
-    const input = document.getElementById('aiInput');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    input.value = '';
-    addMessageToChat(message, 'user');
-    showTypingIndicator();
-    
-    const sendBtn = document.getElementById('aiSendBtn');
-    sendBtn.disabled = true;
-    
-    try {
-        // Ищем релевантные процедуры
-        const relevantProcs = findRelevantProcedures(message, 5);
-        
-        let contextText = '';
-        if (relevantProcs.length > 0) {
-            contextText = '\n\n=== РЕЛЕВАНТНЫЕ ПРОЦЕДУРЫ ИЗ БАЗЫ ЗНАНИЙ КЭАЗ ===\n\n';
-            relevantProcs.forEach((proc) => {
-                contextText += `--- ПРОЦЕДУРА ${proc.num}: ${proc.name} ---\n`;
-                // Отправляем до 15 000 символов
-                const maxLength = 15000;
-                if (proc.content.length > maxLength) {
-                    contextText += proc.content.substring(0, maxLength);
-                    contextText += `\n... (процедура содержит ещё ${proc.content.length - maxLength} символов)`;
-                } else {
-                    contextText += proc.content;
-                }
-                contextText += '\n\n';
-            });
-            contextText += '=== КОНЕЦ КОНТЕКСТА ===\n\n';
-        } else {
-            contextText = '\n\n(Релевантные процедуры не найдены)\n\n';
-        }
-        
-        const messagesWithContext = [
-            {
-                role: 'system',
-                content: `Ты — AI-ассистент КЭАЗ. Отвечай на вопросы, основываясь на предоставленном контексте процедур.
-                
-                ВАЖНО:
-                - Указывай номер процедуры и номер шага (например, "Процедура 4, шаг 34")
-                - Если описываешь процесс — перечисляй конкретные действия
-                - Отвечай кратко, по делу
-                
-                В конце ответа добавь [PROC:номера] с номерами упомянутых процедур.`
-            },
-            {
-                role: 'user',
-                content: `КОНТЕКСТ:\n${contextText}\n\nВОПРОС: ${message}`
-            }
-        ];
-        
-        const response = await fetch(PROXY_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: messagesWithContext })
-        });
-        
-        removeTypingIndicator();
-        
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            const procMatch = data.content.match(/\[PROC:([^\]]+)\]/);
-            let procNumbers = [];
-            
-            if (procMatch && procMatch[1] !== 'none') {
-                procNumbers = procMatch[1].split(',').map(p => p.trim());
-            }
-            
-            let cleanContent = data.content.replace(/\[PROC:[^\]]+\]/, '').trim();
-            addMessageToChat(cleanContent, 'bot');
-            
-            if (procNumbers.length > 0) {
-                filterByAIProcedures(procNumbers);
-                
-                const messagesDiv = document.getElementById('aiMessages');
-                const filterMsg = document.createElement('div');
-                filterMsg.className = 'ai-message ai-message-bot';
-                filterMsg.style.background = '#fff3cf';
-                filterMsg.style.borderColor = '#f6b83e';
-                filterMsg.innerHTML = `🎯 <strong>Карта отфильтрована</strong> — показаны процедуры: ${procNumbers.map(p => `<code style="background:#f6b83e; color:#0a1929; padding:2px 6px; border-radius:12px; margin:0 2px;">${p}</code>`).join(', ')}<br><br>
-                <a href="#" onclick="resetAIFilter(); return false;" style="color: #0a1929; background: #f6b83e; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block;">🔄 Сбросить фильтр</a>`;
-                messagesDiv.appendChild(filterMsg);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }
-        } else {
-            addMessageToChat('❌ Ошибка. Проверьте прокси-сервер.', 'bot');
-        }
-    } catch (error) {
-        console.error('Ошибка:', error);
-        removeTypingIndicator();
-        addMessageToChat('❌ Не удалось подключиться к серверу. Запустите: node server.js', 'bot');
-    }
-    
-    sendBtn.disabled = false;
-}
-
 let originalRoleFilter = 'all';
 let originalSearchTerm = '';
 
@@ -1687,6 +1514,17 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     
     checkAIServer();
+    // Инициализация AI-ассистента через AICore
+    if (window.AICore) {
+        // На главной странице кнопка AI уже есть в HTML, поэтому мы просто привязываем к ней действие из AICore
+        const aiBtn = document.querySelector('.ai-search-btn');
+        if (aiBtn) {
+            aiBtn.onclick = (e) => {
+                e.preventDefault();
+                window.AICore.toggleWidget();
+            };
+        }
+    }
 });
 </script>
 
