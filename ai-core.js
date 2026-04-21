@@ -352,8 +352,9 @@
         // Внедряем стили (на случай, если они еще не добавлены)
         injectStyles();
 
+        // ВАЖНО: Добавлен встроенный стиль style="display: none;" чтобы виджет был скрыт по умолчанию!
         const widgetHTML = `
-            <div class="ai-widget" id="aiWidget">
+            <div class="ai-widget" id="aiWidget" style="display: none;">
                 <div class="ai-header">
                     <span class="ai-icon">🤖</span>
                     <span class="ai-title">AI · Ассистент КЭАЗ</span>
