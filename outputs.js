@@ -31,7 +31,11 @@ if (window.location.pathname.includes('index')) {
                 
                 const original = window.showDetail;
                 window.showDetail = function(stepId) {
-                    original(stepId);
+                    try {
+    original(stepId);
+} catch(e) {
+    console.log('⚠️ Ошибка в original, но продолжаем');
+}
                     setTimeout(() => {
                         console.log('🖱️ Шаг:', stepId);
                         
