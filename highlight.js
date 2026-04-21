@@ -151,45 +151,103 @@ if (!window.location.pathname.includes('index')) {
         };
     })();
 }
-
 // ============================================
-// ССЫЛКИ НА ВЫХОДЫ (ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ)
+// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ ДЛЯ ВСЕХ ПРОЦЕДУР
 // ============================================
 (function() {
-    console.log('🚀 Скрипт выходов запущен');
-    
+    // Только на страницах процедур
     if (window.location.pathname.includes('index')) return;
     
+    // Определяем ID текущей процедуры
     const path = window.location.pathname;
     const filename = path.substring(path.lastIndexOf('/') + 1);
     const procId = filename.replace('proc', '').replace('.html', '');
     
+    // Карта выходов (из главной страницы)
     const outputsMap = {
-        '4': ['11', '13', '15']
+        '3': [],
+        '4': ['11', '13', '15'],
+        '4a': ['4', '23'],
+        '4n': ['3', '29'],
+        '5': ['6'],
+        '6': [],
+        '7': ['21'],
+        '8': ['12'],
+        '10': ['11', '22'],
+        '11': ['14'],
+        '12': ['22'],
+        '13': ['20'],
+        '14': ['20'],
+        '15': ['13'],
+        '16': [],
+        '17': ['23', '24', '26'],
+        '18': ['17', '19'],
+        '19': ['24'],
+        '20': ['25'],
+        '21': ['18'],
+        '22': ['8', '3'],
+        '23': ['4', '4a'],
+        '24': ['4'],
+        '25': [],
+        '26': ['31', '4a'],
+        '27': ['17'],
+        '28': ['30'],
+        '29': [],
+        '30': [],
+        '31': []
     };
     
     const outputs = outputsMap[procId] || [];
     if (outputs.length === 0) return;
     
-    const skipSteps = { '4': ['5'] };
+    // Шаги-отказы (где НЕ надо добавлять ссылки)
+    const skipSteps = {
+        '4': ['5'],
+        '4a': ['22']
+    };
     const skipList = skipSteps[procId] || [];
     
-    const waitForShowDetail = setInterval(() => {
+    // Ждём, пока функция showDetail станет доступна
+    const wait = setInterval(function() {
         if (typeof window.showDetail === 'function') {
-            clearInterval(waitForShowDetail);
+            clearInterval(wait);
+            
             const original = window.showDetail;
             window.showDetail = function(stepId) {
+                // Вызываем оригинал
                 original(stepId);
-                setTimeout(() => {
+                
+                setTimeout(function() {
+                    // Пропускаем отказы
                     if (skipList.includes(stepId)) return;
+                    
                     const detailText = document.getElementById('detailText');
                     if (!detailText) return;
-                    if (!detailText.innerHTML.includes('📤 ВЫХОД')) return;
-                    if (detailText.innerHTML.includes('Процедура')) return;
-                    const links = outputs.map(num => `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`).join(', ');
-                    let html = detailText.innerHTML;
-                    html = html.replace(/(📤 ВЫХОД:[^<]*)/, `$1 ${links}`);
-                    detailText.innerHTML = html;
+                    
+                    // Проверяем, что это выход
+                    const text = detailText.textContent;
+                    const isOutput = text.includes('Выход') || text.includes('📤');
+                    if (!isOutput) return;
+                    
+                    // Проверяем, нет ли уже ссылок
+                    if (detailText.innerHTML.includes('🔗 Выходы')) return;
+                    
+                    // Создаём ссылки
+                    const links = outputs.map(function(num) {
+                        return '<a href="proc' + num + '.html" class="proc-link" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ' + num + '</a>';
+                    }).join(', ');
+                    
+                    // Создаём красивый блок
+                    const linksBlock = document.createElement('div');
+                    linksBlock.style.marginTop = '20px';
+                    linksBlock.style.padding = '15px';
+                    linksBlock.style.background = '#f0f7ff';
+                    linksBlock.style.borderRadius = '12px';
+                    linksBlock.style.border = '1px solid #1e6df2';
+                    linksBlock.innerHTML = '<strong style="color: #0a1929;">🔗 Выходы в процедуры:</strong> ' + links;
+                    
+                    detailText.appendChild(linksBlock);
+                    
                 }, 150);
             };
         }
