@@ -1455,7 +1455,6 @@ function renderRoleFilters() {
     const expandableContainer = document.getElementById('allRolesExpandable');
     
     if (mainRolesContainer) {
-        // Очищаем контейнер и заполняем новыми фильтрами
         mainRolesContainer.innerHTML = generateRoleFilters();
         
         // Добавляем стиль для заголовков групп
@@ -1480,6 +1479,18 @@ function renderRoleFilters() {
             document.head.appendChild(style);
         }
     }
+    
+    // Скрываем старый expandable контейнер
+    if (expandableContainer) {
+        expandableContainer.style.display = 'none';
+    }
+    
+    // Скрываем кнопку "Показать все роли"
+    const toggleBtn = document.getElementById('toggleBtn');
+    if (toggleBtn) {
+        toggleBtn.style.display = 'none';
+    }
+}
     
     // Скрываем старый expandable контейнер (больше не нужен)
     if (expandableContainer) {
