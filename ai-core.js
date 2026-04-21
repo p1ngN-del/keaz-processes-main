@@ -114,9 +114,19 @@
                 </div>
                 <div class="ai-messages" id="aiMessages">
                     <div class="ai-message ai-message-bot">
-                        👋 <strong>Здравствуйте!</strong><br><br>
-                        Я AI-ассистент КЭАЗ. Задайте вопрос по этой процедуре.
-                    </div>
+    👋 <strong>Здравствуйте! Я AI-ассистент КЭАЗ.</strong><br><br>
+    <strong>🤖 Что я умею:</strong><br>
+    🔹 <strong>Искать процедуры</strong> — просто опишите задачу (например, «вывод продукта из ассортимента»).<br>
+    🔹 <strong>Объяснять процессы</strong> — расскажу, какие шаги и роли задействованы.<br>
+    🔹 <strong>Подсказывать ответственных</strong> — кто что делает в каждой процедуре.<br><br>
+    <strong>📋 Примеры запросов:</strong><br>
+    • «Как ввести новую номенклатуру?»<br>
+    • «Кто отвечает за ценообразование?»<br>
+    • «Что такое процедура 4н?»<br>
+    • «Как найти поставщика?»<br>
+    • «Как списать ТМЦ?»<br><br>
+    <em>👇 Введите ваш вопрос ниже.</em>
+</div>
                 </div>
                 <div class="ai-input-row">
                     <input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)">
