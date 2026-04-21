@@ -929,85 +929,16 @@
     animation: softGlow 0.3s ease forwards;
 }
         /* ============================================ */
-/* 3. ПРИНУДИТЕЛЬНОЕ ИСПРАВЛЕНИЕ HOVER (ВАЖНО!) */
+/* 2. ПРОСТОЙ РАБОЧИЙ HOVER                   */
 /* ============================================ */
 
-/* Запрещаем любое изменение фона при наведении */
-.proc-card:hover,
-.proc-card:hover .phase1-color,
-.proc-card:hover .phase2-color,
-.proc-card:hover .phase3-color,
-.proc-card:hover .phase4-color,
-.proc-card:hover .phase5-color,
-.proc-card:hover .phase6-color,
-.proc-card:hover .phase7-color {
-    background: inherit !important;
-    background-color: inherit !important;
+.proc-card {
+    transition: all 0.2s ease;
 }
 
-/* Сохраняем цвет фона в зависимости от фазы */
-.phase1 .proc-card:hover { background: #faf5ff !important; }
-.phase2 .proc-card:hover { background: #eff6ff !important; }
-.phase3 .proc-card:hover { background: #f0fdf4 !important; }
-.phase4 .proc-card:hover { background: #fff7ed !important; }
-.phase5 .proc-card:hover { background: #fef2f2 !important; }
-.phase6 .proc-card:hover { background: #fefce8 !important; }
-.phase7 .proc-card:hover { background: #faf5ff !important; }
-
-/* Гарантируем, что текст остаётся читаемым */
-.proc-card:hover .proc-num {
-    background: #f6b83e !important;
-    color: #0a1929 !important;
-}
-
-.proc-card:hover .proc-name {
-    color: #f6b83e !important;
-}
-
-.proc-card:hover .proc-io {
-    background: rgba(0,0,0,0.05) !important;
-}
-        /* ============================================ */
-/* 3. ЖЁСТКОЕ ИСПРАВЛЕНИЕ HOVER (100% РАБОТАЕТ) */
-/* ============================================ */
-
-/* Полностью блокируем изменение фона и цвета текста */
-.proc-card,
-.proc-card *,
-.proc-card:hover,
-.proc-card:hover * {
-    background: inherit !important;
-    background-color: inherit !important;
-    color: inherit !important;
-}
-
-/* Явно задаём фон для каждой фазы при наведении */
-.phase1 .proc-card:hover { background-color: #faf5ff !important; }
-.phase2 .proc-card:hover { background-color: #eff6ff !important; }
-.phase3 .proc-card:hover { background-color: #f0fdf4 !important; }
-.phase4 .proc-card:hover { background-color: #fff7ed !important; }
-.phase5 .proc-card:hover { background-color: #fef2f2 !important; }
-.phase6 .proc-card:hover { background-color: #fefce8 !important; }
-.phase7 .proc-card:hover { background-color: #faf5ff !important; }
-
-/* Явно задаём цвет текста */
-.proc-card:hover .proc-num {
-    background-color: #f6b83e !important;
-    color: #0a1929 !important;
-}
-
-.proc-card:hover .proc-name {
-    color: #f6b83e !important;
-}
-
-.proc-card:hover .proc-io {
-    background-color: rgba(0, 0, 0, 0.05) !important;
-    color: #475569 !important;
-}
-
-.proc-card:hover .io-in,
-.proc-card:hover .io-out {
-    color: inherit !important;
+.proc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
     </style>
 </head>
