@@ -793,7 +793,7 @@
     <div class="search-row">
         <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по процедурам (название, номер, ТНВЭД, сертификат...)" onkeyup="applySearch()">
         <button class="search-clear" onclick="clearSearch()">✖ Очистить</button>
-        <button class="ai-search-btn" onclick="toggleAIWidget()" title="Спросить AI-ассистента">
+        <button class="ai-search-btn" title="Спросить AI-ассистента">
             <span class="ai-btn-icon">🤖</span>
             <span class="ai-btn-text">AI</span>
         </button>
@@ -1527,39 +1527,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
-
-<!-- ============================================ -->
-<!-- AI-АССИСТЕНТ DEEPSEEK - HTML                  -->
-<!-- ============================================ -->
-
-<!-- Виджет чата -->
-<div class="ai-widget" id="aiWidget">
-    <div class="ai-header">
-        <span class="ai-icon">🤖</span>
-        <span class="ai-title">AI · Ассистент КЭАЗ</span>
-        <button class="ai-close" onclick="toggleAIWidget()">✕</button>
-    </div>
-    <div class="ai-messages" id="aiMessages">
-        <div class="ai-message ai-message-bot">
-            👋 <strong>Здравствуйте!</strong> Я AI-ассистент КЭАЗ!<br><br>
-            <strong>Я могу помочь:</strong><br>
-            🔹 Найти нужную процедуру<br>
-            🔹 Объяснить, кто за что отвечает<br>
-            🔹 Подсказать последовательность действий<br>
-            🔹 Разобраться в бизнес-процессах<br><br>
-            <em>Примеры вопросов:</em><br>
-            • "Как вывести продукт из ассортимента?"<br>
-            • "Кто отвечает за ценообразование?"<br>
-            • "Что такое процедура 28?"<br>
-            • "Как найти поставщика?"<br><br>
-            Задайте ваш вопрос! 👇
-        </div>
-    </div>
-    <div class="ai-input-row">
-        <input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="handleAIKeyPress(event)">
-        <button class="ai-send" id="aiSendBtn" onclick="sendAIMessage()">➤</button>
-    </div>
-</div>
     <script src="ai-core.js"></script>
 </body>
 </html>
