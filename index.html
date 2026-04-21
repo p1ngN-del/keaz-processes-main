@@ -928,6 +928,45 @@
 .proc-card:hover {
     animation: softGlow 0.3s ease forwards;
 }
+        /* ============================================ */
+/* 3. ПРИНУДИТЕЛЬНОЕ ИСПРАВЛЕНИЕ HOVER (ВАЖНО!) */
+/* ============================================ */
+
+/* Запрещаем любое изменение фона при наведении */
+.proc-card:hover,
+.proc-card:hover .phase1-color,
+.proc-card:hover .phase2-color,
+.proc-card:hover .phase3-color,
+.proc-card:hover .phase4-color,
+.proc-card:hover .phase5-color,
+.proc-card:hover .phase6-color,
+.proc-card:hover .phase7-color {
+    background: inherit !important;
+    background-color: inherit !important;
+}
+
+/* Сохраняем цвет фона в зависимости от фазы */
+.phase1 .proc-card:hover { background: #faf5ff !important; }
+.phase2 .proc-card:hover { background: #eff6ff !important; }
+.phase3 .proc-card:hover { background: #f0fdf4 !important; }
+.phase4 .proc-card:hover { background: #fff7ed !important; }
+.phase5 .proc-card:hover { background: #fef2f2 !important; }
+.phase6 .proc-card:hover { background: #fefce8 !important; }
+.phase7 .proc-card:hover { background: #faf5ff !important; }
+
+/* Гарантируем, что текст остаётся читаемым */
+.proc-card:hover .proc-num {
+    background: #f6b83e !important;
+    color: #0a1929 !important;
+}
+
+.proc-card:hover .proc-name {
+    color: #f6b83e !important;
+}
+
+.proc-card:hover .proc-io {
+    background: rgba(0,0,0,0.05) !important;
+}
     </style>
 </head>
 <body>
