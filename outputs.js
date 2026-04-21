@@ -1,4 +1,4 @@
-// outputs.js - ссылки на выходы (супер-простая версия)
+// outputs.js - ссылки на выходы (с полной отладкой)
 console.log('🚀 Скрипт выходов запущен');
 
 if (window.location.pathname.includes('index')) {
@@ -22,6 +22,7 @@ if (window.location.pathname.includes('index')) {
     if (outputs.length > 0) {
         const skipSteps = { '4': ['5'], '4a': ['22'] };
         const skipList = skipSteps[procId] || [];
+        console.log('⏭️ Список отказов:', skipList);
         
         const wait = setInterval(() => {
             if (typeof window.showDetail === 'function') {
@@ -34,28 +35,33 @@ if (window.location.pathname.includes('index')) {
                     setTimeout(() => {
                         console.log('🖱️ Шаг:', stepId);
                         
-                        // Пропускаем только явные отказы
+                        // Проверка 1: отказ?
                         if (skipList.includes(stepId)) {
-                            console.log('⏭️ Шаг в списке отказов, пропускаем');
+                            console.log('❌ Шаг в списке отказов');
                             return;
                         }
+                        console.log('✅ Не отказ');
                         
+                        // Проверка 2: detailText?
                         const detailText = document.getElementById('detailText');
-                        if (!detailText) return;
-                        
-                        // Проверяем, нет ли уже ссылок
-                        if (detailText.innerHTML.includes('Процедура 11') || 
-                            detailText.innerHTML.includes('Связанные процедуры')) {
-                            console.log('⏭️ Ссылки уже есть');
+                        if (!detailText) {
+                            console.log('❌ detailText не найден');
                             return;
                         }
+                        console.log('✅ detailText найден');
+                        
+                        // Проверка 3: уже есть ссылки?
+                        if (detailText.innerHTML.includes('Процедура 11')) {
+                            console.log('❌ Ссылки уже есть');
+                            return;
+                        }
+                        console.log('✅ Ссылок ещё нет');
                         
                         // Создаём ссылки
                         const links = outputs.map(num => 
                             `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`
                         ).join(', ');
                         
-                        // Добавляем блок со ссылками в конец
                         const linksBlock = document.createElement('div');
                         linksBlock.style.marginTop = '15px';
                         linksBlock.style.padding = '12px';
@@ -65,7 +71,7 @@ if (window.location.pathname.includes('index')) {
                         linksBlock.innerHTML = `<strong>🔗 Выходы в процедуры:</strong> ${links}`;
                         
                         detailText.appendChild(linksBlock);
-                        console.log('✅ Ссылки добавлены');
+                        console.log('✅✅✅ ССЫЛКИ ДОБАВЛЕНЫ! ✅✅✅');
                         
                     }, 150);
                 };
