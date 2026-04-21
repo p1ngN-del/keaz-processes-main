@@ -152,15 +152,12 @@ if (!window.location.pathname.includes('index')) {
     })();
 }
 // ============================================
-// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ (С ОТЛАДКОЙ)
+// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ (ЗАПУСК ПОСЛЕ ЗАГРУЗКИ)
 // ============================================
-(function() {
-    console.log('🚀 Скрипт выходов запущен');
+window.addEventListener('load', function() {
+    console.log('🚀 Скрипт выходов запущен (после загрузки)');
     
-    if (window.location.pathname.includes('index')) {
-        console.log('⏭️ index.html - выходим');
-        return;
-    }
+    if (window.location.pathname.includes('index')) return;
     
     const path = window.location.pathname;
     const filename = path.substring(path.lastIndexOf('/') + 1);
@@ -177,18 +174,12 @@ if (!window.location.pathname.includes('index')) {
     
     const outputs = outputsMap[procId] || [];
     console.log('🔢 Выходы:', outputs);
-    
-    if (outputs.length === 0) {
-        console.log('⏭️ Нет выходов, выходим');
-        return;
-    }
+    if (outputs.length === 0) return;
     
     const skipSteps = { '4': ['5'], '4a': ['22'] };
     const skipList = skipSteps[procId] || [];
-    console.log('⏭️ Шаги-отказы:', skipList);
     
-    console.log('⏳ Ждём showDetail...');
-    
+    // Ждём showDetail
     const wait = setInterval(function() {
         if (typeof window.showDetail === 'function') {
             clearInterval(wait);
@@ -196,36 +187,17 @@ if (!window.location.pathname.includes('index')) {
             
             const original = window.showDetail;
             window.showDetail = function(stepId) {
-                console.log('🖱️ Вызван showDetail, шаг:', stepId);
-                
                 original(stepId);
                 
                 setTimeout(function() {
-                    console.log('⏰ Таймер для шага:', stepId);
-                    
-                    if (skipList.includes(stepId)) {
-                        console.log('❌ Шаг в списке отказов');
-                        return;
-                    }
-                    console.log('✅ Не отказ');
+                    if (skipList.includes(stepId)) return;
                     
                     const detailText = document.getElementById('detailText');
-                    console.log('📝 detailText найден?', !!detailText);
                     if (!detailText) return;
                     
                     const text = detailText.textContent;
-                    console.log('📄 Текст шага (первые 100):', text.substring(0, 100));
-                    
-                    const isOutput = text.includes('Выход') || text.includes('📤');
-                    console.log('🚪 Это выход?', isOutput);
-                    if (!isOutput) return;
-                    
-                    if (detailText.innerHTML.includes('🔗 Выходы')) {
-                        console.log('⚠️ Ссылки уже есть');
-                        return;
-                    }
-                    
-                    console.log('✅ Добавляем ссылки');
+                    if (!text.includes('Выход') && !text.includes('📤')) return;
+                    if (detailText.innerHTML.includes('🔗 Выходы')) return;
                     
                     const links = outputs.map(function(num) {
                         return '<a href="proc' + num + '.html" class="proc-link" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ' + num + '</a>';
@@ -240,10 +212,9 @@ if (!window.location.pathname.includes('index')) {
                     linksBlock.innerHTML = '<strong style="color: #0a1929;">🔗 Выходы в процедуры:</strong> ' + links;
                     
                     detailText.appendChild(linksBlock);
-                    console.log('🎉 ССЫЛКИ ДОБАВЛЕНЫ!');
-                    
+                    console.log('🎉 Ссылки добавлены для шага', stepId);
                 }, 150);
             };
         }
     }, 200);
-})();
+});
