@@ -101,42 +101,41 @@
             margin-top: 8px;
         }
 
-        .filter-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px 12px;
-        }
+        /* ============================================ */
+/* ВЕРТИКАЛЬНАЯ РАСКЛАДКА ФИЛЬТРОВ            */
+/* ============================================ */
 
-        .filter-item {
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-            color: #1e293b;
-            border: 1px solid #cbd5e1;
-            white-space: nowrap;
-        }
-        .filter-item:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
-            transform: translateY(-1px);
-        }
-        .filter-item.active {
-            background: #f6b83e;
-            border-color: #f6b83e;
-            color: #0a1929;
-            font-weight: 600;
-            box-shadow: 0 8px 16px -4px rgba(246, 184, 62, 0.3);
-        }
-        .filter-all {
-            background: #0a1929;
-            color: white;
-            border-color: #0a1929;
-        }
+.filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+}
+
+.filter-group {
+    width: 100%;
+}
+
+.filter-group-items {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 12px 12px;
+}
+
+.filter-group-items.show {
+    display: flex;
+}
+
+.filter-group-items .filter-item {
+    width: 100%;
+    text-align: left;
+    white-space: normal;
+}
+
+.filter-all {
+    width: 100%;
+    text-align: center;
+}
         .filter-all:hover {
             background: #1e2f47;
         }
@@ -1288,51 +1287,48 @@
 // ============================================
 
 const roleGroups = {
-    "📋 Продукт-менеджмент": [
-        "product_manager", "senior_pm", "product_department_head", "initiator"
+    "👑 Руководство": [
+        "marketing_director", "sales_director_rf", "foreign_sales_director",
+        "managing_director", "board_chairman", "financial_director",
+        "security_director", "strategic_communications_director"
+    ],
+    "📦 Продукт-менеджмент": [
+        "product_manager", "senior_pm", "product_department_head", "initiator",
+        "project_manager", "project_manager_old", "project_office_head", "project_committee"
     ],
     "📊 Маркетинг и аналитика": [
-        "marketing_analyst", "marketing_director", "strategic_marketing_head", 
-        "marketer", "analytics_head", "planning_specialist", "analytics_lead", 
-        "analytics_specialist", "marketing_analyst_pricing"
+        "marketing_analyst", "marketer", "strategic_marketing_head", "analytics_head",
+        "planning_specialist", "analytics_lead", "analytics_specialist",
+        "marketing_analyst_pricing", "motivation_manager"
     ],
-    "🎯 Продажи и клиенты": [
-        "sales_director_rf", "foreign_sales_director", "commercial_manager", 
-        "kam", "division_head", "roznica_head", "client"
+    "🎨 Дизайн и контент": [
+        "designer", "chief_designer", "designer_creative", "senior_designer",
+        "content_manager", "content_owner", "advertising_head", "internet_projects_head"
     ],
     "🔧 Технические роли": [
-        "designer", "chief_designer", "technologist", "technical_consultant",
-        "designer_creative", "senior_designer", "sapr_specialist", "metrologist"
-    ],
-    "📁 Проектный офис": [
-        "project_manager", "project_office_head", "project_committee", "project_manager_old"
+        "technologist", "technical_consultant", "sapr_specialist", "metrologist",
+        "aod_engineer", "aod_specialist"
     ],
     "🚚 Закупки и склады": [
-        "procurement_manager", "storekeeper", "aod_specialist", "aod_engineer"
-    ],
-    "💰 Финансы и юристы": [
-        "financial_director", "lawyer", "ukiot_economist", "ukiot_head"
-    ],
-    "🛡️ Безопасность и качество": [
-        "security_director", "utk_head", "ovk_head", "certification_specialist",
-        "nva_head", "utp_head"
-    ],
-    "📄 Документооборот и контент": [
-        "content_manager", "content_owner", "strategic_communications_director",
-        "database_responsible", "authorized_person"
+        "procurement_manager", "storekeeper", "utk_head", "goz_head"
     ],
     "🏭 Производство": [
-        "assembly_head", "upp_head", "gp_planning_specialist", "diu_planning_specialist",
-        "upsp_specialist"
+        "assembly_head", "upp_head", "gp_planning_specialist",
+        "diu_planning_specialist", "upsp_specialist"
+    ],
+    "📄 Документооборот и юристы": [
+        "lawyer", "ukiot_economist", "ukiot_head", "database_responsible", "authorized_person"
+    ],
+    "🛡️ Безопасность и качество": [
+        "ovk_head", "certification_specialist", "nva_head", "utp_head"
     ],
     "🤝 Управление и согласование": [
         "level1_manager", "level2_manager", "approvers", "commission_members",
-        "managing_director", "board_chairman", "urr_head", "urr_senior_specialist",
-        "ursd_head", "urp_head", "urpr_head", "uoitp_head", "kru_specialist",
-        "goz_head", "motivation_manager"
+        "urr_head", "urr_senior_specialist", "ursd_head", "urp_head", "urpr_head",
+        "uoitp_head", "kru_specialist", "client", "kam", "division_head", "roznica_head"
     ],
     "📞 Поддержка и УОП": [
-        "uop_manager", "uop_head", "internet_projects_head", "advertising_head"
+        "uop_manager", "uop_head"
     ]
 };
 
