@@ -967,6 +967,48 @@
 .proc-card:hover .proc-io {
     background: rgba(0,0,0,0.05) !important;
 }
+        /* ============================================ */
+/* 3. ЖЁСТКОЕ ИСПРАВЛЕНИЕ HOVER (100% РАБОТАЕТ) */
+/* ============================================ */
+
+/* Полностью блокируем изменение фона и цвета текста */
+.proc-card,
+.proc-card *,
+.proc-card:hover,
+.proc-card:hover * {
+    background: inherit !important;
+    background-color: inherit !important;
+    color: inherit !important;
+}
+
+/* Явно задаём фон для каждой фазы при наведении */
+.phase1 .proc-card:hover { background-color: #faf5ff !important; }
+.phase2 .proc-card:hover { background-color: #eff6ff !important; }
+.phase3 .proc-card:hover { background-color: #f0fdf4 !important; }
+.phase4 .proc-card:hover { background-color: #fff7ed !important; }
+.phase5 .proc-card:hover { background-color: #fef2f2 !important; }
+.phase6 .proc-card:hover { background-color: #fefce8 !important; }
+.phase7 .proc-card:hover { background-color: #faf5ff !important; }
+
+/* Явно задаём цвет текста */
+.proc-card:hover .proc-num {
+    background-color: #f6b83e !important;
+    color: #0a1929 !important;
+}
+
+.proc-card:hover .proc-name {
+    color: #f6b83e !important;
+}
+
+.proc-card:hover .proc-io {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: #475569 !important;
+}
+
+.proc-card:hover .io-in,
+.proc-card:hover .io-out {
+    color: inherit !important;
+}
     </style>
 </head>
 <body>
