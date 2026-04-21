@@ -858,12 +858,13 @@
     cursor: pointer;
 }
 
-/* Основной hover-эффект */
+/* Исправленный hover-эффект — без потери текста */
 .proc-card:hover {
     transform: translateY(-6px) scale(1.02);
     box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
     border-color: #f6b83e !important;
     transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    /* ВАЖНО: НЕ меняем background, оставляем исходный */
 }
 
 /* Эффект свечения при наведении */
