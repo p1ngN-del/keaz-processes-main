@@ -31,14 +31,10 @@ if (window.location.pathname.includes('index')) {
                 
                 const original = window.showDetail;
                 window.showDetail = function(stepId) {
-    try {
-        original(stepId);
-        console.log('✅ original выполнен');
-    } catch(e) {
-        console.log('⚠️ Ошибка в original, продолжаем');
-    }
+    console.log('🖱️ Шаг (без original):', stepId);
+    
     setTimeout(() => {
-        console.log('🖱️ Шаг:', stepId);
+        console.log('⏰ Таймер сработал для шага:', stepId);
         
         if (skipList.includes(stepId)) {
             console.log('❌ Шаг в списке отказов');
