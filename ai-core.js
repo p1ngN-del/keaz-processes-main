@@ -19,7 +19,7 @@
     // Загрузка данных о процедурах
     async function loadProceduresFullData() {
         if (proceduresFullData.length > 0) {
-            return proceduresFullData; // Данные уже загружены
+            return proceduresFullData;
         }
         try {
             const response = await fetch('procedures_data.json');
@@ -106,6 +106,11 @@
         const style = document.createElement('style');
         style.id = 'ai-core-styles';
         style.textContent = `
+            /* Скрытый по умолчанию виджет */
+            .ai-widget-hidden {
+                display: none !important;
+            }
+            
             .ai-search-btn {
                 display: inline-flex;
                 align-items: center;
@@ -149,7 +154,6 @@
                 border-radius: 24px;
                 box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
                 z-index: 9999;
-                display: none;
                 overflow: hidden;
                 border: 1px solid #e2e8f0;
             }
@@ -345,16 +349,16 @@
 
     // Создание HTML-виджета
     function createWidget() {
-        // Удаляем старый виджет, если он есть (для гарантии обновления)
+        // Удаляем старый виджет, если он есть
         const oldWidget = document.getElementById('aiWidget');
         if (oldWidget) oldWidget.remove();
 
-        // Внедряем стили (на случай, если они еще не добавлены)
+        // Внедряем стили
         injectStyles();
 
-        // ВАЖНО: Добавлен встроенный стиль style="display: none;" чтобы виджет был скрыт по умолчанию!
+        // Создаем виджет со скрывающим классом
         const widgetHTML = `
-            <div class="ai-widget" id="aiWidget" style="display: none;">
+            <div class="ai-widget ai-widget-hidden" id="aiWidget">
                 <div class="ai-header">
                     <span class="ai-icon">🤖</span>
                     <span class="ai-title">AI · Ассистент КЭАЗ</span>
@@ -387,7 +391,6 @@
 
     // --- Экспортируемый объект API ---
     window.AICore = {
-        // Инициализация: добавление кнопки и виджета на страницу
         initButton: function(containerSelector = 'h1') {
             if (document.querySelector('.ai-core-btn')) return;
             
@@ -409,13 +412,11 @@
             container.style.gap = '12px';
             container.appendChild(btn);
             
-            // Внедряем стили и создаем виджет
             injectStyles();
             createWidget();
-            loadProceduresFullData(); // Загружаем данные сразу при инициализации
+            loadProceduresFullData();
         },
 
-        // Управление виджетом
         toggleWidget: function() {
             let widget = document.getElementById('aiWidget');
             if (!widget) {
@@ -423,18 +424,21 @@
                 createWidget();
                 widget = document.getElementById('aiWidget');
             }
+            // Удаляем скрывающий класс и добавляем открывающий
+            widget.classList.remove('ai-widget-hidden');
             widget.classList.toggle('open');
             if (widget.classList.contains('open')) {
                 setTimeout(() => document.getElementById('aiInput').focus(), 100);
+            } else {
+                // Если закрыли, возвращаем скрывающий класс
+                widget.classList.add('ai-widget-hidden');
             }
         },
 
-        // Обработчик нажатия Enter
         handleKeyPress: function(event) {
             if (event.key === 'Enter') AICore.sendMessage();
         },
 
-        // Вспомогательные функции для чата
         _showTypingIndicator: function() {
             const messagesDiv = document.getElementById('aiMessages');
             if (!messagesDiv) return;
@@ -461,7 +465,6 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         },
 
-        // Основная функция отправки сообщения
         sendMessage: async function() {
             const input = document.getElementById('aiInput');
             const btn = document.getElementById('aiSendBtn');
@@ -476,13 +479,9 @@
             btn.disabled = true;
             
             try {
-                // Загружаем данные, если они еще не загружены
                 const allProcedures = await loadProceduresFullData();
-                
-                // Ищем релевантные процедуры
                 const relevantProcs = findRelevantProcedures(message, 5);
                 
-                // Формируем контекст
                 let contextText = '';
                 if (relevantProcs.length > 0) {
                     contextText = '\n\n=== РЕЛЕВАНТНЫЕ ПРОЦЕДУРЫ ИЗ БАЗЫ ЗНАНИЙ КЭАЗ ===\n\n';
@@ -500,7 +499,6 @@
                     contextText += '=== КОНЕЦ КОНТЕКСТА ===\n\n';
                 }
                 
-                // Получаем название текущей процедуры для контекста (если есть)
                 const h1 = document.querySelector('h1');
                 const procName = h1 ? h1.textContent.replace('🤖AI', '').trim() : '';
                 
@@ -536,7 +534,6 @@
                     let cleanContent = data.content.replace(/\[PROC:[^\]]+\]/, '').trim();
                     AICore._addMessage(cleanContent, 'bot');
                     
-                    // Если на главной странице есть функция фильтрации, вызываем её
                     if (procNumbers.length > 0 && typeof window.filterByAIProcedures === 'function') {
                         window.filterByAIProcedures(procNumbers);
                         
