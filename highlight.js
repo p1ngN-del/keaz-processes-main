@@ -653,4 +653,5 @@ if (!window.location.pathname.includes('index')) {
             };
         }
     }, 200);
+    console.log('✅✅✅ ФАЙЛ ЗАГРУЖЕН ДО КОНЦА ✅✅✅');
 })();
