@@ -528,14 +528,21 @@ if (!window.location.pathname.includes('index')) {
 }
 
 // ============================================
-// ССЫЛКИ НА ВЫХОДЫ (ПРОСТАЯ ВЕРСИЯ)
+// ССЫЛКИ НА ВЫХОДЫ (С ОТЛАДКОЙ)
 // ============================================
 (function() {
-    if (window.location.pathname.includes('index')) return;
+    console.log('🚀 Скрипт выходов запущен');
+    
+    if (window.location.pathname.includes('index')) {
+        console.log('⏭️ Это index, выхожу');
+        return;
+    }
     
     const path = window.location.pathname;
     const filename = path.substring(path.lastIndexOf('/') + 1);
     const procId = filename.replace('proc', '').replace('.html', '');
+    
+    console.log('📌 ID процедуры:', procId);
     
     // Карта выходов
     const outputsMap = {
@@ -571,48 +578,76 @@ if (!window.location.pathname.includes('index')) {
     };
     
     const outputs = outputsMap[procId] || [];
-    if (outputs.length === 0) return;
+    console.log('🔢 Выходы для процедуры ' + procId + ':', outputs);
+    
+    if (outputs.length === 0) {
+        console.log('⏭️ Нет выходов, выхожу');
+        return;
+    }
     
     // Шаги-отказы
     const skipSteps = {
         '4': ['5'],
-        '4a': ['22'],
-        '5': [],
-        // Добавьте другие, если знаете
+        '4a': ['22']
     };
     
     const skipList = skipSteps[procId] || [];
+    console.log('⏭️ Шаги-отказы:', skipList);
+    
+    console.log('⏳ Жду функцию showDetail...');
     
     const waitForShowDetail = setInterval(() => {
         if (typeof window.showDetail === 'function') {
             clearInterval(waitForShowDetail);
+            console.log('✅ showDetail найдена!');
             
             const original = window.showDetail;
             window.showDetail = function(stepId) {
+                console.log('🖱️ Вызван showDetail для шага:', stepId);
                 original(stepId);
                 
                 setTimeout(() => {
                     // Пропускаем отказы
-                    if (skipList.includes(stepId)) return;
+                    if (skipList.includes(stepId)) {
+                        console.log('⏭️ Шаг ' + stepId + ' в списке отказов, пропускаю');
+                        return;
+                    }
                     
                     const detailText = document.getElementById('detailText');
-                    if (!detailText) return;
+                    if (!detailText) {
+                        console.log('❌ detailText не найден');
+                        return;
+                    }
                     
-                    // Проверяем, что это выход
-                    if (!detailText.textContent.includes('📤 ВЫХОД')) return;
+                    const hasOutput = detailText.textContent.includes('📤 ВЫХОД');
+                    console.log('📤 Есть значок выхода?', hasOutput);
                     
-                    // Проверяем, нет ли уже ссылок
-                    if (detailText.innerHTML.includes('Процедура')) return;
+                    if (!hasOutput) {
+                        console.log('⏭️ Нет значка выхода, пропускаю');
+                        return;
+                    }
+                    
+                    const alreadyHasLinks = detailText.innerHTML.includes('Процедура');
+                    console.log('🔗 Уже есть ссылки?', alreadyHasLinks);
+                    
+                    if (alreadyHasLinks) {
+                        console.log('⏭️ Ссылки уже есть, пропускаю');
+                        return;
+                    }
+                    
+                    console.log('✅ Добавляю ссылки:', outputs);
                     
                     // Создаём ссылки
                     const links = outputs.map(num => 
                         `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`
                     ).join(', ');
                     
-                    // Добавляем ссылки ПОСЛЕ строки с "📤 ВЫХОД:"
+                    // Добавляем после "📤 ВЫХОД:"
                     let html = detailText.innerHTML;
                     html = html.replace(/(📤 ВЫХОД:[^<]*)/, `$1 ${links}`);
                     detailText.innerHTML = html;
+                    
+                    console.log('✅ Ссылки добавлены!');
                     
                 }, 150);
             };
