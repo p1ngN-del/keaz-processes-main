@@ -1420,18 +1420,30 @@ const roleNames = {
 function generateRoleFilters() {
     let html = `<div class="filter-item filter-all active" data-role="all" onclick="filterByRole('all')">👥 Все роли</div>`;
     
-    // Проходим по группам
+    let groupIndex = 0;
     for (const [groupName, roles] of Object.entries(roleGroups)) {
-        // Сортируем роли внутри группы по алфавиту
         const sortedRoles = [...roles].sort((a, b) => 
             (roleNames[a] || a).localeCompare(roleNames[b] || b, 'ru')
         );
         
-        html += `<div class="filter-group-title">${groupName}</div>`;
+        const groupId = `group_${groupIndex}`;
+        
+        html += `
+            <div class="filter-group">
+                <div class="filter-group-header" onclick="document.getElementById('${groupId}').classList.toggle('show'); this.classList.toggle('open')">
+                    <span>${groupName}</span>
+                    <span class="group-toggle">▼</span>
+                </div>
+                <div class="filter-group-items" id="${groupId}">
+        `;
+        
         for (const role of sortedRoles) {
             const displayName = roleNames[role] || role;
             html += `<div class="filter-item" data-role="${role}" onclick="filterByRole('${role}')">${displayName}</div>`;
         }
+        
+        html += `</div></div>`;
+        groupIndex++;
     }
     
     return html;
