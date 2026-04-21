@@ -780,6 +780,160 @@
     box-shadow: 0 2px 8px rgba(246, 184, 62, 0.4);
     z-index: 11;
 }
+        /* ============================================ */
+/* 1. АНИМАЦИЯ ПОЯВЛЕНИЯ КАРТОЧЕК             */
+/* ============================================ */
+
+/* Исходное состояние — невидимо и сдвинуто вниз */
+.proc-card {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+    transition: all 0.25s ease-out;
+}
+
+/* Анимация появления */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Задержки для карточек в зависимости от позиции */
+/* Фаза 1 */
+.phase1 .proc-card:nth-child(1) { animation-delay: 0.02s; }
+.phase1 .proc-card:nth-child(2) { animation-delay: 0.05s; }
+.phase1 .proc-card:nth-child(3) { animation-delay: 0.08s; }
+
+/* Фаза 2 */
+.phase2 .proc-card:nth-child(1) { animation-delay: 0.11s; }
+.phase2 .proc-card:nth-child(2) { animation-delay: 0.14s; }
+.phase2 .proc-card:nth-child(3) { animation-delay: 0.17s; }
+.phase2 .proc-card:nth-child(4) { animation-delay: 0.20s; }
+.phase2 .proc-card:nth-child(5) { animation-delay: 0.23s; }
+
+/* Фаза 3 */
+.phase3 .proc-card:nth-child(1) { animation-delay: 0.26s; }
+.phase3 .proc-card:nth-child(2) { animation-delay: 0.29s; }
+.phase3 .proc-card:nth-child(3) { animation-delay: 0.32s; }
+.phase3 .proc-card:nth-child(4) { animation-delay: 0.35s; }
+.phase3 .proc-card:nth-child(5) { animation-delay: 0.38s; }
+.phase3 .proc-card:nth-child(6) { animation-delay: 0.41s; }
+
+/* Фаза 4 */
+.phase4 .proc-card:nth-child(1) { animation-delay: 0.44s; }
+.phase4 .proc-card:nth-child(2) { animation-delay: 0.47s; }
+.phase4 .proc-card:nth-child(3) { animation-delay: 0.50s; }
+.phase4 .proc-card:nth-child(4) { animation-delay: 0.53s; }
+.phase4 .proc-card:nth-child(5) { animation-delay: 0.56s; }
+
+/* Фаза 5 */
+.phase5 .proc-card:nth-child(1) { animation-delay: 0.59s; }
+.phase5 .proc-card:nth-child(2) { animation-delay: 0.62s; }
+
+/* Фаза 6 */
+.phase6 .proc-card:nth-child(1) { animation-delay: 0.65s; }
+.phase6 .proc-card:nth-child(2) { animation-delay: 0.68s; }
+.phase6 .proc-card:nth-child(3) { animation-delay: 0.71s; }
+.phase6 .proc-card:nth-child(4) { animation-delay: 0.74s; }
+
+/* Фаза 7 */
+.phase7 .proc-card:nth-child(1) { animation-delay: 0.77s; }
+.phase7 .proc-card:nth-child(2) { animation-delay: 0.80s; }
+.phase7 .proc-card:nth-child(3) { animation-delay: 0.83s; }
+.phase7 .proc-card:nth-child(4) { animation-delay: 0.86s; }
+
+/* ============================================ */
+/* 2. УЛУЧШЕННЫЕ HOVER-ЭФФЕКТЫ                */
+/* ============================================ */
+
+.proc-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Основной hover-эффект */
+.proc-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+    border-color: #f6b83e !important;
+    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+/* Эффект свечения при наведении */
+.proc-card:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(246, 184, 62, 0.15), transparent);
+    animation: shine 0.6s ease forwards;
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 200%;
+    }
+}
+
+/* Иконка-подсказка при наведении */
+.proc-card::after {
+    content: '🔍';
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.proc-card:hover::after {
+    opacity: 0.6;
+}
+
+/* Усиление border-left при наведении */
+.proc-card:hover {
+    border-left-width: 8px !important;
+}
+
+/* Анимация для номера процедуры при наведении */
+.proc-card:hover .proc-num {
+    transform: scale(1.05);
+    background: #f6b83e;
+    color: #0a1929;
+    transition: all 0.2s ease;
+}
+
+/* Анимация для названия при наведении */
+.proc-card:hover .proc-name {
+    color: #f6b83e;
+    transition: color 0.2s ease;
+}
+
+/* Эффект пульсации при наведении (опционально, мягкий) */
+@keyframes softGlow {
+    0% {
+        box-shadow: 0 4px 12px rgba(246, 184, 62, 0);
+    }
+    100% {
+        box-shadow: 0 4px 20px rgba(246, 184, 62, 0.3);
+    }
+}
+
+.proc-card:hover {
+    animation: softGlow 0.3s ease forwards;
+}
     </style>
 </head>
 <body>
