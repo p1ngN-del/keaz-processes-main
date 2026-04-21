@@ -31,55 +31,48 @@ if (window.location.pathname.includes('index')) {
                 
                 const original = window.showDetail;
                 window.showDetail = function(stepId) {
-                    try {
-    original(stepId);
-} catch(e) {
-    console.log('⚠️ Ошибка в original, но продолжаем');
-}
-                    setTimeout(() => {
-                        console.log('🖱️ Шаг:', stepId);
-                        
-                        // Проверка 1: отказ?
-                        if (skipList.includes(stepId)) {
-                            console.log('❌ Шаг в списке отказов');
-                            return;
-                        }
-                        console.log('✅ Не отказ');
-                        
-                        // Проверка 2: detailText?
-                        const detailText = document.getElementById('detailText');
-                        if (!detailText) {
-                            console.log('❌ detailText не найден');
-                            return;
-                        }
-                        console.log('✅ detailText найден');
-                        
-                        // Проверка 3: уже есть ссылки?
-                        if (detailText.innerHTML.includes('Процедура 11')) {
-                            console.log('❌ Ссылки уже есть');
-                            return;
-                        }
-                        console.log('✅ Ссылок ещё нет');
-                        
-                        // Создаём ссылки
-                        const links = outputs.map(num => 
-                            `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`
-                        ).join(', ');
-                        
-                        const linksBlock = document.createElement('div');
-                        linksBlock.style.marginTop = '15px';
-                        linksBlock.style.padding = '12px';
-                        linksBlock.style.background = '#f0f7ff';
-                        linksBlock.style.borderRadius = '10px';
-                        linksBlock.style.border = '1px solid #1e6df2';
-                        linksBlock.innerHTML = `<strong>🔗 Выходы в процедуры:</strong> ${links}`;
-                        
-                        detailText.appendChild(linksBlock);
-                        console.log('✅✅✅ ССЫЛКИ ДОБАВЛЕНЫ! ✅✅✅');
-                        
-                    }, 150);
-                };
-            }
-        }, 200);
+    try {
+        original(stepId);
+        console.log('✅ original выполнен');
+    } catch(e) {
+        console.log('⚠️ Ошибка в original, продолжаем');
     }
-}
+    setTimeout(() => {
+        console.log('🖱️ Шаг:', stepId);
+        
+        if (skipList.includes(stepId)) {
+            console.log('❌ Шаг в списке отказов');
+            return;
+        }
+        console.log('✅ Не отказ');
+        
+        const detailText = document.getElementById('detailText');
+        if (!detailText) {
+            console.log('❌ detailText не найден');
+            return;
+        }
+        console.log('✅ detailText найден');
+        
+        if (detailText.innerHTML.includes('Процедура 11')) {
+            console.log('❌ Ссылки уже есть');
+            return;
+        }
+        console.log('✅ Ссылок ещё нет');
+        
+        const links = outputs.map(num => 
+            `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`
+        ).join(', ');
+        
+        const linksBlock = document.createElement('div');
+        linksBlock.style.marginTop = '15px';
+        linksBlock.style.padding = '12px';
+        linksBlock.style.background = '#f0f7ff';
+        linksBlock.style.borderRadius = '10px';
+        linksBlock.style.border = '1px solid #1e6df2';
+        linksBlock.innerHTML = `<strong>🔗 Выходы в процедуры:</strong> ${links}`;
+        
+        detailText.appendChild(linksBlock);
+        console.log('✅✅✅ ССЫЛКИ ДОБАВЛЕНЫ! ✅✅✅');
+        
+    }, 150);
+};
