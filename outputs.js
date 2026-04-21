@@ -1,4 +1,4 @@
-// outputs.js - ссылки на выходы (с полной отладкой)
+// outputs.js - ссылки на выходы (исправленная версия)
 console.log('🚀 Скрипт выходов запущен');
 
 if (window.location.pathname.includes('index')) {
@@ -31,44 +31,48 @@ if (window.location.pathname.includes('index')) {
                 
                 const original = window.showDetail;
                 window.showDetail = function(stepId) {
-    console.log('🖱️ Шаг (без original):', stepId);
-    
-    setTimeout(() => {
-        console.log('⏰ Таймер сработал для шага:', stepId);
-        
-        if (skipList.includes(stepId)) {
-            console.log('❌ Шаг в списке отказов');
-            return;
-        }
-        console.log('✅ Не отказ');
-        
-        const detailText = document.getElementById('detailText');
-        if (!detailText) {
-            console.log('❌ detailText не найден');
-            return;
-        }
-        console.log('✅ detailText найден');
-        
-        if (detailText.innerHTML.includes('Процедура 11')) {
-            console.log('❌ Ссылки уже есть');
-            return;
-        }
-        console.log('✅ Ссылок ещё нет');
-        
-        const links = outputs.map(num => 
-            `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`
-        ).join(', ');
-        
-        const linksBlock = document.createElement('div');
-        linksBlock.style.marginTop = '15px';
-        linksBlock.style.padding = '12px';
-        linksBlock.style.background = '#f0f7ff';
-        linksBlock.style.borderRadius = '10px';
-        linksBlock.style.border = '1px solid #1e6df2';
-        linksBlock.innerHTML = `<strong>🔗 Выходы в процедуры:</strong> ${links}`;
-        
-        detailText.appendChild(linksBlock);
-        console.log('✅✅✅ ССЫЛКИ ДОБАВЛЕНЫ! ✅✅✅');
-        
-    }, 150);
-};
+                    console.log('🖱️ Шаг (без original):', stepId);
+                    
+                    setTimeout(() => {
+                        console.log('⏰ Таймер сработал для шага:', stepId);
+                        
+                        if (skipList.includes(stepId)) {
+                            console.log('❌ Шаг в списке отказов');
+                            return;
+                        }
+                        console.log('✅ Не отказ');
+                        
+                        const detailText = document.getElementById('detailText');
+                        if (!detailText) {
+                            console.log('❌ detailText не найден');
+                            return;
+                        }
+                        console.log('✅ detailText найден');
+                        
+                        if (detailText.innerHTML.includes('Процедура 11')) {
+                            console.log('❌ Ссылки уже есть');
+                            return;
+                        }
+                        console.log('✅ Ссылок ещё нет');
+                        
+                        const links = outputs.map(num => 
+                            `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`
+                        ).join(', ');
+                        
+                        const linksBlock = document.createElement('div');
+                        linksBlock.style.marginTop = '15px';
+                        linksBlock.style.padding = '12px';
+                        linksBlock.style.background = '#f0f7ff';
+                        linksBlock.style.borderRadius = '10px';
+                        linksBlock.style.border = '1px solid #1e6df2';
+                        linksBlock.innerHTML = `<strong>🔗 Выходы в процедуры:</strong> ${links}`;
+                        
+                        detailText.appendChild(linksBlock);
+                        console.log('✅✅✅ ССЫЛКИ ДОБАВЛЕНЫ! ✅✅✅');
+                        
+                    }, 150);
+                };
+            }
+        }, 200);
+    }
+}
