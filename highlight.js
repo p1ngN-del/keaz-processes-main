@@ -152,92 +152,85 @@ if (!window.location.pathname.includes('index')) {
     })();
 }
 // ============================================
-// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ ДЛЯ ВСЕХ ПРОЦЕДУР
+// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ (С ОТЛАДКОЙ)
 // ============================================
 (function() {
-    // Только на страницах процедур
-    if (window.location.pathname.includes('index')) return;
+    console.log('🚀 Скрипт выходов запущен');
     
-    // Определяем ID текущей процедуры
+    if (window.location.pathname.includes('index')) {
+        console.log('⏭️ index.html - выходим');
+        return;
+    }
+    
     const path = window.location.pathname;
     const filename = path.substring(path.lastIndexOf('/') + 1);
     const procId = filename.replace('proc', '').replace('.html', '');
     
-    // Карта выходов (из главной страницы)
+    console.log('📌 ID процедуры:', procId);
+    
     const outputsMap = {
-        '3': [],
-        '4': ['11', '13', '15'],
-        '4a': ['4', '23'],
-        '4n': ['3', '29'],
-        '5': ['6'],
-        '6': [],
-        '7': ['21'],
-        '8': ['12'],
-        '10': ['11', '22'],
-        '11': ['14'],
-        '12': ['22'],
-        '13': ['20'],
-        '14': ['20'],
-        '15': ['13'],
-        '16': [],
-        '17': ['23', '24', '26'],
-        '18': ['17', '19'],
-        '19': ['24'],
-        '20': ['25'],
-        '21': ['18'],
-        '22': ['8', '3'],
-        '23': ['4', '4a'],
-        '24': ['4'],
-        '25': [],
-        '26': ['31', '4a'],
-        '27': ['17'],
-        '28': ['30'],
-        '29': [],
-        '30': [],
-        '31': []
+        '3': [], '4': ['11', '13', '15'], '4a': ['4', '23'], '4n': ['3', '29'], '5': ['6'], '6': [], '7': ['21'], '8': ['12'],
+        '10': ['11', '22'], '11': ['14'], '12': ['22'], '13': ['20'], '14': ['20'], '15': ['13'], '16': [], '17': ['23', '24', '26'],
+        '18': ['17', '19'], '19': ['24'], '20': ['25'], '21': ['18'], '22': ['8', '3'], '23': ['4', '4a'], '24': ['4'], '25': [],
+        '26': ['31', '4a'], '27': ['17'], '28': ['30'], '29': [], '30': [], '31': []
     };
     
     const outputs = outputsMap[procId] || [];
-    if (outputs.length === 0) return;
+    console.log('🔢 Выходы:', outputs);
     
-    // Шаги-отказы (где НЕ надо добавлять ссылки)
-    const skipSteps = {
-        '4': ['5'],
-        '4a': ['22']
-    };
+    if (outputs.length === 0) {
+        console.log('⏭️ Нет выходов, выходим');
+        return;
+    }
+    
+    const skipSteps = { '4': ['5'], '4a': ['22'] };
     const skipList = skipSteps[procId] || [];
+    console.log('⏭️ Шаги-отказы:', skipList);
     
-    // Ждём, пока функция showDetail станет доступна
+    console.log('⏳ Ждём showDetail...');
+    
     const wait = setInterval(function() {
         if (typeof window.showDetail === 'function') {
             clearInterval(wait);
+            console.log('✅ showDetail найдена!');
             
             const original = window.showDetail;
             window.showDetail = function(stepId) {
-                // Вызываем оригинал
+                console.log('🖱️ Вызван showDetail, шаг:', stepId);
+                
                 original(stepId);
                 
                 setTimeout(function() {
-                    // Пропускаем отказы
-                    if (skipList.includes(stepId)) return;
+                    console.log('⏰ Таймер для шага:', stepId);
+                    
+                    if (skipList.includes(stepId)) {
+                        console.log('❌ Шаг в списке отказов');
+                        return;
+                    }
+                    console.log('✅ Не отказ');
                     
                     const detailText = document.getElementById('detailText');
+                    console.log('📝 detailText найден?', !!detailText);
                     if (!detailText) return;
                     
-                    // Проверяем, что это выход
                     const text = detailText.textContent;
+                    console.log('📄 Текст шага (первые 100):', text.substring(0, 100));
+                    
                     const isOutput = text.includes('Выход') || text.includes('📤');
+                    console.log('🚪 Это выход?', isOutput);
                     if (!isOutput) return;
                     
-                    // Проверяем, нет ли уже ссылок
-                    if (detailText.innerHTML.includes('🔗 Выходы')) return;
+                    if (detailText.innerHTML.includes('🔗 Выходы')) {
+                        console.log('⚠️ Ссылки уже есть');
+                        return;
+                    }
                     
-                    // Создаём ссылки
+                    console.log('✅ Добавляем ссылки');
+                    
                     const links = outputs.map(function(num) {
                         return '<a href="proc' + num + '.html" class="proc-link" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ' + num + '</a>';
                     }).join(', ');
                     
-                    // Создаём красивый блок
                     const linksBlock = document.createElement('div');
                     linksBlock.style.marginTop = '20px';
                     linksBlock.style.padding = '15px';
@@ -247,6 +240,7 @@ if (!window.location.pathname.includes('index')) {
                     linksBlock.innerHTML = '<strong style="color: #0a1929;">🔗 Выходы в процедуры:</strong> ' + links;
                     
                     detailText.appendChild(linksBlock);
+                    console.log('🎉 ССЫЛКИ ДОБАВЛЕНЫ!');
                     
                 }, 150);
             };
