@@ -880,34 +880,6 @@
     </div>
     <div id="searchResultCount" class="search-result-count"></div>
 </div>
-
-        <div class="filter-row" id="mainRoles">
-            <div class="filter-item filter-all active" data-role="all" onclick="filterByRole('all')">👥 Все роли</div>
-            <div class="filter-item" data-role="product_manager" onclick="filterByRole('product_manager')">Продукт-менеджер</div>
-            <div class="filter-item" data-role="senior_pm" onclick="filterByRole('senior_pm')">Старший ПМ</div>
-            <div class="filter-item" data-role="project_manager" onclick="filterByRole('project_manager')">Менеджер проекта</div>
-            <div class="filter-item" data-role="project_office_head" onclick="filterByRole('project_office_head')">Руководитель проектного офиса</div>
-            <div class="filter-item" data-role="project_committee" onclick="filterByRole('project_committee')">Проектный комитет</div>
-            <div class="filter-item" data-role="initiator" onclick="filterByRole('initiator')">Инициатор</div>
-            <div class="filter-item" data-role="segment_marketing_manager" onclick="filterByRole('segment_marketing_manager')">Сегмент-маркетинг-менеджер</div>
-            <div class="filter-item" data-role="marketing_analyst" onclick="filterByRole('marketing_analyst')">Маркетолог-аналитик</div>
-            <div class="filter-item" data-role="marketing_director" onclick="filterByRole('marketing_director')">Директор по маркетингу</div>
-            <div class="filter-item" data-role="product_department_head" onclick="filterByRole('product_department_head')">Начальник отдела продуктового направления</div>
-            <div class="filter-item" data-role="strategic_marketing_head" onclick="filterByRole('strategic_marketing_head')">Руководитель стратегического маркетинга</div>
-            <div class="filter-item" data-role="designer" onclick="filterByRole('designer')">Конструктор</div>
-            <div class="filter-item" data-role="chief_designer" onclick="filterByRole('chief_designer')">Главный конструктор</div>
-            <div class="filter-item" data-role="technologist" onclick="filterByRole('technologist')">Технолог</div>
-            <div class="filter-item" data-role="uop_manager" onclick="filterByRole('uop_manager')">Менеджер УОП</div>
-            <div class="filter-item" data-role="uop_head" onclick="filterByRole('uop_head')">Начальник УОП</div>
-            <div class="filter-item" data-role="ukiot_head" onclick="filterByRole('ukiot_head')">Начальник УКиОТ</div>
-            <div class="filter-item" data-role="financial_director" onclick="filterByRole('financial_director')">Финансовый директор</div>
-            <div class="filter-item" data-role="aod_specialist" onclick="filterByRole('aod_specialist')">Главный специалист по АОД</div>
-            <div class="filter-item" data-role="advertising_head" onclick="filterByRole('advertising_head')">Начальник управления рекламы</div>
-            <div class="filter-item" data-role="internet_projects_head" onclick="filterByRole('internet_projects_head')">Руководитель интернет проектов</div>
-            <div class="filter-item" data-role="analytics_head" onclick="filterByRole('analytics_head')">Начальник отдела аналитики</div>
-            <div class="filter-item" data-role="planning_specialist" onclick="filterByRole('planning_specialist')">Специалист по планированию</div>
-        </div>
-        
         <div style="text-align: center;">
             <button class="toggle-btn" onclick="toggleAllRoles()" id="toggleBtn">🔽 Показать все роли</button>
         </div>
@@ -1722,8 +1694,11 @@ window.addEventListener('DOMContentLoaded', () => {
     loadProceduresFullData();
     
     document.querySelectorAll('.proc-card').forEach(card => {
-        card.setAttribute('data-original-href', card.getAttribute('href'));
-    });
+    card.setAttribute('data-original-href', card.getAttribute('href'));
+});
+
+// Отрисовываем фильтры после подготовки карточек
+renderRoleFilters();
     
     loadProceduresData();
     
