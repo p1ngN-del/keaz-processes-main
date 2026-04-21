@@ -37,7 +37,10 @@ if (window.location.pathname.includes('index')) {
                         }
                         const detailText = document.getElementById('detailText');
                         if (!detailText) return;
-                        if (!detailText.innerHTML.includes('📤 ВЫХОД')) return;
+                        const hasOutput = detailText.innerHTML.includes('📤') || 
+                  detailText.innerHTML.includes('ВЫХОД') || 
+                  detailText.innerHTML.includes('выход');
+if (!hasOutput) return;
                         
                         const links = outputs.map(num => 
                             `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`
