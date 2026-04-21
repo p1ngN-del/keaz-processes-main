@@ -1536,19 +1536,6 @@ function renderRoleFilters() {
         toggleBtn.style.display = 'none';
     }
 }
-    
-    // Скрываем старый expandable контейнер (больше не нужен)
-    if (expandableContainer) {
-        expandableContainer.style.display = 'none';
-    }
-    
-    // Скрываем кнопку "Показать все роли" (больше не нужна)
-    const toggleBtn = document.getElementById('toggleBtn');
-    if (toggleBtn) {
-        toggleBtn.style.display = 'none';
-    }
-}
-
     function findRelevantProcedures(question, maxResults = 5) {
     if (!proceduresFullData || proceduresFullData.length === 0) {
         console.warn('⚠️ Данные процедур ещё не загружены');
