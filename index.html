@@ -102,12 +102,12 @@
         }
 
         /* ============================================ */
-/* ВЕРТИКАЛЬНАЯ РАСКЛАДКА ФИЛЬТРОВ            */
+/* ВЕРТИКАЛЬНАЯ РАСКЛАДКА С ПЕРЕНОСОМ         */
 /* ============================================ */
 
 .filter-row {
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
     gap: 6px;
 }
 
@@ -117,7 +117,8 @@
 
 .filter-group-items {
     display: none;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 6px;
     padding: 8px 12px 12px;
 }
@@ -127,14 +128,17 @@
 }
 
 .filter-group-items .filter-item {
-    width: 100%;
-    text-align: left;
-    white-space: normal;
+    width: auto;
+    min-width: 180px;
+    flex: 1 0 auto;
+    text-align: center;
+    white-space: nowrap;
 }
 
-.filter-all {
-    width: 100%;
-    text-align: center;
+/* Ограничиваем высоту группы и добавляем прокрутку если нужно */
+.filter-group-items {
+    max-height: 200px;
+    overflow-y: auto;
 }
         .filter-all:hover {
             background: #1e2f47;
