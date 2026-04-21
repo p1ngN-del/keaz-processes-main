@@ -38,7 +38,6 @@ if (!searchTerm) {
 if (!searchTerm) {
     console.log('Нет параметра search. Подсветка отключена.');
     deleteCookie('searchTerm');
-    // НЕ ДЕЛАЕМ return, чтобы остальной код выполнился!
 } else {
     searchTerm = decodeURIComponent(searchTerm).toLowerCase().trim();
     if (searchTerm) {
@@ -90,67 +89,26 @@ if (!searchTerm) {
                     setTimeout(() => foundElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
                 } else if (foundInJSON) {
                     console.log(`🔍 Слово "${searchTerm}" найдено в JSON, но не в DOM`);
+                    
+                    // --- ИСПРАВЛЕНИЕ: Показываем сообщение пользователю в панели деталей ---
+                    const panel = document.getElementById('detailPanel');
+                    if (panel) {
+                        panel.classList.add('show');
+                        const header = document.getElementById('detailHeader');
+                        const text = document.getElementById('detailText');
+                        const io = document.getElementById('detailIO');
+                        if(header) header.innerHTML = `<span class="detail-number">🔍 Поиск</span><span class="detail-role">Результат</span>`;
+                        if(text) text.innerHTML = `Текст "<strong>${searchTerm}</strong>" найден в описании процедуры, но не отображается на текущей диаграмме. Пожалуйста, ознакомьтесь с полным текстом процедуры или свяжитесь с ответственным.`;
+                        if(io) io.innerHTML = ''; // Очищаем IO панель
+                        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
                 }
             })
             .catch(error => console.error('Ошибка загрузки JSON:', error));
     }
 }
 
-// ============================================
-// AI-АССИСТЕНТ ДЛЯ СТРАНИЦ ПРОЦЕДУР
-// ============================================
-if (!window.location.pathname.includes('index')) {
-    (function() {
-        const style = document.createElement('style');
-        style.textContent = `
-            .ai-search-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 40px; background: linear-gradient(135deg, #f6b83e, #ff8c00); color: #0a1929; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 12px rgba(246,184,62,0.3); margin-left: 12px; }
-            .ai-widget { position: fixed; top: 50%; left: 24px; transform: translateY(-50%); width: 420px; background: white; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); z-index: 9999; display: none; }
-            .ai-widget.open { display: block; }
-            .ai-header { background: linear-gradient(135deg, #0a1929, #1a2642); color: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px; }
-            .ai-messages { height: 480px; overflow-y: auto; padding: 20px; background: #f8fafc; }
-            .ai-input-row { display: flex; padding: 16px 20px; gap: 12px; }
-            .ai-input { flex: 1; padding: 12px 18px; border: 2px solid #e2e8f0; border-radius: 30px; }
-            .ai-send { background: linear-gradient(135deg, #f6b83e, #ff8c00); border: none; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 22px; }
-        `;
-        document.head.appendChild(style);
-
-        const widget = document.createElement('div');
-        widget.className = 'ai-widget';
-        widget.id = 'aiWidget';
-        widget.innerHTML = `
-            <div class="ai-header"><span>🤖</span><span>AI · Ассистент КЭАЗ</span><button onclick="window.toggleAIWidget()">✕</button></div>
-            <div class="ai-messages" id="aiMessagesProc"><div class="ai-message-bot" style="padding:14px;background:white;border-radius:18px;">👋 Задайте вопрос по этой процедуре.</div></div>
-            <div class="ai-input-row"><input type="text" id="aiInputProc" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="if(event.key==='Enter')window.sendAIMessageProc()"><button class="ai-send" id="aiSendBtnProc" onclick="window.sendAIMessageProc()">➤</button></div>
-        `;
-        document.body.appendChild(widget);
-
-        const btn = document.createElement('button');
-        btn.className = 'ai-search-btn';
-        btn.innerHTML = '<span>🤖</span><span>AI</span>';
-        btn.onclick = () => window.toggleAIWidget();
-        
-        const h1 = document.querySelector('h1');
-        if (h1) { h1.style.display = 'flex'; h1.style.alignItems = 'center'; h1.style.justifyContent = 'center'; h1.style.gap = '12px'; h1.appendChild(btn); }
-
-        const PROXY_URL = 'https://keeaz-ai-server-production.up.railway.app/api/chat';
-
-        window.toggleAIWidget = function() { document.getElementById('aiWidget').classList.toggle('open'); };
-        window.sendAIMessageProc = async function() {
-            const input = document.getElementById('aiInputProc'); const msg = input.value.trim(); if (!msg) return;
-            input.value = ''; 
-            const msgs = document.getElementById('aiMessagesProc');
-            msgs.innerHTML += `<div style="text-align:right;margin:8px"><span style="background:#f6b83e;padding:10px;border-radius:18px;">${msg}</span></div>`;
-            const btn = document.getElementById('aiSendBtnProc'); btn.disabled = true;
-            try {
-                const response = await fetch(PROXY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [ { role: 'system', content: 'Ты — AI-ассистент КЭАЗ. Отвечай кратко.' }, { role: 'user', content: msg } ] }) });
-                const data = await response.json();
-                if (data.success) msgs.innerHTML += `<div style="margin:8px"><span style="background:white;padding:10px;border-radius:18px;">${data.content}</span></div>`;
-                else msgs.innerHTML += `<div style="margin:8px"><span style="background:#ffcccc;padding:10px;border-radius:18px;">❌ Ошибка</span></div>`;
-            } catch (e) { msgs.innerHTML += `<div style="margin:8px"><span style="background:#ffcccc;padding:10px;border-radius:18px;">❌ Нет связи</span></div>`; }
-            btn.disabled = false;
-        };
-    })();
-}
 // ============================================
 // АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ (БЕЗ ДУБЛЕЙ)
 // ============================================
@@ -190,16 +148,9 @@ if (!window.location.pathname.includes('index')) {
                     // Проверяем, что это выход
                     if (!detailText.textContent.includes('Выход') && !detailText.textContent.includes('📤')) return;
                     
-                    // ========== НОВАЯ ПРОВЕРКА НА ДУБЛИ ==========
-                    // Проверяем, есть ли уже ссылки в блоке "➡️ Выходы"
-                    const ioBlock = document.getElementById('detailIO');
-                    if (ioBlock && ioBlock.innerHTML.includes('Процедура ' + outputs[0])) {
-                        console.log('⚠️ Ссылки уже есть в detailIO, пропускаем');
-                        return;
-                    }
-                    
-                    // Проверяем, нет ли уже нашего блока
-                    if (detailText.innerHTML.includes('🔗 Выходы в процедуры')) {
+                    // ========== ИСПРАВЛЕННАЯ ПРОВЕРКА НА ДУБЛИ ==========
+                    // Проверяем, нет ли уже нашего блока по его уникальному ID
+                    if (document.getElementById('autoOutputLinks')) {
                         console.log('⚠️ Блок ссылок уже добавлен');
                         return;
                     }
@@ -211,6 +162,7 @@ if (!window.location.pathname.includes('index')) {
                     ).join('');
                     
                     const linksBlock = document.createElement('div');
+                    linksBlock.id = 'autoOutputLinks'; // <-- Добавлен уникальный ID
                     linksBlock.style.marginTop = '20px';
                     linksBlock.style.padding = '15px';
                     linksBlock.style.background = '#f0f7ff';
@@ -225,3 +177,19 @@ if (!window.location.pathname.includes('index')) {
         }
     }, 100);
 })();
+
+// ============================================
+// ИНИЦИАЛИЗАЦИЯ AI-АССИСТЕНТА (НОВЫЙ КОД)
+// ============================================
+if (!window.location.pathname.includes('index')) {
+    (function() {
+        function waitForAICore() {
+            if (window.AICore) {
+                window.AICore.initButton('h1');
+            } else {
+                setTimeout(waitForAICore, 100);
+            }
+        }
+        waitForAICore();
+    })();
+}
