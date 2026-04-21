@@ -152,7 +152,7 @@ if (!window.location.pathname.includes('index')) {
     })();
 }
 // ============================================
-// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ
+// АВТОМАТИЧЕСКИЕ ССЫЛКИ НА ВЫХОДЫ (БЕЗ ДУБЛЕЙ)
 // ============================================
 (function() {
     if (window.location.pathname.includes('index')) return;
@@ -161,29 +161,10 @@ if (!window.location.pathname.includes('index')) {
     if (!procId) return;
     
     const outputsMap = {
-        '4': ['11', '13', '15'],
-        '4a': ['4', '23'],
-        '4n': ['3', '29'],
-        '5': ['6'],
-        '8': ['12'],
-        '10': ['11', '22'],
-        '11': ['14'],
-        '12': ['22'],
-        '13': ['20'],
-        '14': ['20'],
-        '15': ['13'],
-        '17': ['23', '24', '26'],
-        '18': ['17', '19'],
-        '19': ['24'],
-        '20': ['25'],
-        '21': ['18'],
-        '22': ['8', '3'],
-        '23': ['4', '4a'],
-        '24': ['4'],
-        '26': ['31', '4a'],
-        '27': ['17'],
-        '28': ['30'],
-        '31': []
+        '3': [], '4': ['11', '13', '15'], '4a': ['4', '23'], '4n': ['3', '29'], '5': ['6'], '6': [], '7': ['21'], '8': ['12'],
+        '10': ['11', '22'], '11': ['14'], '12': ['22'], '13': ['20'], '14': ['20'], '15': ['13'], '16': [], '17': ['23', '24', '26'],
+        '18': ['17', '19'], '19': ['24'], '20': ['25'], '21': ['18'], '22': ['8', '3'], '23': ['4', '4a'], '24': ['4'], '25': [],
+        '26': ['31', '4a'], '27': ['17'], '28': ['30'], '29': [], '30': [], '31': []
     };
     
     const outputs = outputsMap[procId] || [];
@@ -192,7 +173,6 @@ if (!window.location.pathname.includes('index')) {
     const skipSteps = { '4': ['5'], '4a': ['22'] };
     const skipList = skipSteps[procId] || [];
     
-    // Ждём showDetail
     const wait = setInterval(function() {
         if (typeof window.showDetail === 'function') {
             clearInterval(wait);
@@ -207,11 +187,23 @@ if (!window.location.pathname.includes('index')) {
                     const detailText = document.getElementById('detailText');
                     if (!detailText) return;
                     
-                    // Проверяем, что это выход (ищем "Выход" или "📤")
+                    // Проверяем, что это выход
                     if (!detailText.textContent.includes('Выход') && !detailText.textContent.includes('📤')) return;
                     
-                    // Не добавляем дважды
-                    if (detailText.innerHTML.includes('🔗 Выходы')) return;
+                    // ========== НОВАЯ ПРОВЕРКА НА ДУБЛИ ==========
+                    // Проверяем, есть ли уже ссылки в блоке "➡️ Выходы"
+                    const ioBlock = document.getElementById('detailIO');
+                    if (ioBlock && ioBlock.innerHTML.includes('Процедура ' + outputs[0])) {
+                        console.log('⚠️ Ссылки уже есть в detailIO, пропускаем');
+                        return;
+                    }
+                    
+                    // Проверяем, нет ли уже нашего блока
+                    if (detailText.innerHTML.includes('🔗 Выходы в процедуры')) {
+                        console.log('⚠️ Блок ссылок уже добавлен');
+                        return;
+                    }
+                    // ==========================================
                     
                     // Создаём ссылки
                     const links = outputs.map(num => 
@@ -227,7 +219,7 @@ if (!window.location.pathname.includes('index')) {
                     linksBlock.innerHTML = `<strong style="color:#0a1929;">🔗 Выходы в процедуры:</strong><br><div style="margin-top:10px;">${links}</div>`;
                     
                     detailText.appendChild(linksBlock);
-                    console.log(`✅ Ссылки добавлены для шага ${stepId} в процедуре ${procId}`);
+                    console.log(`✅ Ссылки добавлены для шага ${stepId} (в detailText)`);
                 }, 200);
             };
         }
