@@ -860,6 +860,57 @@
     transform: translateY(-4px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
+        /* ============================================ */
+/* КОМПАКТНЫЕ ФИЛЬТРЫ - АККОРДЕОН             */
+/* ============================================ */
+
+.filter-group {
+    margin-bottom: 6px;
+    background: white;
+    border-radius: 40px;
+    border: 1px solid #e2e8f0;
+}
+
+.filter-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #1e293b;
+}
+
+.filter-group-header:hover {
+    background: #f8fafc;
+}
+
+.filter-group-header .group-toggle {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+
+.filter-group-header.open .group-toggle {
+    transform: rotate(180deg);
+}
+
+.filter-group-items {
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.filter-group-items.show {
+    display: flex;
+}
+
+.filter-group-items .filter-item {
+    font-size: 0.75rem;
+    padding: 4px 12px;
+}
     </style>
 </head>
 <body>
