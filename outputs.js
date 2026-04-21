@@ -1,4 +1,4 @@
-// outputs.js - ссылки на выходы
+// outputs.js - ссылки на выходы (супер-простая версия)
 console.log('🚀 Скрипт выходов запущен');
 
 if (window.location.pathname.includes('index')) {
@@ -33,42 +33,40 @@ if (window.location.pathname.includes('index')) {
                     original(stepId);
                     setTimeout(() => {
                         console.log('🖱️ Шаг:', stepId);
+                        
+                        // Пропускаем только явные отказы
                         if (skipList.includes(stepId)) {
-                            console.log('⏭️ Отказ, пропускаем');
+                            console.log('⏭️ Шаг в списке отказов, пропускаем');
                             return;
                         }
+                        
                         const detailText = document.getElementById('detailText');
                         if (!detailText) return;
                         
-                        // Проверяем, есть ли значок выхода
-                        const hasOutput = detailText.innerHTML.includes('📤') || 
-                                          detailText.innerHTML.includes('ВЫХОД') || 
-                                          detailText.innerHTML.includes('выход');
-                        if (!hasOutput) {
-                            console.log('⏭️ Нет значка выхода');
-                            return;
-                        }
-                        
-                        if (detailText.innerHTML.includes('Процедура')) {
+                        // Проверяем, нет ли уже ссылок
+                        if (detailText.innerHTML.includes('Процедура 11') || 
+                            detailText.innerHTML.includes('Связанные процедуры')) {
                             console.log('⏭️ Ссылки уже есть');
                             return;
                         }
                         
+                        // Создаём ссылки
                         const links = outputs.map(num => 
                             `<a href="proc${num}.html" style="color: #1e6df2; background: #e6f0ff; padding: 2px 8px; border-radius: 20px; text-decoration: none; font-weight: 600; margin: 0 4px;">Процедура ${num}</a>`
                         ).join(', ');
                         
-                        // Пробуем разные варианты замены
-                        let html = detailText.innerHTML;
-                        if (html.includes('📤 ВЫХОД:')) {
-                            html = html.replace(/(📤 ВЫХОД:[^<]*)/, `$1 ${links}`);
-                        } else if (html.includes('ВЫХОД:')) {
-                            html = html.replace(/(ВЫХОД:[^<]*)/, `$1 ${links}`);
-                        } else if (html.includes('выход')) {
-                            html = html.replace(/(выход[^<]*)/i, `$1 ${links}`);
-                        }
-                        detailText.innerHTML = html;
+                        // Добавляем блок со ссылками в конец
+                        const linksBlock = document.createElement('div');
+                        linksBlock.style.marginTop = '15px';
+                        linksBlock.style.padding = '12px';
+                        linksBlock.style.background = '#f0f7ff';
+                        linksBlock.style.borderRadius = '10px';
+                        linksBlock.style.border = '1px solid #1e6df2';
+                        linksBlock.innerHTML = `<strong>🔗 Выходы в процедуры:</strong> ${links}`;
+                        
+                        detailText.appendChild(linksBlock);
                         console.log('✅ Ссылки добавлены');
+                        
                     }, 150);
                 };
             }
