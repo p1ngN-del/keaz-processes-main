@@ -568,132 +568,142 @@ if (!window.location.pathname.includes('index')) {
     })();
 }
 // ============================================
-// АВТОМАТИЧЕСКОЕ ДОБАВЛЕНИЕ ССЫЛОК НА ВЫХОДЫ (БЕЗ ИЗМЕНЕНИЯ JSON)
+// АВТОМАТИЧЕСКОЕ ДОБАВЛЕНИЕ ССЫЛОК НА ВЫХОДЫ (С ОТЛАДКОЙ)
 // ============================================
 
 (function addSmartOutputLinks() {
+    console.log('🚀 Скрипт выходов запущен');
+    
     // Только на страницах процедур
-    if (window.location.pathname.includes('index')) return;
+    if (window.location.pathname.includes('index')) {
+        console.log('⏭️ Это index.html, пропускаем');
+        return;
+    }
     
     // Определяем ID текущей процедуры
     const path = window.location.pathname;
     const filename = path.substring(path.lastIndexOf('/') + 1);
     const currentProcId = filename.replace('proc', '').replace('.html', '');
+    console.log('📌 ID текущей процедуры:', currentProcId);
     
-    // Загружаем JSON и находим выходы для текущей процедуры
+    // Загружаем JSON и находим выходы
     fetch('procedures_data.json')
         .then(response => response.json())
         .then(data => {
+            console.log('📂 JSON загружен, процедур:', data.procedures.length);
+            
             // Находим текущую процедуру
             const currentProc = data.procedures.find(p => p.id === currentProcId);
-            if (!currentProc) return;
+            if (!currentProc) {
+                console.warn('⚠️ Процедура не найдена в JSON');
+                return;
+            }
             
-            // Извлекаем выходы из поля content (ищем "➡️" или "ВЫХОДЫ:")
+            console.log('📋 Найдена процедура:', currentProc.num, currentProc.name);
+            
+            // Извлекаем выходы
             const outputs = extractOutputsFromContent(currentProc.content);
-            if (outputs.length === 0) return;
+            console.log('🔢 Извлечённые выходы:', outputs);
             
-            console.log(`✅ Найдены выходы для процедуры ${currentProcId}:`, outputs);
+            if (outputs.length === 0) {
+                console.warn('⚠️ Выходы не найдены в content');
+                return;
+            }
             
-            // Ждём, пока функция showDetail станет доступна
+            // Ждём showDetail
+            console.log('⏳ Ожидание функции showDetail...');
             const waitForShowDetail = setInterval(() => {
                 if (typeof window.showDetail === 'function') {
                     clearInterval(waitForShowDetail);
+                    console.log('✅ showDetail найдена, перехватываем...');
                     
                     const originalShowDetail = window.showDetail;
                     
                     window.showDetail = function(stepId) {
-                        // Вызываем оригинал
+                        console.log('🖱️ Вызван showDetail для шага:', stepId);
                         originalShowDetail(stepId);
                         
-                        // Ждём обновления DOM
                         setTimeout(() => {
-                            // Проверяем, является ли текущий шаг выходом
                             const detailText = document.getElementById('detailText');
-                            if (!detailText) return;
+                            if (!detailText) {
+                                console.warn('⚠️ #detailText не найден');
+                                return;
+                            }
                             
                             const stepText = detailText.textContent;
+                            console.log('📝 Текст шага (первые 100 символов):', stepText.substring(0, 100));
+                            
                             const isOutputStep = stepText.includes('Выход из процедуры') || 
                                                stepText.includes('📤 ВЫХОД') ||
                                                stepText.includes('Выход в процедуру');
                             
+                            console.log('🚪 Это выход?', isOutputStep);
+                            
                             if (isOutputStep) {
-                                // Добавляем ссылки на выходы
+                                console.log('🔗 Добавляем ссылки на выходы:', outputs);
                                 addOutputLinksToDetailPanel(outputs);
                             }
-                        }, 100);
+                        }, 150);
                     };
-                    
-                    console.log('✅ Перехват showDetail установлен для добавления выходов');
                 }
             }, 200);
         })
         .catch(error => {
-            console.warn('⚠️ Не удалось загрузить JSON для выходов:', error);
+            console.error('❌ Ошибка загрузки JSON:', error);
         });
     
-    // Извлекает номера процедур из поля content
     function extractOutputsFromContent(content) {
         const outputs = [];
+        console.log('🔍 Ищем выходы в content (первые 500 символов):', content.substring(0, 500));
         
-        // Ищем строки вида "ВЫХОДЫ: 11, 13, 15" или "➡️ 11,13,15"
+        // Ищем "ВЫХОДЫ:" или "➡️"
         const outputsMatch = content.match(/(?:ВЫХОДЫ|➡️)\s*[:]?\s*([0-9а-я,\s]+)/i);
         if (outputsMatch) {
+            console.log('✅ Найдено совпадение:', outputsMatch[0]);
             const nums = outputsMatch[1].match(/\d+[а-я]?/g);
             if (nums) {
                 nums.forEach(num => {
                     if (!outputs.includes(num)) outputs.push(num);
                 });
             }
+        } else {
+            console.warn('⚠️ Паттерн "ВЫХОДЫ" или "➡️" не найден');
         }
         
         return outputs;
     }
     
-    // Добавляет ссылки на выходы в панель детализации
     function addOutputLinksToDetailPanel(outputs) {
+        console.log('🎨 Добавляем ссылки в панель...');
+        
         const detailText = document.getElementById('detailText');
         if (!detailText) return;
         
         let html = detailText.innerHTML;
-        let changed = false;
         
-        // Ищем место для вставки ссылок (обычно в конце, после "Выход из процедуры")
+        // Проверяем, нет ли уже ссылок
+        if (html.includes('Процедура')) {
+            console.log('⏭️ Ссылки уже есть, пропускаем');
+            return;
+        }
+        
         const outputLabels = ['Выход из процедуры', '📤 ВЫХОД', 'Выход в процедуру'];
         
         for (const label of outputLabels) {
             if (html.includes(label)) {
-                // Формируем ссылки
+                console.log('✅ Найдена метка:', label);
+                
                 const links = outputs.map(num => 
                     `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #e6f0ff; margin: 0 4px;">Процедура ${num}</a>`
                 ).join(', ');
                 
-                // Заменяем или добавляем ссылки
-                if (!html.includes('Процедура')) {
-                    html = html.replace(label, `${label} ${links}`);
-                    changed = true;
-                }
-                break;
+                html = html.replace(label, `${label} ${links}`);
+                detailText.innerHTML = html;
+                console.log('✅ Ссылки добавлены');
+                return;
             }
         }
         
-        if (changed) {
-            detailText.innerHTML = html;
-        }
-        
-        // Также обновляем IO-items в панели
-        const ioItems = document.querySelectorAll('.io-items');
-        ioItems.forEach(container => {
-            if (container.textContent.includes('Выход') || container.textContent.includes('📤')) {
-                const links = outputs.map(num => 
-                    `<a href="proc${num}.html" class="proc-link" style="color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 8px; border-radius: 20px; background: #e6f0ff;">Процедура ${num}</a>`
-                ).join(', ');
-                
-                // Добавляем ссылки в конец контейнера
-                const div = document.createElement('div');
-                div.className = 'io-item';
-                div.innerHTML = `<span class="io-arrow">→</span> ${links}`;
-                container.appendChild(div);
-            }
-        });
+        console.warn('⚠️ Ни одна метка выхода не найдена в HTML');
     }
 })();
