@@ -849,25 +849,24 @@
 .phase7 .proc-card:nth-child(4) { animation-delay: 0.86s; }
 
 /* ============================================ */
-/* 2. УЛУЧШЕННЫЕ HOVER-ЭФФЕКТЫ                */
+/* 2. УЛУЧШЕННЫЕ HOVER-ЭФФЕКТЫ (ИСПРАВЛЕНО)    */
 /* ============================================ */
 
 .proc-card {
     position: relative;
     overflow: hidden;
     cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
 }
 
-/* Исправленный hover-эффект — без потери текста */
+/* Основной hover-эффект — НЕ меняем фон! */
 .proc-card:hover {
     transform: translateY(-6px) scale(1.02);
     box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
     border-color: #f6b83e !important;
-    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    /* ВАЖНО: НЕ меняем background, оставляем исходный */
 }
 
-/* Эффект свечения при наведении */
+/* Эффект свечения при наведении (блик) */
 .proc-card:hover::before {
     content: '';
     position: absolute;
@@ -876,16 +875,13 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(246, 184, 62, 0.15), transparent);
+    pointer-events: none;
     animation: shine 0.6s ease forwards;
 }
 
 @keyframes shine {
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 200%;
-    }
+    0% { left: -100%; }
+    100% { left: 200%; }
 }
 
 /* Иконка-подсказка при наведении */
@@ -897,10 +893,11 @@
     font-size: 0.7rem;
     opacity: 0;
     transition: opacity 0.2s ease;
+    pointer-events: none;
 }
 
 .proc-card:hover::after {
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 /* Усиление border-left при наведении */
@@ -922,14 +919,14 @@
     transition: color 0.2s ease;
 }
 
-/* Эффект пульсации при наведении (опционально, мягкий) */
+/* Мягкое свечение тени */
 @keyframes softGlow {
-    0% {
-        box-shadow: 0 4px 12px rgba(246, 184, 62, 0);
-    }
-    100% {
-        box-shadow: 0 4px 20px rgba(246, 184, 62, 0.3);
-    }
+    0% { box-shadow: 0 4px 12px rgba(246, 184, 62, 0); }
+    100% { box-shadow: 0 4px 20px rgba(246, 184, 62, 0.25); }
+}
+
+.proc-card:hover {
+    animation: softGlow 0.3s ease forwards;
 }
 
 .proc-card:hover {
