@@ -387,6 +387,166 @@
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
+        // Добавляем функционал перетаскивания и изменения размера
+function makeWidgetDraggableAndResizable(widgetElement) {
+    let isDragging = false;
+    let dragOffsetX = 0, dragOffsetY = 0;
+    let isResizing = false;
+    let startWidth = 0, startHeight = 0;
+    let startX = 0, startY = 0;
+    
+    const header = widgetElement.querySelector('.ai-header');
+    const resizeHandle = document.createElement('div');
+    resizeHandle.className = 'ai-resize-handle';
+    resizeHandle.innerHTML = '◢';
+    resizeHandle.style.cssText = `
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        cursor: nw-resize;
+        font-size: 16px;
+        color: #94a3b8;
+        text-align: center;
+        line-height: 18px;
+        user-select: none;
+        z-index: 10;
+    `;
+    widgetElement.appendChild(resizeHandle);
+    
+    // Восстанавливаем сохранённую позицию и размер
+    const savedLeft = localStorage.getItem('aiWidgetLeft');
+    const savedTop = localStorage.getItem('aiWidgetTop');
+    const savedWidth = localStorage.getItem('aiWidgetWidth');
+    const savedHeight = localStorage.getItem('aiWidgetHeight');
+    
+    if (savedLeft && savedTop) {
+        widgetElement.style.left = savedLeft;
+        widgetElement.style.top = savedTop;
+        widgetElement.style.transform = 'none';
+    }
+    if (savedWidth && savedHeight) {
+        widgetElement.style.width = savedWidth;
+        widgetElement.style.height = savedHeight;
+        const messagesDiv = widgetElement.querySelector('.ai-messages');
+        if (messagesDiv) {
+            messagesDiv.style.height = `calc(${savedHeight} - 130px)`;
+        }
+    }
+    
+    // Перетаскивание за заголовок
+    header.style.cursor = 'move';
+    header.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.ai-close')) return;
+        isDragging = true;
+        const rect = widgetElement.getBoundingClientRect();
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+        widgetElement.style.position = 'fixed';
+        document.body.style.userSelect = 'none';
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let newLeft = e.clientX - dragOffsetX;
+        let newTop = e.clientY - dragOffsetY;
+        
+        // Границы экрана
+        newLeft = Math.max(0, Math.min(window.innerWidth - widgetElement.offsetWidth, newLeft));
+        newTop = Math.max(0, Math.min(window.innerHeight - widgetElement.offsetHeight, newTop));
+        
+        widgetElement.style.left = `${newLeft}px`;
+        widgetElement.style.top = `${newTop}px`;
+        widgetElement.style.transform = 'none';
+    });
+    
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.style.userSelect = '';
+            localStorage.setItem('aiWidgetLeft', widgetElement.style.left);
+            localStorage.setItem('aiWidgetTop', widgetElement.style.top);
+        }
+        if (isResizing) {
+            isResizing = false;
+            document.body.style.userSelect = '';
+            localStorage.setItem('aiWidgetWidth', widgetElement.style.width);
+            localStorage.setItem('aiWidgetHeight', widgetElement.style.height);
+        }
+    });
+    
+    // Изменение размера
+    resizeHandle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizing = true;
+        startWidth = widgetElement.offsetWidth;
+        startHeight = widgetElement.offsetHeight;
+        startX = e.clientX;
+        startY = e.clientY;
+        document.body.style.userSelect = 'none';
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const newWidth = Math.max(300, Math.min(window.innerWidth - 100, startWidth + (e.clientX - startX)));
+        const newHeight = Math.max(400, Math.min(window.innerHeight - 100, startHeight + (e.clientY - startY)));
+        
+        widgetElement.style.width = `${newWidth}px`;
+        widgetElement.style.height = `${newHeight}px`;
+        
+        const messagesDiv = widgetElement.querySelector('.ai-messages');
+        if (messagesDiv) {
+            messagesDiv.style.height = `${newHeight - 130}px`;
+        }
+    });
+    
+    // Кнопка сброса позиции
+    const resetBtn = document.createElement('button');
+    resetBtn.innerHTML = '📍';
+    resetBtn.title = 'Вернуть в исходное положение';
+    resetBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        opacity: 0.6;
+        margin-left: 8px;
+        padding: 0 4px;
+    `;
+    resetBtn.onclick = () => {
+        widgetElement.style.left = '';
+        widgetElement.style.top = '';
+        widgetElement.style.transform = '';
+        widgetElement.style.width = '';
+        widgetElement.style.height = '';
+        localStorage.removeItem('aiWidgetLeft');
+        localStorage.removeItem('aiWidgetTop');
+        localStorage.removeItem('aiWidgetWidth');
+        localStorage.removeItem('aiWidgetHeight');
+        
+        const messagesDiv = widgetElement.querySelector('.ai-messages');
+        if (messagesDiv) {
+            messagesDiv.style.height = '';
+        }
+        
+        widgetElement.style.left = '24px';
+        widgetElement.style.top = '50%';
+        widgetElement.style.transform = 'translateY(-50%)';
+        widgetElement.style.width = '420px';
+        widgetElement.style.height = '';
+    };
+    
+    const titleSpan = widgetElement.querySelector('.ai-title');
+    if (titleSpan) {
+        titleSpan.appendChild(resetBtn);
+    }
+}
+
+// В конце createWidget(), после добавления widgetHTML, вызови:
+makeWidgetDraggableAndResizable(widget);
     }
 
     // --- Экспортируемый объект API ---
