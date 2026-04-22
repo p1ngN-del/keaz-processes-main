@@ -836,38 +836,47 @@ function findRelevantProcedures(question, maxResults = 5) {
         }
     };
     // --- АВТОМАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ДЛЯ ВСЕХ СТРАНИЦ ---
-    // Эта функция будет ждать загрузки DOM и затем создаст кнопку
     function initAICore() {
+        function tryShowWelcome() {
+            // Ждём, пока виджет точно создастся (максимум 10 попыток)
+            let attempts = 0;
+            const maxAttempts = 20;
+            
+            const showWidget = () => {
+                const widget = document.getElementById('aiWidget');
+                if (widget) {
+                    console.log('🎉 [AI Core] Виджет найден, открываю приветствие...');
+                    AICore.toggleWidget();
+                    setTimeout(() => {
+                        if (widget.classList.contains('open')) {
+                            AICore.toggleWidget();
+                        }
+                    }, 5000); // Показываем 5 секунд
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    setTimeout(showWidget, 100); // Пробуем ещё раз через 100 мс
+                } else {
+                    console.warn('⚠️ [AI Core] Виджет не найден после 2 секунд ожидания');
+                }
+            };
+            
+            setTimeout(showWidget, 1000); // Начать попытки через 1 секунду
+        }
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
-                if (window.AICore) window.AICore.initButton('h1');
-                // === НАЧАЛО: Автоприветствие (Вариант 5) ===
-                if (!localStorage.getItem('aiWelcomeShown')) {
-                    setTimeout(() => {
-                        const widget = document.getElementById('aiWidget');
-                        if (widget && !widget.classList.contains('open')) {
-                            AICore.toggleWidget(); // Показать виджет
-                            setTimeout(() => AICore.toggleWidget(), 4000); // Скрыть через 4 сек
-                        }
-                        localStorage.setItem('aiWelcomeShown', 'true');
-                    }, 1500); // Показать через 1.5 сек после загрузки
+                if (window.AICore) {
+                    window.AICore.initButton('h1');
+                    // Всегда показываем приветствие (убираем проверку localStorage)
+                    tryShowWelcome();
                 }
-                // === КОНЕЦ: Автоприветствие ===
             });
         } else {
-            if (window.AICore) window.AICore.initButton('h1');
-            // === НАЧАЛО: Автоприветствие ===
-            if (!localStorage.getItem('aiWelcomeShown')) {
-                setTimeout(() => {
-                    const widget = document.getElementById('aiWidget');
-                    if (widget && !widget.classList.contains('open')) {
-                        AICore.toggleWidget();
-                        setTimeout(() => AICore.toggleWidget(), 4000);
-                    }
-                    localStorage.setItem('aiWelcomeShown', 'true');
-                }, 1500);
+            if (window.AICore) {
+                window.AICore.initButton('h1');
+                // Всегда показываем приветствие
+                tryShowWelcome();
             }
-            // === КОНЕЦ: Автоприветствие ===
         }
     }
     initAICore();
