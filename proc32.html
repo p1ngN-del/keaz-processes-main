@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>КЭАЗ · Инструкция 32</title>
+    <title>КЭАЗ · Инструкция 33</title>
     <style>
         * {
             margin: 0;
@@ -89,7 +89,7 @@
         .swimlane-table {
             display: flex;
             flex-direction: column;
-            min-width: 1000px;
+            min-width: 1200px;
         }
 
         .step-header {
@@ -332,107 +332,162 @@
         }
 
         .role-pm { border-left-color: #1e90ff; }
-        .role-nopn { border-left-color: #8a2be2; }
-        .role-advertising { border-left-color: #4682b4; }
-        .role-web { border-left-color: #2e8b57; }
+        .role-pricing { border-left-color: #ff8c00; }
     </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
-    <h1>ИНСТРУКЦИЯ 32: Подготовка/корректировка глав каталога ПП КЭАЗ и ПП KEAZ-Optima</h1>
-    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
+    <h1>ИНСТРУКЦИЯ 33: Внесение цен в 1С:УПП</h1>
+    <div class="subhead">Попозиционное и пакетное внесение цен — нажми на шаг для детального описания</div>
 
     <div class="swimlane">
         <div class="swimlane-table">
             <div class="step-header">
-                <div class="step-header-cell">1-2</div>
-                <div class="step-header-cell">3-4</div>
-                <div class="step-header-cell">5-6</div>
+                <div class="step-header-cell">1-5</div>
+                <div class="step-header-cell">6-10</div>
+                <div class="step-header-cell">11-14</div>
+                <div class="step-header-cell">15-18</div>
+                <div class="step-header-cell">19-22</div>
             </div>
 
-            <!-- Дорожка 1: Продукт-менеджер / НОПН -->
+            <!-- Дорожка 1: Продукт-менеджер -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер<br>Начальник ОПН</div>
+                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер</div>
                 <div class="lane-cells">
                     <div class="cell">
                         <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
                             <span class="step-num">1</span>
-                            <div class="step-title">Разработка ТЗ</div>
-                            <div class="step-preview">Разрабатывает ТЗ в WORD согласно шаблону, готовит фото, чертежи, таблицы...</div>
+                            <div class="step-title">Запуск 1С:УПП</div>
+                            <div class="step-preview">Заходим в программу 1С:УПП...</div>
                             <span class="step-badge badge-in">⬅️ вход</span>
                         </div>
-                    </div>
-                    <div class="cell">
+                        <div class="step-card role-pm" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Переключение интерфейса</div>
+                            <div class="step-preview">Выбираем «Управление продажами»...</div>
+                        </div>
                         <div class="step-card role-pm" data-step="3" onclick="goToStep(3)">
                             <span class="step-num">3</span>
-                            <div class="step-title">Направление на исполнение</div>
-                            <div class="step-preview">После согласования направляет СЗ на исполнение Начальнику управления рекламы...</div>
+                            <div class="step-title">Открытие установки цен</div>
+                            <div class="step-preview">Выбираем «Цены» → «Установка цен номенклатуры»...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="4" onclick="goToStep(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Создание документа</div>
+                            <div class="step-preview">Нажимаем кнопку «Добавить»...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="5" onclick="goToStep(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Выбор типа цен</div>
+                            <div class="step-preview">Заполняем тип цен нажатием на три точки...</div>
                         </div>
                     </div>
                     <div class="cell">
-                        <div class="step-card role-pm" data-step="5" onclick="goToStep(5)">
-                            <span class="step-num">5</span>
-                            <div class="step-title">Приемка документа</div>
-                            <div class="step-preview">Проводит приемку итогового документа...</div>
-                        </div>
                         <div class="step-card role-pm" data-step="6" onclick="goToStep(6)">
                             <span class="step-num">6</span>
-                            <div class="step-title">Проверка привязки</div>
-                            <div class="step-preview">Проверяет корректную привязку документа на сайте...</div>
+                            <div class="step-title">Установка галочек</div>
+                            <div class="step-preview">Выбираем типы цен: ТД Базовая 2011, Базовая продажа Казахстан, КЭАЗ Базовая (USD)...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Добавление номенклатуры</div>
+                            <div class="step-preview">Нажимаем «+» и выбираем нужную позицию...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Внесение цен</div>
+                            <div class="step-preview">Вносим базовые цены без НДС с округлением до целых чисел...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Заполнение комментария</div>
+                            <div class="step-preview">Указываем цель установки цены и рентабельность...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="10" onclick="goToStep(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Запись документа</div>
+                            <div class="step-preview">Нажимаем «Записать», документу присваивается номер...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="11" onclick="goToStep(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Отправка на проведение</div>
+                            <div class="step-preview">Номер документа отправляем ответственному сотруднику...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="14" onclick="goToStep(14)">
+                            <span class="step-num">14</span>
+                            <div class="step-title">Заполнение шаблона (пакетный)</div>
+                            <div class="step-preview">Заполняем шаблон XLS для пакетного внесения цен...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="15" onclick="goToStep(15)">
+                            <span class="step-num">15</span>
+                            <div class="step-title">Базовые шаги (пакетный)</div>
+                            <div class="step-preview">Выполняем шаги 1-5 из инструкции...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="20" onclick="goToStep(20)">
+                            <span class="step-num">20</span>
+                            <div class="step-title">Очистка данных</div>
+                            <div class="step-preview">Удаляем первую строку в загруженном документе...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="21" onclick="goToStep(21)">
+                            <span class="step-num">21</span>
+                            <div class="step-title">Комментарий (пакетный)</div>
+                            <div class="step-preview">Указываем группу и % изменения цен...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="22" onclick="goToStep(22)">
+                            <span class="step-num">22</span>
+                            <div class="step-title">Завершение</div>
+                            <div class="step-preview">Выполняем шаги 11-14 из инструкции...</div>
                             <span class="step-badge badge-out">📤 выход</span>
                         </div>
                     </div>
+                    <div class="cell"></div>
                 </div>
             </div>
 
-            <!-- Дорожка 2: Руководитель (непосредственный) -->
+            <!-- Дорожка 2: Маркетолог-аналитик по ценообразованию -->
             <div class="lane">
-                <div class="lane-label" style="border-left-color: #8a2be2;">Непосредственный руководитель</div>
+                <div class="lane-label" style="border-left-color: #ff8c00;">Маркетолог-аналитик по ценообразованию</div>
                 <div class="lane-cells">
                     <div class="cell"></div>
+                    <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-nopn" data-step="2" onclick="goToStep(2)">
-                            <span class="step-num">2</span>
-                            <div class="step-title">Согласование ТЗ</div>
-                            <div class="step-preview">Согласовывает ТЗ, при необходимости возвращает на доработку...</div>
-                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        <div class="step-card role-pricing" data-step="12" onclick="goToStep(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Контроль проведенных цен</div>
+                            <div class="step-preview">Заходим в «Цены» → «Печать прайс-листа»...</div>
+                        </div>
+                        <div class="step-card role-pricing" data-step="13" onclick="goToStep(13)">
+                            <span class="step-num">13</span>
+                            <div class="step-title">Проверка цен</div>
+                            <div class="step-preview">Выбираем номенклатуру, типы цен, формируем и сверяем...</div>
                         </div>
                     </div>
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                </div>
-            </div>
-
-            <!-- Дорожка 3: Начальник управления рекламы -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #4682b4;">Начальник управления рекламы</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
                     <div class="cell">
-                        <div class="step-card role-advertising" data-step="4" onclick="goToStep(4)">
-                            <span class="step-num">4</span>
-                            <div class="step-title">Согласование и исполнение</div>
-                            <div class="step-preview">Согласовывает ТЗ, после чего СЗ направляется на исполнение...</div>
+                        <div class="step-card role-pricing" data-step="16" onclick="goToStep(16)">
+                            <span class="step-num">16</span>
+                            <div class="step-title">Выбор типа цен для загрузки</div>
+                            <div class="step-preview">Устанавливаем галочку на одну из категорий цен...</div>
                         </div>
-                    </div>
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                </div>
-            </div>
-
-            <!-- Дорожка 4: Начальник управления интернет-продвижения -->
-            <div class="lane">
-                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник управления<br>интернет-продвижения</div>
-                <div class="lane-cells">
-                    <div class="cell"></div>
-                    <div class="cell"></div>
-                    <div class="cell">
-                        <div class="step-card role-web" data-step="7" onclick="goToStep(7)">
-                            <span class="step-num">7</span>
-                            <div class="step-title">Публикация на сайте</div>
-                            <div class="step-preview">Обновляет документ на сайте keaz.ru...</div>
+                        <div class="step-card role-pricing" data-step="17" onclick="goToStep(17)">
+                            <span class="step-num">17</span>
+                            <div class="step-title">Загрузка из Excel</div>
+                            <div class="step-preview">Нажимаем «Заполнить» → «Загрузка цен из файла Excel»...</div>
+                        </div>
+                        <div class="step-card role-pricing" data-step="18" onclick="goToStep(18)">
+                            <span class="step-num">18</span>
+                            <div class="step-title">Указание пути и валюты</div>
+                            <div class="step-preview">Указываем путь к файлу, устанавливаем валюту (руб. или USD)...</div>
+                        </div>
+                        <div class="step-card role-pricing" data-step="19" onclick="goToStep(19)">
+                            <span class="step-num">19</span>
+                            <div class="step-title">Выполнение загрузки</div>
+                            <div class="step-preview">Нажимаем «Выполнить загрузку»...</div>
                         </div>
                     </div>
                     <div class="cell"></div>
@@ -455,52 +510,157 @@
     const stepData = {
         1: {
             number: "1",
-            role: "Продукт-менеджер / Начальник отдела продуктового направления",
-            text: "Разрабатывает ТЗ в формате WORD для разработки/корректировки главы каталога:\n- для группы ПРОДУКТОВ ПП КЭАЗ согласно Шаблону ТЗ для разработки глав каталога ПП КЭАЗ,\n- для группы ПРОДУКТОВ ПП KEAZ-Optima согласно Шаблону ТЗ для разработки глав каталога ПП KEAZ-Optima.\n\nВ ТЗ корректируются желтые поля и заполняется описание всех необходимых разделов главы каталога, с указанием наименования фото, таблиц, чертежей, рисунков и места их размещения.\n\nФото размещаются в формате *tiff или *jpeg на Stor. Чертежи и рисунки в векторном формате. Таблицы в отдельном файле EXCEL.\n\nПри внесении изменений в уже имеющуюся главу допускается использовать из ТЗ только те разделы, которые требуется корректировать.\n\n<b>Вход в процедуру:</b> результаты процедур <a href='proc4.html' class='proc-link'>4 (Ввод номенклатуры)</a> и <a href='proc15.html' class='proc-link'>15 (Обработка ТЗ на дизайнерскую ЭД)</a>.",
-            inputs: ["⬅️ <a href='proc4.html' class='proc-link'>Процедура 4</a>", "⬅️ <a href='proc15.html' class='proc-link'>Процедура 15</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2 (на согласование)</a>"]
+            role: "Продукт-менеджер",
+            text: "Заходим в программу 1С:УПП.",
+            inputs: ["⬅️ <a href='proc4.html' class='proc-link'>Процедура 4 (Ввод номенклатуры)</a>", "⬅️ <a href='proc11.html' class='proc-link'>Процедура 11 (Ценообразование нового продукта)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
         },
         2: {
             number: "2",
-            role: "Непосредственный руководитель",
-            text: "Согласовывает ТЗ. При наличии замечаний возвращает ПМ/НОПН на доработку. После согласования СЗ направляется Начальнику управления рекламы.\n\nПри корректировке имеющейся главы каталога допускается вносить правки путем добавления комментариев в существующий файл главы каталога формата *pdf.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ/НОПН (шаг 1)</a>"],
-            outputs: ["✅ Если согласовано → <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>", "❌ Если есть замечания → возврат к <a href='#' onclick='goToStep(1); return false;' class='io-link'>шагу 1</a>"]
+            role: "Продукт-менеджер",
+            text: "Переключаем интерфейс, выбираем <strong>«Управление продажами»</strong>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
         },
         3: {
             number: "3",
-            role: "Продукт-менеджер / Начальник отдела продуктового направления",
-            text: "Формирует в 1С:ДО служебную записку с наименованием «Разработка (Корректировка) главы каталога ПП КЭАЗ (ПП KEAZ Optima) «наименование группы и серии ПРОДУКТА», прикладывает разработанное ТЗ и направляет на согласование Начальнику управления рекламы.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От руководителя (шаг 2, ДА)</a>"],
+            role: "Продукт-менеджер",
+            text: "На панели выбираем вкладку <strong>«Цены»</strong>, в открывшемся списке выбираем <strong>«Установка цен номенклатуры»</strong>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         4: {
             number: "4",
-            role: "Начальник управления рекламы",
-            text: "Согласовывает ТЗ и сроки исполнения. После согласования служебная записка направляется на исполнение ПМ/НОПН для дальнейшего направления Начальнику управления интернет-продвижения.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ/НОПН (шаг 3)</a>"],
+            role: "Продукт-менеджер",
+            text: "Нажимаем кнопку <strong>«Добавить»</strong> (знак + на зеленом фоне).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ (шаг 3)</a>"],
             outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
         },
         5: {
             number: "5",
-            role: "Продукт-менеджер / Начальник отдела продуктового направления",
-            text: "Проводит приемку итогового документа и направляет по электронной почте Начальнику управления интернет-продвижения и WEB-разработок для обновления на сайте keaz.ru действующего документа (при внесении корректировок в действующую главу). При добавлении новой главы указывается номенклатура и группа номенклатур на сайте keaz.ru, к которой необходимо прикрепить данный документ.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От Начальника рекламы (шаг 4)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7 (Начальнику интернет-продвижения)</a>", "→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6 (проверка)</a>"]
+            role: "Продукт-менеджер",
+            text: "Заполняем тип цен нажатием на три точки в конце строки.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От ПМ (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
         },
         6: {
             number: "6",
-            role: "Продукт-менеджер / Начальник отдела продуктового направления",
-            text: "Проводит проверку корректной привязки нового документа на сайте keaz.ru, при корректном выполнении завершает свою задачу.\n\n<b>Выход в процедуры:</b> <a href='proc13.html' class='proc-link'>13 (Наполнение контентом)</a> и <a href='proc20.html' class='proc-link'>20 (Подготовка к старту продаж)</a>.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От ПМ/НОПН (шаг 5)</a>", "⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От Начальника интернет-продвижения (шаг 7)</a>"],
-            outputs: ["📤 ВЫХОД: <a href='proc13.html' class='proc-link'>Процедура 13</a>, <a href='proc20.html' class='proc-link'>Процедура 20</a>"]
+            role: "Продукт-менеджер",
+            text: "В поле подбора «Форма выбора типа цен» устанавливаем галочки на типы цен:<br><br>✓ <strong>ТД Базовая 2011</strong><br>✓ <strong>Базовая продажа Казахстан</strong><br>✓ <strong>КЭАЗ Базовая (USD)</strong>",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От ПМ (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
         },
         7: {
             number: "7",
-            role: "Начальник управления интернет-продвижения и WEB-разработок",
-            text: "Обновляет документ на сайте keaz.ru (при внесении корректировок) или добавляет новую главу с привязкой к указанной номенклатуре. Уведомляет ПМ/НОПН о выполнении.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От ПМ/НОПН (шаг 5)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6 (ПМ/НОПН на проверку)</a>"]
+            role: "Продукт-менеджер",
+            text: "Нажимаем <strong>«+»</strong> для добавления номенклатуры. В поле «Номенклатура» нажимаем на три точки и выбираем нужную позицию.<br><br><strong>Примечание:</strong> Номенклатура предварительно должна быть занесена в 1С:УПП специалистом по планированию УМПП.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От ПМ (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
+        },
+        8: {
+            number: "8",
+            role: "Продукт-менеджер",
+            text: "Вносим в поля <strong>«Базовая продажа Казахстан»</strong>, <strong>«ТД Базовая 2011»</strong>, <strong>«КЭАЗ Базовая (USD)»</strong> базовые цены на продукцию <strong>без НДС</strong>.<br><br><strong>Примечание:</strong> Цена вносится с округлением до целых чисел.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От ПМ (шаг 7)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
+        },
+        9: {
+            number: "9",
+            role: "Продукт-менеджер",
+            text: "Заполняем поле комментарий, формулируя цель установки или корректировки цены:<br><br><strong>а)</strong> «Цены установлены по согласованному ценовому позиционированию. Рентабельность (указываем %)»<br><br><strong>б)</strong> «Цены установлены согласно изменившейся отстройки от целевого конкурента на (указываем %). Рентабельность (указываем %)»",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От ПМ (шаг 8)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+        },
+        10: {
+            number: "10",
+            role: "Продукт-менеджер",
+            text: "Нажимаем кнопку <strong>«Записать»</strong> в правом нижнем углу. После записи документу будет присвоен уникальный номер.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От ПМ (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
+        },
+        11: {
+            number: "11",
+            role: "Продукт-менеджер",
+            text: "Номер документа необходимо отправить для проведения документа сотруднику, ответственному за проведение цен (Маркетологу-аналитику по ценообразованию).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От ПМ (шаг 10)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>"]
+        },
+        12: {
+            number: "12",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "Для контроля проведенных цен заходим во вкладку <strong>«Цены»</strong>, выбираем <strong>«Печать прайс-листа»</strong>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От ПМ (шаг 11)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>"]
+        },
+        13: {
+            number: "13",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "В графе «Номенклатура» выбираем позицию или группу. В графе «Тип цен» должны быть выбраны: <strong>«Базовая продажа Казахстан»</strong>, <strong>«ТД Базовая 2011»</strong>, <strong>«КЭАЗ Базовая (USD)»</strong>. Нажимаем <strong>«Сформировать»</strong>. Проверяем соответствие цены в прайс-листе с вносимыми ценами.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От маркетолога (шаг 12)</a>"],
+            outputs: ["📤 ВЫХОД: Цены проверены и проведены"]
+        },
+        14: {
+            number: "14",
+            role: "Продукт-менеджер",
+            text: "Заполняем шаблон для пакетного внесения цен (файл формата XLS):<br><br>- Первая строка не заполняется<br>- Столбец 2: коды номенклатуры<br>- Столбец 4: наименование номенклатуры<br>- Столбец 5: характеристика (оставляем пустым)<br>- Столбец 6: единица измерения<br>- Столбец 7: цены<br>- Столбцы 1 и 3 оставляем пустыми",
+            inputs: ["⬅️ При изменении прайс-листа"],
+            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
+        },
+        15: {
+            number: "15",
+            role: "Продукт-менеджер",
+            text: "Выполняем шаги 1-5 из инструкции «Внесение цен в 1С:УПП для одной или нескольких позиций».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От ПМ (шаг 14)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
+        },
+        16: {
+            number: "16",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "В поле подбора «Форма выбора типа цен» устанавливаем галочку на одну из категорий:<br><br>✓ <strong>Базовая продажа Казахстан</strong><br>✓ <strong>КЭАЗ Базовая (USD)</strong><br>✓ <strong>ТД Базовая 2011</strong>",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(15); return false;' class='io-link'>От ПМ (шаг 15)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(17); return false;' class='io-link'>Шаг 17</a>"]
+        },
+        17: {
+            number: "17",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "Нажимаем кнопку <strong>«Заполнить»</strong>, затем выбираем вкладку <strong>«Загрузка цен номенклатуры из файла Excel»</strong>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От маркетолога (шаг 16)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(18); return false;' class='io-link'>Шаг 18</a>"]
+        },
+        18: {
+            number: "18",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "Указываем путь к готовому файлу. Устанавливаем валюту:<br><br>- Для «Базовая продажа Казахстан» и «ТД Базовая 2011» → <strong>руб.</strong><br>- Для «КЭАЗ Базовая (USD)» → <strong>USD</strong>",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(17); return false;' class='io-link'>От маркетолога (шаг 17)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(19); return false;' class='io-link'>Шаг 19</a>"]
+        },
+        19: {
+            number: "19",
+            role: "Маркетолог-аналитик по ценообразованию",
+            text: "Нажимаем кнопку <strong>«Выполнить загрузку»</strong>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(18); return false;' class='io-link'>От маркетолога (шаг 18)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(20); return false;' class='io-link'>Шаг 20</a>"]
+        },
+        20: {
+            number: "20",
+            role: "Продукт-менеджер",
+            text: "Удаляем первую строку в загруженном документе (она техническая).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(19); return false;' class='io-link'>От маркетолога (шаг 19)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(21); return false;' class='io-link'>Шаг 21</a>"]
+        },
+        21: {
+            number: "21",
+            role: "Продукт-менеджер",
+            text: "Заполняем поле комментарий, указываем группу или перечень групп и % изменения. Пример:<br><br><strong>«Изменение цен по группам: ПП57 +10%; ПП60С +15%...»</strong>",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(20); return false;' class='io-link'>От ПМ (шаг 20)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(22); return false;' class='io-link'>Шаг 22</a>"]
+        },
+        22: {
+            number: "22",
+            role: "Продукт-менеджер",
+            text: "Выполняем шаги 11-14 из инструкции «Внесение цен в 1С:УПП для одной или нескольких позиций».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(21); return false;' class='io-link'>От ПМ (шаг 21)</a>"],
+            outputs: ["📤 ВЫХОД: Цены успешно загружены и проведены"]
         }
     };
 
