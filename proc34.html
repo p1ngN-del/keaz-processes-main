@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Инструкция 34</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1200px;
+        }
+
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+            scroll-margin-top: 20px;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+
+        .role-analytics { border-left-color: #1e90ff; }
+        .role-rn { border-left-color: #8a2be2; }
+        .role-ukiot { border-left-color: #4682b4; }
+        .role-dir { border-left-color: #ff8c00; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>ИНСТРУКЦИЯ 34: Контроль рентабельности продуктов</h1>
+    <div class="subhead">Регулярный анализ и контроль рентабельности — нажми на шаг для детального описания</div>
+
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <div class="step-header">
+                <div class="step-header-cell">1-3</div>
+                <div class="step-header-cell">4-6</div>
+                <div class="step-header-cell">7-9</div>
+                <div class="step-header-cell">10-12</div>
+            </div>
+
+            <!-- Дорожка 1: Начальник аналитического отдела -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Начальник аналитического отдела</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-analytics" data-step="1" onclick="goToStep(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Формирование сводного отчета</div>
+                            <div class="step-preview">Ежеквартально формирует отчет «Факторный анализ рентабельности»...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                        <div class="step-card role-analytics" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Анализ отчета</div>
+                            <div class="step-preview">Анализирует динамику рентабельности, определяет проблемные группы...</div>
+                        </div>
+                        <div class="step-card role-analytics" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Получение данных от УКиОТ</div>
+                            <div class="step-preview">Получает данные фактической себестоимости от УКиОТ...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-analytics" data-step="4" onclick="goToStep(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Выявление проблемных групп</div>
+                            <div class="step-preview">Определяет группы с рентабельностью ниже минимальной...</div>
+                        </div>
+                        <div class="step-card role-analytics" data-step="5" onclick="goToStep(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Прогноз рентабельности</div>
+                            <div class="step-preview">Рассчитывает прогноз рентабельности на основе плановой себестоимости...</div>
+                        </div>
+                        <div class="step-card role-analytics" data-step="6" onclick="goToStep(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Информирование РН</div>
+                            <div class="step-preview">Информирует Руководителя направления о проблеме...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-analytics" data-step="10" onclick="goToStep(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Участие в согласовании нормативов</div>
+                            <div class="step-preview">При необходимости согласовывает изменение нормативов рентабельности...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Руководитель направления (РН) -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель направления (РН)</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rn" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Получение информации о проблеме</div>
+                            <div class="step-preview">Получает информацию о проблемных номенклатурных группах...</div>
+                        </div>
+                        <div class="step-card role-rn" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Заведение проблемы</div>
+                            <div class="step-preview">Заводит проблему согласно действующим правилам в 1С:ДО...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-rn" data-step="11" onclick="goToStep(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Согласование нормативов</div>
+                            <div class="step-preview">При необходимости инициирует изменение нормативов рентабельности...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: УКиОТ -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">УКиОТ (Цыбина О.В.)</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-ukiot" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Расчет фактической себестоимости</div>
+                            <div class="step-preview">Рассчитывает фактическую себестоимость продукции...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Директор по продуктовому маркетингу -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #ff8c00;">Директор по продуктовому маркетингу</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-dir" data-step="12" onclick="goToStep(12)">
+                            <span class="step-num">12</span>
+                            <div class="step-title">Утверждение нормативов</div>
+                            <div class="step-preview">Утверждает изменения нормативов минимальной рентабельности...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детальная панель -->
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        // ========== БЛОК 1-3: ФОРМИРОВАНИЕ ОТЧЕТОВ ==========
+        1: {
+            number: "1",
+            role: "Начальник аналитического отдела",
+            text: "Аналитический отдел ежеквартально, до конца первого месяца следующего квартала, формирует сводный отчет «Факторный анализ рентабельности», в котором отражена динамика рентабельности в разрезе номенклатурных групп и поартикульно с динамикой всех основных факторов: себестоимости фактической, себестоимости плановой, базовых цен и скидок, поартикульной структуры продаж, а также прогноз рентабельности исходя из плановой себестоимости.\n\n<b>Вход в процедуру:</b> результаты <a href='proc4.html' class='proc-link'>процедуры 4 (Ввод номенклатуры)</a>.",
+            inputs: ["⬅️ <a href='proc4.html' class='proc-link'>Процедура 4 (Ввод номенклатуры)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
+        },
+        2: {
+            number: "2",
+            role: "Начальник аналитического отдела",
+            text: "Анализирует динамику рентабельности с использованием следующих отчетов:\n\n1. <strong>Отчет «Валовая прибыль»</strong> — позволяет увидеть динамику фактической рентабельности как по номенклатурным группам, так и поартикульно, а также поартикульную структуру продаж и цены реализации.\n\n2. <strong>Отчет «Продажи»</strong> — позволяет увидеть средние скидки, понять каким покупателям они предоставлялись и степень их влияния на рентабельность.\n\n3. <strong>«Анализ формирования себестоимости продукции» (2069)</strong> — позволяет увидеть постатейную структуру фактической себестоимости в динамике, оценить какая статья затрат оказывает наибольшее влияние на себестоимость.\n\n4. <strong>Анализ плановой себестоимости</strong> — через документ «Установка цен номенклатуры» (тип цен «Себестоимость для продуктов»).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От начальника аналитики (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
+        },
+        3: {
+            number: "3",
+            role: "Начальник аналитического отдела",
+            text: "Получает данные фактической себестоимости от УКиОТ. Закрытие финансового месяца (соответственно расчет себестоимости) в компании происходит не позднее конца месяца следующего за отчетным. Например, фактическая себестоимость марта появится в 1С:УПП 1 мая.\n\nДля анализа рентабельности ОЕМ-продукции используется отчет «История изменения цен» (2135) с динамикой закупочных цен с учетом логистики.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От УКиОТ (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
+        },
+
+        // ========== БЛОК 4-6: АНАЛИЗ И ВЫЯВЛЕНИЕ ПРОБЛЕМ ==========
+        4: {
+            number: "4",
+            role: "Начальник аналитического отдела",
+            text: "На основании анализа определяет проблемные номенклатурные группы, по которым средняя фактическая рентабельность меньше минимальной.\n\n<b>Критерий возникновения проблемы</b> — значение фактической рентабельности ниже минимально установленной величины.\n\n<b>Логика определения минимальной рентабельности:</b>\n- сложившийся статистически уровень рентабельности;\n- максимально возможные дополнительные скидки;\n- статистика прошлых периодов продаж;\n- понимание рисков потенциального роста цен от ОЕМ-Поставщика;\n- реальный уровень проблемы (допустимо отклонение менее чем на 10% от текущего среднестатистического уровня).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От начальника аналитики (шаг 2)</a>", "⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От начальника аналитики (шаг 3)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>", "→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
+        },
+        5: {
+            number: "5",
+            role: "Начальник аналитического отдела",
+            text: "Рассчитывает прогноз рентабельности исходя из плановой себестоимости. Плановая себестоимость (только для собственного производства) рассчитывается 1 раз в месяц до 15 числа. Ответственный – начальник аналитического отдела.\n\nДля расчета цен МОП используется последняя на дату расчета закупочная цена, что делает ее более актуальной на момент расчета. По сути, это себестоимость будущего периода. Учитывается при согласовании дополнительных скидок и оценки необходимости изменения цен для сохранения рентабельности в будущих периодах.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От начальника аналитики (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
+        },
+        6: {
+            number: "6",
+            role: "Начальник аналитического отдела",
+            text: "Информирует Руководителя направления (РН) о выявленных проблемных номенклатурных группах и предоставляет аналитику по факторам снижения рентабельности.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От начальника аналитики (шаг 4)</a>", "⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От начальника аналитики (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
+        },
+
+        // ========== БЛОК 7-9: РЕАГИРОВАНИЕ РН ==========
+        7: {
+            number: "7",
+            role: "Руководитель направления (РН)",
+            text: "Получает от начальника аналитического отдела информацию о проблемных номенклатурных группах, по которым средняя фактическая рентабельность меньше минимальной.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От начальника аналитики (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
+        },
+        8: {
+            number: "8",
+            role: "Руководитель направления (РН)",
+            text: "Заводит проблему согласно действующим правилам в 1С:ДО. Проблема регистрируется для дальнейшего отслеживания и принятия корректирующих мер.\n\n<b>Выход из процедуры:</b> при необходимости корректировки цен переход к <a href='proc11.html' class='proc-link'>процедуре 11/22 (Ценообразование)</a>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От РН (шаг 7)</a>"],
+            outputs: ["📤 ВЫХОД: Переход к <a href='proc11.html' class='proc-link'>процедуре 11/22</a>"]
+        },
+        9: {
+            number: "9",
+            role: "УКиОТ (Цыбина О.В.)",
+            text: "Рассчитывает фактическую себестоимость продукции. Расчет фактической себестоимости осуществляет УКиОТ.\n\n<b>Определения:</b>\n- <strong>Себестоимость продукта</strong> – сумма всех фактически понесенных затрат на производство единицы готового продукта, всегда без НДС.\n- <strong>Себестоимость продукции собственного производства</strong> = Материалы основного производства (МОП) + производственные расходы + прямая зарплата + амортизация + амортизация НИОКР + общепроизводственные расходы (ОПР).\n- <strong>Себестоимость ОЕМ-продукции</strong> = закупочная стоимость готового продукта + затраты на логистику.\n\nВ качестве расчетной цены на МОП берется средняя закупочная цена остатка сырья и комплектующих/готовой продукции для ОЕМ.",
+            inputs: ["⬅️ Ежемесячный расчет"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3 (передача данных)</a>"]
+        },
+
+        // ========== БЛОК 10-12: СОГЛАСОВАНИЕ НОРМАТИВОВ ==========
+        10: {
+            number: "10",
+            role: "Начальник аналитического отдела",
+            text: "При необходимости внесения изменений в нормативы минимальной рентабельности, участвует в согласовании служебной записки (последовательно с РН и ДПМ).\n\n<b>Основания для пересмотра минимального уровня рентабельности:</b>\n- изменение ценового позиционирования продукта;\n- локализация производства;\n- проведение акций;\n- списание НИОКР.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От РН (шаг 11)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>"]
+        },
+        11: {
+            number: "11",
+            role: "Руководитель направления (РН)",
+            text: "При необходимости изменения нормативов минимальной рентабельности, инициирует служебную записку и согласовывает её с начальником аналитического отдела и Директором по продуктовому маркетингу (последовательно).",
+            inputs: ["⬅️ Инициатива РН"],
+            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>", "→ <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>"]
+        },
+        12: {
+            number: "12",
+            role: "Директор по продуктовому маркетингу",
+            text: "Утверждает изменения нормативов минимальной рентабельности. Нормативы минимальной рентабельности согласовываются РН в 1С:ДО.\n\n<b>Выход из процедуры:</b> нормативы утверждены.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От начальника аналитики (шаг 10)</a>", "⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От РН (шаг 11)</a>"],
+            outputs: ["📤 ВЫХОД: Нормативы утверждены"]
+        }
+    };
+
+    let currentStep = null;
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerHTML = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
+    }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step');
+        });
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                goToStep(stepId);
+            }
+        });
+    });
+</script>
+<script src="ai-core.js"></script>
+<script src="highlight.js"></script>
+</body>
+</html>
