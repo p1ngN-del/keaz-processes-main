@@ -1816,6 +1816,12 @@ async function checkAIServer() {
 
 window.addEventListener('DOMContentLoaded', () => {
     loadProceduresFullData();
+    setTimeout(() => markNewProcedures(), 500);
+    
+    const urlRole = getRoleFromURL();
+    if (urlRole) {
+        filterByRole(urlRole);
+    }
     
     document.querySelectorAll('.proc-card').forEach(card => {
     card.setAttribute('data-original-href', card.getAttribute('href'));
