@@ -837,69 +837,14 @@ function findRelevantProcedures(question, maxResults = 5) {
     };
     // --- АВТОМАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ДЛЯ ВСЕХ СТРАНИЦ ---
     function initAICore() {
-        function tryShowWelcome() {
-            let attempts = 0;
-            const maxAttempts = 20;
-            let autoCloseTimer = null;
-            
-            const showWidget = () => {
-                const widget = document.getElementById('aiWidget');
-                const input = document.getElementById('aiInput');
-                
-                if (widget) {
-                    console.log('🎉 [AI Core] Виджет найден, открываю приветствие...');
-                    AICore.toggleWidget();
-                    
-                    // === ВАЖНО: Отмена автозакрытия при вводе текста ===
-                    if (input) {
-                        const cancelAutoClose = () => {
-                            if (autoCloseTimer) {
-                                clearTimeout(autoCloseTimer);
-                                autoCloseTimer = null;
-                                console.log('👍 [AI Core] Пользователь печатает, автозакрытие отменено');
-                            }
-                            // Удаляем слушатели, чтобы не срабатывали повторно
-                            input.removeEventListener('input', cancelAutoClose);
-                            input.removeEventListener('focus', cancelAutoClose);
-                        };
-                        
-                        input.addEventListener('input', cancelAutoClose);
-                        input.addEventListener('focus', cancelAutoClose);
-                    }
-                    
-                    // Запланировать автозакрытие через 5 секунд (если не отменят)
-                    autoCloseTimer = setTimeout(() => {
-                        const w = document.getElementById('aiWidget');
-                        if (w && w.classList.contains('open')) {
-                            AICore.toggleWidget();
-                            console.log('🔔 [AI Core] Виджет автоматически закрыт');
-                        }
-                        autoCloseTimer = null;
-                    }, 5000);
-                    
-                } else if (attempts < maxAttempts) {
-                    attempts++;
-                    setTimeout(showWidget, 100);
-                } else {
-                    console.warn('⚠️ [AI Core] Виджет не найден после 2 секунд ожидания');
-                }
-            };
-            
-            setTimeout(showWidget, 1000);
-        }
-
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
-                if (window.AICore) {
-                    window.AICore.initButton('h1');
-                    tryShowWelcome();
-                }
+                if (window.AICore) window.AICore.initButton('h1');
+                // БЕЗ АВТООТКРЫТИЯ
             });
         } else {
-            if (window.AICore) {
-                window.AICore.initButton('h1');
-                tryShowWelcome();
-            }
+            if (window.AICore) window.AICore.initButton('h1');
+            // БЕЗ АВТООТКРЫТИЯ
         }
     }
     initAICore();
