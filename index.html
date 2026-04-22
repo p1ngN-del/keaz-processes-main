@@ -258,78 +258,6 @@
 .filter-reset-hint:hover {
     color: #f6b83e;
 }
-
-/* Цветовые индикаторы для разных групп */
-.filter-group[data-group="0"] .filter-group-header { border-left-color: #ef4444; }
-.filter-group[data-group="1"] .filter-group-header { border-left-color: #3b82f6; }
-.filter-group[data-group="2"] .filter-group-header { border-left-color: #22c55e; }
-.filter-group[data-group="3"] .filter-group-header { border-left-color: #f97316; }
-.filter-group[data-group="4"] .filter-group-header { border-left-color: #8b5cf6; }
-.filter-group[data-group="5"] .filter-group-header { border-left-color: #06b6d4; }
-.filter-group[data-group="6"] .filter-group-header { border-left-color: #ec4899; }
-.filter-group[data-group="7"] .filter-group-header { border-left-color: #14b8a6; }
-.filter-group[data-group="8"] .filter-group-header { border-left-color: #f59e0b; }
-.filter-group[data-group="9"] .filter-group-header { border-left-color: #6366f1; }
-.filter-group[data-group="10"] .filter-group-header { border-left-color: #10b981; }
-
-/* Уровень 3: Список ролей внутри группы */
-.filter-group-items {
-    display: none;
-    flex-direction: column;
-    gap: 2px;
-    padding: 8px 6px;
-    background: white;
-    max-height: 200px;
-    overflow-y: auto;
-}
-.filter-group-items.show {
-    display: flex;
-}
-
-.filter-group-items .filter-item {
-    width: 100%;
-    text-align: left;
-    white-space: normal;
-    font-size: 0.7rem;
-    padding: 6px 10px;
-    border-radius: 8px;
-    background: #fafbfc;
-    border: 1px solid #e2e8f0;
-    transition: all 0.2s;
-    cursor: pointer;
-    border-left: 3px solid transparent;
-}
-.filter-group-items .filter-item:hover {
-    background: #fef3e6;
-    border-color: #f6b83e;
-    transform: translateX(2px);
-}
-.filter-group-items .filter-item.active {
-    background: #f6b83e;
-    border-color: #f6b83e;
-    color: #0a1929;
-    font-weight: 600;
-    border-left-color: #0a1929;
-}
-
-/* Индикатор сброса фильтра */
-.filter-reset-hint {
-    text-align: center;
-    font-size: 0.65rem;
-    color: #94a3b8;
-    margin-top: 8px;
-    padding: 4px;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-.filter-reset-hint:hover {
-    color: #f6b83e;
-}
-/* Ограничиваем высоту группы и добавляем прокрутку если нужно */
-.filter-group-items {
-    max-height: 200px;
-    overflow-y: auto;
-}
         .filter-all:hover {
             background: #1e2f47;
         }
@@ -1619,7 +1547,14 @@ const roleNames = {
 
 // Функция для генерации HTML фильтров с группировкой (3 уровня)
 function generateRoleFilters() {
-    let html = `<div class="filter-all active" data-role="all" onclick="filterByRole('all')">👥 Все роли</div>`;
+    let html = `
+        <div class="filter-all active" data-role="all" onclick="filterByRole('all'); toggleAllGroups(this)">
+            <span>👥 Все роли</span>
+            <span class="toggle-arrow">▼</span>
+        </div>
+    `;
+    
+    html += `<div class="groups-container" id="groupsContainer">`;
     
     let groupIndex = 0;
     for (const [groupName, roles] of Object.entries(roleGroups)) {
@@ -1647,13 +1582,24 @@ function generateRoleFilters() {
         groupIndex++;
     }
     
+    html += `</div>`; // закрытие groups-container
+    
     // Добавляем подсказку для сброса фильтра
     html += `<div class="filter-reset-hint" onclick="filterByRole('all')">🔄 Сбросить фильтр ролей</div>`;
     
     return html;
 }
 
-// Функция для переключения группы (открыть/закрыть)
+// Функция для переключения всех групп (открыть/закрыть контейнер с группами)
+function toggleAllGroups(headerElement) {
+    const container = document.getElementById('groupsContainer');
+    if (container) {
+        container.classList.toggle('show');
+        headerElement.classList.toggle('open');
+    }
+}
+
+// Функция для переключения отдельной группы (открыть/закрыть)
 function toggleGroup(groupId, headerElement) {
     const groupItems = document.getElementById(groupId);
     if (groupItems) {
@@ -1843,12 +1789,13 @@ function renderRoleFilters() {
     
     // Подсвечиваем выбранный фильтр
     if (role === 'all') {
-        document.querySelector('.filter-all').classList.add('active');
+        const allBtn = document.querySelector('.filter-all');
+        if (allBtn) allBtn.classList.add('active');
     } else {
         const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
         if (activeFilter) {
             activeFilter.classList.add('active');
-            // Находим родительскую группу и подсвечиваем её (опционально)
+            // Находим родительскую группу и подсвечиваем её
             const parentGroup = activeFilter.closest('.filter-group');
             if (parentGroup) {
                 const header = parentGroup.querySelector('.filter-group-header');
