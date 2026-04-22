@@ -1548,11 +1548,12 @@ function renderRoleFilters() {
         expandableContainer.style.display = 'none';
     }
     
-    // Скрываем кнопку "Показать все роли"
-    const toggleBtn = document.getElementById('toggleBtn');
-    if (toggleBtn) {
-        toggleBtn.style.display = 'none';
-    }
+    // Кнопку "Показать все роли" больше не скрываем - она будет работать как обычно
+    // (строка ниже закомментирована, чтобы кнопка осталась видимой)
+    // const toggleBtn = document.getElementById('toggleBtn');
+    // if (toggleBtn) {
+    //     toggleBtn.style.display = 'none';
+    // }
 }
     function findRelevantProcedures(question, maxResults = 5) {
     if (!proceduresFullData || proceduresFullData.length === 0) {
