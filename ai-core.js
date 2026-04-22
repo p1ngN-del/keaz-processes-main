@@ -400,6 +400,30 @@ function findRelevantProcedures(question, maxResults = 5) {
             .ai-core-btn {
                 margin-left: 12px;
             }
+            /* Эффект привлечения внимания при первой загрузке */
+            @keyframes attentionFlash {
+                0%, 100% { 
+                    box-shadow: 0 4px 12px rgba(246, 184, 62, 0.3); 
+                    transform: scale(1);
+                }
+                15% { 
+                    box-shadow: 0 0 0 8px rgba(246, 184, 62, 0.4), 0 8px 24px rgba(246, 184, 62, 0.5); 
+                    transform: scale(1.1);
+                    background: linear-gradient(135deg, #ff8c00, #f6b83e);
+                    border-color: white;
+                }
+                30% { 
+                    box-shadow: 0 0 0 12px rgba(246, 184, 62, 0.2), 0 8px 24px rgba(246, 184, 62, 0.3); 
+                    transform: scale(1.05);
+                }
+                50% { 
+                    box-shadow: 0 0 0 15px rgba(246, 184, 62, 0); 
+                }
+            }
+            
+            .ai-search-btn.attention-flash {
+                animation: attentionFlash 1.8s ease-out 1 !important;
+            }
         `;
         document.head.appendChild(style);
     }
@@ -653,45 +677,68 @@ function findRelevantProcedures(question, maxResults = 5) {
     // --- Экспортируемый объект API ---
     window.AICore = {
         initButton: function(containerSelector = 'h1') {
-    if (document.querySelector('.ai-core-btn')) return;
-    
-    const container = document.querySelector(containerSelector);
-    if (!container) {
-        console.warn(`[AI Core] Контейнер "${containerSelector}" не найден.`);
-        return;
-    }
-    
-    const btn = document.createElement('button');
-    btn.className = 'ai-search-btn ai-core-btn';
-    
-    // === НАЧАЛО: Новый дизайн кнопки (Вариант 4) ===
-    btn.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 10px rgba(246, 184, 62, 0.3);">🤖</span>
-            <div style="text-align: left;">
-                <div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div>
-                <div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Задайте вопрос о процедурах</div>
-            </div>
-        </div>
-    `;
-    btn.style.padding = '10px 20px 10px 16px';
-    btn.style.background = 'white';
-    btn.style.border = '2px solid #f6b83e';
-    btn.style.boxShadow = '0 6px 16px rgba(246, 184, 62, 0.25)';
-    btn.style.animation = 'softPulse 2.5s infinite'; // Оставляем анимацию
-    btn.onclick = () => AICore.toggleWidget();
-    // === КОНЕЦ: Новый дизайн кнопки ===
-    
-    container.style.display = 'flex';
-    container.style.alignItems = 'center';
-    container.style.justifyContent = 'center';
-    container.style.gap = '12px';
-    container.appendChild(btn);
-    
-    injectStyles();
-    createWidget();
-    loadProceduresFullData();
-},
+            if (document.querySelector('.ai-core-btn')) return;
+            
+            const container = document.querySelector(containerSelector);
+            if (!container) {
+                console.warn(`[AI Core] Контейнер "${containerSelector}" не найден.`);
+                return;
+            }
+            
+            const btn = document.createElement('button');
+            btn.className = 'ai-search-btn ai-core-btn';
+            btn.classList.add('attention-flash'); // <-- ВАРИАНТ 4: ВСПЫШКА ПРИ ЗАГРУЗКЕ
+            
+            // === НАЧАЛО: Новый дизайн кнопки ===
+            btn.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 10px rgba(246, 184, 62, 0.3);">🤖</span>
+                    <div style="text-align: left;">
+                        <div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div>
+                        <div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Задайте вопрос о процедурах</div>
+                    </div>
+                </div>
+            `;
+            btn.style.padding = '10px 20px 10px 16px';
+            btn.style.background = 'white';
+            btn.style.border = '2px solid #f6b83e';
+            btn.style.boxShadow = '0 6px 16px rgba(246, 184, 62, 0.25)';
+            btn.style.position = 'relative'; // <-- ВАЖНО ДЛЯ БЕЙДЖИКА
+            btn.onclick = () => AICore.toggleWidget();
+            // === КОНЕЦ: Новый дизайн кнопки ===
+            
+            // === ВАРИАНТ 1: КРАСНЫЙ БЕЙДЖИК "1" ===
+            const badge = document.createElement('span');
+            badge.style.cssText = `
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: #ef4444;
+                color: white;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 700;
+                animation: pulse 1.5s infinite;
+            `;
+            badge.textContent = '1';
+            btn.appendChild(badge);
+            // === КОНЕЦ ВАРИАНТА 1 ===
+            
+            container.style.display = 'flex';
+            container.style.alignItems = 'center';
+            container.style.justifyContent = 'center';
+            container.style.gap = '12px';
+            container.appendChild(btn);
+            
+            injectStyles();
+            createWidget();
+            loadProceduresFullData();
+        },
 
         toggleWidget: function() {
             let widget = document.getElementById('aiWidget');
