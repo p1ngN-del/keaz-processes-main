@@ -388,6 +388,10 @@
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
         // Добавляем функционал перетаскивания и изменения размера
+// ============================================
+// ПЕРЕТАСКИВАНИЕ И ИЗМЕНЕНИЕ РАЗМЕРА ВИДЖЕТА
+// ============================================
+
 function makeWidgetDraggableAndResizable(widgetElement) {
     let isDragging = false;
     let dragOffsetX = 0, dragOffsetY = 0;
@@ -452,7 +456,6 @@ function makeWidgetDraggableAndResizable(widgetElement) {
         let newLeft = e.clientX - dragOffsetX;
         let newTop = e.clientY - dragOffsetY;
         
-        // Границы экрана
         newLeft = Math.max(0, Math.min(window.innerWidth - widgetElement.offsetWidth, newLeft));
         newTop = Math.max(0, Math.min(window.innerHeight - widgetElement.offsetHeight, newTop));
         
