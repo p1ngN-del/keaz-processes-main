@@ -348,47 +348,90 @@
 
     // Создание HTML-виджета
     function createWidget() {
-        const oldWidget = document.getElementById('aiWidget');
-        if (oldWidget) oldWidget.remove();
+    const oldWidget = document.getElementById('aiWidget');
+    if (oldWidget) oldWidget.remove();
 
-        injectStyles();
+    injectStyles();
 
-        const widgetHTML = `
-            <div class="ai-widget ai-widget-hidden" id="aiWidget">
-                <div class="ai-header">
-                    <span class="ai-icon">🤖</span>
-                    <span class="ai-title">AI · Ассистент КЭАЗ</span>
-                    <button class="ai-close" onclick="AICore.toggleWidget()">✕</button>
-                </div>
-                <div class="ai-messages" id="aiMessages">
-                    <div class="ai-message ai-message-bot">
-                        👋 <strong>Здравствуйте! Я AI-ассистент КЭАЗ.</strong><br><br>
-                        <strong>🤖 Что я умею:</strong><br>
-                        🔹 <strong>Искать процедуры</strong> — просто опишите задачу (например, «вывод продукта из ассортимента»).<br>
-                        🔹 <strong>Объяснять процессы</strong> — расскажу, какие шаги и роли задействованы.<br>
-                        🔹 <strong>Подсказывать ответственных</strong> — кто что делает в каждой процедуре.<br><br>
-                        <strong>📋 Примеры запросов:</strong><br>
-                        • «Как ввести новую номенклатуру?»<br>
-                        • «Кто отвечает за ценообразование?»<br>
-                        • «Что такое процедура 4н?»<br>
-                        • «Как найти поставщика?»<br>
-                        • «Как списать ТМЦ?»<br><br>
-                        <em>👇 Введите ваш вопрос ниже.</em>
-                    </div>
-                </div>
-                <div class="ai-input-row">
-                    <input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)">
-                    <button class="ai-send" id="aiSendBtn" onclick="AICore.sendMessage()">➤</button>
+    const widgetHTML = `
+        <div class="ai-widget ai-widget-hidden" id="aiWidget" style="position: fixed; left: 24px; top: 50%; transform: translateY(-50%);">
+            <div class="ai-header" style="cursor: move;">
+                <span class="ai-icon">🤖</span>
+                <span class="ai-title">AI · Ассистент КЭАЗ</span>
+                <button class="ai-close" onclick="AICore.toggleWidget()">✕</button>
+            </div>
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-message ai-message-bot">
+                    👋 <strong>Здравствуйте! Я AI-ассистент КЭАЗ.</strong><br><br>
+                    <strong>🤖 Что я умею:</strong><br>
+                    🔹 <strong>Искать процедуры</strong> — просто опишите задачу (например, «вывод продукта из ассортимента»).<br>
+                    🔹 <strong>Объяснять процессы</strong> — расскажу, какие шаги и роли задействованы.<br>
+                    🔹 <strong>Подсказывать ответственных</strong> — кто что делает в каждой процедуре.<br><br>
+                    <strong>📋 Примеры запросов:</strong><br>
+                    • «Как ввести новую номенклатуру?»<br>
+                    • «Кто отвечает за ценообразование?»<br>
+                    • «Что такое процедура 4н?»<br>
+                    • «Как найти поставщика?»<br>
+                    • «Как списать ТМЦ?»<br><br>
+                    <em>👇 Введите ваш вопрос ниже.</em>
                 </div>
             </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', widgetHTML);
-        
-        const widget = document.getElementById('aiWidget');
-        if (widget) {
-            makeWidgetDraggableAndResizable(widget);
-        }
+            <div class="ai-input-row">
+                <input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)">
+                <button class="ai-send" id="aiSendBtn" onclick="AICore.sendMessage()">➤</button>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', widgetHTML);
+    
+    // ========== ПЕРЕТАСКИВАНИЕ ==========
+    const widget = document.getElementById('aiWidget');
+    const header = widget.querySelector('.ai-header');
+    let isDragging = false;
+    let offsetX, offsetY;
+    
+    // Восстанавливаем позицию
+    const savedLeft = localStorage.getItem('aiWidgetLeft');
+    const savedTop = localStorage.getItem('aiWidgetTop');
+    if (savedLeft && savedTop) {
+        widget.style.left = savedLeft;
+        widget.style.top = savedTop;
+        widget.style.transform = 'none';
     }
+    
+    header.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.ai-close')) return;
+        isDragging = true;
+        const rect = widget.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        widget.style.position = 'fixed';
+        document.body.style.userSelect = 'none';
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let left = e.clientX - offsetX;
+        let top = e.clientY - offsetY;
+        
+        left = Math.max(0, Math.min(window.innerWidth - widget.offsetWidth, left));
+        top = Math.max(0, Math.min(window.innerHeight - widget.offsetHeight, top));
+        
+        widget.style.left = `${left}px`;
+        widget.style.top = `${top}px`;
+        widget.style.transform = 'none';
+    });
+    
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.style.userSelect = '';
+            localStorage.setItem('aiWidgetLeft', widget.style.left);
+            localStorage.setItem('aiWidgetTop', widget.style.top);
+        }
+    });
+    // ====================================
+}
 
     // ============================================
     // ПЕРЕТАСКИВАНИЕ И ИЗМЕНЕНИЕ РАЗМЕРА ВИДЖЕТА
