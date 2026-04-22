@@ -101,7 +101,7 @@
             margin-top: 8px;
         }
 
-       /* ============================================ */
+      /* ============================================ */
 /* НОВАЯ СИСТЕМА ФИЛЬТРОВ РОЛЕЙ (3 УРОВНЯ)      */
 /* ============================================ */
 
@@ -121,28 +121,49 @@
     border-radius: 40px;
     font-weight: 600;
     font-size: 0.9rem;
-    margin-bottom: 8px;
     cursor: pointer;
     transition: all 0.2s;
     border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .filter-all:hover {
     background: #1e2f47;
-    transform: scale(1.01);
 }
 .filter-all.active {
     background: #f6b83e;
     color: #0a1929;
     border-color: #f6b83e;
 }
+.filter-all .toggle-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+}
+.filter-all.open .toggle-arrow {
+    transform: rotate(180deg);
+}
 
-/* Уровень 2: Группы ролей (категории) */
+/* Контейнер для групп (скрыт по умолчанию) */
+.groups-container {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+.groups-container.show {
+    display: flex;
+}
+
+/* Уровень 2: Группы ролей (категории) - ДВЕ КОЛОНКИ */
 .filter-group {
+    flex: 0 0 calc(50% - 6px);
     background: white;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
     overflow: hidden;
-    margin-bottom: 6px;
+    align-self: flex-start;
 }
 
 .filter-group-header {
@@ -160,7 +181,6 @@
 }
 .filter-group-header:hover {
     background: #fef3e6;
-    border-left-color: #f6b83e;
 }
 .filter-group-header .group-toggle {
     font-size: 0.7rem;
@@ -169,6 +189,74 @@
 }
 .filter-group-header.open .group-toggle {
     transform: rotate(180deg);
+}
+
+/* Цветовые индикаторы для разных групп */
+.filter-group[data-group="0"] .filter-group-header { border-left-color: #ef4444; }
+.filter-group[data-group="1"] .filter-group-header { border-left-color: #3b82f6; }
+.filter-group[data-group="2"] .filter-group-header { border-left-color: #22c55e; }
+.filter-group[data-group="3"] .filter-group-header { border-left-color: #f97316; }
+.filter-group[data-group="4"] .filter-group-header { border-left-color: #8b5cf6; }
+.filter-group[data-group="5"] .filter-group-header { border-left-color: #06b6d4; }
+.filter-group[data-group="6"] .filter-group-header { border-left-color: #ec4899; }
+.filter-group[data-group="7"] .filter-group-header { border-left-color: #14b8a6; }
+.filter-group[data-group="8"] .filter-group-header { border-left-color: #f59e0b; }
+.filter-group[data-group="9"] .filter-group-header { border-left-color: #6366f1; }
+.filter-group[data-group="10"] .filter-group-header { border-left-color: #10b981; }
+
+/* Уровень 3: Список ролей внутри группы */
+.filter-group-items {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 6px;
+    background: white;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.filter-group-items.show {
+    display: flex;
+}
+
+.filter-group-items .filter-item {
+    width: 100%;
+    text-align: left;
+    white-space: normal;
+    font-size: 0.7rem;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #fafbfc;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+}
+.filter-group-items .filter-item:hover {
+    background: #fef3e6;
+    border-color: #f6b83e;
+    transform: translateX(2px);
+}
+.filter-group-items .filter-item.active {
+    background: #f6b83e;
+    border-color: #f6b83e;
+    color: #0a1929;
+    font-weight: 600;
+    border-left-color: #0a1929;
+}
+
+/* Индикатор сброса фильтра */
+.filter-reset-hint {
+    text-align: center;
+    font-size: 0.65rem;
+    color: #94a3b8;
+    margin-top: 8px;
+    padding: 4px;
+    cursor: pointer;
+    transition: color 0.2s;
+    width: 100%;
+}
+.filter-reset-hint:hover {
+    color: #f6b83e;
 }
 
 /* Цветовые индикаторы для разных групп */
