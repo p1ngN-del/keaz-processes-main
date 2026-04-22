@@ -727,6 +727,13 @@ function findRelevantProcedures(question, maxResults = 5) {
             `;
             badge.textContent = '1';
             btn.appendChild(badge);
+            // Убираем бейджик при первом клике на кнопку
+btn.addEventListener('click', function removeBadge() {
+    if (badge && badge.parentElement) {
+        badge.remove();
+    }
+    btn.removeEventListener('click', removeBadge);
+}, { once: true });
             // === КОНЕЦ ВАРИАНТА 1 ===
             
             container.style.display = 'flex';
