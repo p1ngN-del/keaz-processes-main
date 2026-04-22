@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Инструкция 32</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid #f6b83e;
+            border: 1px solid #dce3f0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            scroll-margin-top: 20px;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.8rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #0f1a38;
+        }
+
+        .step-role {
+            display: inline-block;
+            background: #f6b83e20;
+            color: #f6b83e;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Инструкция 32: Подготовка/корректировка глав каталога ПП КЭАЗ и ПП KEAZ-Optima</h1>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию</div>
+
+    <div class="steps-list">
+        <div class="step-card" data-step="1" onclick="goToStep(1)">
+            <div class="step-num">Шаг 1</div>
+            <div class="step-title">Разработка ТЗ</div>
+            <div class="step-role">👤 Продукт-менеджер / Начальник отдела продуктового направления</div>
+            <div>Разрабатывает ТЗ в формате WORD для разработки/корректировки главы каталога согласно шаблону. Фото размещаются в формате *tiff или *jpeg на Stor. Чертежи и рисунки в векторном формате. Таблицы в отдельном файле EXCEL.</div>
+        </div>
+
+        <div class="step-card" data-step="2" onclick="goToStep(2)">
+            <div class="step-num">Шаг 2</div>
+            <div class="step-title">Согласование ТЗ</div>
+            <div class="step-role">👤 Продукт-менеджер / Начальник отдела продуктового направления</div>
+            <div>Формирует в 1С:ДО служебную записку, прикладывает ТЗ и направляет на согласование руководителю и Начальнику управления рекламы.</div>
+        </div>
+
+        <div class="step-card" data-step="3" onclick="goToStep(3)">
+            <div class="step-num">Шаг 3</div>
+            <div class="step-title">Приемка и публикация</div>
+            <div class="step-role">👤 Продукт-менеджер / Начальник отдела продуктового направления</div>
+            <div>Проводит приемку итогового документа и направляет Начальнику управления интернет-продвижения для обновления на сайте keaz.ru.</div>
+        </div>
+
+        <div class="step-card" data-step="4" onclick="goToStep(4)">
+            <div class="step-num">Шаг 4</div>
+            <div class="step-title">Проверка</div>
+            <div class="step-role">👤 Продукт-менеджер / Начальник отдела продуктового направления</div>
+            <div>Проверяет корректную привязку документа на сайте, завершает задачу.</div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Продукт-менеджер / Начальник отдела продуктового направления",
+            text: "Разрабатывает ТЗ в формате WORD для разработки/корректировки главы каталога:\n- для группы ПРОДУКТОВ ПП КЭАЗ согласно Шаблону ТЗ для разработки глав каталога ПП КЭАЗ,\n- для группы ПРОДУКТОВ ПП KEAZ-Optima согласно Шаблону ТЗ для разработки глав каталога ПП KEAZ-Optima.\n\nВ ТЗ корректируются желтые поля и заполняется описание всех необходимых разделов главы каталога, с указанием наименования фото, таблиц, чертежей, рисунков и места их размещения.\n\nФото размещаются в формате *tiff или *jpeg на Stor. Чертежи и рисунки в векторном формате. Таблицы в отдельном файле EXCEL.\n\nПри внесении изменений в уже имеющуюся главу допускается использовать из ТЗ только те разделы, которые требуется корректировать.",
+            inputs: ["⬅️ <a href='proc4.html' class='proc-link'>Процедура 4 (Ввод номенклатуры)</a>", "⬅️ <a href='proc15.html' class='proc-link'>Процедура 15 (Обработка ТЗ на дизайнерскую ЭД)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='proc-link'>Шаг 2</a>"]
+        },
+        2: {
+            number: "2",
+            role: "Продукт-менеджер / Начальник отдела продуктового направления",
+            text: "Формирует в 1С:ДО служебную записку с наименованием «Разработка (Корректировка) главы каталога ПП КЭАЗ (ПП KEAZ Optima) «наименование группы и серии ПРОДУКТА», прикладывает разработанное ТЗ и направляет, согласно действующих процедур работы в 1С:ДО, на согласование последовательно своему непосредственному руководителю и Начальнику управления рекламы. После согласования ТЗ и сроков исполнения служебная записка направляется на исполнение Начальнику управления рекламы.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='proc-link'>Шаг 1</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='proc-link'>Шаг 3</a>"]
+        },
+        3: {
+            number: "3",
+            role: "Продукт-менеджер / Начальник отдела продуктового направления",
+            text: "По результатам исполнения проводит приемку итогового документа и направляет по электронной почте Начальнику управления интернет-продвижения и WEB-разработок для обновления на сайте keaz.ru действующего документа (при внесении корректировок в действующую главу), при добавлении новой главы указывается номенклатура и группа номенклатур на сайте keaz.ru, к которой необходимо прикрепить данный документ.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='proc-link'>Шаг 2</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='proc-link'>Шаг 4</a>", "→ <a href='proc13.html' class='proc-link'>Процедура 13 (Наполнение контентом)</a>", "→ <a href='proc20.html' class='proc-link'>Процедура 20 (Подготовка к старту продаж)</a>"]
+        },
+        4: {
+            number: "4",
+            role: "Продукт-менеджер / Начальник отдела продуктового направления",
+            text: "Проводит проверку корректной привязки нового документа на сайте keaz.ru, при корректном выполнении завершает свою задачу.\n\nПри корректировке имеющейся главы каталога допускается вносить правки путем добавления комментариев в существующий файл главы каталога формата *pdf.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='proc-link'>Шаг 3</a>"],
+            outputs: ["📤 ВЫХОД: Процедура завершена"]
+        }
+    };
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        
+        const data = stepData[stepId];
+        if (!data) return;
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerHTML = data.text;
+        
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step');
+        });
+        const activeCard = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (activeCard) activeCard.classList.add('active-step');
+    }
+
+    function goToStep(stepId) {
+        showDetail(stepId);
+    }
+
+    // Подсветка шагов при клике
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) goToStep(stepId);
+        });
+    });
+</script>
+<script src="ai-core.js"></script>
+<script src="highlight.js"></script>
+</body>
+</html>
