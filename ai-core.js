@@ -590,6 +590,7 @@
     }
 
     // --- Экспортируемый объект API ---
+    // --- Экспортируемый объект API ---
     window.AICore = {
         initButton: function(containerSelector = 'h1') {
             if (document.querySelector('.ai-core-btn')) return;
@@ -759,5 +760,18 @@
             btn.disabled = false;
         }
     };
+    // --- АВТОМАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ ДЛЯ ВСЕХ СТРАНИЦ ---
+    // Эта функция будет ждать загрузки DOM и затем создаст кнопку
+    function initAICore() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (window.AICore) window.AICore.initButton('h1');
+            });
+        } else {
+            if (window.AICore) window.AICore.initButton('h1');
+        }
+    }
+    initAICore();
+})();
 
 })();
