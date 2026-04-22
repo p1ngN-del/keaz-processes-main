@@ -312,20 +312,3 @@ if (!searchTerm) {
         }
     }, 100);
 })();
-
-// ============================================
-// 5. ИНИЦИАЛИЗАЦИЯ AI-АССИСТЕНТА (ИСПРАВЛЕНА)
-// ============================================
-if (!window.location.pathname.includes('index')) {
-    (function() {
-        function waitForAICore() {
-            if (window.AICore) {
-                // Просто вызываем инициализацию кнопки, виджет создастся сам, но будет скрыт
-                window.AICore.initButton('h1');
-            } else {
-                setTimeout(waitForAICore, 100);
-            }
-        }
-        waitForAICore();
-    })();
-}
