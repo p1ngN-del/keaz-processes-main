@@ -1816,16 +1816,36 @@ async function checkAIServer() {
 // ============================================
 
 window.addEventListener('DOMContentLoaded', () => {
-    loadProceduresFullData();
-    setTimeout(() => markNewProcedures(), 500);
+    // Загружаем полные данные процедур для AI и для метки NEW
+    loadProceduresFullData().then(() => {
+        // Вызываем разметку новых процедур ТОЛЬКО ПОСЛЕ загрузки данных
+        markNewProcedures();
+    });
     
+    // Отрисовываем фильтры после подготовки карточек
+    renderRoleFilters();
+    
+    // Загружаем данные для поиска
+    loadProceduresData();
+    
+    // Проверяем роль из URL
     const urlRole = getRoleFromURL();
     if (urlRole) {
         filterByRole(urlRole);
     }
     
-    document.querySelectorAll('.proc-card').forEach(card => {
-    card.setAttribute('data-original-href', card.getAttribute('href'));
+    // Восстанавливаем поиск из cookie
+    const searchTermFromCookie = getCookie('searchTerm');
+    if (searchTermFromCookie) {
+        document.getElementById('searchInput').value = searchTermFromCookie;
+        applySearch(); // применяем поиск, чтобы подсветить результаты
+    }
+    
+    // Проверяем доступность AI-сервера
+    checkAIServer();
+    
+    // ===== AI-ассистент: кнопка уже есть в HTML, инициализацию делает ai-core.js =====
+    // Никакой дополнительной привязки здесь не требуется, AICore сам найдёт h1 и добавит кнопку
 });
 
 // Отрисовываем фильтры после подготовки карточек
