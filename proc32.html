@@ -77,17 +77,92 @@
             margin-bottom: 25px;
         }
 
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1000px;
+        }
+
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
         .step-card {
             background: white;
             border-radius: 16px;
-            padding: 12px 15px;
-            margin-bottom: 12px;
+            padding: 12px 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-left: 6px solid #f6b83e;
+            border-left: 6px solid;
             border: 1px solid #dce3f0;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: 0.2s;
+            width: 100%;
+            text-align: left;
             scroll-margin-top: 20px;
         }
         .step-card:hover {
@@ -104,29 +179,52 @@
         .step-num {
             font-weight: 800;
             color: #4a5a7a;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             background: #eef2fa;
             display: inline-block;
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 20px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .step-title {
             font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 8px;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
             color: #0f1a38;
         }
 
-        .step-role {
-            display: inline-block;
-            background: #f6b83e20;
-            color: #f6b83e;
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 20px;
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
             margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
         }
 
         .detail-panel {
@@ -172,6 +270,48 @@
             margin-bottom: 25px;
             white-space: pre-line;
         }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
+        }
 
         .back-to-top {
             position: fixed;
@@ -190,48 +330,122 @@
             border: none;
             z-index: 1000;
         }
+
+        .role-pm { border-left-color: #1e90ff; }
+        .role-nopn { border-left-color: #8a2be2; }
+        .role-advertising { border-left-color: #4682b4; }
+        .role-web { border-left-color: #2e8b57; }
     </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
     
-    <h1>Инструкция 32: Подготовка/корректировка глав каталога ПП КЭАЗ и ПП KEAZ-Optima</h1>
-    <div class="subhead">Нажми на шаг — перейдешь к описанию</div>
+    <h1>ИНСТРУКЦИЯ 32: Подготовка/корректировка глав каталога ПП КЭАЗ и ПП KEAZ-Optima</h1>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
 
-    <div class="steps-list">
-        <div class="step-card" data-step="1" onclick="goToStep(1)">
-            <div class="step-num">Шаг 1</div>
-            <div class="step-title">Разработка ТЗ</div>
-            <div class="step-role">👤 Продукт-менеджер / Начальник отдела продуктового направления</div>
-            <div>Разрабатывает ТЗ в формате WORD для разработки/корректировки главы каталога согласно шаблону. Фото размещаются в формате *tiff или *jpeg на Stor. Чертежи и рисунки в векторном формате. Таблицы в отдельном файле EXCEL.</div>
-        </div>
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <div class="step-header">
+                <div class="step-header-cell">1-2</div>
+                <div class="step-header-cell">3-4</div>
+                <div class="step-header-cell">5-6</div>
+            </div>
 
-        <div class="step-card" data-step="2" onclick="goToStep(2)">
-            <div class="step-num">Шаг 2</div>
-            <div class="step-title">Согласование ТЗ</div>
-            <div class="step-role">👤 Продукт-менеджер / Начальник отдела продуктового направления</div>
-            <div>Формирует в 1С:ДО служебную записку, прикладывает ТЗ и направляет на согласование руководителю и Начальнику управления рекламы.</div>
-        </div>
+            <!-- Дорожка 1: Продукт-менеджер / НОПН -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Продукт-менеджер<br>Начальник ОПН</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="1" onclick="goToStep(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Разработка ТЗ</div>
+                            <div class="step-preview">Разрабатывает ТЗ в WORD согласно шаблону, готовит фото, чертежи, таблицы...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Направление на исполнение</div>
+                            <div class="step-preview">После согласования направляет СЗ на исполнение Начальнику управления рекламы...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-pm" data-step="5" onclick="goToStep(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Приемка документа</div>
+                            <div class="step-preview">Проводит приемку итогового документа...</div>
+                        </div>
+                        <div class="step-card role-pm" data-step="6" onclick="goToStep(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Проверка привязки</div>
+                            <div class="step-preview">Проверяет корректную привязку документа на сайте...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="step-card" data-step="3" onclick="goToStep(3)">
-            <div class="step-num">Шаг 3</div>
-            <div class="step-title">Приемка и публикация</div>
-            <div class="step-role">👤 Продукт-менеджер / Начальник отдела продуктового направления</div>
-            <div>Проводит приемку итогового документа и направляет Начальнику управления интернет-продвижения для обновления на сайте keaz.ru.</div>
-        </div>
+            <!-- Дорожка 2: Руководитель (непосредственный) -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Непосредственный руководитель</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-nopn" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Согласование ТЗ</div>
+                            <div class="step-preview">Согласовывает ТЗ, при необходимости возвращает на доработку...</div>
+                            <span class="step-badge badge-branch">🔀 ветвление</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
 
-        <div class="step-card" data-step="4" onclick="goToStep(4)">
-            <div class="step-num">Шаг 4</div>
-            <div class="step-title">Проверка</div>
-            <div class="step-role">👤 Продукт-менеджер / Начальник отдела продуктового направления</div>
-            <div>Проверяет корректную привязку документа на сайте, завершает задачу.</div>
+            <!-- Дорожка 3: Начальник управления рекламы -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Начальник управления рекламы</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-advertising" data-step="4" onclick="goToStep(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Согласование и исполнение</div>
+                            <div class="step-preview">Согласовывает ТЗ, после чего СЗ направляется на исполнение...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Начальник управления интернет-продвижения -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник управления<br>интернет-продвижения</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-web" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Публикация на сайте</div>
+                            <div class="step-preview">Обновляет документ на сайте keaz.ru...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Детальная панель -->
     <div id="detailPanel" class="detail-panel">
         <div id="detailHeader" class="detail-header"></div>
         <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
     </div>
 
     <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
@@ -242,40 +456,69 @@
         1: {
             number: "1",
             role: "Продукт-менеджер / Начальник отдела продуктового направления",
-            text: "Разрабатывает ТЗ в формате WORD для разработки/корректировки главы каталога:\n- для группы ПРОДУКТОВ ПП КЭАЗ согласно Шаблону ТЗ для разработки глав каталога ПП КЭАЗ,\n- для группы ПРОДУКТОВ ПП KEAZ-Optima согласно Шаблону ТЗ для разработки глав каталога ПП KEAZ-Optima.\n\nВ ТЗ корректируются желтые поля и заполняется описание всех необходимых разделов главы каталога, с указанием наименования фото, таблиц, чертежей, рисунков и места их размещения.\n\nФото размещаются в формате *tiff или *jpeg на Stor. Чертежи и рисунки в векторном формате. Таблицы в отдельном файле EXCEL.\n\nПри внесении изменений в уже имеющуюся главу допускается использовать из ТЗ только те разделы, которые требуется корректировать.",
-            inputs: ["⬅️ <a href='proc4.html' class='proc-link'>Процедура 4 (Ввод номенклатуры)</a>", "⬅️ <a href='proc15.html' class='proc-link'>Процедура 15 (Обработка ТЗ на дизайнерскую ЭД)</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='proc-link'>Шаг 2</a>"]
+            text: "Разрабатывает ТЗ в формате WORD для разработки/корректировки главы каталога:\n- для группы ПРОДУКТОВ ПП КЭАЗ согласно Шаблону ТЗ для разработки глав каталога ПП КЭАЗ,\n- для группы ПРОДУКТОВ ПП KEAZ-Optima согласно Шаблону ТЗ для разработки глав каталога ПП KEAZ-Optima.\n\nВ ТЗ корректируются желтые поля и заполняется описание всех необходимых разделов главы каталога, с указанием наименования фото, таблиц, чертежей, рисунков и места их размещения.\n\nФото размещаются в формате *tiff или *jpeg на Stor. Чертежи и рисунки в векторном формате. Таблицы в отдельном файле EXCEL.\n\nПри внесении изменений в уже имеющуюся главу допускается использовать из ТЗ только те разделы, которые требуется корректировать.\n\n<b>Вход в процедуру:</b> результаты процедур <a href='proc4.html' class='proc-link'>4 (Ввод номенклатуры)</a> и <a href='proc15.html' class='proc-link'>15 (Обработка ТЗ на дизайнерскую ЭД)</a>.",
+            inputs: ["⬅️ <a href='proc4.html' class='proc-link'>Процедура 4</a>", "⬅️ <a href='proc15.html' class='proc-link'>Процедура 15</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2 (на согласование)</a>"]
         },
         2: {
             number: "2",
-            role: "Продукт-менеджер / Начальник отдела продуктового направления",
-            text: "Формирует в 1С:ДО служебную записку с наименованием «Разработка (Корректировка) главы каталога ПП КЭАЗ (ПП KEAZ Optima) «наименование группы и серии ПРОДУКТА», прикладывает разработанное ТЗ и направляет, согласно действующих процедур работы в 1С:ДО, на согласование последовательно своему непосредственному руководителю и Начальнику управления рекламы. После согласования ТЗ и сроков исполнения служебная записка направляется на исполнение Начальнику управления рекламы.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='proc-link'>Шаг 1</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='proc-link'>Шаг 3</a>"]
+            role: "Непосредственный руководитель",
+            text: "Согласовывает ТЗ. При наличии замечаний возвращает ПМ/НОПН на доработку. После согласования СЗ направляется Начальнику управления рекламы.\n\nПри корректировке имеющейся главы каталога допускается вносить правки путем добавления комментариев в существующий файл главы каталога формата *pdf.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ/НОПН (шаг 1)</a>"],
+            outputs: ["✅ Если согласовано → <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>", "❌ Если есть замечания → возврат к <a href='#' onclick='goToStep(1); return false;' class='io-link'>шагу 1</a>"]
         },
         3: {
             number: "3",
             role: "Продукт-менеджер / Начальник отдела продуктового направления",
-            text: "По результатам исполнения проводит приемку итогового документа и направляет по электронной почте Начальнику управления интернет-продвижения и WEB-разработок для обновления на сайте keaz.ru действующего документа (при внесении корректировок в действующую главу), при добавлении новой главы указывается номенклатура и группа номенклатур на сайте keaz.ru, к которой необходимо прикрепить данный документ.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='proc-link'>Шаг 2</a>"],
-            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='proc-link'>Шаг 4</a>", "→ <a href='proc13.html' class='proc-link'>Процедура 13 (Наполнение контентом)</a>", "→ <a href='proc20.html' class='proc-link'>Процедура 20 (Подготовка к старту продаж)</a>"]
+            text: "Формирует в 1С:ДО служебную записку с наименованием «Разработка (Корректировка) главы каталога ПП КЭАЗ (ПП KEAZ Optima) «наименование группы и серии ПРОДУКТА», прикладывает разработанное ТЗ и направляет на согласование Начальнику управления рекламы.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От руководителя (шаг 2, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
         },
         4: {
             number: "4",
+            role: "Начальник управления рекламы",
+            text: "Согласовывает ТЗ и сроки исполнения. После согласования служебная записка направляется на исполнение ПМ/НОПН для дальнейшего направления Начальнику управления интернет-продвижения.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ/НОПН (шаг 3)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
+        },
+        5: {
+            number: "5",
             role: "Продукт-менеджер / Начальник отдела продуктового направления",
-            text: "Проводит проверку корректной привязки нового документа на сайте keaz.ru, при корректном выполнении завершает свою задачу.\n\nПри корректировке имеющейся главы каталога допускается вносить правки путем добавления комментариев в существующий файл главы каталога формата *pdf.",
-            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='proc-link'>Шаг 3</a>"],
-            outputs: ["📤 ВЫХОД: Процедура завершена"]
+            text: "Проводит приемку итогового документа и направляет по электронной почте Начальнику управления интернет-продвижения и WEB-разработок для обновления на сайте keaz.ru действующего документа (при внесении корректировок в действующую главу). При добавлении новой главы указывается номенклатура и группа номенклатур на сайте keaz.ru, к которой необходимо прикрепить данный документ.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От Начальника рекламы (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7 (Начальнику интернет-продвижения)</a>", "→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6 (проверка)</a>"]
+        },
+        6: {
+            number: "6",
+            role: "Продукт-менеджер / Начальник отдела продуктового направления",
+            text: "Проводит проверку корректной привязки нового документа на сайте keaz.ru, при корректном выполнении завершает свою задачу.\n\n<b>Выход в процедуры:</b> <a href='proc13.html' class='proc-link'>13 (Наполнение контентом)</a> и <a href='proc20.html' class='proc-link'>20 (Подготовка к старту продаж)</a>.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От ПМ/НОПН (шаг 5)</a>", "⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От Начальника интернет-продвижения (шаг 7)</a>"],
+            outputs: ["📤 ВЫХОД: <a href='proc13.html' class='proc-link'>Процедура 13</a>, <a href='proc20.html' class='proc-link'>Процедура 20</a>"]
+        },
+        7: {
+            number: "7",
+            role: "Начальник управления интернет-продвижения и WEB-разработок",
+            text: "Обновляет документ на сайте keaz.ru (при внесении корректировок) или добавляет новую главу с привязкой к указанной номенклатуре. Уведомляет ПМ/НОПН о выполнении.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От ПМ/НОПН (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6 (ПМ/НОПН на проверку)</a>"]
         }
     };
+
+    let currentStep = null;
 
     function showDetail(stepId) {
         const panel = document.getElementById('detailPanel');
         const header = document.getElementById('detailHeader');
         const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
         
-        const data = stepData[stepId];
-        if (!data) return;
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
         
         header.innerHTML = `
             <span class="detail-number">Шаг ${data.number}</span>
@@ -284,25 +527,59 @@
         
         text.innerHTML = data.text;
         
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
         panel.classList.add('show');
         panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
         
-        document.querySelectorAll('.step-card').forEach(card => {
-            card.classList.remove('active-step');
-        });
-        const activeCard = document.querySelector(`.step-card[data-step="${stepId}"]`);
-        if (activeCard) activeCard.classList.add('active-step');
+        highlightStep(stepId);
+        currentStep = stepId;
     }
 
     function goToStep(stepId) {
-        showDetail(stepId);
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
     }
 
-    // Подсветка шагов при клике
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step');
+        });
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+    }
+
     document.querySelectorAll('.step-card').forEach(card => {
-        card.addEventListener('click', function() {
+        card.addEventListener('click', function(e) {
             const stepId = this.getAttribute('data-step');
-            if (stepId) goToStep(stepId);
+            if (stepId) {
+                goToStep(stepId);
+            }
         });
     });
 </script>
