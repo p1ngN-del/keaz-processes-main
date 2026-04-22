@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Инструкция 33</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        .proc-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 12px;
+            background: #e6f0ff;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .proc-link:hover {
+            background: #f6b83e;
+            color: #0a1929;
+            text-decoration: none;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .step-block {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e7f5;
+            transition: 0.2s;
+            scroll-margin-top: 20px;
+        }
+        .step-block:hover {
+            border-color: #f6b83e;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .step-block.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f6b83e;
+            display: inline-block;
+        }
+
+        .step-number {
+            background: #f6b83e;
+            color: #0a1929;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+
+        .step-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #1a2b4a;
+            margin-bottom: 15px;
+        }
+
+        .step-image {
+            background: #eef2fa;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 15px;
+            border: 1px dashed #cbd5e1;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        .badge-step {
+            background: #e6f0ff;
+            color: #1e6df2;
+        }
+        .badge-note {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>ИНСТРУКЦИЯ 33: Внесение цен в 1С:УПП</h1>
+    <div class="subhead">Попозиционное и пакетное внесение цен для готовой продукции</div>
+
+    <!-- Часть 1: Попозиционное внесение -->
+    <div class="step-block" id="step1">
+        <div class="step-title"><span class="step-number">1</span> Запуск 1С:УПП</div>
+        <div class="step-text">Заходим в программу 1С:УПП.</div>
+        <div class="step-image">📌 Скриншот: Рабочий стол 1С:УПП</div>
+    </div>
+
+    <div class="step-block" id="step2">
+        <div class="step-title"><span class="step-number">2</span> Переключение интерфейса</div>
+        <div class="step-text">Переключаем интерфейс, выбираем <strong>«Управление продажами»</strong>.</div>
+        <div class="step-image">📌 Скриншот: Выбор интерфейса</div>
+    </div>
+
+    <div class="step-block" id="step3">
+        <div class="step-title"><span class="step-number">3</span> Открытие установки цен</div>
+        <div class="step-text">На панели выбираем вкладку <strong>«Цены»</strong>, в открывшемся списке выбираем <strong>«Установка цен номенклатуры»</strong>.</div>
+        <div class="step-image">📌 Скриншот: Меню Цены → Установка цен номенклатуры</div>
+    </div>
+
+    <div class="step-block" id="step4">
+        <div class="step-title"><span class="step-number">4</span> Создание документа</div>
+        <div class="step-text">Нажимаем кнопку <strong>«Добавить»</strong> (знак + на зеленом фоне).</div>
+        <div class="step-image">📌 Скриншот: Кнопка Добавить</div>
+    </div>
+
+    <div class="step-block" id="step5">
+        <div class="step-title"><span class="step-number">5</span> Выбор типа цен</div>
+        <div class="step-text">Заполняем тип цен нажатием на три точки в конце строки.</div>
+        <div class="step-image">📌 Скриншот: Выбор типа цен</div>
+    </div>
+
+    <div class="step-block" id="step6">
+        <div class="step-title"><span class="step-number">6</span> Установка галочек</div>
+        <div class="step-text">В поле подбора «Форма выбора типа цен» устанавливаем галочки на типы цен:<br>
+        <span class="badge badge-step">✓ ТД Базовая 2011</span>
+        <span class="badge badge-step">✓ Базовая продажа Казахстан</span>
+        <span class="badge badge-step">✓ КЭАЗ Базовая (USD)</span>
+        </div>
+        <div class="step-image">📌 Скриншот: Выбор типов цен</div>
+    </div>
+
+    <div class="step-block" id="step7">
+        <div class="step-title"><span class="step-number">7</span> Добавление номенклатуры</div>
+        <div class="step-text">Нажимаем <strong>«+»</strong> для добавления номенклатуры. В поле «Номенклатура» нажимаем на три точки и выбираем нужную позицию.</div>
+        <div class="step-text"><span class="badge badge-note">ℹ️ Примечание:</span> Номенклатура предварительно должна быть занесена в 1С:УПП специалистом по планированию УМПП.</div>
+        <div class="step-image">📌 Скриншот: Выбор номенклатуры</div>
+    </div>
+
+    <div class="step-block" id="step8">
+        <div class="step-title"><span class="step-number">8</span> Внесение цен</div>
+        <div class="step-text">Вносим в поля <strong>«Базовая продажа Казахстан»</strong>, <strong>«ТД Базовая 2011»</strong>, <strong>«КЭАЗ Базовая (USD)»</strong> базовые цены на продукцию <strong>без НДС</strong>.</div>
+        <div class="step-text"><span class="badge badge-note">ℹ️ Примечание:</span> Цена вносится с округлением до целых чисел.</div>
+        <div class="step-image">📌 Скриншот: Заполнение цен</div>
+    </div>
+
+    <div class="step-block" id="step9">
+        <div class="step-title"><span class="step-number">9</span> Заполнение комментария</div>
+        <div class="step-text">Заполняем поле комментарий, формулируя цель установки или корректировки цены:<br>
+        <strong>а)</strong> «Цены установлены по согласованному ценовому позиционированию. Рентабельность (указываем %)»<br>
+        <strong>б)</strong> «Цены установлены согласно изменившейся отстройки от целевого конкурента на (указываем %). Рентабельность (указываем %)»</div>
+        <div class="step-image">📌 Скриншот: Комментарий</div>
+    </div>
+
+    <div class="step-block" id="step10">
+        <div class="step-title"><span class="step-number">10</span> Запись документа</div>
+        <div class="step-text">Нажимаем кнопку <strong>«Записать»</strong> в правом нижнем углу. После записи документу будет присвоен уникальный номер.</div>
+        <div class="step-image">📌 Скриншот: Кнопка Записать</div>
+    </div>
+
+    <div class="step-block" id="step11">
+        <div class="step-title"><span class="step-number">11</span> Отправка на проведение</div>
+        <div class="step-text">Номер документа необходимо отправить для проведения документа сотруднику, ответственному за проведение цен.</div>
+        <div class="step-image">📌 Скриншот: Отправка документа</div>
+    </div>
+
+    <div class="step-block" id="step12">
+        <div class="step-title"><span class="step-number">12</span> Контроль проведенных цен</div>
+        <div class="step-text">Для контроля заходим во вкладку <strong>«Цены»</strong>, выбираем <strong>«Печать прайс-листа»</strong>.</div>
+        <div class="step-image">📌 Скриншот: Печать прайс-листа</div>
+    </div>
+
+    <div class="step-block" id="step13">
+        <div class="step-title"><span class="step-number">13</span> Проверка цен</div>
+        <div class="step-text">В графе «Номенклатура» выбираем позицию или группу. В графе «Тип цен» должны быть выбраны: <strong>«Базовая продажа Казахстан»</strong>, <strong>«ТД Базовая 2011»</strong>, <strong>«КЭАЗ Базовая (USD)»</strong>. Нажимаем <strong>«Сформировать»</strong>. Проверяем соответствие цены в прайс-листе с вносимыми ценами.</div>
+        <div class="step-image">📌 Скриншот: Сформированный прайс-лист</div>
+    </div>
+
+    <!-- Часть 2: Пакетное внесение -->
+    <div style="margin: 40px 0 20px 0; padding: 15px; background: #f0f7ff; border-radius: 20px; text-align: center;">
+        <h2 style="color: #1e6df2;">📦 ПАКЕТНОЕ ВНЕСЕНИЕ ЦЕН</h2>
+        <p style="color: #475569;">Актуально при очередном изменении прайс-листа</p>
+    </div>
+
+    <div class="step-block" id="step14">
+        <div class="step-title"><span class="step-number">14</span> Заполнение шаблона</div>
+        <div class="step-text">Заполняем шаблон для пакетного внесения цен (файл формата XLS):<br>
+        - Первая строка не заполняется<br>
+        - Столбец 2: коды номенклатуры<br>
+        - Столбец 4: наименование номенклатуры<br>
+        - Столбец 5: характеристика (оставляем пустым)<br>
+        - Столбец 6: единица измерения<br>
+        - Столбец 7: цены<br>
+        - Столбцы 1 и 3 оставляем пустыми
+        </div>
+        <div class="step-image">📌 Скриншот: Шаблон Excel</div>
+    </div>
+
+    <div class="step-block" id="step15">
+        <div class="step-title"><span class="step-number">15</span> Выполнение базовых шагов</div>
+        <div class="step-text">Выполняем шаги 1-5 из инструкции «Внесение цен в 1С:УПП для одной или нескольких позиций».</div>
+    </div>
+
+    <div class="step-block" id="step16">
+        <div class="step-title"><span class="step-number">16</span> Выбор типа цен для пакетной загрузки</div>
+        <div class="step-text">В поле подбора «Форма выбора типа цен» устанавливаем галочку на одну из категорий:<br>
+        <span class="badge badge-step">✓ Базовая продажа Казахстан</span>
+        <span class="badge badge-step">✓ КЭАЗ Базовая (USD)</span>
+        <span class="badge badge-step">✓ ТД Базовая 2011</span>
+        </div>
+    </div>
+
+    <div class="step-block" id="step17">
+        <div class="step-title"><span class="step-number">17</span> Загрузка из Excel</div>
+        <div class="step-text">Нажимаем кнопку <strong>«Заполнить»</strong>, затем выбираем вкладку <strong>«Загрузка цен номенклатуры из файла Excel»</strong>.</div>
+        <div class="step-image">📌 Скриншот: Загрузка из Excel</div>
+    </div>
+
+    <div class="step-block" id="step18">
+        <div class="step-title"><span class="step-number">18</span> Указание пути к файлу</div>
+        <div class="step-text">Указываем путь к готовому файлу. Устанавливаем валюту:<br>
+        - Для «Базовая продажа Казахстан» и «ТД Базовая 2011» → <strong>руб.</strong><br>
+        - Для «КЭАЗ Базовая (USD)» → <strong>USD</strong>
+        </div>
+        <div class="step-image">📌 Скриншот: Выбор файла и валюты</div>
+    </div>
+
+    <div class="step-block" id="step19">
+        <div class="step-title"><span class="step-number">19</span> Выполнение загрузки</div>
+        <div class="step-text">Нажимаем кнопку <strong>«Выполнить загрузку»</strong>.</div>
+    </div>
+
+    <div class="step-block" id="step20">
+        <div class="step-title"><span class="step-number">20</span> Очистка данных</div>
+        <div class="step-text">Удаляем первую строку в загруженном документе (она техническая).</div>
+    </div>
+
+    <div class="step-block" id="step21">
+        <div class="step-title"><span class="step-number">21</span> Комментарий</div>
+        <div class="step-text">Заполняем поле комментарий, указываем группу или перечень групп и % изменения. Пример:<br>
+        <strong>«Изменение цен по группам: ПП57 +10%; ПП60С +15%...»</strong>
+        </div>
+    </div>
+
+    <div class="step-block" id="step22">
+        <div class="step-title"><span class="step-number">22</span> Завершение</div>
+        <div class="step-text">Выполняем шаги 11-14 из инструкции «Внесение цен в 1С:УПП для одной или нескольких позиций».</div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    // Подсветка текущего шага при прокрутке
+    const steps = document.querySelectorAll('.step-block');
+    
+    function highlightCurrentStep() {
+        let current = '';
+        const scrollPos = window.scrollY + 150;
+        
+        steps.forEach(step => {
+            const top = step.offsetTop;
+            const bottom = top + step.offsetHeight;
+            if (scrollPos >= top && scrollPos < bottom) {
+                current = step.id;
+            }
+        });
+        
+        steps.forEach(step => {
+            step.classList.remove('active-step');
+            if (step.id === current) {
+                step.classList.add('active-step');
+            }
+        });
+    }
+    
+    window.addEventListener('scroll', highlightCurrentStep);
+    window.addEventListener('load', highlightCurrentStep);
+</script>
+<script src="ai-core.js"></script>
+<script src="highlight.js"></script>
+</body>
+</html>
