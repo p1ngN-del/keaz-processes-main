@@ -424,6 +424,10 @@ function findRelevantProcedures(question, maxResults = 5) {
             .ai-search-btn.attention-flash {
                 animation: attentionFlash 1.8s ease-out 1 !important;
             }
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.2); opacity: 0.8; }
+            }
         `;
         document.head.appendChild(style);
     }
@@ -727,13 +731,15 @@ function findRelevantProcedures(question, maxResults = 5) {
             `;
             badge.textContent = '1';
             btn.appendChild(badge);
-            // Убираем бейджик при первом клике на кнопку
-btn.addEventListener('click', function removeBadge() {
-    if (badge && badge.parentElement) {
-        badge.remove();
-    }
-    btn.removeEventListener('click', removeBadge);
-}, { once: true });
+            
+            // === УБИРАЕМ БЕЙДЖИК ПРИ ОТКРЫТИИ ВИДЖЕТА ===
+            const originalToggle = AICore.toggleWidget;
+            AICore.toggleWidget = function() {
+                if (badge && badge.parentElement) {
+                    badge.remove();
+                }
+                originalToggle.call(AICore);
+            };
             // === КОНЕЦ ВАРИАНТА 1 ===
             
             container.style.display = 'flex';
