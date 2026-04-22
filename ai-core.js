@@ -99,14 +99,13 @@
             .replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
     }
 
-    // --- Внедрение стилей для виджета (чтобы не править 29 HTML-файлов) ---
+    // --- Внедрение стилей для виджета ---
     function injectStyles() {
         if (document.getElementById('ai-core-styles')) return;
 
         const style = document.createElement('style');
         style.id = 'ai-core-styles';
         style.textContent = `
-            /* Скрытый по умолчанию виджет */
             .ai-widget-hidden {
                 display: none !important;
             }
@@ -349,14 +348,11 @@
 
     // Создание HTML-виджета
     function createWidget() {
-        // Удаляем старый виджет, если он есть
         const oldWidget = document.getElementById('aiWidget');
         if (oldWidget) oldWidget.remove();
 
-        // Внедряем стили
         injectStyles();
 
-        // Создаем виджет со скрывающим классом
         const widgetHTML = `
             <div class="ai-widget ai-widget-hidden" id="aiWidget">
                 <div class="ai-header">
@@ -387,169 +383,167 @@
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
-        // Добавляем функционал перетаскивания и изменения размера
-// ============================================
-// ПЕРЕТАСКИВАНИЕ И ИЗМЕНЕНИЕ РАЗМЕРА ВИДЖЕТА
-// ============================================
+        
+        const widget = document.getElementById('aiWidget');
+        if (widget) {
+            makeWidgetDraggableAndResizable(widget);
+        }
+    }
 
-function makeWidgetDraggableAndResizable(widgetElement) {
-    let isDragging = false;
-    let dragOffsetX = 0, dragOffsetY = 0;
-    let isResizing = false;
-    let startWidth = 0, startHeight = 0;
-    let startX = 0, startY = 0;
+    // ============================================
+    // ПЕРЕТАСКИВАНИЕ И ИЗМЕНЕНИЕ РАЗМЕРА ВИДЖЕТА
+    // ============================================
     
-    const header = widgetElement.querySelector('.ai-header');
-    const resizeHandle = document.createElement('div');
-    resizeHandle.className = 'ai-resize-handle';
-    resizeHandle.innerHTML = '◢';
-    resizeHandle.style.cssText = `
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 20px;
-        height: 20px;
-        cursor: nw-resize;
-        font-size: 16px;
-        color: #94a3b8;
-        text-align: center;
-        line-height: 18px;
-        user-select: none;
-        z-index: 10;
-    `;
-    widgetElement.appendChild(resizeHandle);
-    
-    // Восстанавливаем сохранённую позицию и размер
-    const savedLeft = localStorage.getItem('aiWidgetLeft');
-    const savedTop = localStorage.getItem('aiWidgetTop');
-    const savedWidth = localStorage.getItem('aiWidgetWidth');
-    const savedHeight = localStorage.getItem('aiWidgetHeight');
-    
-    if (savedLeft && savedTop) {
-        widgetElement.style.left = savedLeft;
-        widgetElement.style.top = savedTop;
-        widgetElement.style.transform = 'none';
-    }
-    if (savedWidth && savedHeight) {
-        widgetElement.style.width = savedWidth;
-        widgetElement.style.height = savedHeight;
-        const messagesDiv = widgetElement.querySelector('.ai-messages');
-        if (messagesDiv) {
-            messagesDiv.style.height = `calc(${savedHeight} - 130px)`;
+    function makeWidgetDraggableAndResizable(widgetElement) {
+        let isDragging = false;
+        let dragOffsetX = 0, dragOffsetY = 0;
+        let isResizing = false;
+        let startWidth = 0, startHeight = 0;
+        let startX = 0, startY = 0;
+        
+        const header = widgetElement.querySelector('.ai-header');
+        const resizeHandle = document.createElement('div');
+        resizeHandle.className = 'ai-resize-handle';
+        resizeHandle.innerHTML = '◢';
+        resizeHandle.style.cssText = `
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            cursor: nw-resize;
+            font-size: 16px;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 18px;
+            user-select: none;
+            z-index: 10;
+        `;
+        widgetElement.appendChild(resizeHandle);
+        
+        const savedLeft = localStorage.getItem('aiWidgetLeft');
+        const savedTop = localStorage.getItem('aiWidgetTop');
+        const savedWidth = localStorage.getItem('aiWidgetWidth');
+        const savedHeight = localStorage.getItem('aiWidgetHeight');
+        
+        if (savedLeft && savedTop) {
+            widgetElement.style.left = savedLeft;
+            widgetElement.style.top = savedTop;
+            widgetElement.style.transform = 'none';
         }
-    }
-    
-    // Перетаскивание за заголовок
-    header.style.cursor = 'move';
-    header.addEventListener('mousedown', (e) => {
-        if (e.target.closest('.ai-close')) return;
-        isDragging = true;
-        const rect = widgetElement.getBoundingClientRect();
-        dragOffsetX = e.clientX - rect.left;
-        dragOffsetY = e.clientY - rect.top;
-        widgetElement.style.position = 'fixed';
-        document.body.style.userSelect = 'none';
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        let newLeft = e.clientX - dragOffsetX;
-        let newTop = e.clientY - dragOffsetY;
-        
-        newLeft = Math.max(0, Math.min(window.innerWidth - widgetElement.offsetWidth, newLeft));
-        newTop = Math.max(0, Math.min(window.innerHeight - widgetElement.offsetHeight, newTop));
-        
-        widgetElement.style.left = `${newLeft}px`;
-        widgetElement.style.top = `${newTop}px`;
-        widgetElement.style.transform = 'none';
-    });
-    
-    document.addEventListener('mouseup', () => {
-        if (isDragging) {
-            isDragging = false;
-            document.body.style.userSelect = '';
-            localStorage.setItem('aiWidgetLeft', widgetElement.style.left);
-            localStorage.setItem('aiWidgetTop', widgetElement.style.top);
-        }
-        if (isResizing) {
-            isResizing = false;
-            document.body.style.userSelect = '';
-            localStorage.setItem('aiWidgetWidth', widgetElement.style.width);
-            localStorage.setItem('aiWidgetHeight', widgetElement.style.height);
-        }
-    });
-    
-    // Изменение размера
-    resizeHandle.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        isResizing = true;
-        startWidth = widgetElement.offsetWidth;
-        startHeight = widgetElement.offsetHeight;
-        startX = e.clientX;
-        startY = e.clientY;
-        document.body.style.userSelect = 'none';
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-        if (!isResizing) return;
-        const newWidth = Math.max(300, Math.min(window.innerWidth - 100, startWidth + (e.clientX - startX)));
-        const newHeight = Math.max(400, Math.min(window.innerHeight - 100, startHeight + (e.clientY - startY)));
-        
-        widgetElement.style.width = `${newWidth}px`;
-        widgetElement.style.height = `${newHeight}px`;
-        
-        const messagesDiv = widgetElement.querySelector('.ai-messages');
-        if (messagesDiv) {
-            messagesDiv.style.height = `${newHeight - 130}px`;
-        }
-    });
-    
-    // Кнопка сброса позиции
-    const resetBtn = document.createElement('button');
-    resetBtn.innerHTML = '📍';
-    resetBtn.title = 'Вернуть в исходное положение';
-    resetBtn.style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        opacity: 0.6;
-        margin-left: 8px;
-        padding: 0 4px;
-    `;
-    resetBtn.onclick = () => {
-        widgetElement.style.left = '';
-        widgetElement.style.top = '';
-        widgetElement.style.transform = '';
-        widgetElement.style.width = '';
-        widgetElement.style.height = '';
-        localStorage.removeItem('aiWidgetLeft');
-        localStorage.removeItem('aiWidgetTop');
-        localStorage.removeItem('aiWidgetWidth');
-        localStorage.removeItem('aiWidgetHeight');
-        
-        const messagesDiv = widgetElement.querySelector('.ai-messages');
-        if (messagesDiv) {
-            messagesDiv.style.height = '';
+        if (savedWidth && savedHeight) {
+            widgetElement.style.width = savedWidth;
+            widgetElement.style.height = savedHeight;
+            const messagesDiv = widgetElement.querySelector('.ai-messages');
+            if (messagesDiv) {
+                messagesDiv.style.height = `calc(${savedHeight} - 130px)`;
+            }
         }
         
-        widgetElement.style.left = '24px';
-        widgetElement.style.top = '50%';
-        widgetElement.style.transform = 'translateY(-50%)';
-        widgetElement.style.width = '420px';
-        widgetElement.style.height = '';
-    };
-    
-    const titleSpan = widgetElement.querySelector('.ai-title');
-    if (titleSpan) {
-        titleSpan.appendChild(resetBtn);
-    }
-}
-
-// В конце createWidget(), после добавления widgetHTML, вызови:
-makeWidgetDraggableAndResizable(widget);
+        header.style.cursor = 'move';
+        header.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.ai-close')) return;
+            isDragging = true;
+            const rect = widgetElement.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            widgetElement.style.position = 'fixed';
+            document.body.style.userSelect = 'none';
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            let newLeft = e.clientX - dragOffsetX;
+            let newTop = e.clientY - dragOffsetY;
+            
+            newLeft = Math.max(0, Math.min(window.innerWidth - widgetElement.offsetWidth, newLeft));
+            newTop = Math.max(0, Math.min(window.innerHeight - widgetElement.offsetHeight, newTop));
+            
+            widgetElement.style.left = `${newLeft}px`;
+            widgetElement.style.top = `${newTop}px`;
+            widgetElement.style.transform = 'none';
+        });
+        
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                document.body.style.userSelect = '';
+                localStorage.setItem('aiWidgetLeft', widgetElement.style.left);
+                localStorage.setItem('aiWidgetTop', widgetElement.style.top);
+            }
+            if (isResizing) {
+                isResizing = false;
+                document.body.style.userSelect = '';
+                localStorage.setItem('aiWidgetWidth', widgetElement.style.width);
+                localStorage.setItem('aiWidgetHeight', widgetElement.style.height);
+            }
+        });
+        
+        resizeHandle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            isResizing = true;
+            startWidth = widgetElement.offsetWidth;
+            startHeight = widgetElement.offsetHeight;
+            startX = e.clientX;
+            startY = e.clientY;
+            document.body.style.userSelect = 'none';
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const newWidth = Math.max(300, Math.min(window.innerWidth - 100, startWidth + (e.clientX - startX)));
+            const newHeight = Math.max(400, Math.min(window.innerHeight - 100, startHeight + (e.clientY - startY)));
+            
+            widgetElement.style.width = `${newWidth}px`;
+            widgetElement.style.height = `${newHeight}px`;
+            
+            const messagesDiv = widgetElement.querySelector('.ai-messages');
+            if (messagesDiv) {
+                messagesDiv.style.height = `${newHeight - 130}px`;
+            }
+        });
+        
+        const resetBtn = document.createElement('button');
+        resetBtn.innerHTML = '📍';
+        resetBtn.title = 'Вернуть в исходное положение';
+        resetBtn.style.cssText = `
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            opacity: 0.6;
+            margin-left: 8px;
+            padding: 0 4px;
+        `;
+        resetBtn.onclick = () => {
+            widgetElement.style.left = '';
+            widgetElement.style.top = '';
+            widgetElement.style.transform = '';
+            widgetElement.style.width = '';
+            widgetElement.style.height = '';
+            localStorage.removeItem('aiWidgetLeft');
+            localStorage.removeItem('aiWidgetTop');
+            localStorage.removeItem('aiWidgetWidth');
+            localStorage.removeItem('aiWidgetHeight');
+            
+            const messagesDiv = widgetElement.querySelector('.ai-messages');
+            if (messagesDiv) {
+                messagesDiv.style.height = '';
+            }
+            
+            widgetElement.style.left = '24px';
+            widgetElement.style.top = '50%';
+            widgetElement.style.transform = 'translateY(-50%)';
+            widgetElement.style.width = '420px';
+            widgetElement.style.height = '';
+        };
+        
+        const titleSpan = widgetElement.querySelector('.ai-title');
+        if (titleSpan) {
+            titleSpan.appendChild(resetBtn);
+        }
     }
 
     // --- Экспортируемый объект API ---
@@ -587,13 +581,11 @@ makeWidgetDraggableAndResizable(widget);
                 createWidget();
                 widget = document.getElementById('aiWidget');
             }
-            // Удаляем скрывающий класс и добавляем открывающий
             widget.classList.remove('ai-widget-hidden');
             widget.classList.toggle('open');
             if (widget.classList.contains('open')) {
                 setTimeout(() => document.getElementById('aiInput').focus(), 100);
             } else {
-                // Если закрыли, возвращаем скрывающий класс
                 widget.classList.add('ai-widget-hidden');
             }
         },
