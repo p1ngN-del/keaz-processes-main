@@ -977,12 +977,9 @@
         <!-- ПОИСК + AI-АССИСТЕНТ -->
 <div class="search-section">
     <div class="search-row">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по процедурам (название, номер, ТНВЭД, сертификат...)" onkeyup="applySearch()">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по процедурам..." onkeyup="applySearch()">
         <button class="search-clear" onclick="clearSearch()">✖ Очистить</button>
-        <button class="ai-search-btn" title="Спросить AI-ассистента">
-            <span class="ai-btn-icon">🤖</span>
-            <span class="ai-btn-text">AI</span>
-        </button>
+        <!-- Кнопка AI будет добавлена автоматически скриптом ai-core.js -->
     </div>
     <div id="searchResultCount" class="search-result-count"></div>
 </div>
@@ -1838,43 +1835,11 @@ window.addEventListener('DOMContentLoaded', () => {
     const searchTermFromCookie = getCookie('searchTerm');
     if (searchTermFromCookie) {
         document.getElementById('searchInput').value = searchTermFromCookie;
-        applySearch(); // применяем поиск, чтобы подсветить результаты
+        applySearch();
     }
     
     // Проверяем доступность AI-сервера
     checkAIServer();
-    
-    // ===== AI-ассистент: кнопка уже есть в HTML, инициализацию делает ai-core.js =====
-    // Никакой дополнительной привязки здесь не требуется, AICore сам найдёт h1 и добавит кнопку
-});
-
-// Отрисовываем фильтры после подготовки карточек
-renderRoleFilters();
-    
-    loadProceduresData();
-    
-    const urlRole = getRoleFromURL();
-    if (urlRole) {
-        filterByRole(urlRole);
-    }
-    
-    const searchTermFromCookie = getCookie('searchTerm');
-    if (searchTermFromCookie) {
-        document.getElementById('searchInput').value = searchTermFromCookie;
-    }
-    
-    checkAIServer();
-    // Инициализация AI-ассистента через AICore
-    if (window.AICore) {
-        // На главной странице кнопка AI уже есть в HTML, поэтому мы просто привязываем к ней действие из AICore
-        const aiBtn = document.querySelector('.ai-search-btn');
-        if (aiBtn) {
-            aiBtn.onclick = (e) => {
-                e.preventDefault();
-                window.AICore.toggleWidget();
-            };
-        }
-    }
 });
     // ============================================
 // АВТОМАТИЧЕСКАЯ РАЗМЕТКА НОВЫХ ПРОЦЕДУР
