@@ -928,6 +928,44 @@
     transform: translateY(-4px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
+        /* ============================================ */
+/* МЕТКА НОВОЙ ПРОЦЕДУРЫ (NEW)                */
+/* ============================================ */
+
+.proc-card.new-procedure {
+    position: relative;
+    overflow: visible;
+}
+
+.proc-card.new-procedure::before {
+    content: "🔥 NEW";
+    position: absolute;
+    top: -12px;
+    right: -10px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(34, 197, 94, 0.5);
+    z-index: 15;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    font-family: monospace;
+}
+
+/* Анимация пульсации для новых процедур */
+@keyframes newPulse {
+    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.proc-card.new-procedure {
+    animation: newPulse 1.5s ease-in-out 3;
+    border-color: #22c55e !important;
+}
     </style>
 </head>
 <body>
