@@ -1867,7 +1867,17 @@ function markNewProcedures() {
 // Вызываем после загрузки данных
 // Добавь эту строку в DOMContentLoaded, после loadProceduresFullData():
 // markNewProcedures();
+<script src="ai-core.js"></script>
+<script>
+    // Инициализация AI-ассистента
+    setTimeout(function() {
+        if (window.AICore) {
+            window.AICore.initButton('h1');
+        } else {
+            console.log('Ожидание загрузки AICore...');
+            setTimeout(arguments.callee, 100);
+        }
+    }, 100);
 </script>
-    <script src="ai-core.js"></script>
 </body>
 </html>
