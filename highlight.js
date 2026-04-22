@@ -31,72 +31,74 @@ function deleteCookie(name) {
 // ============================================
 // 2. ПОДСВЕТКА ПОИСКА
 // ============================================
-const urlParams = new URLSearchParams(window.location.search);
-let searchTerm = urlParams.get('search');
-if (!searchTerm) searchTerm = getCookie('searchTerm');
-if (!searchTerm) {
-    console.log('Нет параметра search. Подсветка отключена.');
-    deleteCookie('searchTerm');
-} else {
-    searchTerm = decodeURIComponent(searchTerm).toLowerCase().trim();
-    if (searchTerm) {
-        setCookie('searchTerm', searchTerm, 1);
-        console.log('Ищем в JSON:', searchTerm);
-        if (!document.getElementById('highlight-styles')) {
-            const style = document.createElement('style');
-            style.id = 'highlight-styles';
-            style.textContent = `
-                .highlight-card { border: 3px solid #f6b83e !important; background-color: #fff3cf !important; }
-                .highlight-panel { border: 3px solid #f6b83e !important; background-color: #fff3cf !important; }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        function containsSearchTermInDOM(element, term) {
-            if (!element) return false;
-            if (element.textContent && element.textContent.toLowerCase().includes(term)) return true;
-            return false;
-        }
-        
-        const path = window.location.pathname;
-        const filename = path.substring(path.lastIndexOf('/') + 1);
-        const procId = filename.replace('proc', '').replace('.html', '');
-        
-        fetch('procedures_data.json')
-            .then(response => response.json())
-            .then(data => {
-                const procedure = data.procedures.find(p => p.id === procId);
-                if (!procedure) return;
-                const fullText = (procedure.num + ' ' + procedure.name + ' ' + procedure.content).toLowerCase();
-                const foundInJSON = fullText.includes(searchTerm);
-                const cards = document.querySelectorAll('.step-card, .proc-card');
-                let foundElements = [];
-                cards.forEach(card => {
-                    if (card.closest('#detailPanel')) return;
-                    if (!(card.offsetWidth || card.offsetHeight || card.getClientRects().length)) return;
-                    if (containsSearchTermInDOM(card, searchTerm)) {
-                        card.classList.add('highlight-card');
-                        foundElements.push(card);
+if (!window.location.pathname.includes('index')) {
+    const urlParams = new URLSearchParams(window.location.search);
+    let searchTerm = urlParams.get('search');
+    if (!searchTerm) searchTerm = getCookie('searchTerm');
+    if (!searchTerm) {
+        console.log('Нет параметра search. Подсветка отключена.');
+        deleteCookie('searchTerm');
+    } else {
+        searchTerm = decodeURIComponent(searchTerm).toLowerCase().trim();
+        if (searchTerm) {
+            setCookie('searchTerm', searchTerm, 1);
+            console.log('Ищем в JSON:', searchTerm);
+            if (!document.getElementById('highlight-styles')) {
+                const style = document.createElement('style');
+                style.id = 'highlight-styles';
+                style.textContent = `
+                    .highlight-card { border: 3px solid #f6b83e !important; background-color: #fff3cf !important; }
+                    .highlight-panel { border: 3px solid #f6b83e !important; background-color: #fff3cf !important; }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            function containsSearchTermInDOM(element, term) {
+                if (!element) return false;
+                if (element.textContent && element.textContent.toLowerCase().includes(term)) return true;
+                return false;
+            }
+            
+            const path = window.location.pathname;
+            const filename = path.substring(path.lastIndexOf('/') + 1);
+            const procId = filename.replace('proc', '').replace('.html', '');
+            
+            fetch('procedures_data.json')
+                .then(response => response.json())
+                .then(data => {
+                    const procedure = data.procedures.find(p => p.id === procId);
+                    if (!procedure) return;
+                    const fullText = (procedure.num + ' ' + procedure.name + ' ' + procedure.content).toLowerCase();
+                    const foundInJSON = fullText.includes(searchTerm);
+                    const cards = document.querySelectorAll('.step-card, .proc-card');
+                    let foundElements = [];
+                    cards.forEach(card => {
+                        if (card.closest('#detailPanel')) return;
+                        if (!(card.offsetWidth || card.offsetHeight || card.getClientRects().length)) return;
+                        if (containsSearchTermInDOM(card, searchTerm)) {
+                            card.classList.add('highlight-card');
+                            foundElements.push(card);
+                        }
+                    });
+                    if (foundElements.length > 0) {
+                        setTimeout(() => foundElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+                    } else if (foundInJSON) {
+                        console.log(`🔍 Слово "${searchTerm}" найдено в JSON, но не в DOM`);
+                        const panel = document.getElementById('detailPanel');
+                        if (panel) {
+                            panel.classList.add('show');
+                            const header = document.getElementById('detailHeader');
+                            const text = document.getElementById('detailText');
+                            const io = document.getElementById('detailIO');
+                            if(header) header.innerHTML = `<span class="detail-number">🔍 Поиск</span><span class="detail-role">Результат</span>`;
+                            if(text) text.innerHTML = `Текст "<strong>${searchTerm}</strong>" найден в описании процедуры, но не отображается на текущей диаграмме. Пожалуйста, ознакомьтесь с полным текстом процедуры или свяжитесь с ответственным.`;
+                            if(io) io.innerHTML = '';
+                            panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
                     }
-                });
-                if (foundElements.length > 0) {
-                    setTimeout(() => foundElements[0].scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-                } else if (foundInJSON) {
-                    console.log(`🔍 Слово "${searchTerm}" найдено в JSON, но не в DOM`);
-                    const panel = document.getElementById('detailPanel');
-                    if (panel) {
-                        panel.classList.add('show');
-                        const header = document.getElementById('detailHeader');
-                        const text = document.getElementById('detailText');
-                        const io = document.getElementById('detailIO');
-                        if(header) header.innerHTML = `<span class="detail-number">🔍 Поиск</span><span class="detail-role">Результат</span>`;
-                        if(text) text.innerHTML = `Текст "<strong>${searchTerm}</strong>" найден в описании процедуры, но не отображается на текущей диаграмме. Пожалуйста, ознакомьтесь с полным текстом процедуры или свяжитесь с ответственным.`;
-                        if(io) io.innerHTML = '';
-                        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }
-            })
-            .catch(error => console.error('Ошибка загрузки JSON:', error));
+                })
+                .catch(error => console.error('Ошибка загрузки JSON:', error));
+        }
     }
 }
 
