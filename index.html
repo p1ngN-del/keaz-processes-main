@@ -1849,6 +1849,32 @@ renderRoleFilters();
         }
     }
 });
+    // ============================================
+// АВТОМАТИЧЕСКАЯ РАЗМЕТКА НОВЫХ ПРОЦЕДУР
+// ============================================
+
+function markNewProcedures() {
+    // Процедуры, добавленные за последние 30 дней, считаются новыми
+    const daysToConsiderNew = 30;
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysToConsiderNew);
+    
+    document.querySelectorAll('.proc-card').forEach(card => {
+        const procId = card.getAttribute('data-proc-id');
+        const procedure = proceduresFullData.find(p => p.id === procId);
+        
+        if (procedure && procedure.date_added) {
+            const addedDate = new Date(procedure.date_added);
+            if (addedDate > cutoffDate) {
+                card.classList.add('new-procedure');
+            }
+        }
+    });
+}
+
+// Вызываем после загрузки данных
+// Добавь эту строку в DOMContentLoaded, после loadProceduresFullData():
+// markNewProcedures();
 </script>
     <script src="ai-core.js"></script>
 </body>
