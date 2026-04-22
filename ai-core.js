@@ -40,52 +40,112 @@
         }
     }
 
-    // Поиск релевантных процедур
-    function findRelevantProcedures(question, maxResults = 5) {
-        if (!proceduresFullData || proceduresFullData.length === 0) {
-            console.warn('⚠️ [AI Core] Данные процедур ещё не загружены');
-            return [];
-        }
+    // Поиск релевантных процедур (УЛУЧШЕННАЯ ВЕРСИЯ)
+function findRelevantProcedures(question, maxResults = 5) {
+    if (!proceduresFullData || proceduresFullData.length === 0) {
+        console.warn('⚠️ [AI Core] Данные процедур ещё не загружены');
+        return [];
+    }
+    
+    const questionLower = question.toLowerCase();
+    
+    // --- НАЧАЛО БЛОКА УЛУЧШЕНИЙ ---
+
+    // 1. Словарь стоп-слов (русские предлоги, союзы, местоимения, которые мешают поиску)
+    const stopWords = new Set([
+        'и', 'в', 'во', 'не', 'что', 'он', 'на', 'я', 'с', 'со', 'как', 'а', 'то', 'все', 'она', 'так', 'его', 'но', 'да', 'ты', 'к', 'у', 'же', 'вы', 'за', 'бы', 'по', 'только', 'ее', 'мне', 'было', 'вот', 'от', 'меня', 'еще', 'нет', 'о', 'из', 'ему', 'теперь', 'когда', 'даже', 'ну', 'вдруг', 'ли', 'если', 'уже', 'или', 'ни', 'быть', 'был', 'него', 'до', 'вас', 'нибудь', 'опять', 'уж', 'вам', 'ведь', 'там', 'потом', 'себя', 'ничего', 'ей', 'может', 'они', 'тут', 'где', 'есть', 'надо', 'ней', 'для', 'мы', 'тебя', 'их', 'чем', 'была', 'сам', 'чтоб', 'без', 'будто', 'чего', 'раз', 'тоже', 'себе', 'под', 'будет', 'ж', 'тогда', 'кто', 'этот', 'того', 'потому', 'этого', 'какой', 'совсем', 'ним', 'здесь', 'этом', 'один', 'почти', 'мой', 'тем', 'чтобы', 'нее', 'сейчас', 'были', 'куда', 'зачем', 'всех', 'никогда', 'можно', 'при', 'наконец', 'два', 'об', 'другой', 'хоть', 'после', 'над', 'больше', 'тот', 'через', 'эти', 'нас', 'про', 'всего', 'них', 'какая', 'много', 'разве', 'три', 'эту', 'моя', 'впрочем', 'хорошо', 'свою', 'этой', 'перед', 'иногда', 'лучше', 'чуть', 'том', 'нельзя', 'такой', 'им', 'более', 'всегда', 'конечно', 'всю', 'между'
+    ]);
+
+    // 2. Словарь морфологических форм для ключевых слов (лемматизация)
+    const morphologyMap = {
+        'база': ['база', 'базы', 'базе', 'базу', 'базой', 'баз', 'базами', 'базах'],
+        'аналог': ['аналог', 'аналоги', 'аналога', 'аналогу', 'аналогом', 'аналоге', 'аналогами', 'аналогах', 'аналогов'],
+        'конкурент': ['конкурент', 'конкуренты', 'конкурента', 'конкуренту', 'конкурентом', 'конкуренте', 'конкурентам', 'конкурентами', 'конкурентах'],
+        'цена': ['цена', 'цены', 'цене', 'цену', 'ценой', 'цен', 'ценам', 'ценами', 'ценах', 'ценообразование', 'ценообразования'],
+        'сертификат': ['сертификат', 'сертификаты', 'сертификата', 'сертификату', 'сертификатом', 'сертификате', 'сертификатам', 'сертификатами', 'сертификатах'],
+        'поставщик': ['поставщик', 'поставщики', 'поставщика', 'поставщику', 'поставщиком', 'поставщике', 'поставщикам', 'поставщиками', 'поставщиках', 'oem', 'odm'],
+        'вывод': ['вывод', 'выводы', 'вывода', 'выводу', 'выводом', 'выводе', 'выводам', 'выводами', 'выводах', 'вывести', 'выведен'],
+        'ввод': ['ввод', 'вводы', 'ввода', 'вводу', 'вводом', 'вводе', 'ввести', 'введен', 'завести', 'создать'],
+        'процедура': ['процедура', 'процедуры', 'процедуре', 'процедуру', 'процедурой', 'процедур', 'процедурам', 'процедурами', 'процедурах'],
+        'продукт': ['продукт', 'продукты', 'продукта', 'продукту', 'продуктом', 'продукте', 'продуктам', 'продуктами', 'продуктах'],
+        'рентабельность': ['рентабельность', 'рентабельности', 'рентабельностью'],
+        'контент': ['контент', 'контента', 'контенту', 'контентом', 'контенте'],
+        'тнвэд': ['тнвэд', 'тн вэд']
+    };
+
+    // Разбиваем запрос на слова
+    let rawWords = questionLower.split(/\s+/);
+    let searchWords = [];
+
+    // Обрабатываем каждое слово запроса
+    rawWords.forEach(word => {
+        // Если слово слишком короткое или это стоп-слово - пропускаем
+        if (word.length < 2 || stopWords.has(word)) return;
+
+        // Добавляем само слово
+        searchWords.push(word);
         
-        const questionLower = question.toLowerCase();
-        const words = questionLower.split(/\s+/);
-        
-        console.log('🔎 [AI Core] Ищем по словам:', words);
-        
-        const scored = proceduresFullData.map(proc => {
-            const fullText = (proc.num + ' ' + proc.name + ' ' + proc.content).toLowerCase();
-            let score = 0;
-            
-            words.forEach(word => {
-                if (word.length < 2) return;
-                
-                const regex = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-                const matches = fullText.match(regex);
-                if (matches) score += matches.length * 15;
-                
-                if (proc.num.toLowerCase() === word) score += 100;
-                if (proc.name.toLowerCase().includes(word)) score += 30;
-            });
-            
-            // Специальные правила
-            if (questionLower.includes('тнвэд') || questionLower.includes('тн вэд')) {
-                if (fullText.includes('тнвэд') || fullText.includes('тн вэд')) score += 100;
+        // Если для этого слова есть словарь морфологии, добавляем все его формы
+        if (morphologyMap[word]) {
+            searchWords.push(...morphologyMap[word]);
+        } else {
+            // Ищем совпадения по корню (если слово не найдено в явном словаре)
+            // Это более простая проверка: если в запросе "сертификат", а в словаре есть ключ "сертификат"
+            for (let key in morphologyMap) {
+                if (word.includes(key) || key.includes(word)) {
+                    searchWords.push(...morphologyMap[key]);
+                }
             }
-            if (questionLower.includes('сертификат') && fullText.includes('сертификат')) score += 80;
-            if (questionLower.includes('поставщик') && (fullText.includes('поставщик') || fullText.includes('oem'))) score += 80;
+        }
+    });
+
+    // Убираем дубликаты, чтобы не считать одно и то же слово дважды
+    searchWords = [...new Set(searchWords)];
+    
+    console.log('🔎 [AI Core] Ищем по словам (с морфологией):', searchWords);
+    
+    // --- КОНЕЦ БЛОКА УЛУЧШЕНИЙ ---
+
+    // Остальная логика подсчета очков (та же, что и была)
+    const scored = proceduresFullData.map(proc => {
+        const fullText = (proc.num + ' ' + proc.name + ' ' + proc.content).toLowerCase();
+        let score = 0;
+        
+        searchWords.forEach(word => {
+            // Экранируем спецсимволы в слове для безопасности
+            const regex = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            const matches = fullText.match(regex);
+            if (matches) score += matches.length * 15;
             
-            return { proc, score };
+            // Дополнительные очки за точное совпадение номера процедуры
+            if (proc.num.toLowerCase() === word) score += 100;
+            // Дополнительные очки за вхождение в название
+            if (proc.name.toLowerCase().includes(word)) score += 30;
         });
         
-        const relevant = scored
-            .filter(item => item.score > 0)
-            .sort((a, b) => b.score - a.score)
-            .slice(0, maxResults)
-            .map(item => item.proc);
+        // Специальные правила
+        if (questionLower.includes('тнвэд') || questionLower.includes('тн вэд')) {
+            if (fullText.includes('тнвэд') || fullText.includes('тн вэд')) score += 100;
+        }
+        if (questionLower.includes('сертификат') && fullText.includes('сертификат')) score += 80;
+        if (questionLower.includes('поставщик') && (fullText.includes('поставщик') || fullText.includes('oem'))) score += 80;
+        if (questionLower.includes('база') && fullText.includes('баз')) score += 80; // <-- Спецправило для "базы"
         
-        console.log(`🔍 [AI Core] Найдено ${relevant.length} релевантных процедур`);
-        return relevant;
+        return { proc, score };
+    });
+    
+    const relevant = scored
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, maxResults)
+        .map(item => item.proc);
+    
+    console.log(`🔍 [AI Core] Найдено ${relevant.length} релевантных процедур`);
+    if (relevant.length > 0) {
+        console.log('📋 Результаты:', relevant.map(p => `Процедура ${p.num}: ${p.name}`).join('; '));
     }
+    return relevant;
+}
 
     // Формирование Markdown в HTML
     function formatMessage(text) {
