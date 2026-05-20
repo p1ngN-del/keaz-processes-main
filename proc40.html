@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 40</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
+        body { background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%); padding: 30px 20px; display: flex; justify-content: center; }
+        .container { max-width: 1400px; width: 100%; background: rgba(255,255,255,0.98); border-radius: 48px; padding: 35px 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #f6b83e; text-decoration: none; font-weight: 600; font-size: 1.1rem; background: #0f1a38; padding: 8px 20px; border-radius: 40px; transition: 0.2s; }
+        .back-link:hover { background: #1e3260; transform: translateX(-5px); }
+        h1 { font-size: 2rem; color: #0a1a3a; text-align: center; margin-bottom: 0.2em; }
+        .subhead { text-align: center; color: #2c3e66; border-bottom: 2px solid #d0d9f0; padding-bottom: 15px; margin-bottom: 25px; }
+        .swimlane { background: #f9fbfe; border-radius: 24px; padding: 20px 10px; border: 2px solid #e0e7f5; overflow-x: auto; margin-bottom: 30px; }
+        .swimlane-table { display: flex; flex-direction: column; min-width: 1400px; }
+        .step-header { display: flex; margin-left: 240px; margin-bottom: 10px; }
+        .step-header-cell { flex: 1; text-align: center; font-weight: 700; color: #0f1a38; background: #e6ecfc; padding: 8px 0; border-radius: 20px 20px 0 0; margin-right: 5px; font-size: 0.75rem; }
+        .lane { display: flex; min-height: 100px; border-bottom: 1px solid #d0d9f0; }
+        .lane:last-child { border-bottom: none; }
+        .lane-label { width: 240px; font-weight: 700; color: #0f1a38; background: #e6ecfc; padding: 15px; border-radius: 20px; text-align: center; border-left: 6px solid; margin-right: 10px; flex-shrink: 0; align-self: center; font-size: 0.8rem; }
+        .lane-cells { display: flex; flex: 1; gap: 5px; min-height: 100px; align-items: flex-start; }
+        .cell { flex: 1; min-width: 130px; height: 100%; display: flex; flex-direction: column; gap: 8px; padding: 5px; }
+        .step-card { background: white; border-radius: 16px; padding: 12px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 6px solid; border: 1px solid #dce3f0; font-size: 0.72rem; cursor: pointer; transition: 0.2s; width: 100%; text-align: left; scroll-margin-top: 20px; }
+        .step-card:hover { transform: translateY(-2px); border-color: #f6b83e; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .step-card.active-step { border: 3px solid #f6b83e; background: #fff9e6; box-shadow: 0 0 0 3px rgba(246,184,62,0.2); }
+        .step-num { font-weight: 800; color: #4a5a7a; font-size: 0.65rem; background: #eef2fa; display: inline-block; padding: 2px 8px; border-radius: 20px; margin-bottom: 6px; }
+        .step-title { font-weight: 700; font-size: 0.72rem; margin-bottom: 6px; color: #0f1a38; }
+        .step-preview { font-size: 0.62rem; color: #4d5f82; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .step-badge { display: inline-block; padding: 2px 6px; border-radius: 12px; font-size: 0.6rem; font-weight: 600; margin-right: 4px; margin-top: 4px; }
+        .badge-in { background: #e3f2fd; color: #1e90ff; }
+        .badge-out { background: #e8f5e9; color: #2e8b57; }
+        .detail-panel { display: none; background: white; border-radius: 24px; padding: 25px; margin-top: 30px; border: 2px solid #e0e7f5; box-shadow: 0 10px 25px rgba(0,0,0,0.1); scroll-margin-top: 20px; }
+        .detail-panel.show { display: block; }
+        .detail-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .detail-number { background: #0f1a38; color: white; font-weight: 800; font-size: 1.3rem; padding: 5px 20px; border-radius: 40px; }
+        .detail-role { background: #eef2fa; color: #2b4587; font-weight: 700; padding: 5px 20px; border-radius: 40px; font-size: 1.1rem; }
+        .detail-text { font-size: 1rem; line-height: 1.7; color: #1a2b4a; margin-bottom: 25px; white-space: pre-line; }
+        .detail-io { display: flex; gap: 30px; margin-top: 20px; padding: 15px; background: #f8faff; border-radius: 16px; flex-wrap: wrap; }
+        .io-group { flex: 1; }
+        .io-title { font-weight: 700; color: #0f1a38; margin-bottom: 10px; font-size: 0.9rem; }
+        .io-items { display: flex; flex-direction: column; gap: 8px; }
+        .io-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .io-link { color: #1e6df2; text-decoration: none; font-weight: 600; cursor: pointer; padding: 2px 8px; border-radius: 20px; transition: 0.2s; }
+        .io-link:hover { background: #e6f0ff; text-decoration: underline; }
+        .back-to-top { position: fixed; bottom: 25px; right: 25px; background: #f6b83e; color: #0b1a3a; width: 50px; height: 50px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; border: none; z-index: 1000; }
+        .role-strat { border-left-color: #8a2be2; }
+        .role-l2 { border-left-color: #1e90ff; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 40: Формирование функциональных стратегий</h1>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию</div>
+
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <div class="step-header">
+                <div class="step-header-cell">1</div>
+                <div class="step-header-cell">2-4</div>
+                <div class="step-header-cell">5</div>
+                <div class="step-header-cell">6-7</div>
+                <div class="step-header-cell">8-9</div>
+                <div class="step-header-cell">10</div>
+            </div>
+
+            <!-- Руководитель стратегического маркетинга -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель стратегического маркетинга</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-strat" data-step="1" onclick="goToStep(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Постановка задачи</div>
+                            <div class="step-preview">Ставит задачу в Битрикс24 с шаблоном презентации...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-strat" data-step="5" onclick="goToStep(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Инициирование ВКС</div>
+                            <div class="step-preview">Проводит встречу с Директорами 2-го и Управляющими 1-го уровня...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-strat" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Формирование раздела</div>
+                            <div class="step-preview">Формирует раздел Среднесрочной стратегии с ФС...</div>
+                        </div>
+                        <div class="step-card role-strat" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Раздел сформирован</div>
+                            <div class="step-preview">Функциональные стратегии собраны в единый раздел...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-strat" data-step="10" onclick="goToStep(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Выход</div>
+                            <div class="step-preview">Бизнес-планирование...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Руководители 2-го уровня -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Руководители 2-го уровня</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-l2" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Формирование ФС</div>
+                            <div class="step-preview">Готовят функциональные стратегии по шаблону и стандарту...</div>
+                        </div>
+                        <div class="step-card role-l2" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Предварительное обсуждение</div>
+                            <div class="step-preview">Обсуждают и согласовывают в формате ВКС...</div>
+                        </div>
+                        <div class="step-card role-l2" data-step="4" onclick="goToStep(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Итоговый вариант</div>
+                            <div class="step-preview">Формируют консолидированный файл презентации...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-l2" data-step="6" onclick="goToStep(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Представление ФС</div>
+                            <div class="step-preview">Представляют презентации функциональных стратегий...</div>
+                        </div>
+                        <div class="step-card role-l2" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Корректировка</div>
+                            <div class="step-preview">Корректируют по замечаниям...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Руководитель стратегического маркетинга",
+            text: "(ВХОД) Утвержденная маркетинговая стратегия.\n\nВ Битрикс24 ставит задачу на исполнение Руководителям 2-го уровня на подготовку функциональных стратегий и прикладывает шаблон презентации.\n\nШаблон размещен на диске группы «Среднесрочная стратегия развития ГК КЭАЗ» в Битрикс24.",
+            inputs: ["⬅️ Утвержденная маркетинговая стратегия"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
+        },
+        2: {
+            number: "2",
+            role: "Руководители 2-го уровня",
+            text: "Формируют функциональные стратегии на основании «СТАНДАРТ формулирования и актуализации ЦЕЛЕЙ в ОБЛАСТИ КАЧЕСТВА» по приложенному шаблону.\n\nПри необходимости могут назначать соисполнителями Руководителей 3-го уровня.\n\nПодготовка проводится по пунктам:\n• стратегические намерения;\n• стратегические разрывы;\n• стратегические решения;\n• задачи развития.\n\nДанные формируются в формате презентации.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От шага 1</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
+        },
+        3: {
+            number: "3",
+            role: "Руководители 2-го уровня",
+            text: "Проводят предварительное обсуждение и согласование подготовленных функциональных стратегий отделов/управлений дирекций.\n\nОбсуждение и согласование проводится в формате очной/ВКС встречи.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От шага 2</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
+        },
+        4: {
+            number: "4",
+            role: "Руководители 2-го уровня",
+            text: "Формируют консолидированный файл презентации функциональной стратегии дирекции и размещают на диске группы «Среднесрочная стратегия развития ГК КЭАЗ» в Битрикс24.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От шага 3</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
+        },
+        5: {
+            number: "5",
+            role: "Руководитель стратегического маркетинга",
+            text: "Инициирует проведение ВКС встречи по представлению подготовленных функциональных стратегий.\n\nУчастники:\n• Директора 2-го уровня;\n• Управляющие директора 1-го уровня.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От шага 4</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
+        },
+        6: {
+            number: "6",
+            role: "Руководители 2-го уровня",
+            text: "Представляют презентации функциональных стратегий на ВКС встрече.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От шага 5</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
+        },
+        7: {
+            number: "7",
+            role: "Руководители 2-го уровня",
+            text: "Корректируют наполнение презентации на основании полученных комментариев/замечаний, полученных в ходе представления.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От шага 6</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
+        },
+        8: {
+            number: "8",
+            role: "Руководитель стратегического маркетинга",
+            text: "Представленные и утвержденные функциональные стратегии размещаются на диске группы «Среднесрочная стратегия развития ГК КЭАЗ» в Битрикс24.\n\nФормирует раздел «Среднесрочной стратегии развития ГК КЭАЗ» с функциональными стратегиями дирекций.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От шага 7</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
+        },
+        9: {
+            number: "9",
+            role: "Руководитель стратегического маркетинга",
+            text: "Раздел Функциональных стратегий Среднесрочной стратегии развития ГК КЭАЗ сформирован.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От шага 8</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+        },
+        10: {
+            number: "10",
+            role: "—",
+            text: "(ВЫХОД) Бизнес-планирование. Процедура завершена.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От шага 9</a>"],
+            outputs: ["📤 ВЫХОД: Бизнес-планирование"]
+        }
+    };
+
+    let currentStep = null;
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        const data = stepData[stepId] || { number: stepId, role: "—", text: "Описание шага...", inputs: [], outputs: [] };
+        header.innerHTML = `<span class="detail-number">Шаг ${data.number}</span><span class="detail-role">${data.role}</span>`;
+        text.innerHTML = data.text;
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        data.inputs.forEach(inp => { ioHtml += `<div class="io-item">${inp}</div>`; });
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        data.outputs.forEach(out => { ioHtml += `<div class="io-item">${out}</div>`; });
+        ioHtml += '</div></div>';
+        io.innerHTML = ioHtml;
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        highlightStep(stepId);
+        currentStep = stepId;
+    }
+
+    function goToStep(stepId) {
+        const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); showDetail(stepId); }
+        else { showDetail(stepId); }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active-step'));
+        const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (card) card.classList.add('active-step');
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function() { goToStep(this.getAttribute('data-step')); });
+    });
+</script>
+<script src="ai-core.js"></script>
+<script src="highlight.js"></script>
+</body>
+</html>
