@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Инструкция 38</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
+        body { background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%); padding: 30px 20px; display: flex; justify-content: center; }
+        .container { max-width: 1400px; width: 100%; background: rgba(255,255,255,0.98); border-radius: 48px; padding: 35px 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #f6b83e; text-decoration: none; font-weight: 600; font-size: 1.1rem; background: #0f1a38; padding: 8px 20px; border-radius: 40px; transition: 0.2s; }
+        .back-link:hover { background: #1e3260; transform: translateX(-5px); }
+        .proc-link { color: #1e6df2; text-decoration: none; font-weight: 600; padding: 2px 6px; border-radius: 12px; background: #e6f0ff; transition: 0.2s; white-space: nowrap; }
+        .proc-link:hover { background: #f6b83e; color: #0a1929; text-decoration: none; }
+        h1 { font-size: 2rem; color: #0a1a3a; text-align: center; margin-bottom: 0.2em; }
+        .subhead { text-align: center; color: #2c3e66; border-bottom: 2px solid #d0d9f0; padding-bottom: 15px; margin-bottom: 25px; }
+        .swimlane { background: #f9fbfe; border-radius: 24px; padding: 20px 10px; border: 2px solid #e0e7f5; overflow-x: auto; margin-bottom: 30px; }
+        .swimlane-table { display: flex; flex-direction: column; min-width: 1200px; }
+        .step-header { display: flex; margin-left: 240px; margin-bottom: 10px; }
+        .step-header-cell { flex: 1; text-align: center; font-weight: 700; color: #0f1a38; background: #e6ecfc; padding: 8px 0; border-radius: 20px 20px 0 0; margin-right: 5px; font-size: 0.8rem; }
+        .lane { display: flex; min-height: 120px; border-bottom: 1px solid #d0d9f0; }
+        .lane:last-child { border-bottom: none; }
+        .lane-label { width: 240px; font-weight: 700; color: #0f1a38; background: #e6ecfc; padding: 15px; border-radius: 20px; text-align: center; border-left: 6px solid; margin-right: 10px; flex-shrink: 0; align-self: center; font-size: 0.85rem; }
+        .lane-cells { display: flex; flex: 1; gap: 5px; min-height: 120px; align-items: flex-start; }
+        .cell { flex: 1; min-width: 140px; height: 100%; display: flex; flex-direction: column; gap: 8px; padding: 5px; }
+        .step-card { background: white; border-radius: 16px; padding: 12px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 6px solid; border: 1px solid #dce3f0; font-size: 0.72rem; cursor: pointer; transition: 0.2s; width: 100%; text-align: left; scroll-margin-top: 20px; }
+        .step-card:hover { transform: translateY(-2px); border-color: #f6b83e; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .step-card.active-step { border: 3px solid #f6b83e; background: #fff9e6; box-shadow: 0 0 0 3px rgba(246,184,62,0.2); }
+        .step-card.highlighted-output { border: 3px solid #2e8b57; background: #e6f3e6; box-shadow: 0 0 0 3px rgba(46,139,86,0.2); }
+        .step-num { font-weight: 800; color: #4a5a7a; font-size: 0.65rem; background: #eef2fa; display: inline-block; padding: 2px 8px; border-radius: 20px; margin-bottom: 6px; }
+        .step-title { font-weight: 700; font-size: 0.72rem; margin-bottom: 6px; color: #0f1a38; }
+        .step-preview { font-size: 0.62rem; color: #4d5f82; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .step-badge { display: inline-block; padding: 2px 6px; border-radius: 12px; font-size: 0.6rem; font-weight: 600; margin-right: 4px; margin-top: 4px; }
+        .badge-in { background: #e3f2fd; color: #1e90ff; }
+        .badge-out { background: #e8f5e9; color: #2e8b57; }
+        .badge-branch { background: #fff3e0; color: #f6b83e; }
+        .detail-panel { display: none; background: white; border-radius: 24px; padding: 25px; margin-top: 30px; border: 2px solid #e0e7f5; box-shadow: 0 10px 25px rgba(0,0,0,0.1); scroll-margin-top: 20px; }
+        .detail-panel.show { display: block; }
+        .detail-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .detail-number { background: #0f1a38; color: white; font-weight: 800; font-size: 1.3rem; padding: 5px 20px; border-radius: 40px; }
+        .detail-role { background: #eef2fa; color: #2b4587; font-weight: 700; padding: 5px 20px; border-radius: 40px; font-size: 1.1rem; }
+        .detail-text { font-size: 1rem; line-height: 1.7; color: #1a2b4a; margin-bottom: 25px; white-space: pre-line; }
+        .detail-io { display: flex; gap: 30px; margin-top: 20px; padding: 15px; background: #f8faff; border-radius: 16px; flex-wrap: wrap; }
+        .io-group { flex: 1; }
+        .io-title { font-weight: 700; color: #0f1a38; margin-bottom: 10px; font-size: 0.9rem; }
+        .io-items { display: flex; flex-direction: column; gap: 8px; }
+        .io-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .io-link { color: #1e6df2; text-decoration: none; font-weight: 600; cursor: pointer; padding: 2px 8px; border-radius: 20px; transition: 0.2s; }
+        .io-link:hover { background: #e6f0ff; text-decoration: underline; }
+        .back-to-top { position: fixed; bottom: 25px; right: 25px; background: #f6b83e; color: #0b1a3a; width: 50px; height: 50px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; border: none; z-index: 1000; }
+        .role-initiator { border-left-color: #1e90ff; }
+        .role-manager { border-left-color: #8a2be2; }
+        .role-foreman { border-left-color: #2e8b57; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Инструкция 38: Выписка образцов продукции</h1>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию. Нажимай на выходы — переходи к другим шагам.</div>
+
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <div class="step-header">
+                <div class="step-header-cell">1-2</div>
+                <div class="step-header-cell">3-4</div>
+                <div class="step-header-cell">5-6</div>
+                <div class="step-header-cell">7-8</div>
+                <div class="step-header-cell">9-10</div>
+            </div>
+
+            <!-- Дорожка 1: Инициатор -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Инициатор<br>(сотрудник ДМ)</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-initiator" data-step="1" onclick="goToStep(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Формирование СЗ</div>
+                            <div class="step-preview">Формирует служебную записку в 1С:ДО...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-initiator" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3А/3Б/3В</span>
+                            <div class="step-title">Формирование внутреннего заказа</div>
+                            <div class="step-preview">Создает внутренний заказ в 1С:УПП (3 варианта)...</div>
+                            <span class="step-badge badge-branch">🔀 3 варианта</span>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-initiator" data-step="5" onclick="goToStep(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Анализ состояния заказа</div>
+                            <div class="step-preview">Ждет, когда «Запланировано» = «Резерв»...</div>
+                        </div>
+                        <div class="step-card role-initiator" data-step="6" onclick="goToStep(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Формирование перемещения</div>
+                            <div class="step-preview">Создает документ «Перемещение товаров», отправляет в Ярус24...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-initiator" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Получение образцов</div>
+                            <div class="step-preview">Подписывает документы, получает образцы, передает в бухгалтерию...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                        <div class="step-card role-initiator" data-step="10" onclick="goToStep(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Событие в CRM (если для клиента)</div>
+                            <div class="step-preview">Создает «Событие» в 1С:CRM...</div>
+                            <span class="step-badge badge-branch">🔀 условие</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Непосредственный руководитель -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель подразделения</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-manager" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">Согласование СЗ</div>
+                            <div class="step-preview">Согласовывает СЗ, направляет Руководителю УПМ...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-manager" data-step="4" onclick="goToStep(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Согласование заказа</div>
+                            <div class="step-preview">Согласовывает внутренний заказ в 1С:УПП...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Бригадир склада -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Бригадир склада</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-foreman" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Комплектация заказа</div>
+                            <div class="step-preview">Комплектует заказ, формирует транспортную накладную...</div>
+                        </div>
+                        <div class="step-card role-foreman" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Требование-накладная</div>
+                            <div class="step-preview">Формирует требование-накладную, подписывает у МОЛ...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Инициатор (сотрудник Дирекции маркетинга)",
+            text: "(ВХОД) Инициатором может выступать любой сотрудник Дирекции маркетинга.\n\nВ 1С:ДО формируется служебная записка и отправляется на согласование.\n\nВ служебной записке указывается:\n• цели/задачи, по которым необходимо осуществить выписку продукции;\n• поартикульный список номенклатуры и количество;\n• итоговая себестоимость выписываемой продукции;\n• код управленческого учета из 1С:УПП (если выписка образцов осуществляется в рамках продуктового проекта).",
+            inputs: ["⬅️ Потребность Дирекции маркетинга"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
+        },
+        2: {
+            number: "2",
+            role: "Непосредственный руководитель подразделения Инициатора",
+            text: "Согласовывает служебную записку и направляет на ознакомление Руководителю управления продуктового маркетинга.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От шага 1</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
+        },
+        3: {
+            number: "3А/3Б/3В",
+            role: "Инициатор",
+            text: "Формирует внутренний заказ в 1С:УПП.\nПуть: Интерфейс полный/Документы/Управление запасами/Внутренний заказ/Создать новый.\n\n<b>3А. Исследовательский/Инвестиционный проект:</b>\nЗаказчик, Отгрузка, Номенклатура, Статья (код 0055), Проект, Комментарий. Вкладка Дополнительно: Склад-получатель (Курск – 000000011, Москва – 00371).\n\n<b>3Б. Коммерческий период:</b>\nЗаказчик, Отгрузка, Номенклатура, Статья (код 0055), Проект (путь: Проекты/Деятельность СБЕ КЭАЗ/Операционная деятельность/Служба разработок/Расходы по заявке «Наименование»). Вкладка Дополнительно: Склад-получатель.\n\n<b>3В. Операционная деятельность:</b>\nЗаказчик, Отгрузка, Номенклатура, Статья («Оплата поставщикам товаров/Перечисление за мебель, инвентарь»), Проект (путь как в 3Б). Вкладка Дополнительно: Склад-получатель.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От шага 2</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
+        },
+        4: {
+            number: "4",
+            role: "Руководитель подразделения Инициатора",
+            text: "Согласовывает сформированный внутренний заказ в 1С:УПП.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От шага 3</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
+        },
+        5: {
+            number: "5",
+            role: "Инициатор",
+            text: "Анализирует состояние внутреннего заказа в 1С:УПП.\nПуть: 1С:УПП/Внутренний заказ/Анализ.\n\nВ отчете анализируются столбцы «Запланировано» и «Резерв». Когда значения столбца «Запланировано» будут равны значениям столбца «Резерв» — можно формировать документ-перемещение.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От шага 4</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6 (когда Запланировано = Резерв)</a>"]
+        },
+        6: {
+            number: "6",
+            role: "Инициатор",
+            text: "На основании внутреннего заказа формирует документ «Перемещение товаров».\n\nВ поле «Отправитель» — «Склад Москва», код 00361.\nВ поле «Получатель» — нужный склад-получатель.\nВ поле «Комментарий» — контактные данные Инициатора.\nДокументом резерва должен быть ранее сформированный внутренний заказ.\n\nНажимает «Отправить в Ярус24». Отслеживает вкладку «Выгружено из Яруса». Только после заполнения данной вкладки можно проводить документ-перемещение.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От шага 5</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
+        },
+        7: {
+            number: "7",
+            role: "Бригадир / Старший менеджер склада",
+            text: "Комплектует заказ и формирует транспортную накладную.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От шага 6</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
+        },
+        8: {
+            number: "8",
+            role: "Бригадир / Старший менеджер склада",
+            text: "Формирует документ требование-накладная на основании внутреннего заказа.\nПуть: 1С:УПП/Внутренний заказ/Ввод на основании/Требование-накладная.\n\nВ поле «Подразделение организации» указывается подразделение, на которое проводится выписка.\n\n<b>Для проекта:</b>\n• Статья затрат: «Материалы учит (проч)», код 0120.\n• Проект — тот же, что во внутреннем заказе.\n\n<b>Для коммерции:</b>\n• Статья затрат: «Материалы на заказы вспом. производства».\n• Затраты: нужный номер Заказа на производство.\n• Комментарий: номенклатурная группа.\n\nНажимает «Печать» → «М-11». Подписывает у МОЛ склада. Вкладывает в заказ.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От шага 7</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
+        },
+        9: {
+            number: "9",
+            role: "Инициатор",
+            text: "(ВЫХОД) Подписывает со своей стороны требование-накладную, получает образцы на складе и передает подписанные документы в бухгалтерию.\n\nПередача может быть осуществлена:\n1. Отправкой подписанных сканов документа через электронную почту;\n2. Через постановку задачи офис-менеджеру.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От шага 8</a>"],
+            outputs: ["📤 ВЫХОД: Образцы получены, документы оформлены", "→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10 (если для клиента)</a>"]
+        },
+        10: {
+            number: "10",
+            role: "Инициатор",
+            text: "(ВЕТВЛЕНИЕ) Если выписка образцов продукции осуществилась в рамках потребности в показе или передаче образцов клиенту, то необходимо сопроводить данное действие в 1С:CRM, посредством создания «События».\n\nСоздание события регламентировано «ИНСТРУКЦИЕЙ по заполнению события в 1С:CRM».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От шага 9 (если для клиента)</a>"],
+            outputs: ["📤 ВЫХОД: Событие в CRM создано"]
+        }
+    };
+
+    let currentStep = null;
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || { number: stepId, role: "Информация", text: "Описание шага...", inputs: [], outputs: [] };
+        
+        header.innerHTML = `<span class="detail-number">Шаг ${data.number}</span><span class="detail-role">${data.role}</span>`;
+        text.innerHTML = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        data.inputs.forEach(inp => { ioHtml += `<div class="io-item">${inp}</div>`; });
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        data.outputs.forEach(out => { ioHtml += `<div class="io-item">${out}</div>`; });
+        ioHtml += '</div></div>';
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        highlightStep(stepId);
+        currentStep = stepId;
+    }
+
+    function goToStep(stepId) {
+        const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); showDetail(stepId); }
+        else { showDetail(stepId); }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active-step', 'highlighted-output'));
+        const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (card) card.classList.add('active-step');
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function() { goToStep(this.getAttribute('data-step')); });
+    });
+</script>
+<script src="ai-core.js"></script>
+<script src="highlight.js"></script>
+</body>
+</html>
