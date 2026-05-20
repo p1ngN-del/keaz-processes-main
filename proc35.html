@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Стандарт 35</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        .standard-badge {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            margin-bottom: 0.5em;
+        }
+
+        .subhead {
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0a1929;
+            margin-bottom: 12px;
+            padding-left: 12px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .section p, .section ul, .section ol {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .section ul, .section ol {
+            padding-left: 25px;
+        }
+
+        .section li {
+            margin-bottom: 6px;
+        }
+
+        .roles-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .roles-box strong {
+            display: block;
+            margin-bottom: 10px;
+            color: #0a1929;
+        }
+
+        .role-tag {
+            display: inline-block;
+            background: #eef2ff;
+            color: #4c1d95;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 3px 5px;
+            border: 1px solid #c4b5fd;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <span class="standard-badge">📋 Стандарт</span>
+    <h1>Стандарт 35: Заморозка продуктового проекта</h1>
+    <div class="subhead">КЭАЗ · Дирекция маркетинга</div>
+
+    <div class="section">
+        <div class="section-title">🎯 Цель стандарта</div>
+        <p>Описать причины и условия заморозки продуктовых проектов, сроки, на которые проект может быть заморожен, а также правила по возобновлению работ по замороженным продуктовым проектам.</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">📂 Область распространения</div>
+        <p>Дирекция маркетинга</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">👤 Владелец стандарта</div>
+        <p>Директор по маркетингу</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">📖 Глоссарий</div>
+        <p><strong>Заморозка</strong> – это приостановка работ над проектом в той или иной точке жизненного цикла проекта без завершения капитализации накопленных затрат.</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">⚠️ Причины заморозки</div>
+        <ol>
+            <li>Изменение информации о ландшафте рынка или ниша занята;</li>
+            <li>Недостаточно компетенции или её исчезновение;</li>
+            <li>Распоряжение Председателя совета директоров.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <div class="section-title">📋 Правила согласования решения о заморозке</div>
+        
+        <p><strong>1. На стадии «Исследование»:</strong></p>
+        <ul>
+            <li>Согласующие лица: Директор по маркетингу.</li>
+            <li>Срок: 5 рабочих дней.</li>
+        </ul>
+        
+        <p style="margin-top: 15px;"><strong>2. На стадии «Инвестиционная»:</strong></p>
+        <ul>
+            <li>Согласующие лица: Руководитель проектного офиса, Директор по маркетингу.</li>
+            <li>Срок: 5 рабочих дней.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">⏱️ Условия заморозки</div>
+        <ol>
+            <li><strong>Максимальный срок:</strong> 6 месяцев со дня согласования решения.</li>
+            <li><strong>Перенос в архив:</strong> По истечении 6 месяцев с уведомлением лидера проекта за 2 недели.</li>
+            <li><strong>Возврат из архива:</strong> Возможен по инициативе лидера проекта.</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <div class="section-title">🔄 Возобновление проекта</div>
+        <ol>
+            <li><strong>Инициатор:</strong> Лидер проекта.</li>
+            <li><strong>ЛПР по согласованию:</strong> Директор по маркетингу.</li>
+        </ol>
+    </div>
+
+    <div class="roles-box">
+        <strong>👥 Ответственные лица:</strong>
+        <span class="role-tag">Директор по маркетингу</span>
+        <span class="role-tag">Руководитель проектного офиса</span>
+        <span class="role-tag">Лидер проекта</span>
+    </div>
+</div>
+
+<button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</body>
+</html>
