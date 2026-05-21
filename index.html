@@ -1464,15 +1464,22 @@
     <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 </div>
 <script>
-    let expanded = false;
+    // ============================================
+    // 1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+    // ============================================
     let currentRole = 'all';
     let proceduresSearchData = new Map();
     let proceduresFullData = [];
+    let originalRoleFilter = 'all';
+    let originalSearchTerm = '';
 
+    // ============================================
+    // 2. COOKIE ФУНКЦИИ
+    // ============================================
     function setCookie(name, value, days) {
-        var expires = "";
+        let expires = "";
         if (days) {
-            var date = new Date();
+            let date = new Date();
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             expires = "; expires=" + date.toUTCString();
         }
@@ -1480,10 +1487,10 @@
     }
 
     function getCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
             while (c.charAt(0) == ' ') c = c.substring(1, c.length);
             if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
         }
@@ -1494,19 +1501,170 @@
         document.cookie = name + '=; Max-Age=-99999999; path=/';
     }
 
+    // ============================================
+    // 3. ГРУППИРОВКА РОЛЕЙ
+    // ============================================
+    const roleGroups = {
+        "👑 Руководство": ["marketing_director", "sales_director_rf", "foreign_sales_director", "managing_director", "board_chairman", "financial_director", "security_director", "strategic_communications_director"],
+        "📦 Продукт-менеджмент": ["product_manager", "product_marketing_head", "senior_pm", "product_department_head", "initiator", "project_manager", "project_manager_old", "project_office_head", "project_committee"],
+        "📊 Маркетинг и аналитика": ["marketing_analyst", "marketer", "strategic_marketing_head", "analytics_head", "planning_specialist", "analytics_lead", "analytics_specialist", "marketing_analyst_pricing", "motivation_manager", "business_analyst", "business_development_manager"],
+        "🎨 Дизайн и контент": ["designer", "chief_designer", "designer_creative", "senior_designer", "content_manager", "content_owner", "advertising_head", "internet_projects_head"],
+        "🔧 Технические роли": ["engineer", "technologist", "technologist_sbc", "technical_consultant", "sapr_specialist", "metrologist", "aod_engineer", "urrs_head", "aod_specialist"],
+        "🚚 Закупки и склады": ["procurement_manager", "storekeeper", "utk_head", "goz_head", "logistics_manager", "warehouse_foreman", "omto_head", "oem_head"],
+        "🏭 Производство": ["assembly_head", "upp_head", "gp_planning_specialist", "diu_planning_specialist", "upsp_specialist", "upzp_specialist", "umpp_specialist"],
+        "📄 Документооборот и юристы": ["lawyer", "ukiot_economist", "ukiot_head", "database_responsible", "authorized_person"],
+        "🛡️ Безопасность и качество": ["ovk_head", "certification_specialist", "declaration_specialist", "nva_head", "utp_head"],
+        "🤝 Управление и согласование": ["level1_manager", "level2_manager", "approvers", "commission_members", "urr_head", "urr_senior_specialist", "ursd_head", "urp_head", "urpr_head", "uoitp_head", "kru_specialist", "client", "kam", "division_head", "roznica_head", "legal_director", "gr_support_manager", "regional_director"],
+        "📞 Поддержка и УОП": ["uop_manager", "uop_head"]
+    };
+
+    const roleNames = {
+        "all": "👥 Все роли",
+        "product_manager": "Продукт-менеджер",
+        "marketing_director": "Директор по маркетингу",
+        "sales_director_rf": "Директор по продажам РФ",
+        "foreign_sales_director": "Директор по зарубежным продажам",
+        "managing_director": "Управляющий директор",
+        "board_chairman": "Председатель Совета Директоров",
+        "financial_director": "Финансовый директор",
+        "security_director": "Директор по безопасности",
+        "strategic_communications_director": "Директор по стратегическим коммуникациям",
+        "product_marketing_head": "Руководитель УПМ",
+        "senior_pm": "Старший ПМ",
+        "product_department_head": "Начальник ОПН",
+        "initiator": "Инициатор",
+        "project_manager": "Менеджер проекта",
+        "project_manager_old": "Проект-менеджер",
+        "project_office_head": "Руководитель проектного офиса",
+        "project_committee": "Проектный комитет",
+        "marketing_analyst": "Маркетолог-аналитик",
+        "marketer": "Маркетолог",
+        "strategic_marketing_head": "Руководитель стратегического маркетинга",
+        "analytics_head": "Начальник отдела аналитики",
+        "planning_specialist": "Специалист по планированию",
+        "analytics_lead": "Ведущий специалист управления аналитики",
+        "analytics_specialist": "Специалист направления аналитики",
+        "marketing_analyst_pricing": "Маркетолог-аналитик по ценообразованию",
+        "motivation_manager": "Менеджер мотивационных программ",
+        "business_analyst": "Бизнес-аналитик",
+        "business_development_manager": "Менеджер по развитию бизнеса в сегменте",
+        "designer": "Дизайнер",
+        "chief_designer": "Главный конструктор",
+        "designer_creative": "Дизайнер творческий",
+        "senior_designer": "Старший промышленный дизайнер",
+        "content_manager": "Контент-менеджер",
+        "content_owner": "Владелец контента",
+        "advertising_head": "Начальник управления рекламы",
+        "internet_projects_head": "Руководитель интернет проектов",
+        "engineer": "Инженер-конструктор",
+        "technologist": "Технолог",
+        "technologist_sbc": "Технолог СБЦ",
+        "technical_consultant": "Технический консультант",
+        "sapr_specialist": "Старший специалист по САПР",
+        "metrologist": "Инженер по метрологии",
+        "aod_engineer": "Инженер по АОД",
+        "urrs_head": "Начальник УРРС",
+        "aod_specialist": "Главный специалист по АОД",
+        "procurement_manager": "Менеджер по закупкам",
+        "storekeeper": "Кладовщик",
+        "utk_head": "Начальник УТК",
+        "goz_head": "Руководитель ГОЗ",
+        "logistics_manager": "Менеджер складской логистики",
+        "warehouse_foreman": "Бригадир склада",
+        "omto_head": "Начальник ОМТО",
+        "oem_head": "Начальник отдела по работе с ОЕМ",
+        "assembly_head": "Начальник сборочного цеха",
+        "upp_head": "Начальник УПП",
+        "gp_planning_specialist": "Главный специалист по планированию ГП",
+        "diu_planning_specialist": "Главный специалист по планированию ДиУ",
+        "upsp_specialist": "Главный специалист УПСП",
+        "upzp_specialist": "Главный специалист УПЗП",
+        "umpp_specialist": "Главный специалист УМПП",
+        "lawyer": "Юрист",
+        "ukiot_economist": "Экономист УКиОТ",
+        "ukiot_head": "Начальник УКиОТ",
+        "database_responsible": "Ответственный за базу",
+        "authorized_person": "Уполномоченное лицо",
+        "ovk_head": "Начальник ОВК",
+        "certification_specialist": "Ведущий специалист по сертификации",
+        "declaration_specialist": "Специалист по декларированию",
+        "nva_head": "Начальник управления разработки НВА",
+        "utp_head": "Начальник УТП",
+        "level1_manager": "Руководитель 1 уровня",
+        "level2_manager": "Руководитель 2 уровня",
+        "approvers": "Участники согласования",
+        "commission_members": "Члены комиссии",
+        "urr_head": "Руководитель УРР",
+        "urr_senior_specialist": "Старший специалист УРР",
+        "ursd_head": "Руководитель УРСД",
+        "urp_head": "Руководитель УРП",
+        "urpr_head": "Руководитель УРПР",
+        "uoitp_head": "Руководитель УОиТП",
+        "kru_specialist": "Сотрудник КРУ",
+        "client": "Клиент",
+        "kam": "КАМ",
+        "division_head": "Руководитель дивизиона",
+        "roznica_head": "Руководитель канала 'Розница'",
+        "legal_director": "Директор по правовым вопросам",
+        "gr_support_manager": "Менеджер операционной поддержки GR",
+        "regional_director": "Региональный директор",
+        "uop_manager": "Менеджер УОП",
+        "uop_head": "Начальник УОП",
+        "commercial_manager": "Управляющий коммерческим блоком"
+    };
+
+    function generateRoleFilters() {
+        let html = `<div class="filter-all active" data-role="all" onclick="filterByRole('all'); toggleAllGroups(this)"><span>👥 Все роли</span><span class="toggle-arrow">▼</span></div>`;
+        html += `<div class="groups-container" id="groupsContainer">`;
+        let groupIndex = 0;
+        for (const [groupName, roles] of Object.entries(roleGroups)) {
+            const sortedRoles = [...roles].sort((a, b) => (roleNames[a] || a).localeCompare(roleNames[b] || b, 'ru'));
+            html += `<div class="filter-group" data-group="${groupIndex}">
+                        <div class="filter-group-header" onclick="toggleGroup('group_${groupIndex}', this)">
+                            <span>${groupName}</span>
+                            <span class="group-toggle">▼</span>
+                        </div>
+                        <div class="filter-group-items" id="group_${groupIndex}">`;
+            for (const role of sortedRoles) {
+                html += `<div class="filter-item" data-role="${role}" onclick="filterByRole('${role}')">${roleNames[role] || role}</div>`;
+            }
+            html += `</div></div>`;
+            groupIndex++;
+        }
+        html += `</div><div class="filter-reset-hint" onclick="filterByRole('all')">🔄 Сбросить фильтр ролей</div>`;
+        return html;
+    }
+
+    function toggleAllGroups(headerElement) {
+        document.getElementById('groupsContainer')?.classList.toggle('show');
+        headerElement.classList.toggle('open');
+    }
+
+    function toggleGroup(groupId, headerElement) {
+        document.getElementById(groupId)?.classList.toggle('show');
+        headerElement.classList.toggle('open');
+    }
+
+    function renderRoleFilters() {
+        const container = document.getElementById('mainRoles');
+        if (container) container.innerHTML = generateRoleFilters();
+    }
+
+    // ============================================
+    // 4. ЗАГРУЗКА ДАННЫХ
+    // ============================================
     async function loadProceduresData() {
         try {
             const response = await fetch('procedures_data.json');
             const data = await response.json();
             if (data.procedures) {
                 data.procedures.forEach(proc => {
-                    const searchText = `${proc.num} ${proc.name} ${proc.content}`.toLowerCase();
-                    proceduresSearchData.set(proc.id, searchText);
+                    proceduresSearchData.set(proc.id, `${proc.num} ${proc.name} ${proc.content}`.toLowerCase());
                 });
-                console.log(`Загружено ${proceduresSearchData.size} процедур для поиска`);
+                console.log(`✅ Загружено ${proceduresSearchData.size} процедур для поиска`);
             }
         } catch (error) {
-            console.error('Ошибка загрузки procedures_data.json:', error);
+            console.error('❌ Ошибка загрузки procedures_data.json:', error);
         }
         applySearch();
     }
@@ -1517,376 +1675,44 @@
             const data = await response.json();
             if (data.procedures) {
                 proceduresFullData = data.procedures;
-                console.log(`✅ Загружено ${proceduresFullData.length} процедур для AI-контекста`);
+                console.log(`✅ Загружено ${proceduresFullData.length} процедур для AI`);
             }
         } catch (error) {
-            console.error('❌ Ошибка загрузки procedures_data.json для AI:', error);
+            console.error('❌ Ошибка:', error);
         }
     }
+
     // ============================================
-// ГРУППИРОВКА РОЛЕЙ ПО ОТДЕЛАМ
-// ============================================
-
-const roleGroups = {
-    "👑 Руководство": [
-        "marketing_director", "sales_director_rf", "foreign_sales_director",
-        "managing_director", "board_chairman", "financial_director",
-        "security_director", "strategic_communications_director"
-    ],
-    "📦 Продукт-менеджмент": [
-        "product_manager", "product_marketing_head", "senior_pm", "product_department_head", "initiator",
-        "project_manager", "project_manager_old", "project_office_head", "project_committee"
-    ],
-    "📊 Маркетинг и аналитика": [
-        "marketing_analyst", "marketer", "strategic_marketing_head", "analytics_head",
-        "planning_specialist", "analytics_lead", "analytics_specialist",
-        "marketing_analyst_pricing", "motivation_manager","business_analyst","business_development_manager"
-    ],
-    "🎨 Дизайн и контент": [
-        "designer", "chief_designer", "designer_creative", "senior_designer",
-        "content_manager", "content_owner", "advertising_head", "internet_projects_head"
-    ],
-    "🔧 Технические роли": [
-        "engineer", "technologist", "technologist_sbc", "technical_consultant", "sapr_specialist", "metrologist",
-        "aod_engineer", "urrs_head", "aod_specialist"
-    ],
-    "🚚 Закупки и склады": [
-        "procurement_manager", "storekeeper", "utk_head", "goz_head",
-        "logistics_manager", "warehouse_foreman", "omto_head", "oem_head"
-    ],
-    "🏭 Производство": [
-        "assembly_head", "upp_head", "gp_planning_specialist",
-        "diu_planning_specialist", "upsp_specialist", "upzp_specialist", "umpp_specialist"
-    ],
-    "📄 Документооборот и юристы": [
-        "lawyer", "ukiot_economist", "ukiot_head", "database_responsible", "authorized_person"
-    ],
-    "🛡️ Безопасность и качество": [
-        "ovk_head", "certification_specialist", "declaration_specialist", "nva_head", "utp_head"
-    ],
-    "🤝 Управление и согласование": [
-        "level1_manager", "level2_manager", "approvers", "commission_members",
-        "urr_head", "urr_senior_specialist", "ursd_head", "urp_head", "urpr_head",
-        "uoitp_head", "kru_specialist", "client", "kam", "division_head", "roznica_head",
-        "legal_director",
-        "gr_support_manager",
-        "regional_director"
-    ],
-    "📞 Поддержка и УОП": [
-        "uop_manager", "uop_head"
-    ]
-};
-
-// Маппинг role -> readable name
-const roleNames = {
-    "all": "👥 Все роли",
-    "product_manager": "Продукт-менеджер",
-    "urrs_head": "Начальник управления по разработке решений для сегментов",
-    "product_marketing_head": "Руководитель управления продуктового маркетинга",
-    "legal_director": "Директор по правовым вопросам",
-    "gr_support_manager": "Менеджер операционной поддержки GR",
-    "business_analyst": "Бизнес-аналитик",
-    "senior_pm": "Старший ПМ",
-    "product_department_head": "Начальник отдела продуктового направления",
-    "initiator": "Инициатор",
-    "marketing_analyst": "Маркетолог-аналитик",
-    "marketing_director": "Директор по маркетингу",
-    "strategic_marketing_head": "Руководитель стратегического маркетинга",
-    "marketer": "Маркетолог",
-    "analytics_head": "Начальник отдела аналитики",
-    "planning_specialist": "Специалист по планированию",
-    "analytics_lead": "Ведущий специалист управления аналитики",
-    "analytics_specialist": "Специалист направления аналитики",
-    "marketing_analyst_pricing": "Маркетолог-аналитик по ценообразованию",
-    "sales_director_rf": "Директор по продажам РФ",
-    "foreign_sales_director": "Директор по зарубежным продажам",
-    "commercial_manager": "Управляющий коммерческим блоком",
-    "kam": "КАМ",
-    "division_head": "Руководитель дивизиона",
-    "roznica_head": "Руководитель канала 'Розница'",
-    "regional_director": "Региональный директор",
-    "client": "Клиент",
-    "designer": "Дизайнер",
-    "chief_designer": "Главный конструктор",
-    "engineer": "Инженер-конструктор",
-    "technologist": "Технолог",
-    "technologist_sbc": "Технолог СБЦ",
-    "technical_consultant": "Технический консультант",
-    "designer_creative": "Дизайнер творческий",
-    "senior_designer": "Старший промышленный дизайнер",
-    "sapr_specialist": "Старший специалист по САПР",
-    "metrologist": "Инженер по метрологии",
-    "project_manager": "Менеджер проекта",
-    "project_office_head": "Руководитель проектного офиса",
-    "project_committee": "Проектный комитет",
-    "project_manager_old": "Проект-менеджер",
-    "procurement_manager": "Менеджер по закупкам",
-    "storekeeper": "Кладовщик",
-    "logistics_manager": "Менеджер складской логистики",
-    "warehouse_foreman": "Бригадир склада",
-    "omto_head": "Начальник ОМТО",
-    "oem_head": "Начальник отдела по работе с ОЕМ поставщиками",
-    "aod_specialist": "Главный специалист по АОД",
-    "aod_engineer": "Инженер по АОД",
-    "financial_director": "Финансовый директор",
-    "lawyer": "Юрист",
-    "ukiot_economist": "Экономист УКиОТ",
-    "ukiot_head": "Начальник УКиОТ",
-    "security_director": "Директор по безопасности",
-    "utk_head": "Начальник УТК",
-    "ovk_head": "Начальник ОВК",
-    "certification_specialist": "Ведущий специалист по сертификации",
-    "declaration_specialist": "Специалист по декларированию",
-    "nva_head": "Начальник управления разработки НВА",
-    "utp_head": "Начальник УТП",
-    "content_manager": "Контент-менеджер",
-    "content_owner": "Владелец контента",
-    "business_development_manager": "Менеджер по развитию бизнеса в сегменте",
-    "ursd_head": "Руководитель УРПС",
-    "strategic_communications_director": "Директор по стратегическим коммуникациям",
-    "database_responsible": "Ответственный за базу",
-    "authorized_person": "Уполномоченное лицо",
-    "assembly_head": "Начальник сборочного цеха",
-    "upp_head": "Начальник УПП",
-    "gp_planning_specialist": "Главный специалист по планированию ГП",
-    "diu_planning_specialist": "Главный специалист по планированию ДиУ",
-    "upsp_specialist": "Главный специалист УПСП",
-    "upzp_specialist": "Главный специалист по планированию УПЗП",
-    "umpp_specialist": "Главный специалист по планированию УМПП",
-    "level1_manager": "Руководитель 1 уровня",
-    "level2_manager": "Руководители 2 уровня",
-    "approvers": "Участники согласования",
-    "commission_members": "Члены комиссии",
-    "managing_director": "Управляющий директор",
-    "board_chairman": "Председатель Совета Директоров",
-    "urr_head": "Руководитель УРР",
-    "urr_senior_specialist": "Старший специалист УРР",
-    "ursd_head": "Руководитель УРСД",
-    "urp_head": "Руководитель УРП",
-    "urpr_head": "Руководитель УРПР",
-    "uoitp_head": "Руководитель УОиТП",
-    "kru_specialist": "Сотрудник КРУ",
-    "goz_head": "Руководитель ГОЗ",
-    "motivation_manager": "Менеджер мотивационных программ",
-    "advertising_head": "Начальник управления рекламы",
-    "internet_projects_head": "Руководитель интернет проектов",
-    "uop_manager": "Менеджер УОП",
-    "uop_head": "Начальник УОП"
-};
-
-// Функция для генерации HTML фильтров с группировкой (3 уровня)
-function generateRoleFilters() {
-    let html = `
-        <div class="filter-all active" data-role="all" onclick="filterByRole('all'); toggleAllGroups(this)">
-            <span>👥 Все роли</span>
-            <span class="toggle-arrow">▼</span>
-        </div>
-    `;
-    
-    html += `<div class="groups-container" id="groupsContainer">`;
-    
-    let groupIndex = 0;
-    for (const [groupName, roles] of Object.entries(roleGroups)) {
-        const sortedRoles = [...roles].sort((a, b) => 
-            (roleNames[a] || a).localeCompare(roleNames[b] || b, 'ru')
-        );
-        
-        const groupId = `group_${groupIndex}`;
-        
-        html += `
-            <div class="filter-group" data-group="${groupIndex}">
-                <div class="filter-group-header" onclick="toggleGroup('${groupId}', this)">
-                    <span>${groupName}</span>
-                    <span class="group-toggle">▼</span>
-                </div>
-                <div class="filter-group-items" id="${groupId}">
-        `;
-        
-        for (const role of sortedRoles) {
-            const displayName = roleNames[role] || role;
-            html += `<div class="filter-item" data-role="${role}" onclick="filterByRole('${role}')">${displayName}</div>`;
-        }
-        
-        html += `</div></div>`;
-        groupIndex++;
-    }
-    
-    html += `</div>`; // закрытие groups-container
-    
-    // Добавляем подсказку для сброса фильтра
-    html += `<div class="filter-reset-hint" onclick="filterByRole('all')">🔄 Сбросить фильтр ролей</div>`;
-    
-    return html;
-}
-
-// Функция для переключения всех групп (открыть/закрыть контейнер с группами)
-function toggleAllGroups(headerElement) {
-    const container = document.getElementById('groupsContainer');
-    if (container) {
-        container.classList.toggle('show');
-        headerElement.classList.toggle('open');
-    }
-}
-
-// Функция для переключения отдельной группы (открыть/закрыть)
-function toggleGroup(groupId, headerElement) {
-    const groupItems = document.getElementById(groupId);
-    if (groupItems) {
-        groupItems.classList.toggle('show');
-        headerElement.classList.toggle('open');
-    }
-}
-
-// Функция для обновления фильтров на странице
-function renderRoleFilters() {
-    const mainRolesContainer = document.getElementById('mainRoles');
-    
-    if (mainRolesContainer) {
-        mainRolesContainer.innerHTML = generateRoleFilters();
-    }
-}
-    function findRelevantProcedures(question, maxResults = 5) {
-    if (!proceduresFullData || proceduresFullData.length === 0) {
-        console.warn('⚠️ Данные процедур ещё не загружены');
-        return [];
-    }
-    
-    const questionLower = question.toLowerCase();
-    let words = questionLower.split(/\s+/);
-    
-    // Добавляем слитные варианты (для аббревиатур)
-    const joinedQuestion = words.join('');
-    if (joinedQuestion !== questionLower) words.push(joinedQuestion);
-    
-    console.log('🔎 Ищем по словам:', words);
-    
-    const scored = proceduresFullData.map(proc => {
-        const fullText = (proc.num + ' ' + proc.name + ' ' + proc.content).toLowerCase();
-        let score = 0;
-        
-        words.forEach(word => {
-            if (word.length < 2) return;
-            
-            const regex = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-            const matches = fullText.match(regex);
-            if (matches) score += matches.length * 15;
-            
-            if (proc.num.toLowerCase() === word) score += 100;
-            if (proc.name.toLowerCase().includes(word)) score += 30;
-        });
-        
-        // Специальные правила для частых запросов
-        if (questionLower.includes('тнвэд') || questionLower.includes('тн вэд')) {
-            if (fullText.includes('тнвэд') || fullText.includes('тн вэд')) score += 100;
-        }
-        if (questionLower.includes('сертификат') && fullText.includes('сертификат')) score += 80;
-        if (questionLower.includes('поставщик') && (fullText.includes('поставщик') || fullText.includes('oem'))) score += 80;
-        if (questionLower.includes('вывод') && fullText.includes('вывод')) score += 50;
-        if (questionLower.includes('цена') && fullText.includes('цена')) score += 50;
-        
-        return { proc, score };
-    });
-    
-    const relevant = scored
-        .filter(item => item.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, maxResults)
-        .map(item => item.proc);
-    
-    console.log(`🔍 Найдено ${relevant.length} релевантных процедур`);
-    if (relevant.length > 0) {
-        console.log('📋 Процедуры:', relevant.map(p => `${p.num}: ${p.name}`).join(', '));
-    }
-    
-    return relevant;
-}
-
-    function updateURL(role) {
-        if (role && role !== 'all') {
-            window.history.pushState({}, '', `?role=${role}`);
-        } else {
-            window.history.pushState({}, '', window.location.pathname);
-        }
-    }
-
-    function getRoleFromURL() {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('role');
-    }
-
-    function quickNavChange() {
-        const select = document.getElementById('quickNavSelect');
-        const url = select.value;
-        if (url) {
-            const searchTerm = document.getElementById('searchInput').value.trim();
-            let finalUrl = url;
-            if (searchTerm) {
-                finalUrl += `?search=${encodeURIComponent(searchTerm)}`;
-            }
-            window.location.href = finalUrl;
-        }
-    }
-
-    function toggleAllRoles() {
-        const expandable = document.getElementById('allRolesExpandable');
-        const btn = document.getElementById('toggleBtn');
-        if (expanded) {
-            expandable.classList.remove('show');
-            btn.innerHTML = '🔽 Показать все роли';
-            expanded = false;
-        } else {
-            expandable.classList.add('show');
-            btn.innerHTML = '🔼 Скрыть дополнительные роли';
-            expanded = true;
-        }
-    }
-
+    // 5. ПОИСК
+    // ============================================
     function applySearch() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
         const cards = document.querySelectorAll('.proc-card');
         let visibleCount = 0;
         
-        if (searchTerm) {
-            setCookie('searchTerm', searchTerm, 1);
-        } else {
-            deleteCookie('searchTerm');
-        }
+        if (searchTerm) setCookie('searchTerm', searchTerm, 1);
+        else deleteCookie('searchTerm');
         
         cards.forEach(card => {
-            let originalHref = card.getAttribute('data-original-href');
-            if (!originalHref) {
-                originalHref = card.getAttribute('href');
-                card.setAttribute('data-original-href', originalHref);
+            let href = card.getAttribute('data-original-href') || card.getAttribute('href');
+            if (!card.getAttribute('data-original-href')) {
+                card.setAttribute('data-original-href', href);
             }
-            
-            if (originalHref) {
-                let basePath = originalHref.split('?')[0];
-                let finalHref = basePath;
-                if (searchTerm) {
-                    finalHref += `?search=${encodeURIComponent(searchTerm)}`;
-                }
-                card.setAttribute('href', finalHref);
+            if (href) {
+                let basePath = href.split('?')[0];
+                card.setAttribute('href', searchTerm ? basePath + `?search=${encodeURIComponent(searchTerm)}` : basePath);
             }
         });
         
         if (!searchTerm) {
-            cards.forEach(card => {
-                card.classList.remove('search-hidden');
-                visibleCount++;
-            });
+            cards.forEach(card => { card.classList.remove('search-hidden'); visibleCount++; });
         } else {
             cards.forEach(card => {
                 const procId = card.getAttribute('data-proc-id');
-                let found = false;
-                
-                const cardText = card.textContent.toLowerCase();
-                if (cardText.includes(searchTerm)) found = true;
-                
+                let found = card.textContent.toLowerCase().includes(searchTerm);
                 if (!found && procId && proceduresSearchData.has(procId)) {
-                    const fullText = proceduresSearchData.get(procId);
-                    if (fullText.includes(searchTerm)) found = true;
+                    found = proceduresSearchData.get(procId).includes(searchTerm);
                 }
-                
                 if (found) {
                     card.classList.remove('search-hidden');
                     visibleCount++;
@@ -1897,270 +1723,163 @@ function renderRoleFilters() {
         }
         
         const countEl = document.getElementById('searchResultCount');
-        if (searchTerm) {
-            countEl.textContent = `🔍 Найдено: ${visibleCount} процедур`;
-        } else {
-            countEl.textContent = '';
-        }
+        if (countEl) countEl.textContent = searchTerm ? `🔍 Найдено: ${visibleCount} процедур` : '';
     }
-    
+
     function clearSearch() {
         document.getElementById('searchInput').value = '';
         applySearch();
     }
 
+    // ============================================
+    // 6. ФИЛЬТРАЦИЯ ПО РОЛЯМ
+    // ============================================
+    function updateURL(role) {
+        let url = role && role !== 'all' ? `?role=${role}` : window.location.pathname;
+        window.history.pushState({}, '', url);
+    }
+
+    function getRoleFromURL() {
+        return new URLSearchParams(window.location.search).get('role');
+    }
+
     async function filterByRole(role) {
-    currentRole = role;
-    updateURL(role);
-    
-    document.querySelectorAll('.filter-item, .filter-all').forEach(el => el.classList.remove('active'));
-    
-    if (role === 'all') {
-        const allBtn = document.querySelector('.filter-all');
-        if (allBtn) allBtn.classList.add('active');
-        document.querySelectorAll('.proc-card').forEach(card => {
-            card.classList.remove('filtered-out', 'start-highlight');
-        });
-        applySearch();
-        return;
-    }
-    
-    const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
-    if (activeFilter) activeFilter.classList.add('active');
-    
-    // Фильтруем карточки по роли
-    const cards = document.querySelectorAll('.proc-card');
-    cards.forEach(card => {
-        const rolesAttr = card.getAttribute('data-roles');
-        if (rolesAttr && rolesAttr.split(',').includes(role)) {
-            card.classList.remove('filtered-out');
-        } else {
-            card.classList.add('filtered-out');
-        }
-        card.classList.remove('start-highlight');
-    });
-    
-    applySearch();
-    
-    // Запрашиваем у AI стартовую процедуру
-    if (window.AICore && window.AICore.getStartProc) {
-        const allProcedures = await loadProceduresFullData();
-        const startProcId = await window.AICore.getStartProc(role, allProcedures);
+        currentRole = role;
+        updateURL(role);
         
-        if (startProcId) {
-            const startCard = document.querySelector(`.proc-card[data-proc-id="${startProcId}"]`);
-            if (startCard) {
-                startCard.classList.add('start-highlight');
-                startCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+        document.querySelectorAll('.filter-item, .filter-all').forEach(el => el.classList.remove('active'));
+        
+        if (role === 'all') {
+            document.querySelector('.filter-all')?.classList.add('active');
+            document.querySelectorAll('.proc-card').forEach(card => {
+                card.classList.remove('filtered-out', 'start-highlight');
+            });
+            applySearch();
+            return;
         }
-    }
-}
-    
-    // Фильтруем карточки
-    const cards = document.querySelectorAll('.proc-card');
-    cards.forEach(card => card.classList.remove('start-highlight'));
-    
-    if (role === 'all') {
-        cards.forEach(card => card.classList.remove('filtered-out'));
-    } else {
-        cards.forEach(card => {
+        
+        document.querySelector(`.filter-item[data-role="${role}"]`)?.classList.add('active');
+        
+        document.querySelectorAll('.proc-card').forEach(card => {
             const rolesAttr = card.getAttribute('data-roles');
-            if (rolesAttr) {
-                const rolesList = rolesAttr.split(',');
-                if (rolesList.includes(role)) {
-                    card.classList.remove('filtered-out');
-                    const startForAttr = card.getAttribute('data-start-for');
-                    if (startForAttr) {
-                        const cleanStr = startForAttr.replace(/[\[\]'"]/g, '');
-                        const startRoles = cleanStr.split(',');
-                        if (startRoles.includes(role)) {
-                            card.classList.add('start-highlight');
-                        }
-                    }
-                } else {
-                    card.classList.add('filtered-out');
+            if (rolesAttr && rolesAttr.split(',').includes(role)) {
+                card.classList.remove('filtered-out');
+            } else {
+                card.classList.add('filtered-out');
+            }
+            card.classList.remove('start-highlight');
+        });
+        
+        applySearch();
+        
+        if (window.AICore && window.AICore.getStartProc) {
+            const allProcedures = await loadProceduresFullData();
+            const startProcId = await window.AICore.getStartProc(role, allProcedures);
+            if (startProcId) {
+                const startCard = document.querySelector(`.proc-card[data-proc-id="${startProcId}"]`);
+                if (startCard) {
+                    startCard.classList.add('start-highlight');
+                    startCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
-        });
-    }
-    
-    applySearch();
-}
-let originalRoleFilter = 'all';
-let originalSearchTerm = '';
-
-function filterByAIProcedures(procNumbers) {
-    // Сохраняем текущее состояние фильтров
-    originalRoleFilter = currentRole || 'all';
-    const searchInput = document.getElementById('searchInput');
-    originalSearchTerm = searchInput ? searchInput.value : '';
-    
-    const cards = document.querySelectorAll('.proc-card');
-    cards.forEach(card => {
-        const procId = card.getAttribute('data-proc-id');
-        if (procNumbers.includes(procId)) {
-            // Показываем карточки релевантных процедур
-            card.classList.remove('search-hidden', 'filtered-out');
-            card.classList.add('ai-highlight');
-        } else {
-            // Скрываем остальные
-            card.classList.add('search-hidden');
-            card.classList.remove('filtered-out');
         }
-    });
-    
-    const countEl = document.getElementById('searchResultCount');
-    if (countEl) {
-        countEl.textContent = `🤖 AI рекомендует: ${procNumbers.length} процедур`;
-        countEl.style.color = '#f6b83e';
-        countEl.style.fontWeight = '600';
     }
-}
 
-function resetAIFilter() {
-    const cards = document.querySelectorAll('.proc-card');
-    cards.forEach(card => {
-        card.classList.remove('search-hidden', 'ai-highlight');
-    });
-    
-    // Восстанавливаем поиск
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.value = originalSearchTerm;
-    }
-    if (typeof applySearch === 'function') {
-        applySearch();
-    }
-    
-    // Восстанавливаем фильтр по роли, если он был активен
-    if (originalRoleFilter && originalRoleFilter !== 'all' && typeof filterByRole === 'function') {
-        filterByRole(originalRoleFilter);
-    }
-    
-    // Сбрасываем счётчик поиска
-    const countEl = document.getElementById('searchResultCount');
-    if (countEl) {
-        countEl.style.color = '';
-        countEl.style.fontWeight = '';
-        countEl.textContent = '';
-    }
-}
-
-async function checkAIServer() {
-    try {
-        const response = await fetch('http://localhost:3000/health');
-        if (response.ok) {
-            console.log('✅ AI-сервер DeepSeek доступен');
-        } else {
-            console.warn('⚠️ AI-сервер отвечает с ошибкой');
-        }
-    } catch (error) {
-        console.warn('⚠️ AI-сервер не запущен. Запустите: node server.js');
-    }
-}
-
-// ============================================
-// ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
-// ============================================
-
-window.addEventListener('DOMContentLoaded', () => {
-    // Загружаем полные данные процедур для AI и для метки NEW
-    loadProceduresFullData().then(() => {
-        // Вызываем разметку новых процедур ТОЛЬКО ПОСЛЕ загрузки данных
-        markNewProcedures();
-    });
-    
-    // Отрисовываем фильтры после подготовки карточек
-    renderRoleFilters();
-    
-    // Загружаем данные для поиска
-    loadProceduresData();
-    
-    // Проверяем роль из URL
-    const urlRole = getRoleFromURL();
-    if (urlRole) {
-        filterByRole(urlRole);
-    }
-    
-    // Восстанавливаем поиск из cookie
-    const searchTermFromCookie = getCookie('searchTerm');
-    if (searchTermFromCookie) {
-        document.getElementById('searchInput').value = searchTermFromCookie;
-        applySearch();
-    }
-    
-    // Проверяем доступность AI-сервера
-    checkAIServer();
-});
     // ============================================
-// АВТОМАТИЧЕСКАЯ РАЗМЕТКА НОВЫХ ПРОЦЕДУР
-// ============================================
-
-function markNewProcedures() {
-    // Процедуры, добавленные за последние 30 дней, считаются новыми
-    const daysToConsiderNew = 30;
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - daysToConsiderNew);
-    
-    document.querySelectorAll('.proc-card').forEach(card => {
-        const procId = card.getAttribute('data-proc-id');
-        const procedure = proceduresFullData.find(p => p.id === procId);
+    // 7. AI ФИЛЬТРАЦИЯ
+    // ============================================
+    function filterByAIProcedures(procNumbers) {
+        originalRoleFilter = currentRole;
+        const searchInput = document.getElementById('searchInput');
+        originalSearchTerm = searchInput ? searchInput.value : '';
         
-        if (procedure && procedure.date_added) {
-            const addedDate = new Date(procedure.date_added);
-            if (addedDate > cutoffDate) {
+        document.querySelectorAll('.proc-card').forEach(card => {
+            const procId = card.getAttribute('data-proc-id');
+            if (procNumbers.includes(procId)) {
+                card.classList.remove('search-hidden', 'filtered-out');
+                card.classList.add('ai-highlight');
+            } else {
+                card.classList.add('search-hidden');
+                card.classList.remove('filtered-out');
+            }
+        });
+        
+        const countEl = document.getElementById('searchResultCount');
+        if (countEl) {
+            countEl.textContent = `🤖 AI рекомендует: ${procNumbers.length} процедур`;
+            countEl.style.color = '#f6b83e';
+            countEl.style.fontWeight = '600';
+        }
+    }
+
+    window.resetAIFilter = function() {
+        document.querySelectorAll('.proc-card').forEach(card => {
+            card.classList.remove('search-hidden', 'ai-highlight');
+        });
+        
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.value = originalSearchTerm;
+        applySearch();
+        
+        if (originalRoleFilter && originalRoleFilter !== 'all') {
+            filterByRole(originalRoleFilter);
+        }
+        
+        const countEl = document.getElementById('searchResultCount');
+        if (countEl) {
+            countEl.style.color = '';
+            countEl.style.fontWeight = '';
+            countEl.textContent = '';
+        }
+    };
+
+    // ============================================
+    // 8. НОВЫЕ ПРОЦЕДУРЫ
+    // ============================================
+    function markNewProcedures() {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - 30);
+        document.querySelectorAll('.proc-card').forEach(card => {
+            const procId = card.getAttribute('data-proc-id');
+            const procedure = proceduresFullData.find(p => p.id === procId);
+            if (procedure && procedure.date_added && new Date(procedure.date_added) > cutoffDate) {
                 card.classList.add('new-procedure');
             }
-        }
-    });
-}
+        });
+    }
 
-// Вызываем после загрузки данных
-// Добавь эту строку в DOMContentLoaded, после loadProceduresFullData():
-// markNewProcedures();
+    // ============================================
+    // 9. ПРОВЕРКА AI СЕРВЕРА
+    // ============================================
+    async function checkAIServer() {
+        try {
+            const response = await fetch('/health');
+            if (response.ok) console.log('✅ AI-сервер доступен');
+        } catch (error) {
+            console.warn('⚠️ AI-сервер не запущен');
+        }
+    }
+
+    // ============================================
+    // 10. ЕДИНАЯ ИНИЦИАЛИЗАЦИЯ
+    // ============================================
+    window.addEventListener('DOMContentLoaded', () => {
+        renderRoleFilters();
+        loadProceduresData();
+        loadProceduresFullData().then(() => markNewProcedures());
+        
+        const urlRole = getRoleFromURL();
+        if (urlRole) filterByRole(urlRole);
+        
+        const searchTermFromCookie = getCookie('searchTerm');
+        if (searchTermFromCookie) {
+            document.getElementById('searchInput').value = searchTermFromCookie;
+            applySearch();
+        }
+        
+        checkAIServer();
+    });
 </script>
 <script src="ai-core.js"></script>
-<script>
-    // ============================================
-    // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ — ИСПРАВЛЕННАЯ
-    // ============================================
-    
-    // Дожидаемся полной загрузки DOM перед рендером фильтров
-    window.addEventListener('DOMContentLoaded', () => {
-        // 1. Сначала рендерим фильтры ролей (эта функция определена выше в HTML)
-        if (typeof renderRoleFilters === 'function') {
-            renderRoleFilters();
-        }
-        
-        // 2. Загружаем данные для поиска и AI
-        if (typeof loadProceduresData === 'function') {
-            loadProceduresData();
-        }
-        if (typeof loadProceduresFullData === 'function') {
-            loadProceduresFullData().then(() => {
-                if (typeof markNewProcedures === 'function') {
-                    markNewProcedures();
-                }
-            });
-        }
-        
-        // 3. Восстанавливаем роль из URL
-        const urlRole = getRoleFromURL ? getRoleFromURL() : null;
-        if (urlRole && typeof filterByRole === 'function') {
-            filterByRole(urlRole);
-        }
-        
-        // 4. Восстанавливаем поиск из cookie
-        const searchTermFromCookie = getCookie ? getCookie('searchTerm') : null;
-        if (searchTermFromCookie && document.getElementById('searchInput')) {
-            document.getElementById('searchInput').value = searchTermFromCookie;
-            if (typeof applySearch === 'function') applySearch();
-        }
-        
-        // 5. Проверяем доступность AI-сервера
-        if (typeof checkAIServer === 'function') checkAIServer();
-    });
-</script>
 </body>
 </html>
