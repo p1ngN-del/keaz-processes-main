@@ -5,7 +5,11 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: '10mb' }));
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
