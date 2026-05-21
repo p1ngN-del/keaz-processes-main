@@ -10,7 +10,7 @@
     
     console.log("🤖 AI Core загружается (исправленная версия)...");
     
-    const PROXY_URL = 'https://keeaz-ai-server-production.up.railway.app/api/chat';
+    const PROXY_URL = 'https://keaz-processes-main-production.up.railway.app/api/chat';
     let proceduresFullData = [];
 
     async function loadProceduresFullData() {
