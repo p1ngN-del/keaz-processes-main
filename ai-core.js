@@ -25,47 +25,31 @@
     }
 
     function formatMessage(text) {
-        // Убираем Markdown и форматируем красиво
-        let cleanText = text
-            .replace(/^###\s+/gm, '')           
-            .replace(/^##\s+/gm, '')            
-            .replace(/^#\s+/gm, '')             
-            .replace(/\*\*/g, '')               
-            .replace(/\*/g, '')                 
-            .replace(/^- /gm, '• ')             
-            .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>')
-            .replace(/```[\s\S]*?```/g, (match) => {
-                return match.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
-            });
+    // Убираем Markdown
+    let cleanText = text
+        .replace(/^###\s+/gm, '')
+        .replace(/^##\s+/gm, '')
+        .replace(/^#\s+/gm, '')
+        .replace(/\*\*/g, '')
+        .replace(/\*/g, '')
+        .replace(/^- /gm, '• ')
+        .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>');
 
-        // Красивое оформление заголовков
-        cleanText = cleanText
-            .replace(/^Вот как получить сертификат:/gm, '<strong style="font-size:1.05rem; display:block; margin:12px 0 8px 0;">📋 Вот как получить сертификат:</strong>')
-            .replace(/^Краткий план действий:/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">📌 Краткий план действий:</strong>')
-            .replace(/^Подробная пошаговая инструкция/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">📖 Подробная пошаговая инструкция</strong>')
-            .replace(/^Резюме:/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">✅ Резюме:</strong>')
-            .replace(/^Краткий итог:/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">✅ Краткий итог:</strong>');
+    // Превращаем переводы строк в <br>
+    cleanText = cleanText.replace(/\n/g, '<br>');
 
-        // Оформление списков и шагов
-        cleanText = cleanText
-            .replace(/ШАГ (\d+)\./g, '<strong style="color:#1e6df2;">▶ ШАГ $1.</strong>')
-            .replace(/Кто:/g, '<span style="color:#e07b1f;">👤 Кто:</span>')
-            .replace(/Что делает:/g, '<span style="color:#1f8b4c;">⚙️ Что делает:</span>')
-            .replace(/Входные данные:/g, '<span style="color:#9747ff;">⬅️ Входные данные:</span>')
-            .replace(/Выходные данные:/g, '<span style="color:#f97316;">➡️ Выходные данные:</span>')
-            .replace(/Какие документы прикрепить:/g, '<span style="color:#8b5cf6;">📎 Какие документы прикрепить:</span>')
-            .replace(/Важно:/g, '<span style="color:#ef4444; font-weight:600;">⚠️ Важно:</span>')
-            .replace(/Примечание:/g, '<span style="color:#eab308; font-weight:600;">📝 Примечание:</span>');
+    // Заменяем "Процедура N" на ссылку (ОДИН РАЗ, аккуратно)
+    cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
+        return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+    });
 
-        // Оформление номеров процедур
-        cleanText = cleanText
-            .replace(/процедур[ауеы]?\s+(\d+)/gi, (match, num) => `процедуру <a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600;">${match}</a>`)
-            .replace(/Процедура\s+(\d+)/gi, (match, num) => `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px;">${match}</a>`);
+    // Заменяем procN.html на ссылку (на случай, если AI сам сгенерирует)
+    cleanText = cleanText.replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => {
+        return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600;">${match}</a>`;
+    });
 
-        return cleanText
-            .replace(/\n/g, '<br>')
-            .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600;">Процедура ${num}</a>`);
-    }
+    return cleanText;
+}
 
     function injectStyles() {
         if (document.getElementById('ai-core-styles')) return;
