@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 44</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Arial', sans-serif; }
+        body { background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%); padding: 30px 20px; display: flex; justify-content: center; }
+        .container { max-width: 1400px; width: 100%; background: rgba(255,255,255,0.98); border-radius: 48px; padding: 35px 30px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        .back-link { display: inline-block; margin-bottom: 25px; color: #f6b83e; text-decoration: none; font-weight: 600; font-size: 1.1rem; background: #0f1a38; padding: 8px 20px; border-radius: 40px; transition: 0.2s; }
+        .back-link:hover { background: #1e3260; transform: translateX(-5px); }
+        h1 { font-size: 1.8rem; color: #0a1a3a; text-align: center; margin-bottom: 0.2em; }
+        .subhead { text-align: center; color: #2c3e66; border-bottom: 2px solid #d0d9f0; padding-bottom: 15px; margin-bottom: 25px; }
+        .swimlane { background: #f9fbfe; border-radius: 24px; padding: 20px 10px; border: 2px solid #e0e7f5; overflow-x: auto; margin-bottom: 30px; }
+        .swimlane-table { display: flex; flex-direction: column; min-width: 1600px; }
+        .step-header { display: flex; margin-left: 240px; margin-bottom: 10px; }
+        .step-header-cell { flex: 1; text-align: center; font-weight: 700; color: #0f1a38; background: #e6ecfc; padding: 8px 0; border-radius: 20px 20px 0 0; margin-right: 5px; font-size: 0.7rem; }
+        .lane { display: flex; min-height: 100px; border-bottom: 1px solid #d0d9f0; }
+        .lane:last-child { border-bottom: none; }
+        .lane-label { width: 240px; font-weight: 700; color: #0f1a38; background: #e6ecfc; padding: 10px 8px; border-radius: 20px; text-align: center; border-left: 6px solid; margin-right: 10px; flex-shrink: 0; align-self: center; font-size: 0.7rem; }
+        .lane-cells { display: flex; flex: 1; gap: 5px; min-height: 100px; align-items: flex-start; }
+        .cell { flex: 1; min-width: 90px; height: 100%; display: flex; flex-direction: column; gap: 6px; padding: 3px; }
+        .step-card { background: white; border-radius: 14px; padding: 10px 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 6px solid; border: 1px solid #dce3f0; font-size: 0.65rem; cursor: pointer; transition: 0.2s; width: 100%; text-align: left; scroll-margin-top: 20px; }
+        .step-card:hover { transform: translateY(-2px); border-color: #f6b83e; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .step-card.active-step { border: 3px solid #f6b83e; background: #fff9e6; }
+        .step-num { font-weight: 800; color: #4a5a7a; font-size: 0.6rem; background: #eef2fa; display: inline-block; padding: 2px 6px; border-radius: 20px; margin-bottom: 4px; }
+        .step-title { font-weight: 700; font-size: 0.65rem; margin-bottom: 4px; color: #0f1a38; }
+        .step-preview { font-size: 0.58rem; color: #4d5f82; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .step-badge { display: inline-block; padding: 2px 4px; border-radius: 10px; font-size: 0.55rem; font-weight: 600; margin-right: 2px; margin-top: 2px; }
+        .badge-in { background: #e3f2fd; color: #1e90ff; }
+        .badge-out { background: #e8f5e9; color: #2e8b57; }
+        .badge-branch { background: #fff3e0; color: #f6b83e; }
+        .detail-panel { display: none; background: white; border-radius: 24px; padding: 25px; margin-top: 30px; border: 2px solid #e0e7f5; box-shadow: 0 10px 25px rgba(0,0,0,0.1); scroll-margin-top: 20px; }
+        .detail-panel.show { display: block; }
+        .detail-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .detail-number { background: #0f1a38; color: white; font-weight: 800; font-size: 1.3rem; padding: 5px 20px; border-radius: 40px; }
+        .detail-role { background: #eef2fa; color: #2b4587; font-weight: 700; padding: 5px 20px; border-radius: 40px; font-size: 1.1rem; }
+        .detail-text { font-size: 1rem; line-height: 1.7; color: #1a2b4a; margin-bottom: 25px; white-space: pre-line; }
+        .detail-io { display: flex; gap: 30px; margin-top: 20px; padding: 15px; background: #f8faff; border-radius: 16px; flex-wrap: wrap; }
+        .io-group { flex: 1; } .io-title { font-weight: 700; color: #0f1a38; margin-bottom: 10px; font-size: 0.9rem; }
+        .io-items { display: flex; flex-direction: column; gap: 8px; } .io-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .io-link { color: #1e6df2; text-decoration: none; font-weight: 600; cursor: pointer; padding: 2px 8px; border-radius: 20px; }
+        .io-link:hover { background: #e6f0ff; text-decoration: underline; }
+        .back-to-top { position: fixed; bottom: 25px; right: 25px; background: #f6b83e; color: #0b1a3a; width: 50px; height: 50px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; border: none; z-index: 1000; }
+        .role-legal { border-left-color: #8a2be2; }
+        .role-gr { border-left-color: #1e90ff; }
+        .role-segment { border-left-color: #4682b4; }
+        .role-tech { border-left-color: #2e8b57; }
+        .role-marketing { border-left-color: #ff8c00; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    <h1>Процедура 44: Взаимодействие с государственными органами по запросам о деятельности маркетинга и локализации продукта</h1>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию</div>
+
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <div class="step-header">
+                <div class="step-header-cell">1</div><div class="step-header-cell">2</div><div class="step-header-cell">3</div><div class="step-header-cell">4</div>
+                <div class="step-header-cell">5</div><div class="step-header-cell">6</div><div class="step-header-cell">7</div><div class="step-header-cell">8</div>
+                <div class="step-header-cell">9</div><div class="step-header-cell">10</div><div class="step-header-cell">11</div><div class="step-header-cell">12</div>
+                <div class="step-header-cell">13</div><div class="step-header-cell">14</div><div class="step-header-cell">15</div><div class="step-header-cell">16</div>
+            </div>
+
+            <!-- Директор по правовым вопросам -->
+            <div class="lane"><div class="lane-label" style="border-left-color:#8a2be2;">Директор по правовым вопросам</div><div class="lane-cells">
+                <div class="cell"><div class="step-card role-legal" data-step="1" onclick="goToStep(1)"><span class="step-num">1</span><div class="step-title">Приём запроса</div><div class="step-preview">Принимает входящий запрос/предложение...</div><span class="step-badge badge-in">⬅️ вход</span></div></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-legal" data-step="3" onclick="goToStep(3)"><span class="step-num">3</span><div class="step-title">Передача на регистрацию</div><div class="step-preview">Направляет в Б24 на регистрацию...</div><span class="step-badge badge-branch">🔀</span></div></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-legal" data-step="5" onclick="goToStep(5)"><span class="step-num">5</span><div class="step-title">Оформление обращения</div><div class="step-preview">Оформляет обращение в Гос. орган...</div></div></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-legal" data-step="14" onclick="goToStep(14)"><span class="step-num">14</span><div class="step-title">Оформление ответа</div><div class="step-preview">Оформляет ответ в Гос. орган...</div></div></div>
+                <div class="cell"><div class="step-card role-legal" data-step="15" onclick="goToStep(15)"><span class="step-num">15</span><div class="step-title">Направление ответа</div><div class="step-preview">Ответ направлен в Гос. орган...</div><span class="step-badge badge-out">📤 выход</span></div></div>
+                <div class="cell"><div class="step-card role-legal" data-step="16" onclick="goToStep(16)"><span class="step-num">16</span><div class="step-title">Информирование</div><div class="step-preview">Информирует GR-менеджера...</div><span class="step-badge badge-in">⬅️ вход</span></div></div>
+            </div></div>
+
+            <!-- Менеджер операционной поддержки GR -->
+            <div class="lane"><div class="lane-label" style="border-left-color:#1e90ff;">Менеджер операционной поддержки GR</div><div class="lane-cells">
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-gr" data-step="2" onclick="goToStep(2)"><span class="step-num">2</span><div class="step-title">Регистрация запроса</div><div class="step-preview">Принимает и регистрирует запрос в Б24...</div></div></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-gr" data-step="4" onclick="goToStep(4)"><span class="step-num">4</span><div class="step-title">Отправка документа</div><div class="step-preview">Отправляет подготовленный документ...</div></div></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-gr" data-step="6" onclick="goToStep(6)"><span class="step-num">6</span><div class="step-title">Регистрация и постановка задачи</div><div class="step-preview">Регистрирует и ставит задачу по ПП/НПА...</div></div></div>
+                <div class="cell"><div class="step-card role-gr" data-step="7" onclick="goToStep(7)"><span class="step-num">7</span><div class="step-title">Задача Директору по маркетингу</div><div class="step-preview">Ставит задачу в Техническую дирекцию...</div></div></div>
+                <div class="cell"><div class="step-card role-gr" data-step="8" onclick="goToStep(8)"><span class="step-num">8</span><div class="step-title">Задача Техническому директору</div><div class="step-preview">Ставит задачу в Дирекцию маркетинга...</div></div></div>
+                <div class="cell"><div class="step-card role-gr" data-step="9" onclick="goToStep(9)"><span class="step-num">9</span><div class="step-title">Создание единого документа</div><div class="step-preview">Создаёт единый документ о внесении изменений...</div></div></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+            </div></div>
+
+            <!-- Сегмент маркетинг-менеджер -->
+            <div class="lane"><div class="lane-label" style="border-left-color:#4682b4;">Сегмент маркетинг-менеджер</div><div class="lane-cells">
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-segment" data-step="11" onclick="goToStep(11)"><span class="step-num">11</span><div class="step-title">Подготовка информации</div><div class="step-preview">Подготавливает информацию для ответа...</div><span class="step-badge badge-branch">🔀</span></div></div>
+                <div class="cell"><div class="step-card role-segment" data-step="12" onclick="goToStep(12)"><span class="step-num">12</span><div class="step-title">Невозможность предоставления</div><div class="step-preview">Информирует о невозможности...</div></div></div>
+                <div class="cell"><div class="step-card role-segment" data-step="13" onclick="goToStep(13)"><span class="step-num">13</span><div class="step-title">Отправка информации</div><div class="step-preview">Направляет подготовленную информацию в Б24...</div></div></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+            </div></div>
+
+            <!-- Технический директор -->
+            <div class="lane"><div class="lane-label" style="border-left-color:#2e8b57;">Технический директор</div><div class="lane-cells">
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-tech" data-step="8" onclick="goToStep(8)"><span class="step-num">8</span><div class="step-title">Подготовка информации</div><div class="step-preview">Подготавливает информацию по ПП/НПА...</div></div></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+            </div></div>
+
+            <!-- Директор по маркетингу -->
+            <div class="lane"><div class="lane-label" style="border-left-color:#ff8c00;">Директор по маркетингу</div><div class="lane-cells">
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-marketing" data-step="7" onclick="goToStep(7)"><span class="step-num">7</span><div class="step-title">Подготовка информации</div><div class="step-preview">Подготавливает информацию по ПП/НПА...</div></div></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+            </div></div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Директор по правовым вопросам",
+            text: "(ВХОД) Принимает входящий запрос/предложение от Государственного органа. Запрос может поступить от Минпромторга, ЕЭК, НСПЭ Росэлектро, Минэкономразвития, Минстроя, Минэнерго, Администрации Президента, ТПП России, отраслевых ассоциаций и других. Содержание запроса: предоставление экспертного мнения на рынке электротехники, предложения по внесению изменений в ПП или НПА, касающиеся локализации продукта.\n\nВАЖНО: если запрос получен другим сотрудником или дирекцией, он в обязательном порядке перенаправляется Директору по правовым вопросам.",
+            inputs: ["⬅️ Входящий запрос от Государственного органа"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>"]
+        },
+        2: {
+            number: "2",
+            role: "Менеджер операционной поддержки GR",
+            text: "В Битрикс24 принимает и регистрирует входящий запрос. Регистрация осуществляется в реестре взаимодействия с Государственными органами, который размещается на диске группы Коммерческий блок/Дирекция по маркетингу.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От Директора по правовым вопросам (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
+        },
+        3: {
+            number: "3",
+            role: "Директор по правовым вопросам",
+            text: "В Битрикс24 отправляет полученный запрос/предложение на регистрацию.\n\n<b>Ветвление:</b> Если запрос касается локализации продукта → Шаг 6. Если иной запрос → Шаг 10.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От Директора по правовым вопросам (шаг 1)</a>"],
+            outputs: ["✅ Если локализация → <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>", "✅ Если иной запрос → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+        },
+        4: {
+            number: "4",
+            role: "Менеджер операционной поддержки GR",
+            text: "В Битрикс24 отправляет подготовленный документ для оформления обращения.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От GR-менеджера (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
+        },
+        5: {
+            number: "5",
+            role: "Директор по правовым вопросам",
+            text: "Оформляет обращение согласно установленному регламенту и направляет данные в Государственный орган.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От GR-менеджера (шаг 4)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
+        },
+        6: {
+            number: "6",
+            role: "Менеджер операционной поддержки GR",
+            text: "В Битрикс24 регистрирует запрос/предложение и ставит задачу по подготовке информации для внесения изменения в Постановление Правительства (ПП) или иные нормативно-правовые акты (НПА), касающиеся локализации продукта.\n\nРегистрация осуществляется в реестре взаимодействия с Государственными органами в Битрикс24 (диск группы Коммерческий блок/Дирекция по маркетингу).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От Директора по правовым вопросам (шаг 3, локализация)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7 (Директору по маркетингу)</a>", "→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8 (Техническому директору)</a>"]
+        },
+        7: {
+            number: "7",
+            role: "Директор по маркетингу",
+            text: "Подготавливает информацию, касающуюся внесения изменения в ПП или иные НПА. Подготовка информации для внесения изменений в ПП/НПА, касающихся локализации продукта, проходит параллельно в Технической дирекции и Дирекции маркетинга. После подготовки данных проводится совместное совещание (очное/видеоконференция) между Техническим директором и Директором по маркетингу для консолидации данных.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От GR-менеджера (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
+        },
+        8: {
+            number: "8",
+            role: "Технический директор",
+            text: "Подготавливает информацию, касающуюся внесения изменения в ПП или иные НПА. Подготовка информации для внесения изменений в ПП/НПА, касающихся локализации продукта, проходит параллельно в Технической дирекции и Дирекции маркетинга. После подготовки данных проводится совместное совещание (очное/видеоконференция) между Техническим директором и Директором по маркетингу для консолидации данных.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От GR-менеджера (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
+        },
+        9: {
+            number: "9",
+            role: "Менеджер операционной поддержки GR",
+            text: "Создаёт единый документ/предложение о внесении изменения в ПП или иные НПА на основании консолидированных данных от Директора по маркетингу и Технического директора.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От Директора по маркетингу (шаг 7)</a>", "⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От Технического директора (шаг 8)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
+        },
+        10: {
+            number: "10",
+            role: "Менеджер операционной поддержки GR",
+            text: "Регистрирует запрос в реестре взаимодействия с Государственными органами в Битрикс24 (диск группы Коммерческий блок/Дирекция по маркетингу).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От Директора по правовым вопросам (шаг 3, иной запрос)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
+        },
+        11: {
+            number: "11",
+            role: "Сегмент маркетинг-менеджер",
+            text: "Подготавливает информацию для ответа на запрос. В зависимости от типа запроса может быть подготовлена: информация о доле рынка продукции КЭАЗ, информация о конкурентах и конкурентной продукции, информация о готовности локализовать продукцию (импортозамещение) и прочее. Формат подготовки информации (презентация, Excel, Word) зависит от типа запроса.\n\n<b>Ветвление:</b> Если предоставление информации возможно → Шаг 13. Если невозможно → Шаг 12.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От GR-менеджера (шаг 10)</a>"],
+            outputs: ["✅ Если возможно → <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>", "❌ Если невозможно → <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>"]
+        },
+        12: {
+            number: "12",
+            role: "Сегмент маркетинг-менеджер",
+            text: "Информирует о невозможности предоставления информации (указывает причину: отсутствие данных или конфиденциальность информации). Информирование проводится в комментарии к задаче.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От сегмент-менеджера (шаг 11, НЕТ)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>"]
+        },
+        13: {
+            number: "13",
+            role: "Сегмент маркетинг-менеджер",
+            text: "В Битрикс24 отправляет подготовленную информацию. Информация прикладывается к задаче.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От сегмент-менеджера (шаг 11, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>"]
+        },
+        14: {
+            number: "14",
+            role: "Директор по правовым вопросам",
+            text: "Оформляет ответ согласно установленному регламенту и направляет в Государственный орган.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От сегмент-менеджера (шаг 12)</a>", "⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От сегмент-менеджера (шаг 13)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
+        },
+        15: {
+            number: "15",
+            role: "Директор по правовым вопросам",
+            text: "(ВЫХОД) Ответ на запрос/предложение направлен в Государственный орган. Информация передана в ГС (государственные структуры).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От Директора по правовым вопросам (шаг 14)</a>"],
+            outputs: ["📤 ВЫХОД: Ответ направлен в Гос. орган"]
+        },
+        16: {
+            number: "16",
+            role: "Директор по правовым вопросам",
+            text: "(ВХОД) Обращение направлено в Государственный орган. По факту получения ответа от Государственного органа, Директор по правовым вопросам проводит информирование любым доступным средством коммуникаций Менеджера операционной поддержки GR.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От Директора по правовым вопросам (шаг 5)</a>"],
+            outputs: ["📤 ВЫХОД: Информирование GR-менеджера"]
+        }
+    };
+
+    let currentStep = null;
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || { number: stepId, role: "Информация", text: "Описание шага...", inputs: [], outputs: [] };
+        
+        header.innerHTML = `<span class="detail-number">Шаг ${data.number}</span><span class="detail-role">${data.role}</span>`;
+        text.innerHTML = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        data.inputs.forEach(inp => { ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`; });
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        data.outputs.forEach(out => { ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`; });
+        ioHtml += '</div></div>';
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        highlightStep(stepId);
+        currentStep = stepId;
+    }
+
+    function goToStep(stepId) {
+        const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); showDetail(stepId); }
+        else { showDetail(stepId); }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active-step'));
+        const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (card) card.classList.add('active-step');
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function() { goToStep(this.getAttribute('data-step')); });
+    });
+</script>
+<script src="ai-core.js"></script>
+<script src="highlight.js"></script>
+</body>
+</html>
