@@ -1336,6 +1336,15 @@
                 <div class="phase-content">
                     <div class="role-group">
                         <div class="role-group-title">Продукт-менеджмент</div>
+                        <!-- Процедура 43: Изменение классификации НГ -->
+                        <a href="proc43.html" class="proc-card phase6-color" 
+                           data-proc-id="43" 
+                           data-roles="product_manager,engineer,technologist_sbc,upzp_specialist,umpp_specialist,upsp_specialist,ovk_head,omto_head,oem_head" 
+                           data-start-for="product_manager">
+                            <div class="proc-num">43 <span class="proc-badge badge-procedure">Процедура</span></div>
+                            <div class="proc-name">Изменение классификации НГ по Типу и Виду воспроизводства</div>
+                            <div class="proc-io"><span class="io-in">⬅️ Необходимость изменений</span><span class="io-out">➡️ Классификация изменена</span></div>
+                        </a>
                         <!-- Процедура 36: Товарная матрица РС -->
                         <a href="proc36.html" class="proc-card phase6-color" 
                            data-proc-id="36" 
@@ -1513,16 +1522,16 @@ const roleGroups = {
         "content_manager", "content_owner", "advertising_head", "internet_projects_head"
     ],
     "🔧 Технические роли": [
-        "technologist", "technical_consultant", "sapr_specialist", "metrologist",
+        "engineer", "technologist", "technologist_sbc", "technical_consultant", "sapr_specialist", "metrologist",
         "aod_engineer", "aod_specialist"
     ],
     "🚚 Закупки и склады": [
         "procurement_manager", "storekeeper", "utk_head", "goz_head",
-        "logistics_manager", "warehouse_foreman"
+        "logistics_manager", "warehouse_foreman", "omto_head", "oem_head"
     ],
     "🏭 Производство": [
         "assembly_head", "upp_head", "gp_planning_specialist",
-        "diu_planning_specialist", "upsp_specialist"
+        "diu_planning_specialist", "upsp_specialist", "upzp_specialist", "umpp_specialist"
     ],
     "📄 Документооборот и юристы": [
         "lawyer", "ukiot_economist", "ukiot_head", "database_responsible", "authorized_person"
@@ -1566,11 +1575,13 @@ const roleNames = {
     "roznica_head": "Руководитель канала 'Розница'",
     "regional_director": "Региональный директор",
     "client": "Клиент",
-    "designer": "Конструктор",
+    "designer": "Дизайнер",
     "chief_designer": "Главный конструктор",
+    "engineer": "Инженер-конструктор",
     "technologist": "Технолог",
+    "technologist_sbc": "Технолог СБЦ",
     "technical_consultant": "Технический консультант",
-    "designer_creative": "Дизайнер",
+    "designer_creative": "Дизайнер творческий",
     "senior_designer": "Старший промышленный дизайнер",
     "sapr_specialist": "Старший специалист по САПР",
     "metrologist": "Инженер по метрологии",
@@ -1582,6 +1593,8 @@ const roleNames = {
     "storekeeper": "Кладовщик",
     "logistics_manager": "Менеджер складской логистики",
     "warehouse_foreman": "Бригадир склада",
+    "omto_head": "Начальник ОМТО",
+    "oem_head": "Начальник отдела по работе с ОЕМ поставщиками",
     "aod_specialist": "Главный специалист по АОД",
     "aod_engineer": "Инженер по АОД",
     "financial_director": "Финансовый директор",
@@ -1607,6 +1620,8 @@ const roleNames = {
     "gp_planning_specialist": "Главный специалист по планированию ГП",
     "diu_planning_specialist": "Главный специалист по планированию ДиУ",
     "upsp_specialist": "Главный специалист УПСП",
+    "upzp_specialist": "Главный специалист по планированию УПЗП",
+    "umpp_specialist": "Главный специалист по планированию УМПП",
     "level1_manager": "Руководитель 1 уровня",
     "level2_manager": "Руководители 2 уровня",
     "approvers": "Участники согласования",
