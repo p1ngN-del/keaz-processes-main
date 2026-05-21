@@ -32,15 +32,10 @@
         cleanText = cleanText
             .replace(/^###\s+(.+)$/gm, '<strong style="font-size:1.05rem; display:block; margin:12px 0 8px 0;">$1</strong>')
             .replace(/^##\s+(.+)$/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">$1</strong>')
-            .replace(/^#\s+(.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:8px 0 4px 0;">$1</strong>');
-        
-        cleanText = cleanText
+            .replace(/^#\s+(.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:8px 0 4px 0;">$1</strong>')
             .replace(/^[-*]\s+(.+)$/gm, '<span style="display:block; margin-left:16px;">• $1</span>')
-            .replace(/^\d+\.\s+(.+)$/gm, '<span style="display:block; margin-left:8px;"><strong>$&</strong></span>');
-        
-        cleanText = cleanText
-            .replace(/\*\*/g, '')
-            .replace(/\*/g, '');
+            .replace(/^\d+\.\s+(.+)$/gm, '<span style="display:block; margin-left:8px;"><strong>$&</strong></span>')
+            .replace(/\*\*/g, '').replace(/\*/g, '').replace(/\n/g, '<br>');
         
         cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
             return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
@@ -50,7 +45,6 @@
             return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
         });
         
-        cleanText = cleanText.replace(/\n/g, '<br>');
         return cleanText;
     }
 
@@ -60,142 +54,36 @@
         style.id = 'ai-core-styles';
         style.textContent = `
             .ai-widget-hidden { display: none !important; }
-            .ai-search-btn {
-                display: inline-flex; align-items: center; justify-content: center;
-                gap: 8px; padding: 10px 20px; border-radius: 40px;
-                background: linear-gradient(135deg, #f6b83e, #ff8c00);
-                color: #0a1929; border: none; cursor: pointer;
-                font-size: 0.95rem; font-weight: 600;
-                box-shadow: 0 4px 12px rgba(246,184,62,0.3);
-                transition: all 0.3s ease; animation: softPulse 2.5s infinite;
-                border: 2px solid rgba(255,255,255,0.3); white-space: nowrap;
-                margin-left: 12px;
-            }
-            .ai-search-btn:hover {
-                transform: scale(1.05); box-shadow: 0 6px 18px rgba(246,184,62,0.5);
-                animation: none; background: linear-gradient(135deg, #ff8c00, #f6b83e);
-            }
-            @keyframes softPulse {
-                0% { box-shadow: 0 4px 12px rgba(246,184,62,0.3); }
-                50% { box-shadow: 0 6px 18px rgba(246,184,62,0.5), 0 0 0 3px rgba(246,184,62,0.1); }
-                100% { box-shadow: 0 4px 12px rgba(246,184,62,0.3); }
-            }
-            .ai-widget {
-                position: fixed; top: 50%; left: 24px; transform: translateY(-50%);
-                width: 420px; max-width: calc(100vw - 40px);
-                background: white; border-radius: 24px;
-                box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-                z-index: 9999; overflow: hidden; border: 1px solid #e2e8f0;
-            }
+            .ai-search-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 40px; background: linear-gradient(135deg, #f6b83e, #ff8c00); color: #0a1929; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 12px rgba(246,184,62,0.3); transition: all 0.3s ease; animation: softPulse 2.5s infinite; border: 2px solid rgba(255,255,255,0.3); white-space: nowrap; margin-left: 12px; }
+            .ai-search-btn:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(246,184,62,0.5); animation: none; background: linear-gradient(135deg, #ff8c00, #f6b83e); }
+            @keyframes softPulse { 0% { box-shadow: 0 4px 12px rgba(246,184,62,0.3); } 50% { box-shadow: 0 6px 18px rgba(246,184,62,0.5), 0 0 0 3px rgba(246,184,62,0.1); } 100% { box-shadow: 0 4px 12px rgba(246,184,62,0.3); } }
+            .ai-widget { position: fixed; top: 50%; left: 24px; transform: translateY(-50%); width: 420px; max-width: calc(100vw - 40px); background: white; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); z-index: 9999; overflow: hidden; border: 1px solid #e2e8f0; display: none; }
             .ai-widget.open { display: block; animation: slideInLeft 0.3s ease; }
-            @keyframes slideInLeft {
-                from { opacity: 0; transform: translateY(-50%) translateX(-20px); }
-                to { opacity: 1; transform: translateY(-50%) translateX(0); }
-            }
-            .ai-header {
-                background: linear-gradient(135deg, #0a1929, #1a2642);
-                color: white; padding: 16px 20px; display: flex;
-                align-items: center; gap: 12px; cursor: move;
-            }
+            @keyframes slideInLeft { from { opacity: 0; transform: translateY(-50%) translateX(-20px); } to { opacity: 1; transform: translateY(-50%) translateX(0); } }
+            .ai-header { background: linear-gradient(135deg, #0a1929, #1a2642); color: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px; cursor: move; }
             .ai-icon { font-size: 32px; animation: wave 2s infinite; }
-            @keyframes wave {
-                0%,100% { transform: rotate(0deg); }
-                25% { transform: rotate(-10deg); }
-                75% { transform: rotate(10deg); }
-            }
-            .ai-title { flex: 1; font-weight: 600; font-size: 1.1rem;
-                background: linear-gradient(90deg, #fff, #f6b83e);
-                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-            .ai-close {
-                background: none; border: none; color: white; font-size: 24px;
-                cursor: pointer; opacity: 0.7; transition: 0.2s;
-                padding: 0; width: 30px; height: 30px;
-                display: flex; align-items: center; justify-content: center;
-                border-radius: 8px;
-            }
+            @keyframes wave { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(10deg); } }
+            .ai-title { flex: 1; font-weight: 600; font-size: 1.1rem; background: linear-gradient(90deg, #fff, #f6b83e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+            .ai-close { background: none; border: none; color: white; font-size: 24px; cursor: pointer; opacity: 0.7; transition: 0.2s; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
             .ai-close:hover { opacity: 1; background: rgba(255,255,255,0.1); }
-            .ai-messages {
-                height: 480px; max-height: 65vh; overflow-y: auto;
-                padding: 20px; background: #f8fafc;
-                display: flex; flex-direction: column; gap: 16px;
-            }
-            .ai-message {
-                padding: 14px 18px; border-radius: 18px;
-                max-width: 85%; word-wrap: break-word;
-                font-size: 0.9rem; line-height: 1.5;
-            }
-            .ai-message-user {
-                background: linear-gradient(135deg, #f6b83e, #ff8c00);
-                color: #0a1929; align-self: flex-end;
-                border-bottom-right-radius: 4px;
-                box-shadow: 0 4px 12px rgba(246,184,62,0.3);
-            }
-            .ai-message-bot {
-                background: white; color: #1e293b; align-self: flex-start;
-                border-bottom-left-radius: 4px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-                border: 1px solid #e2e8f0;
-            }
-            .ai-message-bot .proc-link {
-                color: #f6b83e;
-                text-decoration: none;
-                font-weight: 600;
-                transition: 0.2s;
-                background: #fff3cf;
-                padding: 2px 8px;
-                border-radius: 20px;
-                display: inline-block;
-            }
-            .ai-message-bot .proc-link:hover {
-                background: #f6b83e;
-                color: #0a1929;
-                text-decoration: none;
-            }
-            .typing-indicator {
-                display: flex; gap: 6px; padding: 14px 18px;
-                background: white; border-radius: 18px;
-                border-bottom-left-radius: 4px; align-self: flex-start;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-                border: 1px solid #e2e8f0;
-            }
-            .typing-indicator span {
-                width: 10px; height: 10px; background: #f6b83e;
-                border-radius: 50%; animation: typing 1.4s infinite;
-            }
+            .ai-messages { height: 480px; max-height: 65vh; overflow-y: auto; padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 16px; }
+            .ai-message { padding: 14px 18px; border-radius: 18px; max-width: 85%; word-wrap: break-word; font-size: 0.9rem; line-height: 1.5; }
+            .ai-message-user { background: linear-gradient(135deg, #f6b83e, #ff8c00); color: #0a1929; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(246,184,62,0.3); }
+            .ai-message-bot { background: white; color: #1e293b; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+            .ai-message-bot .proc-link { color: #f6b83e; font-weight: 600; background: #fff3cf; padding: 2px 8px; border-radius: 20px; display: inline-block; text-decoration: none; }
+            .ai-message-bot .proc-link:hover { background: #f6b83e; color: #0a1929; }
+            .typing-indicator { display: flex; gap: 6px; padding: 14px 18px; background: white; border-radius: 18px; border-bottom-left-radius: 4px; align-self: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+            .typing-indicator span { width: 10px; height: 10px; background: #f6b83e; border-radius: 50%; animation: typing 1.4s infinite; }
             .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
             .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-            @keyframes typing {
-                0%,60%,100% { transform: translateY(0); opacity: 0.5; }
-                30% { transform: translateY(-10px); opacity: 1; }
-            }
-            .ai-input-row {
-                display: flex; padding: 16px 20px; background: white;
-                border-top: 1px solid #e2e8f0; gap: 12px;
-            }
-            .ai-input {
-                flex: 1; padding: 12px 18px; border: 2px solid #e2e8f0;
-                border-radius: 30px; font-size: 0.95rem; outline: none;
-                transition: 0.2s;
-            }
+            @keyframes typing { 0%,60%,100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-10px); opacity: 1; } }
+            .ai-input-row { display: flex; padding: 16px 20px; background: white; border-top: 1px solid #e2e8f0; gap: 12px; }
+            .ai-input { flex: 1; padding: 12px 18px; border: 2px solid #e2e8f0; border-radius: 30px; font-size: 0.95rem; outline: none; transition: 0.2s; }
             .ai-input:focus { border-color: #f6b83e; box-shadow: 0 0 0 4px rgba(246,184,62,0.15); }
-            .ai-send {
-                background: linear-gradient(135deg, #f6b83e, #ff8c00);
-                border: none; width: 48px; height: 48px; border-radius: 50%;
-                cursor: pointer; font-size: 22px; color: #0a1929;
-                transition: 0.2s; display: flex; align-items: center;
-                justify-content: center; font-weight: bold;
-                box-shadow: 0 4px 12px rgba(246,184,62,0.3);
-            }
+            .ai-send { background: linear-gradient(135deg, #f6b83e, #ff8c00); border: none; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 22px; color: #0a1929; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 4px 12px rgba(246,184,62,0.3); }
             .ai-send:hover { transform: scale(1.08) rotate(5deg); }
             .ai-send:disabled { opacity: 0.5; cursor: not-allowed; }
-            .ai-resize-handle {
-                position: absolute; bottom: 0; right: 0;
-                width: 20px; height: 20px; cursor: nw-resize;
-                font-size: 16px; color: #94a3b8; text-align: center;
-                line-height: 18px; user-select: none; z-index: 10;
-            }
+            .ai-resize-handle { position: absolute; bottom: 0; right: 0; width: 20px; height: 20px; cursor: nw-resize; font-size: 16px; color: #94a3b8; text-align: center; line-height: 18px; user-select: none; z-index: 10; }
         `;
         document.head.appendChild(style);
     }
@@ -207,21 +95,9 @@
         
         const widgetHTML = `
             <div class="ai-widget ai-widget-hidden" id="aiWidget">
-                <div class="ai-header">
-                    <span class="ai-icon">🤖</span>
-                    <span class="ai-title">AI · Ассистент КЭАЗ</span>
-                    <button class="ai-close" onclick="AICore.toggleWidget()">✕</button>
-                </div>
-                <div class="ai-messages" id="aiMessages">
-                    <div class="ai-message ai-message-bot">
-                        <strong>🤖 AI-ассистент КЭАЗ готов к работе.</strong><br><br>
-                        Задайте вопрос о процедурах, стандартах или инструкциях компании.
-                    </div>
-                </div>
-                <div class="ai-input-row">
-                    <input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)">
-                    <button class="ai-send" id="aiSendBtn" onclick="AICore.sendMessage()">➤</button>
-                </div>
+                <div class="ai-header"><span class="ai-icon">🤖</span><span class="ai-title">AI · Ассистент КЭАЗ</span><button class="ai-close" onclick="AICore.toggleWidget()">✕</button></div>
+                <div class="ai-messages" id="aiMessages"><div class="ai-message ai-message-bot"><strong>🤖 AI-ассистент КЭАЗ готов к работе.</strong><br><br>Задайте вопрос о процедурах, стандартах или инструкциях компании.</div></div>
+                <div class="ai-input-row"><input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)"><button class="ai-send" id="aiSendBtn" onclick="AICore.sendMessage()">➤</button></div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
@@ -313,15 +189,7 @@
             
             const btn = document.createElement('button');
             btn.className = 'ai-search-btn ai-core-btn';
-            btn.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🤖</span>
-                    <div style="text-align: left;">
-                        <div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div>
-                        <div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Задайте вопрос о процедурах</div>
-                    </div>
-                </div>
-            `;
+            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🤖</span><div style="text-align: left;"><div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div><div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Задайте вопрос о процедурах</div></div></div>`;
             btn.style.padding = '10px 20px 10px 16px';
             btn.style.background = 'white';
             btn.style.border = '2px solid #f6b83e';
@@ -420,13 +288,11 @@
                         role: 'system',
                         content: `Ты — AI-ассистент КЭАЗ. Отвечай ТОЛЬКО на вопрос пользователя.
 
-НЕ используй вступления («Здравствуйте», «Я — ассистент», «Я умею»). НЕ перечисляй примеры запросов. НЕ задавай встречных вопросов без крайней необходимости.
+НЕ используй вступления. НЕ перечисляй примеры запросов. НЕ задавай встречных вопросов.
 
-Пиши сразу по делу. Используй структуру: заголовки (жирным), списки (маркированные). НЕ используй символы ###, ##, #, **, * — они преобразуются автоматически.
+Пиши сразу по делу. Используй структуру: заголовки (жирным), списки (маркированные).
 
-Если вопрос чёткий — давай чёткий ответ со ссылками на процедуры. Если информации в базе нет — скажи, где её можно уточнить.
-
-В конце ответа обязательно добавляй [PROC:номера процедур, через запятую, которые связаны с ответом].`
+В конце ответа ОБЯЗАТЕЛЬНО добавляй [PROC:номера процедур, через запятую, которые связаны с ответом]. Например: [PROC:28,30]`
                     },
                     {
                         role: 'user',
@@ -454,15 +320,17 @@
                     }
                     let cleanContent = data.content.replace(/\[PROC:[^\]]+\]/, '').trim();
                     
-                    // Делаем ссылки на процедуры кликабельными с подсветкой
+                    // Делаем ссылки на процедуры кликабельными
                     procNumbers.forEach(procNum => {
-                        const regex = new RegExp(`(Процедура\\s+${procNum})`, 'gi');
-                        cleanContent = cleanContent.replace(regex, `<a href="proc${procNum}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">$1</a>`);
+                        const regex1 = new RegExp(`(Процедура\\s+${procNum})`, 'gi');
+                        const regex2 = new RegExp(`(процедуру\\s+${procNum})`, 'gi');
+                        cleanContent = cleanContent.replace(regex1, `<a href="proc${procNum}.html" class="proc-link">$1</a>`);
+                        cleanContent = cleanContent.replace(regex2, `<a href="proc${procNum}.html" class="proc-link">$1</a>`);
                     });
                     
                     AICore._addMessage(cleanContent, 'bot');
                     
-                    // Фильтруем процедуры по номерам из ответа AI
+                    // ФИЛЬТРАЦИЯ КАРТЫ ПО НОМЕРАМ ПРОЦЕДУР
                     if (procNumbers.length > 0 && typeof window.filterByAIProcedures === 'function') {
                         window.filterByAIProcedures(procNumbers);
                         const messagesDiv = document.getElementById('aiMessages');
@@ -491,7 +359,6 @@
         }
     };
     
-    // ИНИЦИАЛИЗАЦИЯ — НЕ ВЫЗЫВАЕМ filterByRole ЗДЕСЬ, ТОЛЬКО initButton
     function initAICore() {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
