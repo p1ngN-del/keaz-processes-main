@@ -1928,15 +1928,12 @@ function renderRoleFilters() {
     const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
     if (activeFilter) activeFilter.classList.add('active');
     
-    // Сначала фильтруем карточки по роли
+    // Фильтруем карточки по роли
     const cards = document.querySelectorAll('.proc-card');
-    let roleCards = [];
-    
     cards.forEach(card => {
         const rolesAttr = card.getAttribute('data-roles');
         if (rolesAttr && rolesAttr.split(',').includes(role)) {
             card.classList.remove('filtered-out');
-            roleCards.push(card);
         } else {
             card.classList.add('filtered-out');
         }
@@ -1946,7 +1943,7 @@ function renderRoleFilters() {
     applySearch();
     
     // Запрашиваем у AI стартовую процедуру
-    if (roleCards.length > 0 && window.AICore && window.AICore.getStartProc) {
+    if (window.AICore && window.AICore.getStartProc) {
         const allProcedures = await loadProceduresFullData();
         const startProcId = await window.AICore.getStartProc(role, allProcedures);
         
@@ -1954,7 +1951,6 @@ function renderRoleFilters() {
             const startCard = document.querySelector(`.proc-card[data-proc-id="${startProcId}"]`);
             if (startCard) {
                 startCard.classList.add('start-highlight');
-                // Прокручиваем к стартовой процедуре
                 startCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
