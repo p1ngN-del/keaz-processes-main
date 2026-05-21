@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КЭАЗ · Процедура 45</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2639 0%, #2a3a55 100%);
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #f6b83e;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: #0f1a38;
+            padding: 8px 20px;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #1e3260;
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #0a1a3a;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        .subhead {
+            text-align: center;
+            color: #2c3e66;
+            border-bottom: 2px solid #d0d9f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .swimlane {
+            background: #f9fbfe;
+            border-radius: 24px;
+            padding: 20px 10px;
+            border: 2px solid #e0e7f5;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .swimlane-table {
+            display: flex;
+            flex-direction: column;
+            min-width: 1400px;
+        }
+
+        .step-header {
+            display: flex;
+            margin-left: 220px;
+            margin-bottom: 10px;
+        }
+        .step-header-cell {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 8px 0;
+            border-radius: 20px 20px 0 0;
+            margin-right: 5px;
+            font-size: 0.85rem;
+        }
+
+        .lane {
+            display: flex;
+            min-height: 120px;
+            border-bottom: 1px solid #d0d9f0;
+        }
+        .lane:last-child {
+            border-bottom: none;
+        }
+
+        .lane-label {
+            width: 220px;
+            font-weight: 700;
+            color: #0f1a38;
+            background: #e6ecfc;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border-left: 6px solid;
+            margin-right: 10px;
+            flex-shrink: 0;
+            align-self: center;
+            font-size: 0.9rem;
+        }
+
+        .lane-cells {
+            display: flex;
+            flex: 1;
+            gap: 5px;
+            min-height: 120px;
+            align-items: flex-start;
+        }
+
+        .cell {
+            flex: 1;
+            min-width: 140px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 5px;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 6px solid;
+            border: 1px solid #dce3f0;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            text-align: left;
+            scroll-margin-top: 20px;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            border-color: #f6b83e;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .step-card.active-step {
+            border: 3px solid #f6b83e;
+            background: #fff9e6;
+            box-shadow: 0 0 0 3px rgba(246,184,62,0.2);
+        }
+
+        .step-num {
+            font-weight: 800;
+            color: #4a5a7a;
+            font-size: 0.7rem;
+            background: #eef2fa;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-bottom: 6px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #0f1a38;
+        }
+
+        .step-preview {
+            font-size: 0.65rem;
+            color: #4d5f82;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .step-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .badge-in {
+            background: #e3f2fd;
+            color: #1e90ff;
+        }
+        .badge-out {
+            background: #e8f5e9;
+            color: #2e8b57;
+        }
+        .badge-branch {
+            background: #fff3e0;
+            color: #f6b83e;
+        }
+
+        .detail-panel {
+            display: none;
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #e0e7f5;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
+        }
+        .detail-panel.show {
+            display: block;
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .detail-number {
+            background: #0f1a38;
+            color: white;
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .detail-role {
+            background: #eef2fa;
+            color: #2b4587;
+            font-weight: 700;
+            padding: 5px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+        }
+        .detail-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #1a2b4a;
+            margin-bottom: 25px;
+            white-space: pre-line;
+        }
+        .detail-io {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8faff;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .io-group {
+            flex: 1;
+        }
+        .io-title {
+            font-weight: 700;
+            color: #0f1a38;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        .io-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .io-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .io-link {
+            color: #1e6df2;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .io-link:hover {
+            background: #e6f0ff;
+            text-decoration: underline;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #f6b83e;
+            color: #0b1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            border: none;
+            z-index: 1000;
+        }
+
+        .role-marketing-dir { border-left-color: #1e90ff; }
+        .role-rum { border-left-color: #8a2be2; }
+        .role-segment { border-left-color: #4682b4; }
+        .role-analytics { border-left-color: #2e8b57; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Вернуться к карте процессов</a>
+    
+    <h1>Процедура 45: Формирование стратегий продуктовых направлений</h1>
+    <div class="subhead">Нажми на шаг — перейдешь к описанию</div>
+
+    <div class="swimlane">
+        <div class="swimlane-table">
+            <div class="step-header">
+                <div class="step-header-cell">1</div>
+                <div class="step-header-cell">2</div>
+                <div class="step-header-cell">3-4</div>
+                <div class="step-header-cell">5-6</div>
+                <div class="step-header-cell">7-9</div>
+                <div class="step-header-cell">10-11</div>
+            </div>
+
+            <!-- Дорожка 1: Директор по маркетингу -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #1e90ff;">Директор по маркетингу</div>
+                <div class="lane-cells">
+                    <div class="cell">
+                        <div class="step-card role-marketing-dir" data-step="1" onclick="goToStep(1)">
+                            <span class="step-num">1</span>
+                            <div class="step-title">Постановка задачи</div>
+                            <div class="step-preview">Ставит задачу в Б24 на подготовку/обновление стратегий ПН...</div>
+                            <span class="step-badge badge-in">⬅️ вход</span>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 2: Руководитель УПМ / Начальники ОПН -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #8a2be2;">Руководитель УПМ<br>Начальники ОПН</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-rum" data-step="2" onclick="goToStep(2)">
+                            <span class="step-num">2</span>
+                            <div class="step-title">План содержания и глоссарий</div>
+                            <div class="step-preview">Подготавливают и согласовывают план содержания стратегий ПН и глоссарий...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-rum" data-step="3" onclick="goToStep(3)">
+                            <span class="step-num">3</span>
+                            <div class="step-title">Задача на данные</div>
+                            <div class="step-preview">Ставят задачи на подготовку данных...</div>
+                        </div>
+                        <div class="step-card role-rum" data-step="5" onclick="goToStep(5)">
+                            <span class="step-num">5</span>
+                            <div class="step-title">Задача на тренды рынка</div>
+                            <div class="step-preview">Ставят задачу на подготовку данных о трендах рынка...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-rum" data-step="7" onclick="goToStep(7)">
+                            <span class="step-num">7</span>
+                            <div class="step-title">Черновики стратегий</div>
+                            <div class="step-preview">Готовят черновики стратегий продуктовых направлений...</div>
+                        </div>
+                        <div class="step-card role-rum" data-step="8" onclick="goToStep(8)">
+                            <span class="step-num">8</span>
+                            <div class="step-title">Совещание по черновикам</div>
+                            <div class="step-preview">Инициируют проведение совещания по обсуждению черновиков...</div>
+                        </div>
+                    </div>
+                    <div class="cell">
+                        <div class="step-card role-rum" data-step="9" onclick="goToStep(9)">
+                            <span class="step-num">9</span>
+                            <div class="step-title">Финальная версия</div>
+                            <div class="step-preview">Подготавливают финальную версию стратегий ПН...</div>
+                        </div>
+                        <div class="step-card role-rum" data-step="10" onclick="goToStep(10)">
+                            <span class="step-num">10</span>
+                            <div class="step-title">Совещание по согласованию</div>
+                            <div class="step-preview">Инициируют проведение совещания по согласованию...</div>
+                        </div>
+                        <div class="step-card role-rum" data-step="11" onclick="goToStep(11)">
+                            <span class="step-num">11</span>
+                            <div class="step-title">Размещение</div>
+                            <div class="step-preview">Размещают СНП на диске группы в Битрикс24...</div>
+                            <span class="step-badge badge-out">📤 выход</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дорожка 3: Сегмент маркетинг-менеджер -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #4682b4;">Сегмент маркетинг-менеджер</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-segment" data-step="6" onclick="goToStep(6)">
+                            <span class="step-num">6</span>
+                            <div class="step-title">Данные о трендах рынка</div>
+                            <div class="step-preview">Готовит данные о трендах рынка и внутреннюю статистику...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+
+            <!-- Дорожка 4: Начальник Управления аналитики цен и данных -->
+            <div class="lane">
+                <div class="lane-label" style="border-left-color: #2e8b57;">Начальник Управления аналитики цен и данных</div>
+                <div class="lane-cells">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell">
+                        <div class="step-card role-analytics" data-step="4" onclick="goToStep(4)">
+                            <span class="step-num">4</span>
+                            <div class="step-title">Данные отчетности</div>
+                            <div class="step-preview">Готовит данные внутренней и внешней отчетности...</div>
+                        </div>
+                    </div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Директор по маркетингу",
+            text: "(ВХОД) Утвержденная маркетинговая стратегия. После неё ставит задачу в Битрикс24 на подготовку/обновление стратегий продуктовых направлений.",
+            inputs: ["⬅️ Утвержденная маркетинговая стратегия (Процедура 21)"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
+        },
+        2: {
+            number: "2",
+            role: "Руководитель управления продуктового маркетинга / Начальники отделов продуктовых направлений",
+            text: "Подготавливают и согласовывают план содержания стратегий продуктовых направлений и глоссарий. План формируется в формате презентации, согласовывается с Директором по маркетингу в формате ВКС. Одним из пунктов плана является сбор данных для подготовки реестра продуктовых проектов (Исследовательская/Инвестиционная стадии и Коммерческий период) в Битрикс24.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От Директора по маркетингу (шаг 1)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>", "→ <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
+        },
+        3: {
+            number: "3",
+            role: "Руководитель управления продуктового маркетинга / Начальники отделов продуктовых направлений",
+            text: "В Битрикс24 ставят задачу на подготовку данных внутренней отчетности.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От РУПМ/НОПН (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
+        },
+        4: {
+            number: "4",
+            role: "Начальник Управления аналитики цен и данных",
+            text: "Готовит данные внутренней и внешней отчетности. Включает, но не ограничивается: подготовка статистики продаж и валовой прибыли в 1С:УПП; прогнозирование до конца года продаж и валовой прибыли; подготовка статистики таможенного ввоза; статистика продаж в разрезе контрагентов и рыночных сегментов; сравнительный анализ цен конкурентов; динамика остатков и Sell out ключевых контрагентов. Данные формируются в документ любого формата (doc, xls, иной) и прикладываются к задаче в Битрикс24.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От РУПМ/НОПН (шаг 3)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
+        },
+        5: {
+            number: "5",
+            role: "Руководитель управления продуктового маркетинга / Начальники отделов продуктовых направлений",
+            text: "В Битрикс24 ставят задачу на подготовку и предоставление данных о трендах рынка и информации о конкурентах в разрезе сегментов.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От РУПМ/НОПН (шаг 2)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>"]
+        },
+        6: {
+            number: "6",
+            role: "Сегмент маркетинг-менеджер",
+            text: "Готовит данные о трендах рынка и внутреннюю статистику. Подготовка данных о трендах рынка включает: информация о клиентах; информация о сегментах; информация о каналах продаж; конкурентный анализ. Данные формируются в документ любого формата (doc, xls, ppt, иной) и прикладываются к задаче в Битрикс24.\n\nСотрудники, участвующие в подготовке данных: Сегмент маркетинг-менеджер, Руководитель дивизиона «Транспорт, Энергетика и Строительство», Руководитель дивизиона «Цифровые технологии, Промышленность и Инфраструктура», Руководитель управления по работе с системными дистрибьюторами, Руководитель управления региональных продаж.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(5); return false;' class='io-link'>От РУПМ/НОПН (шаг 5)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
+        },
+        7: {
+            number: "7",
+            role: "Руководитель управления продуктового маркетинга / Начальники отделов продуктовых направлений",
+            text: "Готовят черновики стратегий продуктовых направлений согласно плану (Приложение А). Подготовленный черновик размещается на диске группы «Маркетинг» в Битрикс24.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От начальника аналитики (шаг 4)</a>", "⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От сегмент-менеджера (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
+        },
+        8: {
+            number: "8",
+            role: "Руководитель управления продуктового маркетинга / Начальники отделов продуктовых направлений",
+            text: "Инициируют проведение дополнительного совещания по обсуждению черновиков стратегий продуктовых направлений. Совещание проводится в формате очной встречи/ВКС. Согласующим лицом является Директор по маркетингу. Полученные замечания учитываются при формировании финальных версий.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От РУПМ/НОПН (шаг 7)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>"]
+        },
+        9: {
+            number: "9",
+            role: "Руководитель управления продуктового маркетинга / Начальники отделов продуктовых направлений",
+            text: "Подготавливают финальную версию стратегий продуктовых направлений в формате презентаций.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От РУПМ/НОПН (шаг 8)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+        },
+        10: {
+            number: "10",
+            role: "Руководитель управления продуктового маркетинга / Начальники отделов продуктовых направлений",
+            text: "Инициируют проведение совещания по согласованию и утверждению итоговых версий стратегий продуктовых направлений. Совещание проводится в формате очной встречи/ВКС, согласно план-графика проведения стратегирования. Согласующими лицами являются Управляющий директор коммерческого блока и Управляющий директор Блока масштабирования бизнеса. Полученные замечания отражаются в итоговых файлах презентаций.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От РУПМ/НОПН (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
+        },
+        11: {
+            number: "11",
+            role: "Руководитель управления продуктового маркетинга / Начальники отделов продуктовых направлений",
+            text: "(ВЫХОД) Размещают стратегии продуктовых направлений на диске группы «Маркетинг» в Битрикс24.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От РУПМ/НОПН (шаг 10)</a>"],
+            outputs: ["📤 ВЫХОД: Стратегии ПН размещены в Битрикс24"]
+        }
+    };
+
+    let currentStep = null;
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || {
+            number: stepId,
+            role: "Информация",
+            text: "Детальное описание шага...",
+            inputs: [],
+            outputs: []
+        };
+        
+        header.innerHTML = `
+            <span class="detail-number">Шаг ${data.number}</span>
+            <span class="detail-role">${data.role}</span>
+        `;
+        
+        text.innerHTML = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        if (data.inputs && data.inputs.length) {
+            data.inputs.forEach(inp => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        if (data.outputs && data.outputs.length) {
+            data.outputs.forEach(out => {
+                ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`;
+            });
+        } else {
+            ioHtml += `<div class="io-item">Нет данных</div>`;
+        }
+        ioHtml += '</div></div>';
+        
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        highlightStep(stepId);
+        currentStep = stepId;
+    }
+
+    function goToStep(stepId) {
+        const stepCard = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (stepCard) {
+            stepCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showDetail(stepId);
+        } else {
+            showDetail(stepId);
+        }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active-step');
+        });
+        const currentCard = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (currentCard) {
+            currentCard.classList.add('active-step');
+        }
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const stepId = this.getAttribute('data-step');
+            if (stepId) {
+                goToStep(stepId);
+            }
+        });
+    });
+</script>
+<script src="ai-core.js"></script>
+<script src="highlight.js"></script>
+</body>
+</html>
