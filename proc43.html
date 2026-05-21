@@ -105,4 +105,216 @@
                 <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
                 <div class="cell"><div class="step-card role-umpp" data-step="13" onclick="goToStep(13)"><span class="step-num">13</span><div class="step-title">Изменение карточки</div><div class="step-preview">Вносит в 1С:УПП...</div></div></div>
                 <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-            </div></
+            </div></div>
+
+            <!-- УПСП -->
+            <div class="lane"><div class="lane-label" style="border-left-color:#daa520;">Гл. спец. УПСП</div><div class="lane-cells">
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                <div class="cell"></div><div class="cell"></div>
+                <div class="cell"><div class="step-card role-upsp" data-step="16" onclick="goToStep(16)"><span class="step-num">16</span><div class="step-title">Регистры ПП</div><div class="step-preview">Вносит изменения...</div></div></div>
+                <div class="cell"></div><div class="cell"></div>
+            </div></div>
+
+            <!-- Инженер-конструктор -->
+            <div class="lane"><div class="lane-label" style="border-left-color:#ff8c00;">Инженер-конструктор</div><div class="lane-cells">
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-engineer" data-step="14" onclick="goToStep(14)"><span class="step-num">14</span><div class="step-title">Спецификация</div><div class="step-preview">Создаёт спецификацию в 1С:УПП...</div></div></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            </div></div>
+
+            <!-- Технолог СБЦ -->
+            <div class="lane"><div class="lane-label" style="border-left-color:#ba55d3;">Технолог СБЦ</div><div class="lane-cells">
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"><div class="step-card role-sbc" data-step="15" onclick="goToStep(15)"><span class="step-num">15</span><div class="step-title">Техкарты</div><div class="step-preview">Утверждает спецификацию...</div></div></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            </div></div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <div id="detailHeader" class="detail-header"></div>
+        <div id="detailText" class="detail-text"></div>
+        <div id="detailIO" class="detail-io"></div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+</div>
+
+<script>
+    const stepData = {
+        1: {
+            number: "1",
+            role: "Продукт-менеджер",
+            text: "(ВХОД) Инициирует изменение классификации НГ по типу и виду воспроизводства. Организует проверку реквизитов и свойств в карточке НГ на актуальность. При изменении наименования покупных комплектующих в пути — запускает СЗ на корректировку заказа поставщика.",
+            inputs: ["⬅️ Необходимость изменения классификации НГ"],
+            outputs: ["→ <a href='#' onclick='goToStep(2); return false;' class='io-link'>Шаг 2</a>"]
+        },
+        2: {
+            number: "2",
+            role: "Продукт-менеджер",
+            text: "Проводит анализ необходимости формирования дополнительного плана закупок на материалы и комплектующие.\n\n<b>Ветвление:</b> Если доп. план закупок нужен → Шаг 3. Если нет → Шаг 8.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(1); return false;' class='io-link'>От ПМ (шаг 1)</a>"],
+            outputs: ["✅ Если нужен → <a href='#' onclick='goToStep(3); return false;' class='io-link'>Шаг 3</a>", "❌ Если не нужен → <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
+        },
+        3: {
+            number: "3",
+            role: "Продукт-менеджер",
+            text: "В 1С:ДО создаёт служебную записку на согласование дополнительного плана закупок.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(4); return false;' class='io-link'>Шаг 4</a>"]
+        },
+        4: {
+            number: "4",
+            role: "Начальник ОВК/ОМТО/Отдела по работе с ОЕМ поставщиками",
+            text: "Принимает решение о согласовании дополнительного плана закупок. При изменении с Покупки на Производство указывает дату поступления материалов. При изменении с Производства на Покупку указывает срок выполнения заказа и перечень документов.\n\n<b>Ветвление:</b> Если согласовано → Шаг 6. Если нет → Шаг 5.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(3); return false;' class='io-link'>От ПМ (шаг 3)</a>"],
+            outputs: ["✅ Если согласовано → <a href='#' onclick='goToStep(6); return false;' class='io-link'>Шаг 6</a>", "❌ Если нет → <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
+        },
+        5: {
+            number: "5",
+            role: "Продукт-менеджер",
+            text: "(ВЫХОД) Тип и Вид воспроизводства на номенклатурной группе не изменены.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От руководителя (шаг 4, НЕТ)</a>", "⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От согласующих (шаг 11, НЕТ)</a>"],
+            outputs: ["📤 ВЫХОД: НГ не изменена"]
+        },
+        6: {
+            number: "6",
+            role: "Главный специалист по планированию УПЗП",
+            text: "Вносит дополнительный план закупок в 1С:УПП.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(4); return false;' class='io-link'>От руководителя (шаг 4, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(7); return false;' class='io-link'>Шаг 7</a>"]
+        },
+        7: {
+            number: "7",
+            role: "Начальник ОВК/ОМТО/ОЕМ",
+            text: "Организовывает обработку дополнительного плана закупок через автозаказ ОЕМ/АТЗ на основании «Инструкция по отработке АТЗ».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(6); return false;' class='io-link'>От УПЗП (шаг 6)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(8); return false;' class='io-link'>Шаг 8</a>"]
+        },
+        8: {
+            number: "8",
+            role: "Продукт-менеджер",
+            text: "Проводит анализ необходимости комплектации остатков на складах ГП перед переводом номенклатуры.\n\n<b>Ветвление:</b> Если комплектация остатков необходима → Шаг 9. Если нет → Шаг 10.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(2); return false;' class='io-link'>От ПМ (шаг 2, НЕТ)</a>", "⬅️ <a href='#' onclick='goToStep(7); return false;' class='io-link'>От руководителя (шаг 7)</a>"],
+            outputs: ["✅ Если нужна комплектация → <a href='#' onclick='goToStep(9); return false;' class='io-link'>Шаг 9</a>", "❌ Если не нужна → <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+        },
+        9: {
+            number: "9",
+            role: "Продукт-менеджер",
+            text: "Запускает согласование комплектации номенклатуры в 1С:ДО на основании процедуры «Согласование комплектации номенклатуры».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От ПМ (шаг 8, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(10); return false;' class='io-link'>Шаг 10</a>"]
+        },
+        10: {
+            number: "10",
+            role: "Продукт-менеджер",
+            text: "Запускает СЗ на внесение изменений в 1С:ДО на основании Методики расчёта срока выполнения заказа на партию для покупных ТМЦ и Процедуры «Ввод номенклатуры в 1С:УПП в папку «Готовая продукция».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(8); return false;' class='io-link'>От ПМ (шаг 8, НЕТ)</a>", "⬅️ <a href='#' onclick='goToStep(9); return false;' class='io-link'>От ПМ (шаг 9)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(11); return false;' class='io-link'>Шаг 11</a>"]
+        },
+        11: {
+            number: "11",
+            role: "Согласующие (Руководители уровней)",
+            text: "Принимают решение о согласовании.\n\n<b>Ветвление:</b> Если согласовано → Шаг 12. Если нет → Шаг 5.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(10); return false;' class='io-link'>От ПМ (шаг 10)</a>"],
+            outputs: ["✅ Если согласовано → <a href='#' onclick='goToStep(12); return false;' class='io-link'>Шаг 12</a>", "❌ Если нет → <a href='#' onclick='goToStep(5); return false;' class='io-link'>Шаг 5</a>"]
+        },
+        12: {
+            number: "12",
+            role: "Продукт-менеджер",
+            text: "Направляет служебную записку на исполнение.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(11); return false;' class='io-link'>От согласующих (шаг 11, ДА)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(13); return false;' class='io-link'>Шаг 13</a>"]
+        },
+        13: {
+            number: "13",
+            role: "Главный специалист по планированию УМПП",
+            text: "Вносит изменения в карточку номенклатуры и номенклатурной группы согласно служебной записке в 1С:УПП.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(12); return false;' class='io-link'>От ПМ (шаг 12)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(14); return false;' class='io-link'>Шаг 14</a>"]
+        },
+        14: {
+            number: "14",
+            role: "Инженер-конструктор",
+            text: "Создаёт спецификацию в 1С:УПП и структуру в 1С:Appius на основании процедур «Внесение изменения в КД и ПД изделий класса А», «Методика согласования ИИ КД и ПД», «Методика разработки Извещений об изменении КД и ПД» и «Внесение изменений в КД и ТД изделий группы Б».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(13); return false;' class='io-link'>От УМПП (шаг 13)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(15); return false;' class='io-link'>Шаг 15</a>"]
+        },
+        15: {
+            number: "15",
+            role: "Технолог СБЦ",
+            text: "Утверждает спецификацию и создаёт технологические карты на основании «СТАНДАРТ информирования службы планирования при изменении спецификации готовой продукции».",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(14); return false;' class='io-link'>От конструктора (шаг 14)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(16); return false;' class='io-link'>Шаг 16</a>"]
+        },
+        16: {
+            number: "16",
+            role: "Главный специалист по планированию УПСП",
+            text: "Вносит изменения в регистры планирования производства в 1С:УПП (в т.ч. регистр «Срок открытия потребности»).",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(15); return false;' class='io-link'>От технолога (шаг 15)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(17); return false;' class='io-link'>Шаг 17</a>", "→ <a href='#' onclick='goToStep(18); return false;' class='io-link'>Шаг 18</a>"]
+        },
+        17: {
+            number: "17",
+            role: "Главный специалист по планированию УПЗП",
+            text: "Вносит изменения в Регистр «Информационные сроки» в 1С:УПП.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От УПСП (шаг 16)</a>"],
+            outputs: ["→ <a href='#' onclick='goToStep(18); return false;' class='io-link'>Шаг 18</a>"]
+        },
+        18: {
+            number: "18",
+            role: "Продукт-менеджер",
+            text: "(ВЫХОД) Тип и Вид воспроизводства на номенклатурной группе изменены.",
+            inputs: ["⬅️ <a href='#' onclick='goToStep(16); return false;' class='io-link'>От УПСП (шаг 16)</a>", "⬅️ <a href='#' onclick='goToStep(17); return false;' class='io-link'>От УПЗП (шаг 17)</a>"],
+            outputs: ["📤 ВЫХОД: НГ изменена"]
+        }
+    };
+
+    let currentStep = null;
+
+    function showDetail(stepId) {
+        const panel = document.getElementById('detailPanel');
+        const header = document.getElementById('detailHeader');
+        const text = document.getElementById('detailText');
+        const io = document.getElementById('detailIO');
+        
+        const data = stepData[stepId] || { number: stepId, role: "Информация", text: "Описание шага...", inputs: [], outputs: [] };
+        
+        header.innerHTML = `<span class="detail-number">Шаг ${data.number}</span><span class="detail-role">${data.role}</span>`;
+        text.innerHTML = data.text;
+        
+        let ioHtml = '<div class="io-group"><div class="io-title">⬅️ Входы:</div><div class="io-items">';
+        data.inputs.forEach(inp => { ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${inp}</div>`; });
+        ioHtml += '</div></div><div class="io-group"><div class="io-title">➡️ Выходы:</div><div class="io-items">';
+        data.outputs.forEach(out => { ioHtml += `<div class="io-item"><span class="io-arrow">→</span> ${out}</div>`; });
+        ioHtml += '</div></div>';
+        io.innerHTML = ioHtml;
+        
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        highlightStep(stepId);
+        currentStep = stepId;
+    }
+
+    function goToStep(stepId) {
+        const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); showDetail(stepId); }
+        else { showDetail(stepId); }
+    }
+
+    function highlightStep(stepId) {
+        document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active-step'));
+        const card = document.querySelector(`.step-card[data-step="${stepId}"]`);
+        if (card) card.classList.add('active-step');
+    }
+
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.addEventListener('click', function() { goToStep(this.getAttribute('data-step')); });
+    });
+</script>
+<script src="ai-core.js"></script>
+<script src="highlight.js"></script>
+</body>
+</html>
