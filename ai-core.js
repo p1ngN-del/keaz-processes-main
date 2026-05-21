@@ -1,4 +1,4 @@
-// ai-core.js - ФИНАЛЬНАЯ ВЕРСИЯ С УЛУЧШЕННЫМ ФОРМАТИРОВАНИЕМ
+// ai-core.js - ВЕРСИЯ С ИСПРАВЛЕННЫМИ РОЛЯМИ И СТИЛЕМ
 (function() {
     if (window.AICore) return;
     
@@ -25,31 +25,41 @@
     }
 
     function formatMessage(text) {
-    let cleanText = text
-        .replace(/^###\s+/gm, '')
-        .replace(/^##\s+/gm, '')
-        .replace(/^#\s+/gm, '')
-        .replace(/\*\*/g, '')
-        .replace(/\*/g, '')
-        .replace(/^- /gm, '• ')
-        .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>')
-        .replace(/\n/g, '<br>');
-
-    // Сначала убираем все существующие ссылки procN.html, чтобы не было двойной вставки
-    cleanText = cleanText.replace(/<a[^>]*>Процедура\s+(\d+[a-z]*)<\/a>/gi, 'Процедура $1');
-    
-    // Теперь вставляем свои ссылки
-    cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
-        return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
-    });
-
-    // На случай, если остались procN.html без текста
-    cleanText = cleanText.replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => {
-        return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600;">${match}</a>`;
-    });
-
-    return cleanText;
-}
+        // Сначала убираем все существующие ссылки procN.html, чтобы не было двойной вставки
+        let cleanText = text
+            .replace(/<a[^>]*>Процедура\s+(\d+[a-z]*)<\/a>/gi, 'Процедура $1')
+            .replace(/<a[^>]*>процедуру\s+(\d+[a-z]*)<\/a>/gi, 'процедуру $1');
+        
+        // Преобразуем Markdown-заголовки в HTML
+        cleanText = cleanText
+            .replace(/^###\s+(.+)$/gm, '<strong style="font-size:1.05rem; display:block; margin:12px 0 8px 0;">$1</strong>')
+            .replace(/^##\s+(.+)$/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">$1</strong>')
+            .replace(/^#\s+(.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:8px 0 4px 0;">$1</strong>');
+        
+        // Преобразуем маркированные списки
+        cleanText = cleanText
+            .replace(/^[-*]\s+(.+)$/gm, '<span style="display:block; margin-left:16px;">• $1</span>')
+            .replace(/^\d+\.\s+(.+)$/gm, '<span style="display:block; margin-left:8px;"><strong>$&</strong></span>');
+        
+        // Убираем оставшиеся Markdown-символы
+        cleanText = cleanText
+            .replace(/\*\*/g, '')
+            .replace(/\*/g, '');
+        
+        // Вставляем свои ссылки
+        cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
+            return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+        });
+        
+        cleanText = cleanText.replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => {
+            return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+        });
+        
+        // Заменяем переводы строк
+        cleanText = cleanText.replace(/\n/g, '<br>');
+        
+        return cleanText;
+    }
 
     function injectStyles() {
         if (document.getElementById('ai-core-styles')) return;
@@ -348,6 +358,22 @@
             if (event.key === 'Enter') AICore.sendMessage();
         },
         
+        getStartProc: async function(role, procedures) {
+            try {
+                const response = await fetch(PROXY_URL.replace('/api/chat', '/api/get-start-proc'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role, procedures })
+                });
+                if (!response.ok) return null;
+                const data = await response.json();
+                return data.success ? data.procId : null;
+            } catch (e) {
+                console.error('Ошибка при определении стартовой процедуры:', e);
+                return null;
+            }
+        },
+        
         _showTypingIndicator: function() {
             const messagesDiv = document.getElementById('aiMessages');
             if (!messagesDiv) return;
@@ -397,7 +423,9 @@
 
 НЕ используй вступления («Здравствуйте», «Я — ассистент», «Я умею»). НЕ перечисляй примеры запросов. НЕ задавай встречных вопросов без крайней необходимости.
 
-Пиши сразу по делу. Если вопрос чёткий — давай чёткий ответ со ссылками на процедуры. Если информации в базе нет — скажи, где её можно уточнить (процедура или отдел).
+Пиши сразу по делу. Используй структуру: заголовки (жирным), списки (маркированные). НЕ используй символы ###, ##, #, **, * — они преобразуются автоматически.
+
+Если вопрос чёткий — давай чёткий ответ со ссылками на процедуры. Если информации в базе нет — скажи, где её можно уточнить.
 
 В конце ответа обязательно добавляй [PROC:номера].`
                     },
@@ -459,9 +487,16 @@
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 if (window.AICore) window.AICore.initButton('h1');
+                // Перерисовываем фильтры ролей после загрузки
+                if (typeof renderRoleFilters === 'function') {
+                    renderRoleFilters();
+                }
             });
         } else {
             if (window.AICore) window.AICore.initButton('h1');
+            if (typeof renderRoleFilters === 'function') {
+                renderRoleFilters();
+            }
         }
     }
     initAICore();
