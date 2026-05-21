@@ -1,4 +1,4 @@
-// ai-core.js - ФИНАЛЬНАЯ ВЕРСИЯ
+// ai-core.js - ФИНАЛЬНАЯ ВЕРСИЯ С УЛУЧШЕННЫМ ФОРМАТИРОВАНИЕМ
 (function() {
     if (window.AICore) return;
     
@@ -25,19 +25,46 @@
     }
 
     function formatMessage(text) {
+        // Убираем Markdown и форматируем красиво
         let cleanText = text
-            .replace(/^###\s+/gm, '')
-            .replace(/^##\s+/gm, '')
-            .replace(/^#\s+/gm, '')
-            .replace(/\*\*/g, '')
-            .replace(/\*/g, '')
-            .replace(/^- /gm, '• ')
-            .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>');
+            .replace(/^###\s+/gm, '')           
+            .replace(/^##\s+/gm, '')            
+            .replace(/^#\s+/gm, '')             
+            .replace(/\*\*/g, '')               
+            .replace(/\*/g, '')                 
+            .replace(/^- /gm, '• ')             
+            .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>')
+            .replace(/```[\s\S]*?```/g, (match) => {
+                return match.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+            });
+
+        // Красивое оформление заголовков
+        cleanText = cleanText
+            .replace(/^Вот как получить сертификат:/gm, '<strong style="font-size:1.05rem; display:block; margin:12px 0 8px 0;">📋 Вот как получить сертификат:</strong>')
+            .replace(/^Краткий план действий:/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">📌 Краткий план действий:</strong>')
+            .replace(/^Подробная пошаговая инструкция/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">📖 Подробная пошаговая инструкция</strong>')
+            .replace(/^Резюме:/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">✅ Резюме:</strong>')
+            .replace(/^Краткий итог:/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">✅ Краткий итог:</strong>');
+
+        // Оформление списков и шагов
+        cleanText = cleanText
+            .replace(/ШАГ (\d+)\./g, '<strong style="color:#1e6df2;">▶ ШАГ $1.</strong>')
+            .replace(/Кто:/g, '<span style="color:#e07b1f;">👤 Кто:</span>')
+            .replace(/Что делает:/g, '<span style="color:#1f8b4c;">⚙️ Что делает:</span>')
+            .replace(/Входные данные:/g, '<span style="color:#9747ff;">⬅️ Входные данные:</span>')
+            .replace(/Выходные данные:/g, '<span style="color:#f97316;">➡️ Выходные данные:</span>')
+            .replace(/Какие документы прикрепить:/g, '<span style="color:#8b5cf6;">📎 Какие документы прикрепить:</span>')
+            .replace(/Важно:/g, '<span style="color:#ef4444; font-weight:600;">⚠️ Важно:</span>')
+            .replace(/Примечание:/g, '<span style="color:#eab308; font-weight:600;">📝 Примечание:</span>');
+
+        // Оформление номеров процедур
+        cleanText = cleanText
+            .replace(/процедур[ауеы]?\s+(\d+)/gi, (match, num) => `процедуру <a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600;">${match}</a>`)
+            .replace(/Процедура\s+(\d+)/gi, (match, num) => `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px;">${match}</a>`);
 
         return cleanText
             .replace(/\n/g, '<br>')
-            .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`)
-            .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
+            .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600;">Процедура ${num}</a>`);
     }
 
     function injectStyles() {
@@ -125,11 +152,14 @@
                 border: 1px solid #e2e8f0;
             }
             .ai-message-bot a {
-                color: #f6b83e; text-decoration: none; font-weight: 600;
-                background: #fff3cf; padding: 2px 8px; border-radius: 20px;
-                display: inline-block; margin: 2px 0;
+                color: #f6b83e;
+                text-decoration: none;
+                font-weight: 600;
+                transition: 0.2s;
             }
-            .ai-message-bot a:hover { background: #f6b83e; color: #0a1929; }
+            .ai-message-bot a:hover {
+                text-decoration: underline;
+            }
             .typing-indicator {
                 display: flex; gap: 6px; padding: 14px 18px;
                 background: white; border-radius: 18px;
