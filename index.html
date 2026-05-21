@@ -1991,39 +1991,60 @@ let originalRoleFilter = 'all';
 let originalSearchTerm = '';
 
 function filterByAIProcedures(procNumbers) {
-    originalRoleFilter = currentRole;
-    originalSearchTerm = document.getElementById('searchInput').value;
+    // Сохраняем текущее состояние фильтров
+    originalRoleFilter = currentRole || 'all';
+    const searchInput = document.getElementById('searchInput');
+    originalSearchTerm = searchInput ? searchInput.value : '';
     
     const cards = document.querySelectorAll('.proc-card');
     cards.forEach(card => {
         const procId = card.getAttribute('data-proc-id');
         if (procNumbers.includes(procId)) {
+            // Показываем карточки релевантных процедур
             card.classList.remove('search-hidden', 'filtered-out');
             card.classList.add('ai-highlight');
         } else {
+            // Скрываем остальные
             card.classList.add('search-hidden');
+            card.classList.remove('filtered-out');
         }
     });
     
     const countEl = document.getElementById('searchResultCount');
-    countEl.textContent = `🤖 AI рекомендует: ${procNumbers.length} процедур`;
-    countEl.style.color = '#f6b83e';
-    countEl.style.fontWeight = '600';
+    if (countEl) {
+        countEl.textContent = `🤖 AI рекомендует: ${procNumbers.length} процедур`;
+        countEl.style.color = '#f6b83e';
+        countEl.style.fontWeight = '600';
+    }
 }
 
 function resetAIFilter() {
     const cards = document.querySelectorAll('.proc-card');
-    cards.forEach(card => card.classList.remove('search-hidden', 'ai-highlight'));
+    cards.forEach(card => {
+        card.classList.remove('search-hidden', 'ai-highlight');
+    });
     
-    if (originalRoleFilter && originalRoleFilter !== 'all') {
-        filterByRole(originalRoleFilter);
-    } else {
+    // Восстанавливаем поиск
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.value = originalSearchTerm;
+    }
+    if (typeof applySearch === 'function') {
         applySearch();
     }
     
+    // Восстанавливаем фильтр по роли, если он был активен
+    if (originalRoleFilter && originalRoleFilter !== 'all' && typeof filterByRole === 'function') {
+        filterByRole(originalRoleFilter);
+    }
+    
+    // Сбрасываем счётчик поиска
     const countEl = document.getElementById('searchResultCount');
-    countEl.style.color = '';
-    countEl.style.fontWeight = '';
+    if (countEl) {
+        countEl.style.color = '';
+        countEl.style.fontWeight = '';
+        countEl.textContent = '';
+    }
 }
 
 async function checkAIServer() {
