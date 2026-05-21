@@ -2101,16 +2101,45 @@ function markNewProcedures() {
 </script>
 <script src="ai-core.js"></script>
 <script>
-    // Инициализация AI-ассистента
-    setTimeout(function() {
-        if (window.AICore) {
-            window.AICore.initButton('h1');
-        }
-        // Перерисовываем фильтры ролей
+    // ============================================
+    // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ — ИСПРАВЛЕННАЯ
+    // ============================================
+    
+    // Дожидаемся полной загрузки DOM перед рендером фильтров
+    window.addEventListener('DOMContentLoaded', () => {
+        // 1. Сначала рендерим фильтры ролей (эта функция определена выше в HTML)
         if (typeof renderRoleFilters === 'function') {
             renderRoleFilters();
         }
-    }, 100);
+        
+        // 2. Загружаем данные для поиска и AI
+        if (typeof loadProceduresData === 'function') {
+            loadProceduresData();
+        }
+        if (typeof loadProceduresFullData === 'function') {
+            loadProceduresFullData().then(() => {
+                if (typeof markNewProcedures === 'function') {
+                    markNewProcedures();
+                }
+            });
+        }
+        
+        // 3. Восстанавливаем роль из URL
+        const urlRole = getRoleFromURL ? getRoleFromURL() : null;
+        if (urlRole && typeof filterByRole === 'function') {
+            filterByRole(urlRole);
+        }
+        
+        // 4. Восстанавливаем поиск из cookie
+        const searchTermFromCookie = getCookie ? getCookie('searchTerm') : null;
+        if (searchTermFromCookie && document.getElementById('searchInput')) {
+            document.getElementById('searchInput').value = searchTermFromCookie;
+            if (typeof applySearch === 'function') applySearch();
+        }
+        
+        // 5. Проверяем доступность AI-сервера
+        if (typeof checkAIServer === 'function') checkAIServer();
+    });
 </script>
 </body>
 </html>
