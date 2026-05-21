@@ -1909,32 +1909,57 @@ function renderRoleFilters() {
         applySearch();
     }
 
-    function filterByRole(role) {
+    async function filterByRole(role) {
     currentRole = role;
     updateURL(role);
     
-    // Убираем активный класс со всех фильтров
     document.querySelectorAll('.filter-item, .filter-all').forEach(el => el.classList.remove('active'));
     
-    // Подсвечиваем выбранный фильтр
     if (role === 'all') {
         const allBtn = document.querySelector('.filter-all');
         if (allBtn) allBtn.classList.add('active');
-    } else {
-        const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
-        if (activeFilter) {
-            activeFilter.classList.add('active');
-            // Находим родительскую группу и подсвечиваем её
-            const parentGroup = activeFilter.closest('.filter-group');
-            if (parentGroup) {
-                const header = parentGroup.querySelector('.filter-group-header');
-                if (header) {
-                    header.style.background = '#fff3cf';
-                    setTimeout(() => header.style.background = '', 300);
-                }
+        document.querySelectorAll('.proc-card').forEach(card => {
+            card.classList.remove('filtered-out', 'start-highlight');
+        });
+        applySearch();
+        return;
+    }
+    
+    const activeFilter = document.querySelector(`.filter-item[data-role="${role}"]`);
+    if (activeFilter) activeFilter.classList.add('active');
+    
+    // Сначала фильтруем карточки по роли
+    const cards = document.querySelectorAll('.proc-card');
+    let roleCards = [];
+    
+    cards.forEach(card => {
+        const rolesAttr = card.getAttribute('data-roles');
+        if (rolesAttr && rolesAttr.split(',').includes(role)) {
+            card.classList.remove('filtered-out');
+            roleCards.push(card);
+        } else {
+            card.classList.add('filtered-out');
+        }
+        card.classList.remove('start-highlight');
+    });
+    
+    applySearch();
+    
+    // Запрашиваем у AI стартовую процедуру
+    if (roleCards.length > 0 && window.AICore && window.AICore.getStartProc) {
+        const allProcedures = await loadProceduresFullData();
+        const startProcId = await window.AICore.getStartProc(role, allProcedures);
+        
+        if (startProcId) {
+            const startCard = document.querySelector(`.proc-card[data-proc-id="${startProcId}"]`);
+            if (startCard) {
+                startCard.classList.add('start-highlight');
+                // Прокручиваем к стартовой процедуре
+                startCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
     }
+}
     
     // Фильтруем карточки
     const cards = document.querySelectorAll('.proc-card');
