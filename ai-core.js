@@ -16,7 +16,7 @@
     async function loadProceduresFullData() {
         if (proceduresFullData.length > 0) return proceduresFullData;
         try {
-            const response = await fetch('procedures_data.json');
+            const response = await fetch('procedures_data.json?v=' + Date.now());
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
             if (data.procedures) {
