@@ -1,4 +1,4 @@
-// ai-core.js - ВЕРСИЯ С ИСПРАВЛЕННЫМИ РОЛЯМИ И СТИЛЕМ
+// ai-core.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
 (function() {
     if (window.AICore) return;
     
@@ -25,39 +25,32 @@
     }
 
     function formatMessage(text) {
-        // Сначала убираем все существующие ссылки procN.html, чтобы не было двойной вставки
         let cleanText = text
             .replace(/<a[^>]*>Процедура\s+(\d+[a-z]*)<\/a>/gi, 'Процедура $1')
             .replace(/<a[^>]*>процедуру\s+(\d+[a-z]*)<\/a>/gi, 'процедуру $1');
         
-        // Преобразуем Markdown-заголовки в HTML
         cleanText = cleanText
             .replace(/^###\s+(.+)$/gm, '<strong style="font-size:1.05rem; display:block; margin:12px 0 8px 0;">$1</strong>')
             .replace(/^##\s+(.+)$/gm, '<strong style="font-size:1rem; display:block; margin:10px 0 6px 0;">$1</strong>')
             .replace(/^#\s+(.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:8px 0 4px 0;">$1</strong>');
         
-        // Преобразуем маркированные списки
         cleanText = cleanText
             .replace(/^[-*]\s+(.+)$/gm, '<span style="display:block; margin-left:16px;">• $1</span>')
             .replace(/^\d+\.\s+(.+)$/gm, '<span style="display:block; margin-left:8px;"><strong>$&</strong></span>');
         
-        // Убираем оставшиеся Markdown-символы
         cleanText = cleanText
             .replace(/\*\*/g, '')
             .replace(/\*/g, '');
         
-        // Вставляем свои ссылки
         cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
-            return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
         });
         
         cleanText = cleanText.replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => {
-            return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
         });
         
-        // Заменяем переводы строк
         cleanText = cleanText.replace(/\n/g, '<br>');
-        
         return cleanText;
     }
 
@@ -145,14 +138,20 @@
                 box-shadow: 0 2px 8px rgba(0,0,0,0.05);
                 border: 1px solid #e2e8f0;
             }
-            .ai-message-bot a {
+            .ai-message-bot .proc-link {
                 color: #f6b83e;
                 text-decoration: none;
                 font-weight: 600;
                 transition: 0.2s;
+                background: #fff3cf;
+                padding: 2px 8px;
+                border-radius: 20px;
+                display: inline-block;
             }
-            .ai-message-bot a:hover {
-                text-decoration: underline;
+            .ai-message-bot .proc-link:hover {
+                background: #f6b83e;
+                color: #0a1929;
+                text-decoration: none;
             }
             .typing-indicator {
                 display: flex; gap: 6px; padding: 14px 18px;
@@ -427,7 +426,7 @@
 
 Если вопрос чёткий — давай чёткий ответ со ссылками на процедуры. Если информации в базе нет — скажи, где её можно уточнить.
 
-В конце ответа обязательно добавляй [PROC:номера].`
+В конце ответа обязательно добавляй [PROC:номера процедур, через запятую, которые связаны с ответом].`
                     },
                     {
                         role: 'user',
@@ -454,8 +453,16 @@
                         procNumbers = procMatch[1].split(',').map(p => p.trim());
                     }
                     let cleanContent = data.content.replace(/\[PROC:[^\]]+\]/, '').trim();
+                    
+                    // Делаем ссылки на процедуры кликабельными с подсветкой
+                    procNumbers.forEach(procNum => {
+                        const regex = new RegExp(`(Процедура\\s+${procNum})`, 'gi');
+                        cleanContent = cleanContent.replace(regex, `<a href="proc${procNum}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">$1</a>`);
+                    });
+                    
                     AICore._addMessage(cleanContent, 'bot');
                     
+                    // Фильтруем процедуры по номерам из ответа AI
                     if (procNumbers.length > 0 && typeof window.filterByAIProcedures === 'function') {
                         window.filterByAIProcedures(procNumbers);
                         const messagesDiv = document.getElementById('aiMessages');
@@ -464,8 +471,9 @@
                             filterMsg.className = 'ai-message ai-message-bot';
                             filterMsg.style.background = '#fff3cf';
                             filterMsg.style.borderColor = '#f6b83e';
+                            filterMsg.style.marginTop = '10px';
                             filterMsg.innerHTML = `🎯 <strong>Карта отфильтрована</strong> — показаны процедуры: ${procNumbers.map(p => `<code style="background:#f6b83e; color:#0a1929; padding:2px 6px; border-radius:12px; margin:0 2px;">${p}</code>`).join(', ')}<br><br>
-                            <a href="#" onclick="resetAIFilter(); return false;" style="color: #0a1929; background: #f6b83e; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block;">🔄 Сбросить фильтр</a>`;
+                            <a href="#" onclick="resetAIFilter(); return false;" style="color: #0a1929; background: #f6b83e; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block;">🔄 Сбросить фильтр AI</a>`;
                             messagesDiv.appendChild(filterMsg);
                             messagesDiv.scrollTop = messagesDiv.scrollHeight;
                         }
@@ -483,20 +491,14 @@
         }
     };
     
+    // ИНИЦИАЛИЗАЦИЯ — НЕ ВЫЗЫВАЕМ filterByRole ЗДЕСЬ, ТОЛЬКО initButton
     function initAICore() {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 if (window.AICore) window.AICore.initButton('h1');
-                // Перерисовываем фильтры ролей после загрузки
-                if (typeof renderRoleFilters === 'function') {
-                    renderRoleFilters();
-                }
             });
         } else {
             if (window.AICore) window.AICore.initButton('h1');
-            if (typeof renderRoleFilters === 'function') {
-                renderRoleFilters();
-            }
         }
     }
     initAICore();
