@@ -31,18 +31,21 @@
     }
 
     function formatMessage(text) {
-        return text
-            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.+?)\*/g, '<em>$1</em>')
-            .replace(/`(.+?)`/g, '<code>$1</code>')
-            .replace(/\n/g, '<br>')
-            .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`)
-            .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`)
-            .replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`)
-            .replace(/методик[ауеи]?\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`)
-            .replace(/стандарт\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`)
-            .replace(/инструкци[яюи]\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
-    }
+    // Убираем Markdown-символы
+    let cleanText = text
+        .replace(/^###\s+/gm, '')           // удаляем ### в начале строки
+        .replace(/^##\s+/gm, '')            // удаляем ##
+        .replace(/^#\s+/gm, '')             // удаляем #
+        .replace(/\*\*/g, '')               // удаляем **
+        .replace(/\*/g, '')                 // удаляем *
+        .replace(/^- /gm, '• ')             // заменяем - на маркер •
+        .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>'); // отступ для списков
+
+    return cleanText
+        .replace(/\n/g, '<br>')
+        .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`)
+        .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
+}
 
     function injectStyles() {
         if (document.getElementById('ai-core-styles')) return;
