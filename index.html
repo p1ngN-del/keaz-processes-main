@@ -2105,9 +2105,10 @@ function markNewProcedures() {
     setTimeout(function() {
         if (window.AICore) {
             window.AICore.initButton('h1');
-        } else {
-            console.log('Ожидание загрузки AICore...');
-            setTimeout(arguments.callee, 100);
+        }
+        // Перерисовываем фильтры ролей
+        if (typeof renderRoleFilters === 'function') {
+            renderRoleFilters();
         }
     }, 100);
 </script>
