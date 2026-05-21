@@ -1,14 +1,8 @@
-// ai-core.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
-// Проблемы решены:
-// 1. AI получает ВЕСЬ procedures_data.json (не только 5 процедур)
-// 2. Сервер сам ищет релевантные процедуры по полному тексту
-// 3. Нет клиентских ограничений на количество процедур
-// 4. Сохранён прежний стиль вывода (понятный, подробный, с ссылками)
-
+// ai-core.js - ФИНАЛЬНАЯ ВЕРСИЯ
 (function() {
     if (window.AICore) return;
     
-    console.log("🤖 AI Core загружается (исправленная версия)...");
+    console.log("🤖 AI Core загружается...");
     
     const PROXY_URL = 'https://keaz-processes-main-production.up.railway.app/api/chat';
     let proceduresFullData = [];
@@ -21,31 +15,30 @@
             const data = await response.json();
             if (data.procedures) {
                 proceduresFullData = data.procedures;
-                console.log(`✅ [AI Core] Загружено ${proceduresFullData.length} процедур, стандартов, инструкций, методик`);
+                console.log(`✅ Загружено ${proceduresFullData.length} процедур`);
             }
             return proceduresFullData;
         } catch (error) {
-            console.error('❌ [AI Core] Ошибка загрузки procedures_data.json:', error);
+            console.error('❌ Ошибка загрузки procedures_data.json:', error);
             return [];
         }
     }
 
     function formatMessage(text) {
-    // Убираем Markdown-символы
-    let cleanText = text
-        .replace(/^###\s+/gm, '')           // удаляем ### в начале строки
-        .replace(/^##\s+/gm, '')            // удаляем ##
-        .replace(/^#\s+/gm, '')             // удаляем #
-        .replace(/\*\*/g, '')               // удаляем **
-        .replace(/\*/g, '')                 // удаляем *
-        .replace(/^- /gm, '• ')             // заменяем - на маркер •
-        .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>'); // отступ для списков
+        let cleanText = text
+            .replace(/^###\s+/gm, '')
+            .replace(/^##\s+/gm, '')
+            .replace(/^#\s+/gm, '')
+            .replace(/\*\*/g, '')
+            .replace(/\*/g, '')
+            .replace(/^- /gm, '• ')
+            .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>');
 
-    return cleanText
-        .replace(/\n/g, '<br>')
-        .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`)
-        .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
-}
+        return cleanText
+            .replace(/\n/g, '<br>')
+            .replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => `<a href="proc${num}.html" target="_blank">Процедура ${num}</a>`)
+            .replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => `<a href="proc${num}.html" target="_blank">${match}</a>`);
+    }
 
     function injectStyles() {
         if (document.getElementById('ai-core-styles')) return;
@@ -198,19 +191,8 @@
                 </div>
                 <div class="ai-messages" id="aiMessages">
                     <div class="ai-message ai-message-bot">
-                        👋 <strong>Здравствуйте! Я AI-ассистент КЭАЗ.</strong><br><br>
-                        <strong>🤖 Что я умею:</strong><br>
-                        🔹 <strong>Искать процедуры</strong> — просто опишите задачу.<br>
-                        🔹 <strong>Объяснять процессы</strong> — расскажу шаги и роли.<br>
-                        🔹 <strong>Подсказывать ответственных</strong> — кто что делает.<br><br>
-                        <strong>📋 Примеры запросов:</strong><br>
-                        • «Как ввести новую номенклатуру?»<br>
-                        • «Кто отвечает за ценообразование?»<br>
-                        • «Что такое процедура 4н?»<br>
-                        • «Как найти поставщика?»<br>
-                        • «Как списать ТМЦ?»<br>
-                        • «Расскажи про ABC-анализ»<br><br>
-                        <em>👇 Введите ваш вопрос ниже.</em>
+                        <strong>🤖 AI-ассистент КЭАЗ готов к работе.</strong><br><br>
+                        Задайте вопрос о процедурах, стандартах или инструкциях компании.
                     </div>
                 </div>
                 <div class="ai-input-row">
@@ -221,7 +203,6 @@
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
         
-        // Перетаскивание виджета
         const widget = document.getElementById('aiWidget');
         const header = widget.querySelector('.ai-header');
         let isDragging = false, offsetX, offsetY;
@@ -264,7 +245,6 @@
             }
         });
         
-        // Изменение размера
         const resizeHandle = document.createElement('div');
         resizeHandle.className = 'ai-resize-handle';
         resizeHandle.innerHTML = '◢';
@@ -306,10 +286,7 @@
         initButton: function(containerSelector = 'h1') {
             if (document.querySelector('.ai-core-btn')) return;
             const container = document.querySelector(containerSelector);
-            if (!container) {
-                console.warn(`[AI Core] Контейнер "${containerSelector}" не найден.`);
-                return;
-            }
+            if (!container) return;
             
             const btn = document.createElement('button');
             btn.className = 'ai-search-btn ai-core-btn';
@@ -397,40 +374,23 @@
             btn.disabled = true;
             
             try {
-                // ЗАГРУЖАЕМ ВСЕ ПРОЦЕДУРЫ (ВЕСЬ JSON)
                 const allProcedures = await loadProceduresFullData();
-                
-                // Отправляем на сервер ВСЕ данные (сервер сам найдёт релевантные)
-                // Это ключевое исправление! AI получает полный контекст.
-                const fullContext = JSON.stringify(allProcedures, null, 2);
-                
-                const h1 = document.querySelector('h1');
-                const procName = h1 ? h1.textContent.replace('🤖AI', '').trim() : '';
                 
                 const messagesWithContext = [
                     {
-  role: 'system',
-  content: `Ты — AI-ассистент КЭАЗ, эксперт по бизнес-процессам, стандартам, инструкциям и методикам компании.
+                        role: 'system',
+                        content: `Ты — AI-ассистент КЭАЗ. Отвечай ТОЛЬКО на вопрос пользователя.
 
-Твоя задача — помогать сотрудникам разбираться в процедурах, находить ответственных, объяснять шаги и логику процессов.
+НЕ используй вступления («Здравствуйте», «Я — ассистент», «Я умею»). НЕ перечисляй примеры запросов. НЕ задавай встречных вопросов без крайней необходимости.
 
-📌 ОТВЕЧАЙ ТАК:
-- Пиши понятным русским языком, без канцелярита.
-- Структурируй ответ: вступление, основная часть (по шагам или по смыслу), итог.
-- Если процесс идёт по шагам — перечисли их понятно.
-- Указывай ответственных (роли) и ссылки на процедуры (например, "согласно процедуре 47").
-- В конце всегда добавляй [PROC:номера] (например, [PROC:47,12,8]).
-- НЕ ИСПОЛЬЗУЙ Markdown (не ставь ###, ##, *, **, ---). Используй обычные строки и переносы.
+Пиши сразу по делу. Если вопрос чёткий — давай чёткий ответ со ссылками на процедуры. Если информации в базе нет — скажи, где её можно уточнить (процедура или отдел).
 
-Ты не привязан жёстко к одной процедуре. Ты можешь комбинировать информацию из разных мест.
-
-📌 ТВОЙ СТИЛЬ:
-- Дружелюбный, деловой, без воды.
-- Если информации нет — скажи, где её можно уточнить (какая процедура или какой отдел).
-- Не говори «я не знаю». Вместо этого: «В базе знаний нет точного ответа, но вот что можно сделать…»
-
-Помни: ты — лучший помощник для сотрудников КЭАЗ. Отвечай чётко, по делу, с душой.`
-}
+В конце ответа обязательно добавляй [PROC:номера].`
+                    },
+                    {
+                        role: 'user',
+                        content: `Вопрос: ${message}`
+                    }
                 ];
                 
                 const response = await fetch(PROXY_URL, {
@@ -446,7 +406,6 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Извлекаем номера процедур из ответа для подсветки на карте
                     const procMatch = data.content.match(/\[PROC:([^\]]+)\]/);
                     let procNumbers = [];
                     if (procMatch && procMatch[1] !== 'none') {
@@ -455,7 +414,6 @@
                     let cleanContent = data.content.replace(/\[PROC:[^\]]+\]/, '').trim();
                     AICore._addMessage(cleanContent, 'bot');
                     
-                    // Подсвечиваем процедуры на карте (если функция существует)
                     if (procNumbers.length > 0 && typeof window.filterByAIProcedures === 'function') {
                         window.filterByAIProcedures(procNumbers);
                         const messagesDiv = document.getElementById('aiMessages');
@@ -471,11 +429,11 @@
                         }
                     }
                 } else {
-                    AICore._addMessage('❌ Ошибка. Попробуйте позже.', 'bot');
+                    AICore._addMessage('Ошибка. Попробуйте позже.', 'bot');
                 }
             } catch (e) {
                 AICore._removeTypingIndicator();
-                AICore._addMessage('❌ Не удалось подключиться к серверу. Убедитесь, что сервер запущен.', 'bot');
+                AICore._addMessage('Ошибка подключения к серверу.', 'bot');
                 console.error(e);
             }
             
