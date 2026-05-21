@@ -25,7 +25,6 @@
     }
 
     function formatMessage(text) {
-    // Убираем Markdown
     let cleanText = text
         .replace(/^###\s+/gm, '')
         .replace(/^##\s+/gm, '')
@@ -33,17 +32,18 @@
         .replace(/\*\*/g, '')
         .replace(/\*/g, '')
         .replace(/^- /gm, '• ')
-        .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>');
+        .replace(/^• /gm, '<span style="display:block; margin-left:16px;">• </span>')
+        .replace(/\n/g, '<br>');
 
-    // Превращаем переводы строк в <br>
-    cleanText = cleanText.replace(/\n/g, '<br>');
-
-    // Заменяем "Процедура N" на ссылку (ОДИН РАЗ, аккуратно)
+    // Сначала убираем все существующие ссылки procN.html, чтобы не было двойной вставки
+    cleanText = cleanText.replace(/<a[^>]*>Процедура\s+(\d+[a-z]*)<\/a>/gi, 'Процедура $1');
+    
+    // Теперь вставляем свои ссылки
     cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
         return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
     });
 
-    // Заменяем procN.html на ссылку (на случай, если AI сам сгенерирует)
+    // На случай, если остались procN.html без текста
     cleanText = cleanText.replace(/proc(\d+[a-z]*)\.html/gi, (match, num) => {
         return `<a href="proc${num}.html" target="_blank" style="color:#f6b83e; font-weight:600;">${match}</a>`;
     });
