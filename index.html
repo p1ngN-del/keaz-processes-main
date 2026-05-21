@@ -1013,6 +1013,21 @@
     font-family: monospace;
 }
 
+/* Анимация пульсации ТОЛЬКО для псевдоэлемента */
+@keyframes newPulse {
+    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.proc-card.new-procedure {
+    animation: none; /* Отключаем анимацию на самой карточке, чтобы не ломать появление */
+}
+
+.proc-card.new-procedure::before {
+    animation: newPulse 1.5s ease-in-out 3;
+}
+
 /* Анимация пульсации для новых процедур */
 @keyframes newPulse {
     0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
