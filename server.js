@@ -1,10 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+
+// Middleware
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'OPTIONS'],
@@ -12,28 +16,36 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+// РАЗДАЧА СТАТИКИ (HTML, CSS, JS, JSON)
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Основной эндпоинт AI
 app.post('/api/chat', async (req, res) => {
-    console.log('📨 Получен запрос');
+    console.log('📨 Получен запрос:', req.body.messages?.[req.body.messages.length - 1]?.content?.substring(0, 100));
+    
     try {
         const { messages, fullData } = req.body;
         
         if (!DEEPSEEK_API_KEY) {
+            console.error('❌ DEEPSEEK_API_KEY не задан');
             return res.status(500).json({ success: false, error: 'API key missing' });
         }
         
         const userMessage = messages[messages.length - 1]?.content || '';
         
+        // Собираем контекст только из релевантных процедур (если нужно)
         let contextText = '';
         if (fullData && fullData.length > 0) {
-            for (const proc of fullData) {
-                contextText += `\n--- [${proc.num}] ${proc.name} ---\n${(proc.content || '').substring(0, 3000)}\n`;
-            }
+            // Ограничиваем размер контекста для экономии токенов
+            const relevantProcedures = fullData.slice(0, 15); // TODO: можно добавить поиск по релевантности
+            contextText = relevantProcedures.map(proc => 
+                `[${proc.num}] ${proc.name}: ${(proc.content || '').substring(0, 800)}`
+            ).join('\n\n');
         }
         
         const response = await axios.post(
@@ -41,28 +53,48 @@ app.post('/api/chat', async (req, res) => {
             {
                 model: 'deepseek-chat',
                 messages: [
-                    { role: 'system', content: 'Ты AI-ассистент КЭАЗ. Отвечай на русском, подробно. В конце добавляй [PROC:номера].' },
-                    { role: 'user', content: contextText ? `База знаний КЭАЗ:\n${contextText}\n\nВопрос: ${userMessage}` : userMessage }
+                    { 
+                        role: 'system', 
+                        content: `Ты — AI-ассистент КЭАЗ. Отвечай на русском, по делу.
+                        
+Если вопрос НЕ ЯСЕН или НЕ ХВАТАЕТ ДАННЫХ — задай 1-2 уточняющих вопроса.
+Если вопрос понятен — давай чёткий ответ, используй заголовки и списки.
+Если вопрос про процедуры и ты можешь определить их номера — в конце добавь [PROC:номера].
+Если вопрос НЕ про процедуры — НЕ добавляй [PROC:...].
+
+База знаний:
+${contextText.substring(0, 6000)}`
+                    },
+                    { role: 'user', content: userMessage }
                 ],
                 temperature: 0.7,
-                max_tokens: 4000
+                max_tokens: 2000
             },
             {
                 headers: {
                     'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                timeout: 30000
             }
         );
         
-        res.json({ success: true, content: response.data.choices[0].message.content });
+        const answer = response.data.choices[0].message.content;
+        console.log('✅ Ответ получен, длина:', answer.length);
+        
+        res.json({ success: true, content: answer });
         
     } catch (error) {
         console.error('❌ Ошибка:', error.message);
+        if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Response data:', error.response.data);
+        }
         res.status(500).json({ success: false, error: error.message });
     }
 });
-// Новый эндпоинт: определяет стартовую процедуру для роли
+
+// Эндпоинт для определения стартовой процедуры по роли
 app.post('/api/get-start-proc', async (req, res) => {
     try {
         const { role, procedures } = req.body;
@@ -80,49 +112,13 @@ app.post('/api/get-start-proc', async (req, res) => {
             return res.json({ success: true, procId: null });
         }
         
-        // Формируем промпт для AI
-        const procList = roleProcedures.map(p => {
-            return `ID: ${p.num}\nНазвание: ${p.name}\nФаза: ${p.phase || '?'}\nОписание: ${p.content.substring(0, 300)}...\n---`;
-        }).join('\n');
+        // Берём процедуру с минимальным номером (чем меньше номер, тем раньше в процессе)
+        const sorted = [...roleProcedures].sort((a, b) => parseInt(a.num) - parseInt(b.num));
+        const recommendedProc = sorted[0];
         
-        const prompt = `Ты — AI-ассистент КЭАЗ. Определи, с какой процедуры должен начать работу сотрудник с ролью "${role}".
-
-Правила выбора:
-1. Выбирай процедуру с самой ранней фазой (1 < 2 < 3...).
-2. Если несколько процедур в одной фазе — выбирай ту, у которой меньше зависимостей от других процедур.
-3. Если всё равнозначно — выбирай процедуру, которая чаще является "входом" для других.
-4. Верни ТОЛЬКО номер процедуры (число) без лишнего текста.
-
-Список процедур для роли "${role}":
-${procList}
-
-Твой ответ (только число):`;
-
-        const response = await axios.post(
-            'https://api.deepseek.com/v1/chat/completions',
-            {
-                model: 'deepseek-chat',
-                messages: [
-                    { role: 'system', content: 'Ты — AI-ассистент КЭАЗ. Отвечай только числом — номером процедуры.' },
-                    { role: 'user', content: prompt }
-                ],
-                temperature: 0.3,
-                max_tokens: 20
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
+        console.log(`🎯 Для роли ${role} рекомендована процедура ${recommendedProc.num}`);
         
-        let procId = response.data.choices[0].message.content.trim();
-        // Извлекаем число из ответа
-        const match = procId.match(/\d+/);
-        procId = match ? match[0] : null;
-        
-        res.json({ success: true, procId: procId });
+        res.json({ success: true, procId: recommendedProc.num });
         
     } catch (error) {
         console.error('Ошибка в /api/get-start-proc:', error.message);
@@ -130,6 +126,13 @@ ${procList}
     }
 });
 
+// Для всех остальных маршрутов — отдаём index.html (SPA-режим для роутинга)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на порту ${PORT}`);
+    console.log(`📁 Статика из папки: ${path.join(__dirname, 'public')}`);
+    console.log(`🔑 API key ${DEEPSEEK_API_KEY ? 'задан' : 'НЕ ЗАДАН!'}`);
 });
