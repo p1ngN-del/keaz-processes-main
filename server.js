@@ -41,9 +41,9 @@ app.post('/api/chat', async (req, res) => {
         
         let contextText = '';
         if (fullData && fullData.length > 0) {
-            contextText = fullData.slice(0, 15).map(proc => 
-                `[${proc.num}] ${proc.name}: ${(proc.content || '').substring(0, 800)}`
-            ).join('\n\n');
+            contextText = fullData.map(proc => 
+    `[${proc.num}] ${proc.name}: ${(proc.content || '').substring(0, 800)}`
+).join('\n\n');
         }
         
         const response = await axios.post(
@@ -61,7 +61,7 @@ app.post('/api/chat', async (req, res) => {
 Если вопрос НЕ про процедуры — НЕ добавляй [PROC:...].
 
 База знаний:
-${contextText.substring(0, 6000)}`
+${contextText.substring(0, 30000)}`
                     },
                     { role: 'user', content: userMessage }
                 ],
