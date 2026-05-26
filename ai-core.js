@@ -1,4 +1,4 @@
-// ai-core.js - ИСПРАВЛЕННАЯ ВЕРСИЯ
+// ai-core.js - УМНАЯ ВЕРСИЯ (задаёт вопросы, фильтрует только по делу)
 (function() {
     if (window.AICore) return;
     
@@ -181,6 +181,12 @@
         });
     }
 
+    // Определяем, похож ли вопрос на запрос о процедурах/инструкциях
+    function isProceduralQuestion(message) {
+        const proceduralKeywords = /процедур|инструкц|стандарт|как|что делать|где найти|кто отвечает|какой порядок|как получить|как оформить|как заполнить|согласование|подписание|утверждение|сертификат|декларация|цена|рентабельность|вывод|ввод|номенклатур|каталог|скидк|тн вэд|образец|поставщик|оем|проект|идея|стратеги|маркетинг|роль|ответственный|шаг|этап|алгоритм|порядок действий/i;
+        return proceduralKeywords.test(message) && message.length > 10;
+    }
+
     window.AICore = {
         initButton: function(containerSelector = 'h1') {
             if (document.querySelector('.ai-core-btn')) return;
@@ -275,6 +281,9 @@
             const message = input.value.trim();
             if (!message) return;
             
+            // Если сообщение слишком короткое или явно не про процедуры — просто отвечаем без фильтрации
+            const isProcedural = isProceduralQuestion(message);
+            
             input.value = '';
             AICore._addMessage(message, 'user');
             AICore._showTypingIndicator();
@@ -283,21 +292,27 @@
             try {
                 const allProcedures = await loadProceduresFullData();
                 
+                // Формируем контекст для AI
+                let contextText = '';
+                if (allProcedures && allProcedures.length > 0 && isProcedural) {
+                    contextText = allProcedures.map(proc => 
+                        `[${proc.num}] ${proc.name}: ${(proc.content || '').substring(0, 1500)}`
+                    ).join('\n');
+                }
+                
+                const systemPrompt = `Ты — AI-ассистент КЭАЗ. 
+
+ПРАВИЛА:
+1. Если вопрос НЕ ЯСЕН или НЕ ХВАТАЕТ ДАННЫХ — задай 1-2 уточняющих вопроса. НЕ гадай.
+2. Если вопрос понятен — отвечай чётко, по делу. Используй заголовки и списки.
+3. Если вопрос НЕ про процедуры, инструкции или бизнес-процессы КЭАЗ — просто ответь, НЕ добавляй [PROC:...].
+4. Если вопрос про процедуры и ты можешь определить номера — в конце добавь [PROC:номера].
+
+База знаний: ${isProcedural ? contextText.substring(0, 8000) : 'доступна по запросу'}`;
+
                 const messagesWithContext = [
-                    {
-                        role: 'system',
-                        content: `Ты — AI-ассистент КЭАЗ. Отвечай ТОЛЬКО на вопрос пользователя.
-
-НЕ используй вступления. НЕ перечисляй примеры запросов. НЕ задавай встречных вопросов.
-
-Пиши сразу по делу. Используй структуру: заголовки (жирным), списки (маркированные).
-
-В конце ответа ОБЯЗАТЕЛЬНО добавляй [PROC:номера процедур, через запятую, которые связаны с ответом]. Например: [PROC:28,30]`
-                    },
-                    {
-                        role: 'user',
-                        content: `Вопрос: ${message}`
-                    }
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: message }
                 ];
                 
                 const response = await fetch(PROXY_URL, {
@@ -313,25 +328,31 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    const procMatch = data.content.match(/\[PROC:([^\]]+)\]/);
-                    let procNumbers = [];
-                    if (procMatch && procMatch[1] !== 'none') {
-                        procNumbers = procMatch[1].split(',').map(p => p.trim());
-                    }
-                    let cleanContent = data.content.replace(/\[PROC:[^\]]+\]/, '').trim();
+                    let cleanContent = data.content;
                     
-                    // Делаем ссылки на процедуры кликабельными
+                    // Извлекаем номера процедур из ответа AI
+                    const procMatch = cleanContent.match(/\[PROC:([^\]]+)\]/);
+                    let procNumbers = [];
+                    if (procMatch && procMatch[1] !== 'none' && procMatch[1] !== '') {
+                        procNumbers = procMatch[1].split(',').map(p => p.trim()).filter(p => /^\d+[a-z]*$/.test(p));
+                        cleanContent = cleanContent.replace(/\[PROC:[^\]]+\]/, '').trim();
+                    }
+                    
+                    // Подсвечиваем ссылки на процедуры
                     procNumbers.forEach(procNum => {
-                        const regex1 = new RegExp(`(Процедура\\s+${procNum})`, 'gi');
-                        const regex2 = new RegExp(`(процедуру\\s+${procNum})`, 'gi');
-                        cleanContent = cleanContent.replace(regex1, `<a href="proc${procNum}.html" class="proc-link">$1</a>`);
-                        cleanContent = cleanContent.replace(regex2, `<a href="proc${procNum}.html" class="proc-link">$1</a>`);
+                        const regex = new RegExp(`(Процедура\\s+${procNum})`, 'gi');
+                        cleanContent = cleanContent.replace(regex, `<a href="proc${procNum}.html" class="proc-link">$1</a>`);
                     });
                     
                     AICore._addMessage(cleanContent, 'bot');
                     
-                    // ФИЛЬТРАЦИЯ КАРТЫ ПО НОМЕРАМ ПРОЦЕДУР
-                    if (procNumbers.length > 0 && typeof window.filterByAIProcedures === 'function') {
+                    // ФИЛЬТРУЕМ КАРТУ ТОЛЬКО если:
+                    // 1. Есть номера процедур
+                    // 2. Вопрос был про процедуры
+                    // 3. Номера не пустые
+                    const shouldFilter = procNumbers.length > 0 && isProcedural;
+                    
+                    if (shouldFilter && typeof window.filterByAIProcedures === 'function') {
                         window.filterByAIProcedures(procNumbers);
                         const messagesDiv = document.getElementById('aiMessages');
                         if (messagesDiv) {
