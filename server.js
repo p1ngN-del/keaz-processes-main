@@ -16,8 +16,9 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 
-// РАЗДАЧА СТАТИКИ (HTML, CSS, JS, JSON)
+// РАЗДАЧА СТАТИКИ (ВСЁ В КОРНЕ)
 app.use(express.static(__dirname));
+app.use('/templates', express.static(path.join(__dirname, 'templates')));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -26,7 +27,7 @@ app.get('/health', (req, res) => {
 
 // Основной эндпоинт AI
 app.post('/api/chat', async (req, res) => {
-    console.log('📨 Получен запрос:', req.body.messages?.[req.body.messages.length - 1]?.content?.substring(0, 100));
+    console.log('📨 Получен запрос');
     
     try {
         const { messages, fullData } = req.body;
@@ -38,12 +39,9 @@ app.post('/api/chat', async (req, res) => {
         
         const userMessage = messages[messages.length - 1]?.content || '';
         
-        // Собираем контекст только из релевантных процедур (если нужно)
         let contextText = '';
         if (fullData && fullData.length > 0) {
-            // Ограничиваем размер контекста для экономии токенов
-            const relevantProcedures = fullData.slice(0, 15); // TODO: можно добавить поиск по релевантности
-            contextText = relevantProcedures.map(proc => 
+            contextText = fullData.slice(0, 15).map(proc => 
                 `[${proc.num}] ${proc.name}: ${(proc.content || '').substring(0, 800)}`
             ).join('\n\n');
         }
@@ -56,7 +54,7 @@ app.post('/api/chat', async (req, res) => {
                     { 
                         role: 'system', 
                         content: `Ты — AI-ассистент КЭАЗ. Отвечай на русском, по делу.
-                        
+
 Если вопрос НЕ ЯСЕН или НЕ ХВАТАЕТ ДАННЫХ — задай 1-2 уточняющих вопроса.
 Если вопрос понятен — давай чёткий ответ, используй заголовки и списки.
 Если вопрос про процедуры и ты можешь определить их номера — в конце добавь [PROC:номера].
@@ -103,7 +101,6 @@ app.post('/api/get-start-proc', async (req, res) => {
             return res.status(400).json({ success: false, error: 'role and procedures required' });
         }
         
-        // Фильтруем процедуры, где участвует эта роль
         const roleProcedures = procedures.filter(proc => {
             return proc.roles && proc.roles.includes(role);
         });
@@ -112,7 +109,6 @@ app.post('/api/get-start-proc', async (req, res) => {
             return res.json({ success: true, procId: null });
         }
         
-        // Берём процедуру с минимальным номером (чем меньше номер, тем раньше в процессе)
         const sorted = [...roleProcedures].sort((a, b) => parseInt(a.num) - parseInt(b.num));
         const recommendedProc = sorted[0];
         
@@ -126,13 +122,13 @@ app.post('/api/get-start-proc', async (req, res) => {
     }
 });
 
-// Для всех остальных маршрутов — отдаём index.html (SPA-режим для роутинга)
+// Для всех остальных маршрутов — отдаём index.html
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на порту ${PORT}`);
-    console.log(`📁 Статика из папки: ${path.join(__dirname, 'public')}`);
-    console.log(`🔑 API key ${DEEPSEEK_API_KEY ? 'задан' : 'НЕ ЗАДАН!'}`);
+    console.log(`📁 Статика из корня: ${__dirname}`);
+    console.log(`🔑 API key ${DEEPSEEK_API_KEY ? '✅ задан' : '❌ НЕ ЗАДАН!'}`);
 });
