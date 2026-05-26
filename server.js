@@ -17,7 +17,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 
 // РАЗДАЧА СТАТИКИ (HTML, CSS, JS, JSON)
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 // Health check
 app.get('/health', (req, res) => {
