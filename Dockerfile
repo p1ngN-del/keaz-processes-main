@@ -4,13 +4,10 @@ WORKDIR /app
 
 # Копируем package.json и устанавливаем зависимости
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install
 
 # Копируем весь проект
 COPY . .
-
-# Создаём папку для статики, если её нет
-RUN mkdir -p public
 
 EXPOSE 8080
 
