@@ -53,8 +53,8 @@
     function extractStepsFromHtml(html, procNum) {
         const steps = {};
         
-        // ИСПРАВЛЕННОЕ РЕГУЛЯРНОЕ ВЫРАЖЕНИЕ
-        const stepDataMatch = html.match(/const stepData = (\{[\s\S]*\n\}\);?\s*\]?\s*[\n<]/);
+        // ИСПРАВЛЕННОЕ РЕГУЛЯРНОЕ ВЫРАЖЕНИЕ — БЕЗ ОШИБОК
+        const stepDataMatch = html.match(/const stepData = (\{[\s\S]*?\n\})/);
         if (stepDataMatch && stepDataMatch[1]) {
             try {
                 const stepsObj = parseStepDataString(stepDataMatch[1]);
