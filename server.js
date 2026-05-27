@@ -1,4 +1,3 @@
-// server.js - ОПТИМИЗИРОВАННЫЙ (без обрезания контекста)
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -28,89 +27,68 @@ app.post('/api/chat', async (req, res) => {
             return res.status(500).json({ success: false, error: 'API key missing' });
         }
         
-        // ------ КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: используем htmlContext (содержит ВСЁ) ------
         let contextForAI = '';
-        
-        // Если клиент прислал готовый htmlContext (содержит и JSON, и HTML шаги) — используем его без обрезания
         if (htmlContext && htmlContext.length > 0) {
             contextForAI = htmlContext;
-            console.log(`📚 Использую полный контекст от клиента: ${Math.round(contextForAI.length / 1024)} KB`);
-        } 
-        // Если нет, собираем из fullData (старый метод, для обратной совместимости)
-        else if (fullData && fullData.length > 0) {
+            console.log(`📚 Использую полный контекст: ${Math.round(contextForAI.length / 1024)} KB`);
+        } else if (fullData && fullData.length > 0) {
             contextForAI = fullData.map(proc => {
-                return `=== ПРОЦЕДУРА ${proc.num} ===\nНазвание: ${proc.name}\nТип: ${proc.type || 'Процедура'}\n${proc.content || ''}\n${proc.inputs ? `ВХОДЫ: ${proc.inputs.join(', ')}` : ''}\n${proc.outputs ? `ВЫХОДЫ: ${proc.outputs.join(', ')}` : ''}\n${proc.roles ? `РОЛИ: ${proc.roles.join(', ')}` : ''}\n---`;
+                return `=== ПРОЦЕДУРА ${proc.num} ===\nНазвание: ${proc.name}\n${proc.content || ''}\n${proc.roles ? `Роли: ${proc.roles.join(', ')}` : ''}\n---`;
             }).join('\n\n');
-            console.log(`📚 Собрал контекст из JSON: ${Math.round(contextForAI.length / 1024)} KB`);
-        }
-        
-        // Формируем историю диалога (если есть)
-        let historyText = '';
-        if (conversationHistory && conversationHistory.length > 0) {
-            const lastMessages = conversationHistory.slice(-6);
-            historyText = lastMessages.map(msg => 
-                `${msg.role === 'user' ? 'Пользователь' : 'Ассистент'}: ${msg.content.substring(0, 800)}`
-            ).join('\n\n');
+            console.log(`📚 Контекст из JSON: ${Math.round(contextForAI.length / 1024)} KB`);
         }
         
         const userMessage = messages[messages.length - 1]?.content || '';
         
-        // УЛУЧШЕННЫЙ СИСТЕМНЫЙ ПРОМПТ (явно говорим искать по ВСЕМ процедурам и использовать ссылки)
-        const systemPrompt = `Ты — AI-ассистент КЭАЗ.
+        // СТАРЫЙ РАБОЧИЙ ПРОМПТ (возвращаем)
+        const systemPrompt = `Ты — AI-ассистент КЭАЗ. Твоя задача — помогать сотрудникам компании разбираться в бизнес-процессах.
 
-**ЖЁСТКИЕ ПРАВИЛА ФОРМАТИРОВАНИЯ ОТВЕТА:**
+ТВОИ ЦЕННОСТИ:
+1. НЕ СПЕШИ. Внимательно прочитай вопрос. Если он нечёткий или не хватает данных — задай 1-2 уточняющих вопроса. Лучше уточнить, чем дать неполный ответ.
+2. ДАВАЙ МАКСИМАЛЬНО ПОДРОБНЫЕ ОТВЕТЫ. Не обрезай важную информацию. Если в процедуре 20 шагов — опиши их все.
+3. ВСЕГДА ДОБАВЛЯЙ ССЫЛКИ НА ПРОЦЕДУРЫ. Если ты ссылаешься на процедуру 4 — напиши "Процедура 4" (без кавычек). Если на несколько — "Процедура 4", "Стандарт 37", "Инструкция 32". Я сам превращу их в кликабельные ссылки.
+4. В конце ответа всегда добавляй [PROC:номера] — например, [PROC:4] или [PROC:4,37].
 
-1. **Резюме всегда в начале ответа.** Сначала краткий итог (2-3 предложения), потом детали. Не пиши "Резюме" в конце.
+ФОРМАТ ОТВЕТА:
+- Используй заголовки (жирным) для разделов
+- Используй маркированные списки для шагов
+- Не используй Markdown-символы (###, ##, #, **, *) — они заменятся автоматически
 
-2. **На каждое упоминание процедуры, стандарта, инструкции или методики ОБЯЗАТЕЛЬНО добавляй кликабельную ссылку в формате:** "Процедура 4", "Стандарт 37", "Инструкция 32", "Методика 47". Не пиши "ПРОЦЕДУРА 4" заглавными — пиши как обычно, я сам преобразую в ссылку.
-
-3. **В конце ответа всегда добавляй [PROC:номера]** — например, [PROC:4,37] или [PROC:4] или [PROC:37].
-
-4. **Не используй Markdown-символы** (###, ##, #, **, *), я сам их заменю на HTML.
-
-5. **Если информации нет — скажи честно, не выдумывай.**
-
-БАЗА ЗНАНИЙ:
+БАЗА ЗНАНИЙ КЭАЗ:
 ${contextForAI.substring(0, 150000)}
 
-ВОПРОС ПОЛЬЗОВАТЕЛЯ: ${userMessage}`;
+ОТВЕТЬ НА ВОПРОС ПОЛЬЗОВАТЕЛЯ: ${userMessage}`;
 
-        // Отправляем запрос в DeepSeek
         const response = await axios.post(
             'https://api.deepseek.com/v1/chat/completions',
             {
                 model: 'deepseek-chat',
                 messages: [
-                    { role: 'system', content: systemPrompt.substring(0, 120000) }, // Ограничение оставил, но оно большое
+                    { role: 'system', content: systemPrompt },
                     { role: 'user', content: userMessage }
                 ],
-                temperature: 0.5,  // Снизил для более точных ответов
-                max_tokens: 6000   // Увеличил для развёрнутых ответов
+                temperature: 0.7,
+                max_tokens: 4000
             },
             {
                 headers: {
                     'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
                     'Content-Type': 'application/json'
                 },
-                timeout: 90000 // Увеличил таймаут до 90 секунд
+                timeout: 60000
             }
         );
         
         const answer = response.data.choices[0].message.content;
-        console.log(`✅ Ответ получен, длина: ${answer.length} символов`);
+        console.log(`✅ Ответ получен, длина: ${answer.length}`);
         res.json({ success: true, content: answer });
         
     } catch (error) {
-        console.error('❌ Ошибка AI:', error.message);
-        if (error.response) {
-            console.error('Response status:', error.response.status);
-            console.error('Response data:', JSON.stringify(error.response.data).substring(0, 500));
-        }
+        console.error('❌ Ошибка:', error.message);
         res.status(500).json({ success: false, error: error.message });
     }
 });
 
-// Эндпоинт для определения стартовой процедуры по роли (без изменений, работает)
 app.post('/api/get-start-proc', async (req, res) => {
     try {
         const { role, procedures } = req.body;
@@ -122,10 +100,10 @@ app.post('/api/get-start-proc', async (req, res) => {
             return res.json({ success: true, procId: null });
         }
         const sorted = [...roleProcedures].sort((a, b) => parseInt(a.num) - parseInt(b.num));
-        console.log(`🎯 Для роли ${role} рекомендована процедура ${sorted[0].num}`);
+        console.log(`🎯 Для роли ${role} процедура ${sorted[0].num}`);
         res.json({ success: true, procId: sorted[0].num });
     } catch (error) {
-        console.error('Ошибка в /api/get-start-proc:', error.message);
+        console.error('Ошибка:', error.message);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -135,7 +113,6 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Сервер запущен на порту ${PORT}`);
+    console.log(`🚀 Сервер на порту ${PORT}`);
     console.log(`🔑 API key ${DEEPSEEK_API_KEY ? '✅ задан' : '❌ НЕ ЗАДАН!'}`);
-    console.log(`📚 База знаний: без ограничений (до 200 KB за раз)`);
 });
