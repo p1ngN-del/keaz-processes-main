@@ -6,7 +6,7 @@
     
     const PROXY_URL = 'https://keaz-processes-main-production.up.railway.app/api/chat';
     let proceduresFullData = [];
-    let conversationHistory = []; // <-- ИСТОРИЯ ДИАЛОГА
+    let conversationHistory = [];
 
     async function loadProceduresFullData() {
         if (proceduresFullData.length > 0) return proceduresFullData;
@@ -44,7 +44,6 @@
         cleanText = cleanText.replace(/^# (.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:10px 0 4px 0;">$1</strong>');
         cleanText = cleanText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
         
-        // Ловит "в процедуре 28", "процедуре 28", "согласно 30" и т.д.
         cleanText = cleanText.replace(/(?:в\s+|согласно\s+)?(процедуре|процедура|стандарте|стандарт|инструкции|инструкция|методике|методика)\s+(\d+[a-z]*)/gi, (match, word, num) => {
             let type = 'Процедура';
             if (word.toLowerCase().startsWith('стандарт')) type = 'Стандарт';
@@ -53,7 +52,6 @@
             return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${type} ${num}</a>`;
         });
         
-        // Ссылки на всё
         cleanText = cleanText.replace(/(Процедура|Стандарт|Инструкция|Методика)\s+(\d+[a-z]*)/gi, (match, type, num) => {
             return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
         });
@@ -98,6 +96,33 @@
                 border: 2px solid rgba(255, 255, 255, 0.4);
                 margin: 20px auto;
             }
+            .ai-clear-history {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 18px;
+                cursor: pointer;
+                padding: 5px 8px;
+                border-radius: 8px;
+                transition: 0.2s;
+            }
+            .ai-clear-history:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: scale(1.05);
+            }
+            .typing-indicator {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 14px 18px;
+                background: white;
+                border-radius: 18px;
+                align-self: flex-start;
+                border: 1px solid #e2e8f0;
+            }
+            .typing-icon { font-size: 1.2rem; }
+            .typing-text { color: #64748b; font-size: 0.85rem; }
+            .typing-dots { font-size: 1.2rem; letter-spacing: 2px; min-width: 24px; }
             @keyframes softPulse {
                 0% { box-shadow: 0 4px 12px rgba(246, 184, 62, 0.3); }
                 50% { box-shadow: 0 6px 18px rgba(246, 184, 62, 0.6), 0 0 0 3px rgba(246, 184, 62, 0.2); }
@@ -144,9 +169,37 @@
             .ai-input { flex: 1; padding: 12px 18px; border: 2px solid #e2e8f0; border-radius: 30px; outline: none; }
             .ai-input:focus { border-color: #f6b83e; }
             .ai-send { background: linear-gradient(135deg, #f6b83e, #ff8c00); border: none; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 22px; color: #0a1929; }
-            .typing-indicator { display: flex; gap: 6px; padding: 14px 18px; background: white; border-radius: 18px; align-self: flex-start; }
-            .typing-indicator span { width: 10px; height: 10px; background: #f6b83e; border-radius: 50%; animation: typing 1.4s infinite; }
-            @keyframes typing { 0%,60%,100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-10px); opacity: 1; } }
+            @media (max-width: 600px) {
+                .ai-widget {
+                    width: calc(100vw - 20px);
+                    max-width: none;
+                    top: 10px;
+                    left: 10px;
+                    right: 10px;
+                    bottom: 10px;
+                    transform: none;
+                    border-radius: 20px;
+                }
+                .ai-widget.open {
+                    position: fixed;
+                    top: 10px;
+                    left: 10px;
+                    right: 10px;
+                    bottom: 10px;
+                    width: auto;
+                }
+                .ai-messages {
+                    height: calc(100vh - 140px);
+                    max-height: none;
+                }
+                .ai-floating-button {
+                    min-width: 180px;
+                    padding: 12px 20px;
+                    font-size: 1rem;
+                }
+                .ai-floating-button .ai-btn-icon { font-size: 24px; }
+                .ai-floating-button .ai-btn-text { font-size: 0.9rem; }
+            }
         `;
         document.head.appendChild(style);
     }
@@ -160,7 +213,12 @@
         
         const widgetHTML = `
             <div class="ai-widget" id="aiWidget">
-                <div class="ai-header"><span class="ai-icon">🤖</span><span class="ai-title">AI · Ассистент КЭАЗ</span><button class="ai-close" onclick="AICore.toggleWidget()">✕</button></div>
+                <div class="ai-header">
+                    <span class="ai-icon">🤖</span>
+                    <span class="ai-title">AI · Ассистент КЭАЗ</span>
+                    <button class="ai-clear-history" onclick="AICore.clearHistory()" title="Очистить историю диалога">🗑️</button>
+                    <button class="ai-close" onclick="AICore.toggleWidget()">✕</button>
+                </div>
                 <div class="ai-messages" id="aiMessages"><div class="ai-message ai-message-bot">${welcomeMessage}</div></div>
                 <div class="ai-input-row"><input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)"><button class="ai-send" id="aiSendBtn" onclick="AICore.sendMessage()">➤</button></div>
             </div>
@@ -226,6 +284,13 @@
         handleKeyPress: function(event) {
             if (event.key === 'Enter') AICore.sendMessage();
         },
+        clearHistory: function() {
+            conversationHistory = [];
+            const messagesDiv = document.getElementById('aiMessages');
+            if (messagesDiv) {
+                messagesDiv.innerHTML = '<div class="ai-message ai-message-bot">🤖 <strong>Привет! Я AI-ассистент КЭАЗ.</strong><br><br>История диалога очищена. Чем могу помочь?</div>';
+            }
+        },
         _showTypingIndicator: function() {
             const messagesDiv = document.getElementById('aiMessages');
             if (!messagesDiv) return;
@@ -236,7 +301,6 @@
             messagesDiv.appendChild(div);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             
-            // Анимация точек
             let dots = 1;
             const interval = setInterval(() => {
                 const dotsSpan = document.querySelector('#typingIndicator .typing-dots');
@@ -246,7 +310,6 @@
             }, 400);
             div._dotInterval = interval;
         },
-        
         _removeTypingIndicator: function() {
             const indicator = document.getElementById('typingIndicator');
             if (indicator && indicator._dotInterval) clearInterval(indicator._dotInterval);
@@ -278,7 +341,6 @@
                 if (proceduresFullData.length === 0) await loadProceduresFullData();
                 const fullContext = buildFullContext();
                 
-                // Сохраняем вопрос в историю
                 conversationHistory.push({ role: 'user', content: message });
                 if (conversationHistory.length > 10) {
                     conversationHistory = conversationHistory.slice(-10);
@@ -300,7 +362,6 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Сохраняем ответ в историю
                     conversationHistory.push({ role: 'assistant', content: data.content });
                     
                     let cleanContent = data.content;
