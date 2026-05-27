@@ -48,14 +48,29 @@
     function formatMessage(text) {
         let cleanText = text;
         
+        // 1. Убираем Markdown-символы (###, ##, #, **, *) — заменяем на HTML
+        cleanText = cleanText.replace(/^### (.+)$/gm, '<strong style="font-size:1.1rem; display:block; margin:16px 0 8px 0;">$1</strong>');
+        cleanText = cleanText.replace(/^## (.+)$/gm, '<strong style="font-size:1rem; display:block; margin:12px 0 6px 0;">$1</strong>');
+        cleanText = cleanText.replace(/^# (.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:10px 0 4px 0;">$1</strong>');
+        cleanText = cleanText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        cleanText = cleanText.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        
+        // 2. Превращаем "Процедура 4" в кликабельную ссылку
         cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
-            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none; display:inline-block; margin:2px 0;">${match}</a>`;
         });
         
-        cleanText = cleanText.replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => {
-            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+        // 3. Превращаем "Стандарт 37" в ссылку
+        cleanText = cleanText.replace(/Стандарт\s+(\d+[a-z]*)/gi, (match, num) => {
+            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none; display:inline-block; margin:2px 0;">${match}</a>`;
         });
         
+        // 4. Превращаем "Инструкция 32" и т.д. в ссылки
+        cleanText = cleanText.replace(/(Инструкция|Методика|Стандарт)\s+(\d+[a-z]*)/gi, (match, type, num) => {
+            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none; display:inline-block; margin:2px 0;">${match}</a>`;
+        });
+        
+        // 5. Превращаем [PROC:4,37] в ссылки
         cleanText = cleanText.replace(/\[PROC:(\d+(?:,\d+)*)\]/gi, (match, nums) => {
             const procList = nums.split(',');
             const links = procList.map(num => 
@@ -64,7 +79,15 @@
             return links;
         });
         
+        // 6. Маркированные списки
+        cleanText = cleanText.replace(/^[-*]\s+(.+)$/gm, '<span style="display:block; margin-left:16px; margin-bottom:4px;">• $1</span>');
+        
+        // 7. Нумерованные списки
+        cleanText = cleanText.replace(/^\d+\.\s+(.+)$/gm, '<span style="display:block; margin-left:8px; margin-bottom:4px;"><strong>$&</strong></span>');
+        
+        // 8. Переносы строк
         cleanText = cleanText.replace(/\n/g, '<br>');
+        
         return cleanText;
     }
 
