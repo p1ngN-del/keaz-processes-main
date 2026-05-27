@@ -26,88 +26,104 @@
     }
 
     // ========== ЗАГРУЗКА HTML (ВСЕХ ПРОЦЕДУР) ==========
-    async function loadAllProceduresHtml() {
-        const procNumbers = ['1','2','3','4','4a','4n','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47'];
+async function loadAllProceduresHtml() {
+    const procNumbers = ['1','2','3','4','4a','4n','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47'];
+    
+    console.log(`📄 Загружаем HTML для ${procNumbers.length} процедур...`);
+    
+    // Параллельная загрузка пачками по 5 (чтобы не DDoS'ить свой сервер)
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < procNumbers.length; i += BATCH_SIZE) {
+        const batch = procNumbers.slice(i, i + BATCH_SIZE);
         
-        console.log(`📄 Загружаем HTML для ${procNumbers.length} процедур...`);
-        
-        for (const num of procNumbers) {
+        await Promise.all(batch.map(async (num) => {
             try {
                 const response = await fetch(`proc${num}.html?v=${Date.now()}`);
-                if (!response.ok) continue;
+                if (!response.ok) {
+                    console.warn(`⚠️ proc${num}.html — HTTP ${response.status}`);
+                    return;
+                }
                 const html = await response.text();
                 
                 // Извлекаем stepData из HTML
                 const steps = extractStepsFromHtml(html, num);
                 if (steps && Object.keys(steps).length > 0) {
                     proceduresHtmlSteps.set(num, steps);
-                    console.log(`✅ Загружена процедура ${num}: ${Object.keys(steps).length} шагов`);
+                    console.log(`✅ Процедура ${num}: ${Object.keys(steps).length} шагов`);
+                } else {
+                    console.warn(`⚠️ Процедура ${num}: шаги не найдены`);
                 }
             } catch (e) {
-                console.warn(`⚠️ Не удалось загрузить proc${num}.html:`, e.message);
+                console.warn(`❌ Ошибка загрузки proc${num}.html:`, e.message);
             }
-        }
-        console.log(`📚 Загружено HTML-процедур: ${proceduresHtmlSteps.size}`);
+        }));
     }
+    
+    console.log(`📚 Итого загружено HTML-процедур: ${proceduresHtmlSteps.size}/${procNumbers.length}`);
+}
 
     // ========== ПАРСИНГ stepData ИЗ HTML ==========
-    function extractStepsFromHtml(html, procNum) {
-        const steps = {};
-        
-        // Ищем объект stepData = { ... }
-        const stepDataMatch = html.match(/const stepData = (\{[\s\S]*?\n\}\);?\s*?\]?\s*?[\n<]/);
-        if (stepDataMatch && stepDataMatch[1]) {
-            try {
-                const stepsObj = parseStepDataString(stepDataMatch[1]);
-                if (stepsObj) {
-                    for (const [stepId, stepInfo] of Object.entries(stepsObj)) {
-                        steps[stepId] = {
-                            number: stepInfo.number || stepId,
-                            role: stepInfo.role || 'Не указана',
-                            text: (stepInfo.text || '').substring(0, 800),
-                            inputs: stepInfo.inputs || [],
-                            outputs: stepInfo.outputs || []
-                        };
-                    }
+function extractStepsFromHtml(html, procNum) {
+    const steps = {};
+    
+    // Ищем объявление stepData — гибче, без жёстких требований к форматированию
+    const stepDataMatch = html.match(/const\s+stepData\s*=\s*(\{[\s\S]*?\});?\s*(?:const|let|var|function|export|\/\/|<\/script|$)/i);
+    
+    if (stepDataMatch && stepDataMatch[1]) {
+        try {
+            const stepsObj = parseStepDataString(stepDataMatch[1]);
+            if (stepsObj && typeof stepsObj === 'object') {
+                for (const [stepId, stepInfo] of Object.entries(stepsObj)) {
+                    // Пропускаем служебные поля, если вдруг попадут
+                    if (typeof stepInfo !== 'object' || stepInfo === null) continue;
+                    
+                    steps[stepId] = {
+                        number: stepInfo.number || stepId,
+                        role: stepInfo.role || 'Не указана',
+                        text: String(stepInfo.text || '').substring(0, 800),
+                        inputs: Array.isArray(stepInfo.inputs) ? stepInfo.inputs : [],
+                        outputs: Array.isArray(stepInfo.outputs) ? stepInfo.outputs : []
+                    };
                 }
-            } catch (e) {
-                console.warn(`Ошибка парсинга stepData для proc${procNum}:`, e);
             }
+        } catch (e) {
+            console.warn(`⚠️ Ошибка парсинга stepData для proc${procNum}:`, e.message);
         }
-        
-        return steps;
+    } else {
+        console.warn(`⚠️ stepData не найден в proc${procNum}.html`);
     }
+    
+    return steps;
+}
 
     function parseStepDataString(str) {
-        try {
-            const result = {};
-            // Ищем блоки вида "1: { ... }"
-            const blocks = str.match(/\d+:\s*\{[\s\S]*?\n\}/g);
-            if (!blocks) return null;
-            
-            for (const block of blocks) {
-                const numMatch = block.match(/^(\d+):/);
-                if (!numMatch) continue;
-                const stepNum = numMatch[1];
-                
-                const roleMatch = block.match(/role:\s*["']([^"']+)["']/);
-                const textMatch = block.match(/text:\s*["']([^"']+)["']/);
-                const inputsMatch = block.match(/inputs:\s*\[([^\]]*)\]/);
-                const outputsMatch = block.match(/outputs:\s*\[([^\]]*)\]/);
-                
-                result[stepNum] = {
-                    number: stepNum,
-                    role: roleMatch ? roleMatch[1] : '',
-                    text: textMatch ? textMatch[1] : '',
-                    inputs: inputsMatch ? inputsMatch[1].split(',').map(s => s.trim().replace(/["']/g, '')) : [],
-                    outputs: outputsMatch ? outputsMatch[1].split(',').map(s => s.trim().replace(/["']/g, '')) : []
-                };
-            }
-            return Object.keys(result).length > 0 ? result : null;
-        } catch (e) {
-            return null;
+    try {
+        // Нормализуем строку для безопасного парсинга
+        let normalized = str
+            .trim()
+            // Убираем trailing commas (последняя запятая перед } или ])
+            .replace(/,\s*([}\]])/g, '$1')
+            // Одинарные кавычки → двойные (осторожно с экранированием внутри)
+            .replace(/'/g, '"');
+        
+        // Проверяем, не обёрнут ли уже в {}
+        if (!normalized.startsWith('{')) {
+            normalized = '{' + normalized + '}';
         }
+        
+        // Способ 1: Пробуем JSON.parse (самый безопасный)
+        try {
+            return JSON.parse(normalized);
+        } catch (jsonErr) {
+            // Способ 2: Fallback на new Function (если в данных были не-JSON конструкции)
+            // Безопасно, т.к. мы сами контролируем источник (наши HTML-файлы)
+            return new Function('return ' + normalized)();
+        }
+    } catch (e) {
+        console.warn('❌ Не удалось распарсить stepData:', e.message);
+        return null;
     }
+}
 
     // ========== ФОРМИРУЕМ ПОЛНЫЙ КОНТЕКСТ ДЛЯ AI ==========
     function buildFullContext() {
