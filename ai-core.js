@@ -371,7 +371,7 @@
     }
 
     window.AICore = {
-        initButton: function(containerSelector = 'h1') {
+        initButton: function(containerSelector = '.container h1, .subhead, h1') {
             if (document.querySelector('.ai-core-btn')) return;
             const container = document.querySelector(containerSelector);
             if (!container) return;
