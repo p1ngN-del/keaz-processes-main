@@ -1,144 +1,205 @@
-// ai-core.js - АНАЛИТИЧЕСКАЯ ВЕРСИЯ с построением логических цепочек
+// ai-core.js - ЧИТАЕТ HTML-ФАЙЛЫ ПРОЦЕДУР
 (function() {
     if (window.AICore) return;
     
-    console.log("🤖 AI Core загружается (аналитическая версия)...");
+    console.log("🤖 AI Core загружается (режим чтения HTML)...");
     
     const PROXY_URL = 'https://keaz-processes-main-production.up.railway.app/api/chat';
     let proceduresFullData = [];
-    let proceduresGraph = new Map(); // граф связей процедур
+    let proceduresHtmlContent = new Map(); // храним HTML-текст каждой процедуры
+
+    // Загружаем ВСЕ HTML-файлы процедур и извлекаем из них текст шагов
+    async function loadAllProceduresHtml() {
+        const procNumbers = [];
+        for (let i = 1; i <= 47; i++) {
+            const num = i.toString();
+            // пропускаем 4a, 4n и т.д. — они отдельно
+            if (['4a', '4n', '4н'].includes(num)) continue;
+            procNumbers.push(num);
+        }
+        // Добавляем спецномера
+        const specialNums = ['4a', '4n', '4н', '42', '43', '44', '45', '46', '47'];
+        procNumbers.push(...specialNums);
+        
+        console.log(`📄 Загружаем HTML для ${procNumbers.length} процедур...`);
+        
+        for (const num of procNumbers) {
+            try {
+                const response = await fetch(`proc${num}.html?v=${Date.now()}`);
+                if (!response.ok) continue;
+                const html = await response.text();
+                
+                // Извлекаем содержимое шагов из HTML
+                const stepData = extractStepsFromHtml(html, num);
+                if (stepData && Object.keys(stepData).length > 0) {
+                    proceduresHtmlContent.set(num, stepData);
+                    console.log(`✅ Загружена процедура ${num}: ${Object.keys(stepData).length} шагов`);
+                }
+            } catch (e) {
+                console.warn(`⚠️ Не удалось загрузить proc${num}.html:`, e.message);
+            }
+        }
+        
+        console.log(`📚 Загружено HTML-процедур: ${proceduresHtmlContent.size}`);
+    }
+
+    // Извлекаем шаги из HTML процедуры
+    function extractStepsFromHtml(html, procNum) {
+        const steps = {};
+        
+        // Ищем stepData объект в JavaScript (как в proc1.html, proc2.html и т.д.)
+        const stepDataMatch = html.match(/const stepData = (\{[\s\S]*?\n\}\);?\s*?\]?\s*?[\n<]/);
+        if (stepDataMatch && stepDataMatch[1]) {
+            try {
+                // Пытаемся извлечь данные шагов
+                const stepsObj = extractStepDataFromString(stepDataMatch[1]);
+                if (stepsObj) {
+                    for (const [stepId, stepInfo] of Object.entries(stepsObj)) {
+                        steps[stepId] = {
+                            num: stepInfo.number || stepId,
+                            role: stepInfo.role || 'Не указана',
+                            text: stepInfo.text || '',
+                            inputs: stepInfo.inputs || [],
+                            outputs: stepInfo.outputs || []
+                        };
+                    }
+                }
+            } catch (e) {
+                console.warn(`Ошибка парсинга stepData для proc${procNum}:`, e);
+            }
+        }
+        
+        // Альтернативный поиск: ищем div.step-card с описаниями
+        if (Object.keys(steps).length === 0) {
+            const stepCards = html.match(/<div class="step-card[^>]*data-step="([^"]+)"[^>]*>[\s\S]*?<\/div>/gi);
+            if (stepCards) {
+                stepCards.forEach((card, idx) => {
+                    const stepNumMatch = card.match(/data-step="([^"]+)"/);
+                    const titleMatch = card.match(/<div class="step-title">([^<]+)<\/div>/);
+                    const previewMatch = card.match(/<div class="step-preview">([^<]+)<\/div>/);
+                    
+                    if (stepNumMatch) {
+                        steps[stepNumMatch[1]] = {
+                            num: stepNumMatch[1],
+                            role: 'См. детали',
+                            text: `${titleMatch ? titleMatch[1] : ''}. ${previewMatch ? previewMatch[1] : ''}`,
+                            inputs: [],
+                            outputs: []
+                        };
+                    }
+                });
+            }
+        }
+        
+        return steps;
+    }
+
+    function extractStepDataFromString(str) {
+        try {
+            // Очищаем строку
+            let cleanStr = str
+                .replace(/,\s*\]/g, ']')
+                .replace(/,\s*\}/g, '}')
+                .replace(/\/\/[^\n]*/g, '')
+                .replace(/\n/g, ' ');
+            
+            // Находим числа и строки
+            const numbers = {};
+            const numberMatches = cleanStr.match(/(\d+):\s*\{/g);
+            if (numberMatches) {
+                numberMatches.forEach(match => {
+                    const num = match.match(/\d+/)[0];
+                    numbers[num] = true;
+                });
+            }
+            
+            // Простой парсинг: собираем все блоки вида "номер: { ... }"
+            const stepBlocks = cleanStr.match(/\d+:\s*\{[\s\S]*?\n\}/g);
+            if (!stepBlocks) return null;
+            
+            const result = {};
+            for (const block of stepBlocks) {
+                const numMatch = block.match(/^(\d+):/);
+                if (!numMatch) continue;
+                const stepNum = numMatch[1];
+                
+                const roleMatch = block.match(/role:\s*["']([^"']+)["']/);
+                const textMatch = block.match(/text:\s*["']([^"']+)["']/);
+                const inputsMatch = block.match(/inputs:\s*\[([^\]]*)\]/);
+                const outputsMatch = block.match(/outputs:\s*\[([^\]]*)\]/);
+                
+                result[stepNum] = {
+                    number: stepNum,
+                    role: roleMatch ? roleMatch[1] : '',
+                    text: textMatch ? textMatch[1] : '',
+                    inputs: inputsMatch ? inputsMatch[1].split(',').map(s => s.trim().replace(/["']/g, '')) : [],
+                    outputs: outputsMatch ? outputsMatch[1].split(',').map(s => s.trim().replace(/["']/g, '')) : []
+                };
+            }
+            
+            return Object.keys(result).length > 0 ? result : null;
+        } catch (e) {
+            console.error('Ошибка парсинга stepData:', e);
+            return null;
+        }
+    }
 
     async function loadProceduresFullData() {
         if (proceduresFullData.length > 0) return proceduresFullData;
         try {
+            // Загружаем JSON
             const response = await fetch('procedures_data.json?v=' + Date.now());
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
             if (data.procedures) {
                 proceduresFullData = data.procedures;
-                buildProceduresGraph();
-                console.log(`✅ Загружено ${proceduresFullData.length} процедур, граф построен`);
+                console.log(`✅ Загружено ${proceduresFullData.length} процедур из JSON`);
             }
+            
+            // Загружаем HTML
+            await loadAllProceduresHtml();
+            
             return proceduresFullData;
         } catch (error) {
-            console.error('❌ Ошибка загрузки procedures_data.json:', error);
+            console.error('❌ Ошибка загрузки данных:', error);
             return [];
         }
     }
 
-    // Строим граф связей между процедурами (по входам/выходам)
-    function buildProceduresGraph() {
-        proceduresGraph.clear();
+    function buildFullContext(question) {
+        let context = '';
         
-        proceduresFullData.forEach(proc => {
-            const links = [];
-            
-            // Ищем ссылки на другие процедуры в тексте
-            const procMatches = proc.content.match(/\bпроцедур[ау]?\s+(\d+[a-z]*)\b/gi);
-            if (procMatches) {
-                procMatches.forEach(match => {
-                    const num = match.match(/\d+[a-z]*/)[0];
-                    if (num && num !== proc.num) links.push(num);
-                });
-            }
-            
-            // Ищем ссылки во входах/выходах
-            if (proc.inputs) {
-                proc.inputs.forEach(input => {
-                    const match = input.match(/\b(\d+[a-z]*)\b/);
-                    if (match && match[1] !== proc.num) links.push(match[1]);
-                });
-            }
-            if (proc.outputs) {
-                proc.outputs.forEach(output => {
-                    const match = output.match(/\b(\d+[a-z]*)\b/);
-                    if (match && match[1] !== proc.num) links.push(match[1]);
-                });
-            }
-            
-            proceduresGraph.set(proc.num, [...new Set(links)]);
-        });
-        
-        console.log('📊 Граф связей процедур:', Array.from(proceduresGraph.entries()).slice(0, 5));
-    }
-
-    // Поиск релевантных процедур по запросу (с весами)
-    function findRelevantProcedures(query, maxResults = 10) {
-        const queryLower = query.toLowerCase();
-        const keywords = queryLower.split(/\s+/).filter(w => w.length > 2);
-        
-        const scored = proceduresFullData.map(proc => {
-            let score = 0;
-            const fullText = `${proc.num} ${proc.name} ${proc.content} ${proc.roles?.join(' ') || ''}`.toLowerCase();
-            
-            keywords.forEach(keyword => {
-                const matches = (fullText.match(new RegExp(keyword, 'g')) || []).length;
-                score += matches * 10;
+        // Добавляем данные из JSON
+        if (proceduresFullData.length > 0) {
+            context += '=== ДАННЫЕ ИЗ JSON ===\n';
+            proceduresFullData.forEach(proc => {
+                context += `\n[ПРОЦЕДУРА ${proc.num}] ${proc.name}\n`;
+                if (proc.content) context += `Содержание: ${proc.content.substring(0, 1500)}\n`;
+                if (proc.roles) context += `Роли: ${proc.roles.join(', ')}\n`;
+                if (proc.inputs) context += `Входы: ${proc.inputs.join(', ')}\n`;
+                if (proc.outputs) context += `Выходы: ${proc.outputs.join(', ')}\n`;
             });
-            
-            // Специальные веса для ключевых терминов
-            if (queryLower.includes('етим') || queryLower.includes('etim')) {
-                if (fullText.includes('etim')) score += 100;
-            }
-            if (queryLower.includes('тнвэд') || queryLower.includes('тн вэд')) {
-                if (fullText.includes('тнвэд') || fullText.includes('тн вэд')) score += 100;
-            }
-            if (queryLower.includes('сертификат')) {
-                if (fullText.includes('сертификат')) score += 80;
-            }
-            if (queryLower.includes('кто') && proc.roles) {
-                score += 30;
-            }
-            
-            return { proc, score };
-        });
+        }
         
-        const relevant = scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score).slice(0, maxResults);
-        console.log(`🔍 Найдено ${relevant.length} релевантных процедур по запросу "${query}"`);
-        relevant.forEach(r => console.log(`   - ${r.proc.num}: ${r.proc.name} (score: ${r.score})`));
-        
-        return relevant.map(r => r.proc);
-    }
-
-    // Строим логическую цепочку из связанных процедур
-    function buildLogicalChain(procedures, query) {
-        if (!procedures.length) return [];
-        
-        const chain = [];
-        const visited = new Set();
-        
-        // Начинаем с самой релевантной процедуры
-        let current = procedures[0];
-        chain.push(current);
-        visited.add(current.num);
-        
-        // Строим цепочку по связям (входы/выходы) — максимум 5 шагов
-        for (let i = 0; i < 4 && chain.length < 5; i++) {
-            const lastProc = chain[chain.length - 1];
-            const links = proceduresGraph.get(lastProc.num) || [];
-            
-            // Ищем связанную процедуру, которая есть в релевантных или имеет высокий приоритет
-            let nextProc = null;
-            for (const linkNum of links) {
-                const found = proceduresFullData.find(p => p.num === linkNum);
-                if (found && !visited.has(found.num)) {
-                    nextProc = found;
-                    break;
+        // Добавляем данные из HTML (шаги процедур)
+        if (proceduresHtmlContent.size > 0) {
+            context += '\n=== ДЕТАЛЬНЫЕ ШАГИ ИЗ HTML-ФАЙЛОВ ===\n';
+            for (const [procNum, steps] of proceduresHtmlContent.entries()) {
+                context += `\n[ПРОЦЕДУРА ${procNum} - ПОДРОБНЫЕ ШАГИ]\n`;
+                for (const [stepId, step] of Object.entries(steps)) {
+                    context += `  ШАГ ${step.num}: ${step.role}\n`;
+                    context += `    ${step.text.substring(0, 500)}\n`;
+                    if (step.inputs && step.inputs.length) {
+                        context += `    Входы: ${step.inputs.join(', ')}\n`;
+                    }
+                    if (step.outputs && step.outputs.length) {
+                        context += `    Выходы: ${step.outputs.join(', ')}\n`;
+                    }
                 }
-            }
-            
-            if (nextProc) {
-                chain.push(nextProc);
-                visited.add(nextProc.num);
-            } else {
-                break;
             }
         }
         
-        console.log(`🔗 Построена логическая цепочка из ${chain.length} процедур:`);
-        chain.forEach(p => console.log(`   ${p.num} → ${p.name}`));
-        
-        return chain;
+        return context;
     }
 
     function formatMessage(text) {
@@ -154,12 +215,22 @@
             .replace(/^\d+\.\s+(.+)$/gm, '<span style="display:block; margin-left:8px;"><strong>$&</strong></span>')
             .replace(/\*\*/g, '').replace(/\*/g, '').replace(/\n/g, '<br>');
         
+        // Превращаем "Процедура X" в ссылку
         cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
             return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
         });
         
         cleanText = cleanText.replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => {
             return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+        });
+        
+        // Превращаем [PROC:X] в ссылку
+        cleanText = cleanText.replace(/\[PROC:(\d+(?:,\d+)*)\]/gi, (match, nums) => {
+            const procList = nums.split(',');
+            const links = procList.map(num => 
+                `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">Процедура ${num}</a>`
+            ).join(', ');
+            return links;
         });
         
         return cleanText;
@@ -214,7 +285,7 @@
         const widgetHTML = `
             <div class="ai-widget ai-widget-hidden" id="aiWidget">
                 <div class="ai-header"><span class="ai-icon">🤖</span><span class="ai-title">AI · Ассистент КЭАЗ</span><button class="ai-close" onclick="AICore.toggleWidget()">✕</button></div>
-                <div class="ai-messages" id="aiMessages"><div class="ai-message ai-message-bot"><strong>🤖 AI-ассистент КЭАЗ готов к работе.</strong><br><br>Задайте вопрос о процедурах, стандартах или инструкциях компании. Я проанализирую всю базу знаний и построю логическую цепочку действий.</div></div>
+                <div class="ai-messages" id="aiMessages"><div class="ai-message ai-message-bot"><strong>🤖 AI-ассистент КЭАЗ готов к работе.</strong><br><br>Я анализирую JSON и HTML-файлы всех процедур. Задайте вопрос.</div></div>
                 <div class="ai-input-row"><input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)"><button class="ai-send" id="aiSendBtn" onclick="AICore.sendMessage()">➤</button></div>
             </div>
         `;
@@ -307,7 +378,7 @@
             
             const btn = document.createElement('button');
             btn.className = 'ai-search-btn ai-core-btn';
-            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🤖</span><div style="text-align: left;"><div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div><div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Анализирую все процедуры</div></div></div>`;
+            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🤖</span><div style="text-align: left;"><div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div><div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Анализирую JSON и HTML</div></div></div>`;
             btn.style.padding = '10px 20px 10px 16px';
             btn.style.background = 'white';
             btn.style.border = '2px solid #f6b83e';
@@ -399,46 +470,31 @@
             btn.disabled = true;
             
             try {
-                const allProcedures = await loadProceduresFullData();
+                // Убеждаемся, что данные загружены
+                if (proceduresFullData.length === 0) {
+                    await loadProceduresFullData();
+                }
                 
-                // 1. Находим релевантные процедуры по запросу
-                const relevantProcedures = findRelevantProcedures(message, 8);
+                // Формируем ПОЛНЫЙ контекст (JSON + HTML-шаги)
+                const fullContext = buildFullContext(message);
                 
-                // 2. Строим логическую цепочку
-                const logicalChain = buildLogicalChain(relevantProcedures, message);
+                console.log(`📚 Размер контекста: ${Math.round(fullContext.length / 1024)} KB`);
                 
-                // 3. Формируем детальный контекст для AI
-                let contextForAI = '';
-                logicalChain.forEach(proc => {
-                    contextForAI += `
-╔══════════════════════════════════════════════════════════════╗
-║ ПРОЦЕДУРА ${proc.num}: ${proc.name}
-╠══════════════════════════════════════════════════════════════╣
-${proc.content}
-${proc.roles ? `\n📌 РОЛИ: ${proc.roles.join(', ')}` : ''}
-${proc.inputs ? `\n⬅️ ВХОДЫ: ${proc.inputs.join(', ')}` : ''}
-${proc.outputs ? `\n➡️ ВЫХОДЫ: ${proc.outputs.join(', ')}` : ''}
-╚══════════════════════════════════════════════════════════════╝
-`;
-                });
-                
-                const systemPrompt = `Ты — AI-ассистент КЭАЗ. Твоя задача — анализировать бизнес-процессы компании и давать максимально подробные ответы.
+                const systemPrompt = `Ты — AI-ассистент КЭАЗ. Твоя задача — помогать сотрудникам компании.
 
 ТВОИ ЦЕННОСТИ:
-1. АНАЛИЗИРУЙ ВСЮ БАЗУ ЗНАНИЙ. У тебя есть полные тексты всех процедур, связанных с вопросом.
-2. СТРОЙ ЛОГИЧЕСКИЕ ЦЕПОЧКИ. Если для ответа нужно несколько процедур — объясни последовательность действий.
-3. ДАВАЙ ПОШАГОВЫЕ ИНСТРУКЦИИ. Пользователь должен понимать, что делать и к кому обращаться.
-4. ВСЕГДА УКАЗЫВАЙ РОЛИ. Кто отвечает за каждый шаг.
-5. ДОБАВЛЯЙ [PROC:номера] В КОНЦЕ ОТВЕТА.
+1. АНАЛИЗИРУЙ ВСЮ БАЗУ ЗНАНИЙ. У тебя есть JSON и HTML всех процедур.
+2. СТРОЙ ЛОГИЧЕСКИЕ ЦЕПОЧКИ. Покажи последовательность действий шаг за шагом.
+3. УКАЗЫВАЙ РОЛИ. Кто за что отвечает.
+4. В КОНЦЕ ОТВЕТА ДОБАВЛЯЙ [PROC:номера].
 
 ФОРМАТ ОТВЕТА:
-- Начни с краткого ответа на вопрос
-- Затем дай пошаговый алгоритм действий (если применимо)
-- Укажи ответственных лиц (роли)
-- В конце добавь [PROC:номера]
+- Краткий ответ на вопрос
+- Затем пошаговый алгоритм (если нужно)
+- В конце — [PROC:номера]
 
-ЛОГИЧЕСКАЯ ЦЕПОЧКА ПРОЦЕДУР ПО ТВОЕМУ ЗАПРОСУ:
-${contextForAI.substring(0, 30000)}
+БАЗА ЗНАНИЙ КЭАЗ (JSON + HTML-шаги):
+${fullContext.substring(0, 35000)}
 
 ВОПРОС ПОЛЬЗОВАТЕЛЯ: ${message}`;
 
@@ -447,7 +503,7 @@ ${contextForAI.substring(0, 30000)}
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: message }],
-                        fullData: allProcedures
+                        fullData: proceduresFullData
                     })
                 });
                 
@@ -464,17 +520,25 @@ ${contextForAI.substring(0, 30000)}
                     let procNumbers = [];
                     if (procMatch && procMatch[1] !== 'none' && procMatch[1] !== '') {
                         procNumbers = procMatch[1].split(',').map(p => p.trim()).filter(p => /^\d+[a-z]*$/.test(p));
-                        cleanContent = cleanContent.replace(/\[PROC:[^\]]+\]/, '').trim();
+                        cleanContent = cleanContent.replace(/\[PROC:[^\]]+\]/, '');
                     }
                     
-                    // Если AI не указал номера, используем найденные релевантные
-                    if (procNumbers.length === 0 && relevantProcedures.length > 0) {
-                        procNumbers = relevantProcedures.slice(0, 5).map(p => p.num);
-                    }
+                    // Превращаем ссылки на процедуры в кликабельные
+                    cleanContent = cleanContent.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
+                        return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+                    });
                     
-                    procNumbers.forEach(procNum => {
-                        const regex = new RegExp(`(Процедура\\s+${procNum})`, 'gi');
-                        cleanContent = cleanContent.replace(regex, `<a href="proc${procNum}.html" class="proc-link">$1</a>`);
+                    cleanContent = cleanContent.replace(/процедуру\s+(\d+[a-z]*)/gi, (match, num) => {
+                        return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+                    });
+                    
+                    // Превращаем [PROC:X] в ссылку (если остался)
+                    cleanContent = cleanContent.replace(/\[PROC:(\d+(?:,\d+)*)\]/gi, (match, nums) => {
+                        const procList = nums.split(',');
+                        const links = procList.map(num => 
+                            `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">Процедура ${num}</a>`
+                        ).join(', ');
+                        return links;
                     });
                     
                     AICore._addMessage(cleanContent, 'bot');
@@ -488,7 +552,6 @@ ${contextForAI.substring(0, 30000)}
                             filterMsg.style.background = '#fff3cf';
                             filterMsg.style.borderColor = '#f6b83e';
                             filterMsg.style.marginTop = '10px';
-                            filterMsg.style.fontSize = '0.8rem';
                             filterMsg.innerHTML = `🎯 <strong>Карта отфильтрована</strong> — показаны процедуры: ${procNumbers.map(p => `<code style="background:#f6b83e; color:#0a1929; padding:2px 6px; border-radius:12px; margin:0 2px;">${p}</code>`).join(', ')}<br><br>
                             <a href="#" onclick="resetAIFilter(); return false;" style="color: #0a1929; background: #f6b83e; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block;">🔄 Сбросить фильтр AI</a>`;
                             messagesDiv.appendChild(filterMsg);
