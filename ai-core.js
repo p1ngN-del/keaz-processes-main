@@ -52,7 +52,9 @@
     // ========== ПАРСИНГ stepData ИЗ HTML ==========
     function extractStepsFromHtml(html, procNum) {
         const steps = {};
-        const stepDataMatch = html.match(/const stepData = (\{[\s\S]*?\n\}\);?\s*?\]?\s*?[\n<]/);
+        
+        // ИСПРАВЛЕННОЕ РЕГУЛЯРНОЕ ВЫРАЖЕНИЕ
+        const stepDataMatch = html.match(/const stepData = (\{[\s\S]*\n\}\);?\s*\]?\s*[\n<]/);
         if (stepDataMatch && stepDataMatch[1]) {
             try {
                 const stepsObj = parseStepDataString(stepDataMatch[1]);
@@ -71,6 +73,7 @@
                 console.warn(`Ошибка парсинга stepData для proc${procNum}:`, e);
             }
         }
+        
         return steps;
     }
 
