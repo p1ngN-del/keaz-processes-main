@@ -371,29 +371,33 @@
     }
 
     window.AICore = {
-        initButton: function(containerSelector = '.container h1, .subhead, h1') {
-            if (document.querySelector('.ai-core-btn')) return;
-            const container = document.querySelector(containerSelector);
-            if (!container) return;
-            
-            const btn = document.createElement('button');
-            btn.className = 'ai-search-btn ai-core-btn';
-            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🤖</span><div style="text-align: left;"><div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div><div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Анализирую JSON и HTML</div></div></div>`;
-            btn.style.padding = '10px 20px 10px 16px';
-            btn.style.background = 'white';
-            btn.style.border = '2px solid #f6b83e';
-            btn.style.boxShadow = '0 6px 16px rgba(246,184,62,0.25)';
-            btn.onclick = () => AICore.toggleWidget();
-            
-            container.style.display = 'flex';
-            container.style.alignItems = 'center';
-            container.style.justifyContent = 'center';
-            container.style.gap = '12px';
-            container.appendChild(btn);
-            
-            createWidget();
-            loadProceduresFullData();
-        },
+        initButton: function(containerSelector = '.container') {
+    if (document.querySelector('.ai-core-btn')) return;
+    
+    // Ищем заголовок для вставки кнопки
+    let container = document.querySelector('h1');
+    if (!container) container = document.querySelector('.subhead');
+    if (!container) container = document.querySelector('.container');
+    if (!container) return;
+    
+    const btn = document.createElement('button');
+    btn.className = 'ai-search-btn ai-core-btn';
+    btn.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🤖</span><div style="text-align: left;"><div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div><div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Анализирую JSON и HTML</div></div></div>`;
+    btn.style.padding = '10px 20px 10px 16px';
+    btn.style.background = 'white';
+    btn.style.border = '2px solid #f6b83e';
+    btn.style.boxShadow = '0 6px 16px rgba(246,184,62,0.25)';
+    btn.onclick = () => AICore.toggleWidget();
+    
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.justifyContent = 'center';
+    container.style.gap = '12px';
+    container.appendChild(btn);
+    
+    createWidget();
+    loadProceduresFullData();
+},
         
         toggleWidget: function() {
             let widget = document.getElementById('aiWidget');
