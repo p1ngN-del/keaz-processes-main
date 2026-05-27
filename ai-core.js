@@ -232,12 +232,25 @@
             const div = document.createElement('div');
             div.className = 'typing-indicator';
             div.id = 'typingIndicator';
-            div.innerHTML = '<span></span><span></span><span></span>';
+            div.innerHTML = '<span class="typing-icon">🤖</span><span class="typing-text">AI печатает ответ</span><span class="typing-dots">...</span>';
             messagesDiv.appendChild(div);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Анимация точек
+            let dots = 1;
+            const interval = setInterval(() => {
+                const dotsSpan = document.querySelector('#typingIndicator .typing-dots');
+                if (!dotsSpan) { clearInterval(interval); return; }
+                dots = (dots % 3) + 1;
+                dotsSpan.textContent = '.'.repeat(dots);
+            }, 400);
+            div._dotInterval = interval;
         },
+        
         _removeTypingIndicator: function() {
-            document.getElementById('typingIndicator')?.remove();
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator && indicator._dotInterval) clearInterval(indicator._dotInterval);
+            indicator?.remove();
         },
         _addMessage: function(text, sender) {
             const messagesDiv = document.getElementById('aiMessages');
