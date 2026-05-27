@@ -1,4 +1,4 @@
-// ai-core.js - ФИНАЛ
+// ai-core.js - ФИНАЛ С ИСТОРИЕЙ ДИАЛОГА
 (function() {
     if (window.AICore) return;
     
@@ -6,6 +6,7 @@
     
     const PROXY_URL = 'https://keaz-processes-main-production.up.railway.app/api/chat';
     let proceduresFullData = [];
+    let conversationHistory = []; // <-- ИСТОРИЯ ДИАЛОГА
 
     async function loadProceduresFullData() {
         if (proceduresFullData.length > 0) return proceduresFullData;
@@ -42,6 +43,15 @@
         cleanText = cleanText.replace(/^## (.+)$/gm, '<strong style="font-size:1rem; display:block; margin:12px 0 6px 0;">$1</strong>');
         cleanText = cleanText.replace(/^# (.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:10px 0 4px 0;">$1</strong>');
         cleanText = cleanText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        
+        // Ловит "в процедуре 28", "процедуре 28", "согласно 30" и т.д.
+        cleanText = cleanText.replace(/(?:в\s+|согласно\s+)?(процедуре|процедура|стандарте|стандарт|инструкции|инструкция|методике|методика)\s+(\d+[a-z]*)/gi, (match, word, num) => {
+            let type = 'Процедура';
+            if (word.toLowerCase().startsWith('стандарт')) type = 'Стандарт';
+            if (word.toLowerCase().startsWith('инструкц')) type = 'Инструкция';
+            if (word.toLowerCase().startsWith('методик')) type = 'Методика';
+            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${type} ${num}</a>`;
+        });
         
         // Ссылки на всё
         cleanText = cleanText.replace(/(Процедура|Стандарт|Инструкция|Методика)\s+(\d+[a-z]*)/gi, (match, type, num) => {
@@ -242,28 +252,44 @@
             const input = document.getElementById('aiInput');
             const btn = document.getElementById('aiSendBtn');
             if (!input || !btn) return;
+            
             const message = input.value.trim();
             if (!message) return;
+            
             input.value = '';
             AICore._addMessage(message, 'user');
             AICore._showTypingIndicator();
             btn.disabled = true;
+            
             try {
                 if (proceduresFullData.length === 0) await loadProceduresFullData();
                 const fullContext = buildFullContext();
+                
+                // Сохраняем вопрос в историю
+                conversationHistory.push({ role: 'user', content: message });
+                if (conversationHistory.length > 10) {
+                    conversationHistory = conversationHistory.slice(-10);
+                }
+                
                 const response = await fetch(PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         messages: [{ role: 'user', content: message }],
                         fullData: proceduresFullData,
-                        htmlContext: fullContext
+                        htmlContext: fullContext,
+                        conversationHistory: conversationHistory
                     })
                 });
+                
                 AICore._removeTypingIndicator();
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
+                
                 if (data.success) {
+                    // Сохраняем ответ в историю
+                    conversationHistory.push({ role: 'assistant', content: data.content });
+                    
                     let cleanContent = data.content;
                     const procMatch = cleanContent.match(/\[PROC:([^\]]+)\]/);
                     let procNumbers = [];
@@ -282,6 +308,7 @@
             } catch (e) {
                 AICore._removeTypingIndicator();
                 AICore._addMessage('⚠️ Ошибка подключения к серверу.', 'bot');
+                console.error(e);
             }
             btn.disabled = false;
         }
