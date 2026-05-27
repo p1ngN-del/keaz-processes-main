@@ -203,7 +203,15 @@
             floatBtn.className = 'ai-floating-button';
             floatBtn.innerHTML = '<span class="ai-btn-icon">🤖</span><span class="ai-btn-text">AI Ассистент</span>';
             floatBtn.onclick = () => window.AICore?.toggleWidget();
-            document.body.appendChild(floatBtn);
+            
+            // ВСТАВЛЯЕМ КНОПКУ РЯДОМ С ПОЛЕМ ПОИСКА
+            const searchSection = document.querySelector('.search-section');
+            const searchRow = document.querySelector('.search-row');
+            if (searchRow) {
+                searchRow.appendChild(floatBtn);
+            } else {
+                document.body.appendChild(floatBtn);
+            }
         }
         
         // Drag-and-drop
