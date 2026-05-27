@@ -114,15 +114,35 @@
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                padding: 14px 18px;
+                padding: 12px 18px;
                 background: white;
                 border-radius: 18px;
                 align-self: flex-start;
                 border: 1px solid #e2e8f0;
+                max-width: 200px;
+                white-space: nowrap;
             }
-            .typing-icon { font-size: 1.2rem; }
-            .typing-text { color: #64748b; font-size: 0.85rem; }
-            .typing-dots { font-size: 1.2rem; letter-spacing: 2px; min-width: 24px; }
+            .typing-icon {
+                font-size: 1.1rem;
+                animation: typingWave 1s infinite;
+                display: inline-block;
+            }
+            @keyframes typingWave {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-3px); }
+            }
+            .typing-text {
+                color: #64748b;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+            .typing-dots {
+                font-size: 1.1rem;
+                letter-spacing: 2px;
+                min-width: 28px;
+                color: #f6b83e;
+                font-weight: bold;
+            }
             @keyframes softPulse {
                 0% { box-shadow: 0 4px 12px rgba(246, 184, 62, 0.3); }
                 50% { box-shadow: 0 6px 18px rgba(246, 184, 62, 0.6), 0 0 0 3px rgba(246, 184, 62, 0.2); }
@@ -294,13 +314,19 @@
         _showTypingIndicator: function() {
             const messagesDiv = document.getElementById('aiMessages');
             if (!messagesDiv) return;
+            
+            // Удаляем старый индикатор, если есть
+            const oldIndicator = document.getElementById('typingIndicator');
+            if (oldIndicator) oldIndicator.remove();
+            
             const div = document.createElement('div');
             div.className = 'typing-indicator';
             div.id = 'typingIndicator';
-            div.innerHTML = '<span class="typing-icon">🤖</span><span class="typing-text">AI печатает ответ</span><span class="typing-dots">...</span>';
+            div.innerHTML = '<span class="typing-icon">🤖</span><span class="typing-text">Печатает</span><span class="typing-dots">...</span>';
             messagesDiv.appendChild(div);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             
+            // Анимация точек
             let dots = 1;
             const interval = setInterval(() => {
                 const dotsSpan = document.querySelector('#typingIndicator .typing-dots');
