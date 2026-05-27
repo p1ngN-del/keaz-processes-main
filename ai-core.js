@@ -1,4 +1,4 @@
-// ai-core.js - ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
+// ai-core.js - ФИНАЛ
 (function() {
     if (window.AICore) return;
     
@@ -28,7 +28,6 @@
         for (const proc of proceduresFullData) {
             context += `=== ПРОЦЕДУРА ${proc.num} ===\n`;
             context += `Название: ${proc.name}\n`;
-            context += `Тип: ${proc.type || 'Процедура'}\n`;
             if (proc.content) context += `${proc.content}\n`;
             if (proc.roles) context += `Роли: ${proc.roles.join(', ')}\n`;
             context += `---\n\n`;
@@ -39,18 +38,16 @@
     function formatMessage(text) {
         let cleanText = text;
         
-        // Заголовки
         cleanText = cleanText.replace(/^### (.+)$/gm, '<strong style="font-size:1.1rem; display:block; margin:16px 0 8px 0;">$1</strong>');
         cleanText = cleanText.replace(/^## (.+)$/gm, '<strong style="font-size:1rem; display:block; margin:12px 0 6px 0;">$1</strong>');
         cleanText = cleanText.replace(/^# (.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:10px 0 4px 0;">$1</strong>');
         cleanText = cleanText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
         
-        // Ссылки на процедуры, стандарты, инструкции, методики
+        // Ссылки на всё
         cleanText = cleanText.replace(/(Процедура|Стандарт|Инструкция|Методика)\s+(\d+[a-z]*)/gi, (match, type, num) => {
-            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none; display:inline-block; margin:2px 0;">${match}</a>`;
+            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
         });
         
-        // Ссылки на [PROC:4,37]
         cleanText = cleanText.replace(/\[PROC:(\d+(?:,\d+)*)\]/gi, (match, nums) => {
             const procList = nums.split(',');
             const links = procList.map(num => 
@@ -59,10 +56,8 @@
             return links;
         });
         
-        // Списки
         cleanText = cleanText.replace(/^[-*]\s+(.+)$/gm, '<span style="display:block; margin-left:16px; margin-bottom:4px;">• $1</span>');
         cleanText = cleanText.replace(/^\d+\.\s+(.+)$/gm, '<span style="display:block; margin-left:8px; margin-bottom:4px;"><strong>$&</strong></span>');
-        
         cleanText = cleanText.replace(/\n/g, '<br>');
         return cleanText;
     }
@@ -73,22 +68,25 @@
         style.id = 'ai-core-styles';
         style.textContent = `
             .ai-floating-button {
-                display: inline-flex;
+                display: flex;
                 align-items: center;
                 justify-content: center;
-                gap: 8px;
-                padding: 10px 20px;
-                border-radius: 40px;
+                gap: 12px;
+                width: auto;
+                min-width: 240px;
+                padding: 16px 32px;
+                border-radius: 60px;
                 background: linear-gradient(135deg, #f6b83e, #ff8c00);
                 color: #0a1929;
                 border: none;
                 cursor: pointer;
-                font-size: 0.95rem;
-                font-weight: 600;
-                box-shadow: 0 4px 12px rgba(246, 184, 62, 0.3);
+                font-size: 1.3rem;
+                font-weight: 800;
+                box-shadow: 0 6px 20px rgba(246, 184, 62, 0.4);
                 transition: all 0.3s ease;
                 animation: softPulse 2.5s infinite;
-                border: 2px solid rgba(255, 255, 255, 0.3);
+                border: 2px solid rgba(255, 255, 255, 0.4);
+                margin: 20px auto;
             }
             @keyframes softPulse {
                 0% { box-shadow: 0 4px 12px rgba(246, 184, 62, 0.3); }
@@ -99,12 +97,14 @@
                 transform: scale(1.05);
                 animation: none;
             }
+            .ai-floating-button .ai-btn-icon { font-size: 32px; }
+            .ai-floating-button .ai-btn-text { font-size: 1.2rem; }
             .ai-widget {
                 position: fixed;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                width: 480px;
+                width: 500px;
                 max-width: calc(100vw - 40px);
                 background: white;
                 border-radius: 28px;
@@ -146,8 +146,7 @@
         if (oldWidget) oldWidget.remove();
         injectStyles();
         
-        // НОВОЕ ПРИВЕТСТВИЕ
-        const welcomeMessage = "🤖 <strong>Привет! Я AI-ассистент КЭАЗ.</strong><br><br>Я анализирую все бизнес-процессы, процедуры, инструкции, стандарты и методики компании. Могу подсказать, где посмотреть детали, какие шаги выполнить и кто ответственный.<br><br>📌 <strong>Примеры запросов:</strong><br>• «Как получить ТН ВЭД?»<br>• «Кто утверждает цены на новую продукцию?»<br>• «Покажи все шаги процедуры 4»<br>• «Какие роли участвуют в согласовании договора?»<br><br><strong>На что я могу ссылаться:</strong><br>Процедура 4, Стандарт 37, Инструкция 32, Методика 47 — я добавлю ссылки на них в ответе, и вы сможете перейти к деталям.<br><br>Чем могу помочь?";
+        const welcomeMessage = "🤖 <strong>Привет! Я AI-ассистент КЭАЗ.</strong><br><br>Я анализирую все бизнес-процессы, процедуры, инструкции, стандарты и методики компании. Могу подсказать, где посмотреть детали, какие шаги выполнить и кто ответственный.<br><br>📌 <strong>Примеры запросов:</strong><br>• «Как получить ТН ВЭД?»<br>• «Кто утверждает цены на новую продукцию?»<br>• «Покажи все шаги процедуры 4»<br>• «Какие роли участвуют в согласовании договора?»<br><br>Чем могу помочь?";
         
         const widgetHTML = `
             <div class="ai-widget" id="aiWidget">
@@ -158,33 +157,26 @@
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
         
-        // КНОПКА РЯДОМ С "Бизнес-процессы Дирекции маркетинга"
         if (!document.getElementById('aiFloatingButton')) {
             const floatBtn = document.createElement('button');
             floatBtn.id = 'aiFloatingButton';
             floatBtn.className = 'ai-floating-button';
-            floatBtn.innerHTML = '<span>🤖</span><span>AI Ассистент</span>';
+            floatBtn.innerHTML = '<span class="ai-btn-icon">🤖</span><span class="ai-btn-text">AI Ассистент</span>';
             floatBtn.onclick = () => window.AICore?.toggleWidget();
             
-            // Ищем контейнер с subhead (там где "КЭАЗ · нажми на должность...")
             const subhead = document.querySelector('.subhead');
             if (subhead && subhead.parentNode) {
-                // Вставляем после subhead, но перед filter-panel
-                subhead.insertAdjacentElement('afterend', floatBtn);
-                floatBtn.style.margin = '15px auto 10px auto';
-                floatBtn.style.display = 'inline-flex';
+                const btnContainer = document.createElement('div');
+                btnContainer.style.display = 'flex';
+                btnContainer.style.justifyContent = 'center';
+                btnContainer.style.margin = '10px 0';
+                btnContainer.appendChild(floatBtn);
+                subhead.insertAdjacentElement('afterend', btnContainer);
             } else {
-                // Fallback
-                const container = document.querySelector('.container');
-                if (container && container.firstChild) {
-                    container.insertBefore(floatBtn, container.firstChild.nextSibling);
-                } else {
-                    document.body.appendChild(floatBtn);
-                }
+                document.body.appendChild(floatBtn);
             }
         }
         
-        // Drag-and-drop
         const widget = document.getElementById('aiWidget');
         const header = widget.querySelector('.ai-header');
         let isDragging = false, offsetX, offsetY;
