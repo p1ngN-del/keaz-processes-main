@@ -149,9 +149,10 @@
             const floatBtn = document.createElement('button');
             floatBtn.id = 'aiFloatingButton';
             floatBtn.className = 'ai-floating-button';
-            floatBtn.innerHTML = '<span>🤖</span><span>AI Ассистент</span>';
+            floatBtn.innerHTML = '<span class="ai-btn-icon">🤖</span><span class="ai-btn-text">AI Ассистент</span>';
             floatBtn.onclick = () => window.AICore?.toggleWidget();
             
+            // ВСТАВЛЯЕМ ВВЕРХУ
             const searchRow = document.querySelector('.search-row');
             if (searchRow) {
                 searchRow.appendChild(floatBtn);
