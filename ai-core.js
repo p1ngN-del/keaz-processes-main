@@ -1,4 +1,4 @@
-// ai-core.js - ПОЛНОСТЬЮ РАБОЧАЯ ВЕРСИЯ (без ошибок)
+// ai-core.js - ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ
 (function() {
     if (window.AICore) return;
     
@@ -28,6 +28,7 @@
         for (const proc of proceduresFullData) {
             context += `=== ПРОЦЕДУРА ${proc.num} ===\n`;
             context += `Название: ${proc.name}\n`;
+            context += `Тип: ${proc.type || 'Процедура'}\n`;
             if (proc.content) context += `${proc.content}\n`;
             if (proc.roles) context += `Роли: ${proc.roles.join(', ')}\n`;
             context += `---\n\n`;
@@ -37,13 +38,19 @@
 
     function formatMessage(text) {
         let cleanText = text;
+        
+        // Заголовки
         cleanText = cleanText.replace(/^### (.+)$/gm, '<strong style="font-size:1.1rem; display:block; margin:16px 0 8px 0;">$1</strong>');
         cleanText = cleanText.replace(/^## (.+)$/gm, '<strong style="font-size:1rem; display:block; margin:12px 0 6px 0;">$1</strong>');
         cleanText = cleanText.replace(/^# (.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:10px 0 4px 0;">$1</strong>');
         cleanText = cleanText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-        cleanText = cleanText.replace(/Процедура\s+(\d+[a-z]*)/gi, (match, num) => {
-            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none;">${match}</a>`;
+        
+        // Ссылки на процедуры, стандарты, инструкции, методики
+        cleanText = cleanText.replace(/(Процедура|Стандарт|Инструкция|Методика)\s+(\d+[a-z]*)/gi, (match, type, num) => {
+            return `<a href="proc${num}.html" class="proc-link" style="color:#f6b83e; font-weight:600; background:#fff3cf; padding:2px 8px; border-radius:16px; text-decoration:none; display:inline-block; margin:2px 0;">${match}</a>`;
         });
+        
+        // Ссылки на [PROC:4,37]
         cleanText = cleanText.replace(/\[PROC:(\d+(?:,\d+)*)\]/gi, (match, nums) => {
             const procList = nums.split(',');
             const links = procList.map(num => 
@@ -51,6 +58,11 @@
             ).join(', ');
             return links;
         });
+        
+        // Списки
+        cleanText = cleanText.replace(/^[-*]\s+(.+)$/gm, '<span style="display:block; margin-left:16px; margin-bottom:4px;">• $1</span>');
+        cleanText = cleanText.replace(/^\d+\.\s+(.+)$/gm, '<span style="display:block; margin-left:8px; margin-bottom:4px;"><strong>$&</strong></span>');
+        
         cleanText = cleanText.replace(/\n/g, '<br>');
         return cleanText;
     }
@@ -111,8 +123,7 @@
                 gap: 12px;
                 cursor: move;
             }
-            .ai-icon { font-size: 32px; animation: wave 2s infinite; }
-            @keyframes wave { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(10deg); } }
+            .ai-icon { font-size: 32px; }
             .ai-title { flex: 1; font-weight: 700; font-size: 1.1rem; background: linear-gradient(90deg, #fff, #f6b83e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
             .ai-close { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
             .ai-messages { height: 480px; max-height: 65vh; overflow-y: auto; padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 16px; }
@@ -135,29 +146,41 @@
         if (oldWidget) oldWidget.remove();
         injectStyles();
         
+        // НОВОЕ ПРИВЕТСТВИЕ
+        const welcomeMessage = "🤖 <strong>Привет! Я AI-ассистент КЭАЗ.</strong><br><br>Я анализирую все бизнес-процессы, процедуры, инструкции, стандарты и методики компании. Могу подсказать, где посмотреть детали, какие шаги выполнить и кто ответственный.<br><br>📌 <strong>Примеры запросов:</strong><br>• «Как получить ТН ВЭД?»<br>• «Кто утверждает цены на новую продукцию?»<br>• «Покажи все шаги процедуры 4»<br>• «Какие роли участвуют в согласовании договора?»<br><br><strong>На что я могу ссылаться:</strong><br>Процедура 4, Стандарт 37, Инструкция 32, Методика 47 — я добавлю ссылки на них в ответе, и вы сможете перейти к деталям.<br><br>Чем могу помочь?";
+        
         const widgetHTML = `
             <div class="ai-widget" id="aiWidget">
                 <div class="ai-header"><span class="ai-icon">🤖</span><span class="ai-title">AI · Ассистент КЭАЗ</span><button class="ai-close" onclick="AICore.toggleWidget()">✕</button></div>
-                <div class="ai-messages" id="aiMessages"><div class="ai-message ai-message-bot"><strong>🤖 Привет! Я AI-ассистент КЭАЗ.</strong><br><br>Помогаю сотрудникам разбираться в бизнес-процессах. Задайте вопрос.</div></div>
+                <div class="ai-messages" id="aiMessages"><div class="ai-message ai-message-bot">${welcomeMessage}</div></div>
                 <div class="ai-input-row"><input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)"><button class="ai-send" id="aiSendBtn" onclick="AICore.sendMessage()">➤</button></div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
         
-        // КНОПКА ВВЕРХУ РЯДОМ С ПОИСКОМ
+        // КНОПКА РЯДОМ С "Бизнес-процессы Дирекции маркетинга"
         if (!document.getElementById('aiFloatingButton')) {
             const floatBtn = document.createElement('button');
             floatBtn.id = 'aiFloatingButton';
             floatBtn.className = 'ai-floating-button';
-            floatBtn.innerHTML = '<span class="ai-btn-icon">🤖</span><span class="ai-btn-text">AI Ассистент</span>';
+            floatBtn.innerHTML = '<span>🤖</span><span>AI Ассистент</span>';
             floatBtn.onclick = () => window.AICore?.toggleWidget();
             
-            // ВСТАВЛЯЕМ ВВЕРХУ
-            const searchRow = document.querySelector('.search-row');
-            if (searchRow) {
-                searchRow.appendChild(floatBtn);
+            // Ищем контейнер с subhead (там где "КЭАЗ · нажми на должность...")
+            const subhead = document.querySelector('.subhead');
+            if (subhead && subhead.parentNode) {
+                // Вставляем после subhead, но перед filter-panel
+                subhead.insertAdjacentElement('afterend', floatBtn);
+                floatBtn.style.margin = '15px auto 10px auto';
+                floatBtn.style.display = 'inline-flex';
             } else {
-                document.body.appendChild(floatBtn);
+                // Fallback
+                const container = document.querySelector('.container');
+                if (container && container.firstChild) {
+                    container.insertBefore(floatBtn, container.firstChild.nextSibling);
+                } else {
+                    document.body.appendChild(floatBtn);
+                }
             }
         }
         
@@ -235,19 +258,32 @@
             btn.disabled = true;
             try {
                 if (proceduresFullData.length === 0) await loadProceduresFullData();
+                const fullContext = buildFullContext();
                 const response = await fetch(PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         messages: [{ role: 'user', content: message }],
-                        fullData: proceduresFullData
+                        fullData: proceduresFullData,
+                        htmlContext: fullContext
                     })
                 });
                 AICore._removeTypingIndicator();
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 if (data.success) {
-                    AICore._addMessage(formatMessage(data.content), 'bot');
+                    let cleanContent = data.content;
+                    const procMatch = cleanContent.match(/\[PROC:([^\]]+)\]/);
+                    let procNumbers = [];
+                    if (procMatch && procMatch[1] !== 'none') {
+                        procNumbers = procMatch[1].split(',').map(p => p.trim());
+                        cleanContent = cleanContent.replace(/\[PROC:[^\]]+\]/, '');
+                    }
+                    cleanContent = formatMessage(cleanContent);
+                    AICore._addMessage(cleanContent, 'bot');
+                    if (procNumbers.length > 0 && typeof window.filterByAIProcedures === 'function') {
+                        window.filterByAIProcedures(procNumbers);
+                    }
                 } else {
                     AICore._addMessage('Ошибка. Попробуйте позже.', 'bot');
                 }
