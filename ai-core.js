@@ -1,11 +1,12 @@
-// ai-core.js - УМНАЯ ВЕРСИЯ (задаёт вопросы, фильтрует только по делу)
+// ai-core.js - АНАЛИТИЧЕСКАЯ ВЕРСИЯ с построением логических цепочек
 (function() {
     if (window.AICore) return;
     
-    console.log("🤖 AI Core загружается...");
+    console.log("🤖 AI Core загружается (аналитическая версия)...");
     
     const PROXY_URL = 'https://keaz-processes-main-production.up.railway.app/api/chat';
     let proceduresFullData = [];
+    let proceduresGraph = new Map(); // граф связей процедур
 
     async function loadProceduresFullData() {
         if (proceduresFullData.length > 0) return proceduresFullData;
@@ -15,13 +16,129 @@
             const data = await response.json();
             if (data.procedures) {
                 proceduresFullData = data.procedures;
-                console.log(`✅ Загружено ${proceduresFullData.length} процедур`);
+                buildProceduresGraph();
+                console.log(`✅ Загружено ${proceduresFullData.length} процедур, граф построен`);
             }
             return proceduresFullData;
         } catch (error) {
             console.error('❌ Ошибка загрузки procedures_data.json:', error);
             return [];
         }
+    }
+
+    // Строим граф связей между процедурами (по входам/выходам)
+    function buildProceduresGraph() {
+        proceduresGraph.clear();
+        
+        proceduresFullData.forEach(proc => {
+            const links = [];
+            
+            // Ищем ссылки на другие процедуры в тексте
+            const procMatches = proc.content.match(/\bпроцедур[ау]?\s+(\d+[a-z]*)\b/gi);
+            if (procMatches) {
+                procMatches.forEach(match => {
+                    const num = match.match(/\d+[a-z]*/)[0];
+                    if (num && num !== proc.num) links.push(num);
+                });
+            }
+            
+            // Ищем ссылки во входах/выходах
+            if (proc.inputs) {
+                proc.inputs.forEach(input => {
+                    const match = input.match(/\b(\d+[a-z]*)\b/);
+                    if (match && match[1] !== proc.num) links.push(match[1]);
+                });
+            }
+            if (proc.outputs) {
+                proc.outputs.forEach(output => {
+                    const match = output.match(/\b(\d+[a-z]*)\b/);
+                    if (match && match[1] !== proc.num) links.push(match[1]);
+                });
+            }
+            
+            proceduresGraph.set(proc.num, [...new Set(links)]);
+        });
+        
+        console.log('📊 Граф связей процедур:', Array.from(proceduresGraph.entries()).slice(0, 5));
+    }
+
+    // Поиск релевантных процедур по запросу (с весами)
+    function findRelevantProcedures(query, maxResults = 10) {
+        const queryLower = query.toLowerCase();
+        const keywords = queryLower.split(/\s+/).filter(w => w.length > 2);
+        
+        const scored = proceduresFullData.map(proc => {
+            let score = 0;
+            const fullText = `${proc.num} ${proc.name} ${proc.content} ${proc.roles?.join(' ') || ''}`.toLowerCase();
+            
+            keywords.forEach(keyword => {
+                const matches = (fullText.match(new RegExp(keyword, 'g')) || []).length;
+                score += matches * 10;
+            });
+            
+            // Специальные веса для ключевых терминов
+            if (queryLower.includes('етим') || queryLower.includes('etim')) {
+                if (fullText.includes('etim')) score += 100;
+            }
+            if (queryLower.includes('тнвэд') || queryLower.includes('тн вэд')) {
+                if (fullText.includes('тнвэд') || fullText.includes('тн вэд')) score += 100;
+            }
+            if (queryLower.includes('сертификат')) {
+                if (fullText.includes('сертификат')) score += 80;
+            }
+            if (queryLower.includes('кто') && proc.roles) {
+                score += 30;
+            }
+            
+            return { proc, score };
+        });
+        
+        const relevant = scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score).slice(0, maxResults);
+        console.log(`🔍 Найдено ${relevant.length} релевантных процедур по запросу "${query}"`);
+        relevant.forEach(r => console.log(`   - ${r.proc.num}: ${r.proc.name} (score: ${r.score})`));
+        
+        return relevant.map(r => r.proc);
+    }
+
+    // Строим логическую цепочку из связанных процедур
+    function buildLogicalChain(procedures, query) {
+        if (!procedures.length) return [];
+        
+        const chain = [];
+        const visited = new Set();
+        
+        // Начинаем с самой релевантной процедуры
+        let current = procedures[0];
+        chain.push(current);
+        visited.add(current.num);
+        
+        // Строим цепочку по связям (входы/выходы) — максимум 5 шагов
+        for (let i = 0; i < 4 && chain.length < 5; i++) {
+            const lastProc = chain[chain.length - 1];
+            const links = proceduresGraph.get(lastProc.num) || [];
+            
+            // Ищем связанную процедуру, которая есть в релевантных или имеет высокий приоритет
+            let nextProc = null;
+            for (const linkNum of links) {
+                const found = proceduresFullData.find(p => p.num === linkNum);
+                if (found && !visited.has(found.num)) {
+                    nextProc = found;
+                    break;
+                }
+            }
+            
+            if (nextProc) {
+                chain.push(nextProc);
+                visited.add(nextProc.num);
+            } else {
+                break;
+            }
+        }
+        
+        console.log(`🔗 Построена логическая цепочка из ${chain.length} процедур:`);
+        chain.forEach(p => console.log(`   ${p.num} → ${p.name}`));
+        
+        return chain;
     }
 
     function formatMessage(text) {
@@ -57,7 +174,7 @@
             .ai-search-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 40px; background: linear-gradient(135deg, #f6b83e, #ff8c00); color: #0a1929; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 12px rgba(246,184,62,0.3); transition: all 0.3s ease; animation: softPulse 2.5s infinite; border: 2px solid rgba(255,255,255,0.3); white-space: nowrap; margin-left: 12px; }
             .ai-search-btn:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(246,184,62,0.5); animation: none; background: linear-gradient(135deg, #ff8c00, #f6b83e); }
             @keyframes softPulse { 0% { box-shadow: 0 4px 12px rgba(246,184,62,0.3); } 50% { box-shadow: 0 6px 18px rgba(246,184,62,0.5), 0 0 0 3px rgba(246,184,62,0.1); } 100% { box-shadow: 0 4px 12px rgba(246,184,62,0.3); } }
-            .ai-widget { position: fixed; top: 50%; left: 24px; transform: translateY(-50%); width: 420px; max-width: calc(100vw - 40px); background: white; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); z-index: 9999; overflow: hidden; border: 1px solid #e2e8f0; display: none; }
+            .ai-widget { position: fixed; top: 50%; left: 24px; transform: translateY(-50%); width: 450px; max-width: calc(100vw - 40px); background: white; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); z-index: 9999; overflow: hidden; border: 1px solid #e2e8f0; display: none; }
             .ai-widget.open { display: block; animation: slideInLeft 0.3s ease; }
             @keyframes slideInLeft { from { opacity: 0; transform: translateY(-50%) translateX(-20px); } to { opacity: 1; transform: translateY(-50%) translateX(0); } }
             .ai-header { background: linear-gradient(135deg, #0a1929, #1a2642); color: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px; cursor: move; }
@@ -66,12 +183,13 @@
             .ai-title { flex: 1; font-weight: 600; font-size: 1.1rem; background: linear-gradient(90deg, #fff, #f6b83e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
             .ai-close { background: none; border: none; color: white; font-size: 24px; cursor: pointer; opacity: 0.7; transition: 0.2s; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
             .ai-close:hover { opacity: 1; background: rgba(255,255,255,0.1); }
-            .ai-messages { height: 480px; max-height: 65vh; overflow-y: auto; padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 16px; }
-            .ai-message { padding: 14px 18px; border-radius: 18px; max-width: 85%; word-wrap: break-word; font-size: 0.9rem; line-height: 1.5; }
+            .ai-messages { height: 500px; max-height: 70vh; overflow-y: auto; padding: 20px; background: #f8fafc; display: flex; flex-direction: column; gap: 16px; font-size: 0.9rem; }
+            .ai-message { padding: 14px 18px; border-radius: 18px; max-width: 85%; word-wrap: break-word; line-height: 1.5; }
             .ai-message-user { background: linear-gradient(135deg, #f6b83e, #ff8c00); color: #0a1929; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(246,184,62,0.3); }
             .ai-message-bot { background: white; color: #1e293b; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
             .ai-message-bot .proc-link { color: #f6b83e; font-weight: 600; background: #fff3cf; padding: 2px 8px; border-radius: 20px; display: inline-block; text-decoration: none; }
             .ai-message-bot .proc-link:hover { background: #f6b83e; color: #0a1929; }
+            .ai-message-bot strong { color: #0a1929; }
             .typing-indicator { display: flex; gap: 6px; padding: 14px 18px; background: white; border-radius: 18px; border-bottom-left-radius: 4px; align-self: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
             .typing-indicator span { width: 10px; height: 10px; background: #f6b83e; border-radius: 50%; animation: typing 1.4s infinite; }
             .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
@@ -96,7 +214,7 @@
         const widgetHTML = `
             <div class="ai-widget ai-widget-hidden" id="aiWidget">
                 <div class="ai-header"><span class="ai-icon">🤖</span><span class="ai-title">AI · Ассистент КЭАЗ</span><button class="ai-close" onclick="AICore.toggleWidget()">✕</button></div>
-                <div class="ai-messages" id="aiMessages"><div class="ai-message ai-message-bot"><strong>🤖 AI-ассистент КЭАЗ готов к работе.</strong><br><br>Задайте вопрос о процедурах, стандартах или инструкциях компании.</div></div>
+                <div class="ai-messages" id="aiMessages"><div class="ai-message ai-message-bot"><strong>🤖 AI-ассистент КЭАЗ готов к работе.</strong><br><br>Задайте вопрос о процедурах, стандартах или инструкциях компании. Я проанализирую всю базу знаний и построю логическую цепочку действий.</div></div>
                 <div class="ai-input-row"><input type="text" id="aiInput" class="ai-input" placeholder="Напишите ваш вопрос..." onkeypress="AICore.handleKeyPress(event)"><button class="ai-send" id="aiSendBtn" onclick="AICore.sendMessage()">➤</button></div>
             </div>
         `;
@@ -163,7 +281,7 @@
         
         document.addEventListener('mousemove', (e) => {
             if (!isResizing) return;
-            const newWidth = Math.max(300, Math.min(window.innerWidth - 100, startWidth + (e.clientX - startX)));
+            const newWidth = Math.max(350, Math.min(window.innerWidth - 100, startWidth + (e.clientX - startX)));
             const newHeight = Math.max(400, Math.min(window.innerHeight - 100, startHeight + (e.clientY - startY)));
             widget.style.width = `${newWidth}px`;
             widget.style.height = `${newHeight}px`;
@@ -181,12 +299,6 @@
         });
     }
 
-    // Определяем, похож ли вопрос на запрос о процедурах/инструкциях
-    function isProceduralQuestion(message) {
-        const proceduralKeywords = /процедур|инструкц|стандарт|как|что делать|где найти|кто отвечает|какой порядок|как получить|как оформить|как заполнить|согласование|подписание|утверждение|сертификат|декларация|цена|рентабельность|вывод|ввод|номенклатур|каталог|скидк|тн вэд|образец|поставщик|оем|проект|идея|стратеги|маркетинг|роль|ответственный|шаг|этап|алгоритм|порядок действий/i;
-        return proceduralKeywords.test(message) && message.length > 10;
-    }
-
     window.AICore = {
         initButton: function(containerSelector = 'h1') {
             if (document.querySelector('.ai-core-btn')) return;
@@ -195,7 +307,7 @@
             
             const btn = document.createElement('button');
             btn.className = 'ai-search-btn ai-core-btn';
-            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🤖</span><div style="text-align: left;"><div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div><div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Задайте вопрос о процедурах</div></div></div>`;
+            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><span style="background: linear-gradient(135deg, #f6b83e, #ff8c00); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🤖</span><div style="text-align: left;"><div style="font-weight: 700; font-size: 1rem; color: #0a1929;">AI-ассистент КЭАЗ</div><div style="font-size: 0.75rem; color: #475569; white-space: nowrap;">Анализирую все процедуры</div></div></div>`;
             btn.style.padding = '10px 20px 10px 16px';
             btn.style.background = 'white';
             btn.style.border = '2px solid #f6b83e';
@@ -281,9 +393,6 @@
             const message = input.value.trim();
             if (!message) return;
             
-            // Если сообщение слишком короткое или явно не про процедуры — просто отвечаем без фильтрации
-            const isProcedural = isProceduralQuestion(message);
-            
             input.value = '';
             AICore._addMessage(message, 'user');
             AICore._showTypingIndicator();
@@ -292,33 +401,54 @@
             try {
                 const allProcedures = await loadProceduresFullData();
                 
-                // Формируем контекст для AI
-                let contextText = '';
-                if (allProcedures && allProcedures.length > 0 && isProcedural) {
-                    contextText = allProcedures.map(proc => 
-                        `[${proc.num}] ${proc.name}: ${(proc.content || '').substring(0, 1500)}`
-                    ).join('\n');
-                }
+                // 1. Находим релевантные процедуры по запросу
+                const relevantProcedures = findRelevantProcedures(message, 8);
                 
-                const systemPrompt = `Ты — AI-ассистент КЭАЗ. 
-
-ПРАВИЛА:
-1. Если вопрос НЕ ЯСЕН или НЕ ХВАТАЕТ ДАННЫХ — задай 1-2 уточняющих вопроса. НЕ гадай.
-2. Если вопрос понятен — отвечай чётко, по делу. Используй заголовки и списки.
-3. Если вопрос НЕ про процедуры, инструкции или бизнес-процессы КЭАЗ — просто ответь, НЕ добавляй [PROC:...].
-4. Если вопрос про процедуры и ты можешь определить номера — в конце добавь [PROC:номера].
-
-База знаний: ${isProcedural ? contextText.substring(0, 8000) : 'доступна по запросу'}`;
-
-                const messagesWithContext = [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: message }
-                ];
+                // 2. Строим логическую цепочку
+                const logicalChain = buildLogicalChain(relevantProcedures, message);
                 
+                // 3. Формируем детальный контекст для AI
+                let contextForAI = '';
+                logicalChain.forEach(proc => {
+                    contextForAI += `
+╔══════════════════════════════════════════════════════════════╗
+║ ПРОЦЕДУРА ${proc.num}: ${proc.name}
+╠══════════════════════════════════════════════════════════════╣
+${proc.content}
+${proc.roles ? `\n📌 РОЛИ: ${proc.roles.join(', ')}` : ''}
+${proc.inputs ? `\n⬅️ ВХОДЫ: ${proc.inputs.join(', ')}` : ''}
+${proc.outputs ? `\n➡️ ВЫХОДЫ: ${proc.outputs.join(', ')}` : ''}
+╚══════════════════════════════════════════════════════════════╝
+`;
+                });
+                
+                const systemPrompt = `Ты — AI-ассистент КЭАЗ. Твоя задача — анализировать бизнес-процессы компании и давать максимально подробные ответы.
+
+ТВОИ ЦЕННОСТИ:
+1. АНАЛИЗИРУЙ ВСЮ БАЗУ ЗНАНИЙ. У тебя есть полные тексты всех процедур, связанных с вопросом.
+2. СТРОЙ ЛОГИЧЕСКИЕ ЦЕПОЧКИ. Если для ответа нужно несколько процедур — объясни последовательность действий.
+3. ДАВАЙ ПОШАГОВЫЕ ИНСТРУКЦИИ. Пользователь должен понимать, что делать и к кому обращаться.
+4. ВСЕГДА УКАЗЫВАЙ РОЛИ. Кто отвечает за каждый шаг.
+5. ДОБАВЛЯЙ [PROC:номера] В КОНЦЕ ОТВЕТА.
+
+ФОРМАТ ОТВЕТА:
+- Начни с краткого ответа на вопрос
+- Затем дай пошаговый алгоритм действий (если применимо)
+- Укажи ответственных лиц (роли)
+- В конце добавь [PROC:номера]
+
+ЛОГИЧЕСКАЯ ЦЕПОЧКА ПРОЦЕДУР ПО ТВОЕМУ ЗАПРОСУ:
+${contextForAI.substring(0, 30000)}
+
+ВОПРОС ПОЛЬЗОВАТЕЛЯ: ${message}`;
+
                 const response = await fetch(PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: messagesWithContext, fullData: allProcedures })
+                    body: JSON.stringify({ 
+                        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: message }],
+                        fullData: allProcedures
+                    })
                 });
                 
                 AICore._removeTypingIndicator();
@@ -330,7 +460,6 @@
                 if (data.success) {
                     let cleanContent = data.content;
                     
-                    // Извлекаем номера процедур из ответа AI
                     const procMatch = cleanContent.match(/\[PROC:([^\]]+)\]/);
                     let procNumbers = [];
                     if (procMatch && procMatch[1] !== 'none' && procMatch[1] !== '') {
@@ -338,7 +467,11 @@
                         cleanContent = cleanContent.replace(/\[PROC:[^\]]+\]/, '').trim();
                     }
                     
-                    // Подсвечиваем ссылки на процедуры
+                    // Если AI не указал номера, используем найденные релевантные
+                    if (procNumbers.length === 0 && relevantProcedures.length > 0) {
+                        procNumbers = relevantProcedures.slice(0, 5).map(p => p.num);
+                    }
+                    
                     procNumbers.forEach(procNum => {
                         const regex = new RegExp(`(Процедура\\s+${procNum})`, 'gi');
                         cleanContent = cleanContent.replace(regex, `<a href="proc${procNum}.html" class="proc-link">$1</a>`);
@@ -346,13 +479,7 @@
                     
                     AICore._addMessage(cleanContent, 'bot');
                     
-                    // ФИЛЬТРУЕМ КАРТУ ТОЛЬКО если:
-                    // 1. Есть номера процедур
-                    // 2. Вопрос был про процедуры
-                    // 3. Номера не пустые
-                    const shouldFilter = procNumbers.length > 0 && isProcedural;
-                    
-                    if (shouldFilter && typeof window.filterByAIProcedures === 'function') {
+                    if (procNumbers.length > 0 && typeof window.filterByAIProcedures === 'function') {
                         window.filterByAIProcedures(procNumbers);
                         const messagesDiv = document.getElementById('aiMessages');
                         if (messagesDiv) {
@@ -361,6 +488,7 @@
                             filterMsg.style.background = '#fff3cf';
                             filterMsg.style.borderColor = '#f6b83e';
                             filterMsg.style.marginTop = '10px';
+                            filterMsg.style.fontSize = '0.8rem';
                             filterMsg.innerHTML = `🎯 <strong>Карта отфильтрована</strong> — показаны процедуры: ${procNumbers.map(p => `<code style="background:#f6b83e; color:#0a1929; padding:2px 6px; border-radius:12px; margin:0 2px;">${p}</code>`).join(', ')}<br><br>
                             <a href="#" onclick="resetAIFilter(); return false;" style="color: #0a1929; background: #f6b83e; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block;">🔄 Сбросить фильтр AI</a>`;
                             messagesDiv.appendChild(filterMsg);
