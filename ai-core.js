@@ -264,6 +264,7 @@
     }
 
     function createWidget() {
+        // Удаляем старый виджет, если он есть
         const oldWidget = document.getElementById('aiWidget');
         if (oldWidget) oldWidget.remove();
         injectStyles();
@@ -284,31 +285,32 @@
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
         
+        // ========== КНОПКА — ВСТАВЛЯЕМ ПОД SUBHEAD (ПО ЦЕНТРУ) ==========
         if (!document.getElementById('aiFloatingButton')) {
             const floatBtn = document.createElement('button');
             floatBtn.id = 'aiFloatingButton';
-            floatBtn.className = 'ai-floating-button';
             floatBtn.innerHTML = '<span class="ai-btn-icon">🤖</span><span class="ai-btn-text">AI Ассистент</span>';
             floatBtn.onclick = () => window.AICore?.toggleWidget();
             
             const subhead = document.querySelector('.subhead');
             if (subhead && subhead.parentNode) {
-                const btnContainer = document.createElement('div');
-                btnContainer.style.display = 'flex';
-                btnContainer.style.justifyContent = 'center';
-                btnContainer.style.margin = '10px 0';
-                btnContainer.appendChild(floatBtn);
-                subhead.insertAdjacentElement('afterend', btnContainer);
+                const wrapper = document.createElement('div');
+                wrapper.style.display = 'flex';
+                wrapper.style.justifyContent = 'center';
+                wrapper.style.margin = '16px 0 12px 0';
+                wrapper.appendChild(floatBtn);
+                subhead.insertAdjacentElement('afterend', wrapper);
             } else {
                 document.body.appendChild(floatBtn);
             }
         }
         
+        // ========== DRAG-AND-DROP ДЛЯ ВИДЖЕТА ==========
         const widget = document.getElementById('aiWidget');
         const header = widget.querySelector('.ai-header');
         let isDragging = false, offsetX, offsetY;
         header.addEventListener('mousedown', (e) => {
-            if (e.target.closest('.ai-close')) return;
+            if (e.target.closest('.ai-close') || e.target.closest('.ai-clear-history')) return;
             isDragging = true;
             const rect = widget.getBoundingClientRect();
             offsetX = e.clientX - rect.left;
