@@ -1039,18 +1039,22 @@
 <div class="container">
     <h1>📊 Бизнес-процессы Дирекции маркетинга</h1>
 
+    <div class="subhead"></div>
+
     <div class="filter-panel">
         <!-- ПОИСК + AI-АССИСТЕНТ -->
-<div class="search-section">
-    <div class="search-row">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по процедурам..." onkeyup="applySearch()">
-        <button class="search-clear" onclick="clearSearch()">✖ Очистить</button>
-        <!-- Кнопка AI будет добавлена автоматически скриптом ai-core.js -->
-    </div>
-    <div id="searchResultCount" class="search-result-count"></div>
-</div>
+        <div class="search-section">
+            <div class="search-row">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по процедурам..." onkeyup="applySearch()">
+                <button class="search-clear" onclick="clearSearch()">✖ Очистить</button>
+                <!-- Кнопка AI будет добавлена автоматически скриптом ai-core.js -->
+            </div>
+            <div id="searchResultCount" class="search-result-count"></div>
+        </div>
         <div class="filter-row" id="mainRoles">
-    <!-- Фильтры будут сгенерированы динамически через JavaScript -->
+            <!-- Фильтры будут сгенерированы динамически через JavaScript -->
+        </div>
+    </div>
 </div>
     </div> <!-- Закрытие filter-panel -->
 
