@@ -26,13 +26,30 @@
 
     function buildFullContext() {
         let context = '';
-        for (const proc of proceduresFullData) {
-            context += `=== ПРОЦЕДУРА ${proc.num} ===\n`;
-            context += `Название: ${proc.name}\n`;
-            if (proc.content) context += `${proc.content}\n`;
-            if (proc.roles) context += `Роли: ${proc.roles.join(', ')}\n`;
-            context += `---\n\n`;
+        let totalLength = 0;
+        const MAX_LENGTH = 70000;
+        const priorityProcs = ['4', '4a', '4n', '17', '18', '19', '20', '23', '24', '25', '26', '27', '28', '30', '31'];
+        
+        for (const num of priorityProcs) {
+            const proc = proceduresFullData.find(p => p.num === num);
+            if (!proc) continue;
+            const procText = `=== ПРОЦЕДУРА ${proc.num} ===\nНазвание: ${proc.name}\n${(proc.content || '').substring(0, 2000)}\n---\n\n`;
+            if (totalLength + procText.length > MAX_LENGTH) break;
+            context += procText;
+            totalLength += procText.length;
         }
+        
+        if (totalLength < MAX_LENGTH) {
+            for (const proc of proceduresFullData) {
+                if (priorityProcs.includes(proc.num)) continue;
+                const procText = `=== ПРОЦЕДУРА ${proc.num} ===\nНазвание: ${proc.name}\n${(proc.content || '').substring(0, 1500)}\n---\n\n`;
+                if (totalLength + procText.length > MAX_LENGTH) break;
+                context += procText;
+                totalLength += procText.length;
+            }
+        }
+        
+        console.log(`📚 Контекст: ${Math.round(totalLength / 1024)} KB`);
         return context;
     }
 
@@ -44,6 +61,7 @@
         cleanText = cleanText.replace(/^# (.+)$/gm, '<strong style="font-size:0.95rem; display:block; margin:10px 0 4px 0;">$1</strong>');
         cleanText = cleanText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
         
+        // Ловит "в процедуре 28", "процедуре 28", "согласно 30" и т.д.
         cleanText = cleanText.replace(/(?:в\s+|согласно\s+)?(процедуре|процедура|стандарте|стандарт|инструкции|инструкция|методике|методика)\s+(\d+[a-z]*)/gi, (match, word, num) => {
             let type = 'Процедура';
             if (word.toLowerCase().startsWith('стандарт')) type = 'Стандарт';
@@ -75,7 +93,6 @@
         const style = document.createElement('style');
         style.id = 'ai-core-styles';
         style.textContent = `
-            /* Кнопка AI — будет добавлена под subhead, по центру */
             #aiFloatingButton {
                 display: flex;
                 align-items: center;
@@ -103,13 +120,12 @@
             #aiFloatingButton .ai-btn-icon { font-size: 26px; }
             #aiFloatingButton .ai-btn-text { font-size: 1rem; font-weight: 700; }
 
-            /* Виджет чата — фиксирован по центру */
             .ai-widget {
                 position: fixed;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                width: 480px;
+                width: 500px;
                 max-width: calc(100vw - 40px);
                 background: white;
                 border-radius: 28px;
@@ -190,15 +206,42 @@
                 border-bottom-left-radius: 4px;
                 align-self: flex-start;
                 border: 1px solid #e2e8f0;
+                max-width: 200px;
             }
-            .typing-icon { font-size: 1.2rem; animation: typingWave 1s infinite; }
-            @keyframes typingWave { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-            .typing-dots { display: flex; gap: 5px; align-items: center; }
-            .typing-dots span { display: inline-block; width: 8px; height: 8px; background: #f6b83e; border-radius: 50%; animation: ballBounce 0.8s infinite; }
+            .typing-icon {
+                font-size: 1.1rem;
+                animation: typingWave 1s infinite;
+                display: inline-block;
+            }
+            @keyframes typingWave {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-4px); }
+            }
+            .typing-dots {
+                display: flex;
+                gap: 5px;
+                align-items: center;
+            }
+            .typing-dots span {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                background: #f6b83e;
+                border-radius: 50%;
+                animation: ballBounce 0.8s infinite ease-in-out;
+            }
             .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
             .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
-            @keyframes ballBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-            .typing-text { color: #64748b; font-size: 0.85rem; font-weight: 500; margin-left: 4px; }
+            @keyframes ballBounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            .typing-text {
+                color: #64748b;
+                font-size: 0.85rem;
+                font-weight: 500;
+                margin-left: 4px;
+            }
 
             .ai-input-row {
                 display: flex;
@@ -252,10 +295,32 @@
             }
 
             @media (max-width: 600px) {
-                .ai-widget { width: calc(100vw - 20px); top: 10px; left: 10px; right: 10px; bottom: 10px; transform: none; border-radius: 20px; }
-                .ai-widget.open { position: fixed; top: 10px; left: 10px; right: 10px; bottom: 10px; width: auto; }
-                .ai-messages { height: calc(100vh - 140px); max-height: none; }
-                #aiFloatingButton { padding: 10px 18px; font-size: 0.9rem; }
+                .ai-widget {
+                    width: calc(100vw - 20px);
+                    max-width: none;
+                    top: 10px;
+                    left: 10px;
+                    right: 10px;
+                    bottom: 10px;
+                    transform: none;
+                    border-radius: 20px;
+                }
+                .ai-widget.open {
+                    position: fixed;
+                    top: 10px;
+                    left: 10px;
+                    right: 10px;
+                    bottom: 10px;
+                    width: auto;
+                }
+                .ai-messages {
+                    height: calc(100vh - 140px);
+                    max-height: none;
+                }
+                #aiFloatingButton {
+                    padding: 10px 18px;
+                    font-size: 0.9rem;
+                }
                 #aiFloatingButton .ai-btn-icon { font-size: 20px; }
                 #aiFloatingButton .ai-btn-text { font-size: 0.8rem; }
             }
@@ -264,7 +329,6 @@
     }
 
     function createWidget() {
-        // Удаляем старый виджет, если он есть
         const oldWidget = document.getElementById('aiWidget');
         if (oldWidget) oldWidget.remove();
         injectStyles();
@@ -285,7 +349,6 @@
         `;
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
         
-        // ========== КНОПКА — ВСТАВЛЯЕМ ПОД SUBHEAD (ПО ЦЕНТРУ) ==========
         if (!document.getElementById('aiFloatingButton')) {
             const floatBtn = document.createElement('button');
             floatBtn.id = 'aiFloatingButton';
@@ -305,7 +368,6 @@
             }
         }
         
-        // ========== DRAG-AND-DROP ДЛЯ ВИДЖЕТА ==========
         const widget = document.getElementById('aiWidget');
         const header = widget.querySelector('.ai-header');
         let isDragging = false, offsetX, offsetY;
